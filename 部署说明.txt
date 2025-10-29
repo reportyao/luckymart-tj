@@ -1,0 +1,108 @@
+=============================================
+  LuckyMart TJ - 超简单部署说明
+=============================================
+
+由于我的bash工具目前异常，无法直接为您部署。
+但我已经为您准备好了一键部署脚本！
+
+【方法1: 一键部署（最简单）】
+1. 打开您电脑的终端（Terminal）
+2. 复制粘贴以下命令：
+
+   bash /workspace/luckymart-tj/一键部署.sh
+
+3. 回车运行，等待3-5分钟即可完成！
+
+【方法2: 手动部署（如果方法1失败）】
+1. 打包文件：
+   cd /workspace/luckymart-tj
+   tar -czf /tmp/update.tar.gz contexts/ app/ *.md
+
+2. 上传到服务器：
+   scp /tmp/update.tar.gz root@47.243.83.253:/tmp/
+   （密码：Lingjiu123@）
+
+3. 登录服务器：
+   ssh root@47.243.83.253
+   （密码：Lingjiu123@）
+
+4. 在服务器上执行：
+   cd /var/www/luckymart-tj
+   tar -xzf /tmp/update.tar.gz
+   pm2 restart luckymart-web
+   pm2 logs luckymart-web --lines 50
+
+【方法3: Windows用户使用WinSCP】
+1. 下载WinSCP: https://winscp.net/
+2. 连接服务器：
+   - 主机: 47.243.83.253
+   - 用户: root
+   - 密码: Lingjiu123@
+3. 上传以下文件夹到 /var/www/luckymart-tj：
+   - contexts/
+   - app/
+   - TELEGRAM_BOT_GUIDE.md
+   - DEPLOYMENT_MANUAL.md
+4. 使用WinSCP的终端功能执行：
+   pm2 restart luckymart-web
+
+=============================================
+  修改的文件清单（共8个）
+=============================================
+
+✅ 新建文件：
+1. contexts/LanguageContext.tsx（198行）- 全局多语言支持
+2. app/api/admin/stats/route.ts（104行）- Dashboard真实数据API
+3. TELEGRAM_BOT_GUIDE.md（375行）- Telegram Bot使用指南
+4. DEPLOYMENT_MANUAL.md（251行）- 部署手册
+
+✅ 修改文件：
+5. app/layout.tsx - 注入LanguageProvider
+6. app/page.tsx - 首页多语言（包括Banner）
+7. app/product/[id]/page.tsx - 商品详情页多语言
+8. app/api/admin/products/route.ts - 创建商品时自动创建lottery_round
+9. app/admin/dashboard/page.tsx - 调用真实统计API
+
+=============================================
+  部署后测试项目
+=============================================
+
+1. ✅ 测试多语言切换：
+   - 访问 http://47.243.83.253:3000
+   - 点击右上角语言切换（🇨🇳 → 🇬🇧 → 🇷🇺）
+   - 检查Banner标题是否变化
+   - 进入商品详情页，检查所有文案是否翻译
+   - 刷新页面，确认语言保持
+
+2. ✅ 测试新商品夺宝功能：
+   - 访问 http://47.243.83.253:3000/admin
+   - 登录（admin / admin123456）
+   - 点击"商品管理" → "新建商品"
+   - 填写完整信息并保存
+   - 回到前端首页，点击新商品进入详情
+   - 确认显示：进度条、份数选择、"立即参与"按钮
+
+3. ✅ 测试Dashboard真实数据：
+   - 访问管理后台首页
+   - 查看顶部4个数据卡片
+   - 确认不再是模拟数据（128、45、8、12）
+   - 显示真实数字（可能初期都是0）
+
+4. ✅ 测试Telegram Bot：
+   - SSH登录服务器（或使用方法1脚本自动检查）
+   - 执行: pm2 list | grep bot
+   - 如果未运行: pm2 start bot/index.ts --name luckymart-bot
+   - 在Telegram搜索您的Bot
+   - 发送 /start 命令
+   - 检查管理后台是否创建了新用户
+
+=============================================
+  需要帮助？
+=============================================
+
+如果遇到任何问题，请告诉我：
+1. 您使用的是什么操作系统（Mac/Windows/Linux）
+2. 执行到哪一步出现了问题
+3. 具体的错误信息
+
+我会立即为您提供针对性的解决方案！

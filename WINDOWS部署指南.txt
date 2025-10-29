@@ -1,0 +1,168 @@
+=============================================
+  Windows Git Bash 部署指南
+=============================================
+
+方案1：分步手动部署（最可靠，推荐）
+=============================================
+
+请在 Git Bash 中依次复制粘贴以下命令：
+
+--- 步骤1：安装 sshpass（如果没有安装）---
+curl -L -o /usr/bin/sshpass.exe https://github.com/kevinburke/sshpass/releases/download/1.06/sshpass.exe
+chmod +x /usr/bin/sshpass.exe
+
+如果上面的命令失败，请跳过，直接使用下面的命令（会提示输入密码）
+
+
+--- 步骤2：创建临时目录 ---
+mkdir -p /tmp/luckymart-deploy
+cd /workspace/luckymart-tj
+
+
+--- 步骤3：打包文件 ---
+tar -czf /tmp/luckymart-deploy/update.tar.gz \
+    contexts \
+    app/layout.tsx \
+    app/page.tsx \
+    app/product \
+    app/api/admin \
+    TELEGRAM_BOT_GUIDE.md \
+    DEPLOYMENT_MANUAL.md
+
+
+--- 步骤4：上传文件到服务器 ---
+# 如果安装了sshpass，使用这个命令：
+sshpass -p "Lingjiu123@" scp /tmp/luckymart-deploy/update.tar.gz root@47.243.83.253:/tmp/
+
+# 如果没有sshpass，使用这个命令（会提示输入密码：Lingjiu123@）：
+scp /tmp/luckymart-deploy/update.tar.gz root@47.243.83.253:/tmp/
+
+
+--- 步骤5：登录服务器并部署 ---
+# 如果安装了sshpass：
+sshpass -p "Lingjiu123@" ssh root@47.243.83.253
+
+# 如果没有sshpass（会提示输入密码：Lingjiu123@）：
+ssh root@47.243.83.253
+
+
+--- 步骤6：在服务器上执行（登录后执行）---
+cd /var/www/luckymart-tj
+tar -xzf /tmp/update.tar.gz
+pm2 restart luckymart-web
+pm2 status luckymart-web
+exit
+
+
+完成！访问: http://47.243.83.253:3000
+
+
+=============================================
+方案2：使用 PowerShell（备选方案）
+=============================================
+
+如果 Git Bash 有问题，可以使用 Windows PowerShell：
+
+1. 按 Win+X，选择 "Windows PowerShell"
+
+2. 安装 POSH-SSH 模块（首次使用需要）：
+   Install-Module -Name Posh-SSH -Force
+
+3. 执行部署脚本：
+   $password = ConvertTo-SecureString "Lingjiu123@" -AsPlainText -Force
+   $credential = New-Object System.Management.Automation.PSCredential ("root", $password)
+   
+   # 上传文件
+   Set-SCPFile -ComputerName 47.243.83.253 -Credential $credential -LocalFile "C:\workspace\luckymart-tj\update.tar.gz" -RemotePath "/tmp/"
+   
+   # 执行部署
+   $session = New-SSHSession -ComputerName 47.243.83.253 -Credential $credential
+   Invoke-SSHCommand -SessionId $session.SessionId -Command "cd /var/www/luckymart-tj && tar -xzf /tmp/update.tar.gz && pm2 restart luckymart-web"
+   Remove-SSHSession -SessionId $session.SessionId
+
+
+=============================================
+方案3：使用 WinSCP 图形界面（最简单）
+=============================================
+
+1. 下载 WinSCP: https://winscp.net/eng/download.php
+
+2. 安装并打开 WinSCP
+
+3. 新建站点：
+   - 文件协议：SFTP
+   - 主机名：47.243.83.253
+   - 端口：22
+   - 用户名：root
+   - 密码：Lingjiu123@
+
+4. 点击"登录"
+
+5. 左侧找到本地文件夹：
+   C:\workspace\luckymart-tj
+   
+6. 右侧导航到服务器路径：
+   /var/www/luckymart-tj
+
+7. 将以下文件夹从左侧拖到右侧（覆盖）：
+   - contexts
+   - app
+   - TELEGRAM_BOT_GUIDE.md
+   - DEPLOYMENT_MANUAL.md
+
+8. 点击菜单栏 "命令" -> "打开终端"
+
+9. 在终端中输入：
+   cd /var/www/luckymart-tj
+   pm2 restart luckymart-web
+   pm2 status
+
+10. 完成！
+
+
+=============================================
+  测试部署是否成功
+=============================================
+
+访问以下网址测试：
+
+1. 前端首页：http://47.243.83.253:3000
+   - 测试语言切换（🇨🇳 🇬🇧 🇷🇺）
+   - 检查Banner文案是否变化
+
+2. 商品详情：点击任意商品
+   - 检查是否显示"立即参与"按钮
+   - 检查进度条是否显示
+
+3. 管理后台：http://47.243.83.253:3000/admin
+   - 用户名：admin
+   - 密码：admin123456
+   - 查看Dashboard数据是否为真实数字
+
+4. 新建商品测试：
+   - 商品管理 → 新建商品
+   - 填写信息并保存
+   - 前端查看新商品详情页
+
+
+=============================================
+  常见问题
+=============================================
+
+Q: Git Bash 提示 "No such file or directory"
+A: 路径问题，使用方案1的分步命令
+
+Q: 提示 "Permission denied"
+A: 确认密码是：Lingjiu123@（注意大小写和特殊字符）
+
+Q: 提示 "Connection refused"
+A: 检查网络连接，确认可以访问 http://47.243.83.253:3000
+
+Q: WinSCP 无法连接
+A: 确认防火墙没有阻止，端口22是否开放
+
+Q: 部署后网站没有变化
+A: 可能缓存问题，按 Ctrl+Shift+R 强制刷新浏览器
+
+
+需要帮助请随时告诉我！

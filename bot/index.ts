@@ -246,4 +246,9 @@ export function startBot() {
   process.once('SIGTERM', () => bot.stop('SIGTERM'));
 }
 
+// 如果直接运行此文件，启动Bot
+if (require.main === module) {
+  startBot();
+}
+
 export default bot;

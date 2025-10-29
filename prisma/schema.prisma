@@ -123,6 +123,9 @@ model orders {
   shippingAddress   Json?    @map("shipping_address")
   trackingNumber    String?  @map("tracking_number") @db.VarChar(255)
   notes             String?
+  // 转售相关字段
+  isResale          Boolean  @default(false) @map("is_resale")
+  resalePrice       Decimal? @map("resale_price") @db.Decimal(10, 2)
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @default(now()) @updatedAt @map("updated_at")
 

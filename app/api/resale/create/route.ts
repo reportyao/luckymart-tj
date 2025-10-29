@@ -16,22 +16,22 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { orderId, price } = body;
+    const { order_id, listing_price } = body;
 
     // 验证参数
-    if (!orderId || !price || price <= 0) {
+    if (!order_id || !listing_price || listing_price <= 0) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '无效的参数'
+        error: '无效的参数：order_id 和 listing_price 是必需的'
       }, { status: 400 });
     }
 
     // 验证订单归属和状态
     const { data: order, error: orderError } = await supabaseAdmin
       .from('orders')
-      .select('*, products(marketPrice)')
-      .eq('id', orderId)
-      .eq('userId', user.userId)
+      .select('*')
+      .eq('id', order_id)
+      .eq('user_id', user.userId)
       .single();
 
     if (orderError || !order) {
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     const { data: existingListing } = await supabaseAdmin
       .from('resale_listings')
       .select('*')
-      .eq('orderId', orderId)
+      .eq('order_id', order_id)
       .eq('status', 'active')
       .single();
 
@@ -72,23 +72,44 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    // 价格范围验证（不能高于市场价的80%）
-    const maxPrice = order.products.marketPrice * 0.8;
-    if (price > maxPrice) {
+    // 获取商品信息进行价格验证
+    const { data: product } = await supabaseAdmin
+      .from('products')
+      .select('market_price')
+      .eq('id', order.product_id)
+      .single();
+
+    if (!product) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: `转售价格不能高于市场价的80%（${maxPrice} TJS）`
+        error: '商品信息不存在'
       }, { status: 400 });
     }
+
+    // 价格范围验证（不能高于市场价的80%）
+    const maxPrice = Number(product.market_price) * 0.8;
+    if (listing_price > maxPrice) {
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: `转售价格不能高于市场价的80%（${maxPrice.toFixed(2)} TJS）`
+      }, { status: 400 });
+    }
+
+    // 计算平台手续费（2%）和净收入
+    const platformFeeRate = 0.02;
+    const platformFee = Math.round(listing_price * platformFeeRate * 100) / 100;
+    const netAmount = listing_price - platformFee;
 
     // 创建转售记录
     const { data: resaleListing, error: insertError } = await supabaseAdmin
       .from('resale_listings')
       .insert({
-        orderId,
-        sellerId: user.userId,
-        productId: order.productId,
-        price,
+        order_id,
+        seller_user_id: user.userId,
+        product_id: order.product_id,
+        listing_price,
+        platform_fee: platformFee,
+        net_amount: netAmount,
         status: 'active'
       })
       .select()
@@ -96,26 +117,39 @@ export async function POST(request: Request) {
 
     if (insertError) throw insertError;
 
-    // 更新订单的转售状态
-    await supabaseAdmin
-      .from('orders')
-      .update({ 
-        isResale: true,
-        resalePrice: price 
-      })
-      .eq('id', orderId);
+    // 更新订单的转售状态（如果订单表有相关字段）
+    // 注意：schema.prisma中orders表没有isResale和resalePrice字段
+    // 这里需要根据实际业务需求来决定是否需要更新订单表
 
     return NextResponse.json<ApiResponse<ResaleListing>>({
       success: true,
       data: resaleListing,
-      message: '转售商品创建成功'
+      message: '转售商品创建成功！正在寻找买家，预计1-10分钟内快速成交。'
     });
 
   } catch (error: any) {
     console.error('创建转售失败:', error);
+    
+    // 区分不同类型的错误
+    let errorMessage = '创建转售失败';
+    let statusCode = 500;
+
+    if (error.code === 'PGRST116') {
+      errorMessage = '资源不存在';
+      statusCode = 404;
+    } else if (error.code === '23505') {
+      errorMessage = '数据已存在，无法重复创建';
+      statusCode = 409;
+    } else if (error.code === '23503') {
+      errorMessage = '外键约束错误，订单或商品不存在';
+      statusCode = 400;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
     return NextResponse.json<ApiResponse>({
       success: false,
-      error: error.message || '创建转售失败'
-    }, { status: 500 });
+      error: errorMessage
+    }, { status: statusCode });
   }
 }

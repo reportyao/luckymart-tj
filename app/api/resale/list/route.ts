@@ -16,11 +16,11 @@ export async function GET(request: Request) {
       .from('resale_listings')
       .select(`
         *,
-        products(*),
-        sellers:users!resale_listings_sellerId_fkey(username, firstName)
+        products(id, name_zh, name_en, image_url, market_price),
+        sellers:users!resale_listings_seller_user_id_fkey(username, first_name)
       `, { count: 'exact' })
       .eq('status', 'active')
-      .order('createdAt', { ascending: false });
+      .order('listed_at', { ascending: false });
 
     // 分类筛选
     if (category) {

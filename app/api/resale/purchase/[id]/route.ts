@@ -72,7 +72,7 @@ export async function POST(
     if (buyer.platform_balance < listing.listing_price) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: `余额不足。需要 ${listing.listing_price} TJS，当前余额 ${buyer.platform_balance} TJS`
+        error: `余额不足。需要 ${Number(listing.listing_price).toFixed(2)} TJS，当前余额 ${Number(buyer.platform_balance).toFixed(2)} TJS`
       }, { status: 400 });
     }
 
@@ -93,7 +93,7 @@ export async function POST(
     await supabaseAdmin
       .from('users')
       .update({ 
-        platform_balance: buyer.platform_balance - listing.listing_price
+        platform_balance: Number(buyer.platform_balance) - Number(listing.listing_price)
       })
       .eq('id', user.userId);
 
@@ -101,7 +101,7 @@ export async function POST(
     await supabaseAdmin
       .from('users')
       .update({ 
-        platform_balance: seller.platform_balance + listing.listing_price
+        platform_balance: Number(seller.platform_balance) + Number(listing.listing_price)
       })
       .eq('id', listing.seller_user_id);
 
@@ -125,7 +125,7 @@ export async function POST(
         round_id: order?.round_id,
         product_id: listing.product_id,
         type: 'resale_purchase',
-        total_amount: listing.listing_price,
+        total_amount: Number(listing.listing_price),
         payment_status: 'paid',
         fulfillment_status: 'pending'
       })
@@ -148,7 +148,7 @@ export async function POST(
       .insert({
         user_id: user.userId,
         type: 'resale_purchase',
-        amount: -listing.listing_price,
+        amount: -Number(listing.listing_price),
         balance_type: 'platform_balance',
         related_order_id: newOrder.id,
         description: `购买转售商品：${product?.name_zh || '未知商品'}`
@@ -160,7 +160,7 @@ export async function POST(
       .insert({
         user_id: listing.seller_user_id,
         type: 'resale_income',
-        amount: listing.listing_price,
+        amount: Number(listing.listing_price),
         balance_type: 'platform_balance',
         related_order_id: listing.order_id,
         description: `转售收入：${product?.name_zh || '未知商品'}`
@@ -174,9 +174,30 @@ export async function POST(
 
   } catch (error: any) {
     console.error('购买转售商品失败:', error);
+    
+    // 区分不同类型的错误
+    let errorMessage = '购买转售商品失败';
+    let statusCode = 500;
+
+    if (error.code === 'PGRST116') {
+      errorMessage = '转售商品不存在';
+      statusCode = 404;
+    } else if (error.code === '23505') {
+      errorMessage = '数据已存在，无法重复购买';
+      statusCode = 409;
+    } else if (error.code === '23503') {
+      errorMessage = '数据关联错误';
+      statusCode = 400;
+    } else if (error.message?.includes('余额不足')) {
+      errorMessage = error.message;
+      statusCode = 400;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
     return NextResponse.json<ApiResponse>({
       success: false,
-      error: error.message || '购买转售商品失败'
-    }, { status: 500 });
+      error: errorMessage
+    }, { status: statusCode });
   }
 }

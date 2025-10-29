@@ -1,7 +1,7 @@
 // 用户类型
 export interface User {
   id: string;
-  telegramId: number;
+  telegramId: string; // 改为String类型，与数据库保持一致
   username?: string;
   firstName: string;
   lastName?: string;
@@ -59,7 +59,7 @@ export interface LotteryRound {
   roundNumber: number;
   totalShares: number;
   soldShares: number;
-  status: 'ongoing' | 'full' | 'drawing' | 'completed';
+  status: 'active' | 'full' | 'drawing' | 'completed'; // 改为与schema一致的'active'
   winnerUserId?: string;
   winningNumber?: number;
   drawTime?: Date;
@@ -90,14 +90,19 @@ export interface Order {
   userId: string;
   roundId?: string;
   productId?: string;
-  type: 'lottery_win' | 'direct_buy' | 'recharge' | 'resale';
+  type: 'lottery_win' | 'direct_buy' | 'recharge' | 'resale' | 'resale_purchase';
+  quantity: number;
   totalAmount: number;
+  status: 'pending' | 'confirmed' | 'cancelled';
   paymentMethod?: string;
   paymentStatus: 'pending' | 'paid' | 'failed' | 'cancelled';
-  fulfillmentStatus: 'pending' | 'processing' | 'shipped' | 'delivered' | 'completed';
+  fulfillmentStatus: 'pending' | 'processing' | 'shipped' | 'delivered' | 'completed' | 'resold';
   shippingAddress?: any;
   trackingNumber?: string;
   notes?: string;
+  // 转售相关字段
+  isResale: boolean;
+  resalePrice?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -119,18 +124,27 @@ export interface RechargePackage {
 // 转售列表类型
 export interface ResaleListing {
   id: string;
-  userId: string;
-  roundId: string;
-  productId: string;
-  numbers: number[];
-  sharesCount: number;
-  originalCost: number;
-  salePrice: number;
-  status: 'active' | 'sold' | 'cancelled';
-  buyerId?: string;
+  sellerUserId: string;
+  buyerUserId?: string;
+  orderId: string;
+  productId?: string;
+  listingPrice: number;
+  platformFee: number;
+  status: 'pending' | 'active' | 'sold';
+  listedAt: Date;
   soldAt?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  // 关联数据
+  products?: {
+    id: string;
+    nameZh: string;
+    nameEn: string;
+    images: string[];
+    marketPrice: number;
+  };
+  sellers?: {
+    username?: string;
+    firstName?: string;
+  };
 }
 
 // API响应类型

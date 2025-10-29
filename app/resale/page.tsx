@@ -5,23 +5,23 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 interface ResaleListing {
-  id: number;
-  orderId: number;
-  sellerId: number;
-  productId: number;
-  price: number;
+  id: string;
+  order_id: string;
+  seller_user_id: string;
+  product_id?: string;
+  listing_price: number;
   status: string;
-  createdAt: string;
+  listed_at: string;
   products: {
-    id: number;
-    nameZh: string;
-    nameEn: string;
-    imageUrl: string;
-    marketPrice: number;
+    id: string;
+    name_zh: string;
+    name_en: string;
+    image_url: string;
+    market_price: number;
   };
   sellers: {
     username?: string;
-    firstName?: string;
+    first_name?: string;
   };
 }
 
@@ -112,18 +112,32 @@ export default function ResalePage() {
         </div>
       </div>
 
-      {/* 说明横幅 */}
+      {/* 说明横幅和快捷操作 */}
       <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 text-white shadow-xl">
+        <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-6 text-white shadow-xl mb-6">
           <div className="flex items-start gap-3">
             <svg className="w-6 h-6 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <div>
+            <div className="flex-1">
               <h3 className="font-bold text-lg mb-1">什么是转售市场？</h3>
-              <p className="text-sm opacity-90">
+              <p className="text-sm opacity-90 mb-4">
                 转售市场让您可以以优惠价格购买其他用户转售的中奖商品，无需参与夺宝即可获得心仪商品！
               </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => router.push('/resale/create')}
+                  className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg font-semibold transition-colors"
+                >
+                  立即转售
+                </button>
+                <button
+                  onClick={() => router.push('/orders')}
+                  className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg font-semibold transition-colors"
+                >
+                  我的订单
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -142,16 +156,16 @@ export default function ResalePage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {listings.map((listing) => {
-              const discount = getDiscount(listing.price, listing.products.marketPrice);
-              const sellerName = listing.sellers.firstName || listing.sellers.username || '匿名用户';
+              const discount = getDiscount(listing.listing_price, listing.products.market_price);
+              const sellerName = listing.sellers.first_name || listing.sellers.username || '匿名用户';
 
               return (
                 <div key={listing.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:scale-105">
                   {/* 商品图片 */}
                   <div className="relative h-48 bg-gray-100">
                     <Image
-                      src={listing.products.imageUrl || '/images/placeholder.png'}
-                      alt={listing.products.nameZh}
+                      src={listing.products.image_url || '/images/placeholder.png'}
+                      alt={listing.products.name_zh}
                       fill
                       className="object-cover"
                     />
@@ -164,7 +178,7 @@ export default function ResalePage() {
                   {/* 商品信息 */}
                   <div className="p-5">
                     <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-                      {listing.products.nameZh}
+                      {listing.products.name_zh}
                     </h3>
 
                     <div className="flex items-center gap-2 mb-3">
@@ -178,20 +192,20 @@ export default function ResalePage() {
                     <div className="mb-4">
                       <div className="flex items-baseline gap-2">
                         <span className="text-2xl font-bold text-red-600">
-                          {listing.price.toFixed(2)} TJS
+                          {listing.listing_price.toFixed(2)} TJS
                         </span>
                         <span className="text-sm text-gray-400 line-through">
-                          {listing.products.marketPrice.toFixed(2)} TJS
+                          {listing.products.market_price.toFixed(2)} TJS
                         </span>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">
-                        节省 {(listing.products.marketPrice - listing.price).toFixed(2)} TJS
+                        节省 {(listing.products.market_price - listing.listing_price).toFixed(2)} TJS
                       </p>
                     </div>
 
                     {/* 购买按钮 */}
                     <button
-                      onClick={() => handlePurchase(listing.id, listing.price, listing.products.nameZh)}
+                      onClick={() => handlePurchase(listing.id, listing.listing_price, listing.products.name_zh)}
                       disabled={purchasing === listing.id}
                       className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg disabled:opacity-50"
                     >
@@ -200,7 +214,7 @@ export default function ResalePage() {
 
                     {/* 发布时间 */}
                     <p className="text-xs text-gray-400 text-center mt-3">
-                      {new Date(listing.createdAt).toLocaleDateString('zh-CN')} 发布
+                      {new Date(listing.listed_at).toLocaleDateString('zh-CN')} 发布
                     </p>
                   </div>
                 </div>

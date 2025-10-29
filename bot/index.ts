@@ -11,38 +11,72 @@ if (!BOT_TOKEN) {
 
 const bot = new Telegraf(BOT_TOKEN);
 
-// /start命令 - 用户冷启动
+// /start命令 - 用户冷启动 + 用户注册
 bot.command('start', async (ctx) => {
-  const user = ctx.from;
+  const telegramUser = ctx.from;
+  const telegramId = telegramUser.id.toString();
   
-  const welcomeMessage = `
-欢迎来到LuckyMart TJ幸运集市！
+  try {
+    // 使用upsert确保用户不存在时创建，存在时更新
+    const user = await prisma.users.upsert({
+      where: { telegramId },
+      update: {
+        username: telegramUser.username || null,
+        firstName: telegramUser.first_name || 'Unknown',
+        lastName: telegramUser.last_name || null,
+        avatarUrl: telegramUser.photo_url || null,
+      },
+      create: {
+        telegramId,
+        username: telegramUser.username || null,
+        firstName: telegramUser.first_name || 'Unknown',
+        lastName: telegramUser.last_name || null,
+        avatarUrl: telegramUser.photo_url || null,
+        language: telegramUser.language_code || 'zh',
+        balance: 50, // 新用户奖励
+        platformBalance: 0,
+        vipLevel: 0,
+        totalSpent: 0,
+        freeDailyCount: 0,
+        lastFreeResetDate: new Date(),
+      }
+    });
+    
+    const welcomeMessage = `
+🎉 欢迎来到LuckyMart TJ幸运集市！
 
 这里有超多心仪商品等你来夺宝：
-- 1夺宝币 = 1份，超低门槛
-- 新用户注册即送50夺宝币
+- 1夺宝币 = 1份，超低门槛  
+- 新用户注册即送50夺宝币 🎁
 - 每日免费参与3次
 - 公平透明的开奖算法
+
+您的账户已创建，余额：${user.balance} 夺宝币
 
 点击下方按钮进入幸运集市，开始您的幸运之旅吧！
 `;
 
-  await ctx.reply(welcomeMessage, 
-    Markup.inlineKeyboard([
-      [Markup.button.webApp('进入幸运集市', MINI_APP_URL)],
-      [Markup.button.callback('新手教程', 'help_tutorial')],
-      [Markup.button.callback('语言设置', 'language_settings')]
-    ])
-  );
+    await ctx.reply(welcomeMessage, 
+      Markup.inlineKeyboard([
+        [Markup.button.webApp('进入幸运集市', MINI_APP_URL)],
+        [Markup.button.callback('新手教程', 'help_tutorial')],
+        [Markup.button.callback('语言设置', 'language_settings')]
+      ])
+    );
+    
+  } catch (error) {
+    console.error('Start command error:', error);
+    await ctx.reply('注册失败，请稍后重试或联系客服');
+  }
 });
 
 // /balance命令 - 查询余额
 bot.command('balance', async (ctx) => {
   try {
-    const telegramId = ctx.from.id;
+    const telegramId = ctx.from.id.toString();
     
     const user = await prisma.users.findUnique({
-      where: { telegramId: BigInt(telegramId) }
+      where: { telegramId }
     });
 
     if (!user) {
@@ -76,10 +110,10 @@ VIP等级：${user.vipLevel}
 // /orders命令 - 查询订单
 bot.command('orders', async (ctx) => {
   try {
-    const telegramId = ctx.from.id;
+    const telegramId = ctx.from.id.toString();
     
     const user = await prisma.users.findUnique({
-      where: { telegramId: BigInt(telegramId) }
+      where: { telegramId }
     });
 
     if (!user) {
@@ -187,11 +221,11 @@ bot.command('support', async (ctx) => {
 // 语言切换回调
 bot.action(/lang_(.+)/, async (ctx) => {
   const lang = ctx.match[1];
-  const telegramId = ctx.from.id;
+  const telegramId = ctx.from.id.toString();
 
   try {
     await prisma.users.update({
-      where: { telegramId: BigInt(telegramId) },
+      where: { telegramId },
       data: { language: lang }
     });
 
@@ -205,7 +239,7 @@ bot.action(/lang_(.+)/, async (ctx) => {
     await ctx.reply(messages[lang] || messages.zh);
   } catch (error) {
     console.error('Language switch error:', error);
-    await ctx.answerCbQuery('切换失败');
+    await ctx.answerCbQuery('切换失败，请稍后重试');
   }
 });
 
@@ -220,10 +254,95 @@ function getOrderStatusText(status: string): string {
   return statusMap[status] || status;
 }
 
+// 新手教程回调
+bot.action('help_tutorial', async (ctx) => {
+  const tutorialMessage = `
+📚 新手教程
+
+🎯 如何参与夺宝：
+1. 选择您喜欢的商品
+2. 购买夺宝份额（1份额 = 1夺宝币）
+3. 等待开奖时间
+4. 等待幸运号码公布
+5. 中奖者获得商品
+
+💰 获得夺宝币：
+- 新用户注册：50夺宝币
+- 每日免费参与：3次
+- 充值购买更多份额
+
+🎁 参与规则：
+- 开奖公平透明，使用区块链技术
+- 每期固定开奖时间
+- 中奖后自动发货到家
+
+有任何问题请随时联系客服！
+`;
+
+  await ctx.answerCbQuery();
+  await ctx.reply(tutorialMessage,
+    Markup.inlineKeyboard([
+      [Markup.button.webApp('开始夺宝', MINI_APP_URL)],
+      [Markup.button.callback('联系客服', 'contact_support')]
+    ])
+  );
+});
+
+// 语言设置回调
+bot.action('language_settings', async (ctx) => {
+  const languageMessage = `
+🌐 请选择您的语言 / Please select your language / Выберите язык:
+
+支持的语言：
+- 中文 (简体)
+- English
+- Русский
+`;
+
+  await ctx.answerCbQuery();
+  await ctx.reply(languageMessage,
+    Markup.inlineKeyboard([
+      [Markup.button.callback('中文', 'lang_zh')],
+      [Markup.button.callback('English', 'lang_en')],
+      [Markup.button.callback('Русский', 'lang_ru')]
+    ])
+  );
+});
+
+// 联系客服回调
+bot.action('contact_support', async (ctx) => {
+  const supportMessage = `
+💬 联系我们
+
+客服工作时间：周一至周日 9:00-22:00
+
+联系方式：
+- Telegram客服：@luckymart_support
+- 客服邮箱：support@luckymart.tj
+
+常见问题：
+- 支付问题：24小时内回复
+- 开奖争议：立即处理
+- 账户问题：实时解答
+
+我们承诺为您提供最优质的服务！
+`;
+
+  await ctx.answerCbQuery();
+  await ctx.reply(supportMessage,
+    Markup.inlineKeyboard([
+      [Markup.button.webApp('常见问题', `${MINI_APP_URL}/faq`)],
+      [Markup.button.url('联系客服', 'https://t.me/luckymart_support')],
+      [Markup.button.callback('返回帮助', 'help_tutorial')]
+    ])
+  );
+});
+
 // 发送通知函数（供其他模块调用）
-export async function sendNotification(telegramId: number, message: string, options?: any) {
+export async function sendNotification(telegramId: string, message: string, options?: any) {
   try {
-    await bot.telegram.sendMessage(telegramId, message, options);
+    const numericId = parseInt(telegramId);
+    await bot.telegram.sendMessage(numericId, message, options);
     return true;
   } catch (error) {
     console.error('Send notification error:', error);

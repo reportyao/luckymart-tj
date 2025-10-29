@@ -25,8 +25,8 @@ export async function GET(request: NextRequest) {
       where.OR = [
         { username: { contains: search, mode: 'insensitive' } },
         { firstName: { contains: search, mode: 'insensitive' } },
-        { telegramId: { equals: isNaN(parseInt(search)) ? undefined : BigInt(search) } }
-      ].filter(item => item.telegramId === undefined || !isNaN(parseInt(search)));
+        { telegramId: { equals: search } }
+      ].filter(item => item.telegramId === undefined || search.trim().length > 0);
     }
 
     // 获取用户列表和总数
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 
         return {
           id: u.id,
-          telegramId: u.telegramId.toString(),
+          telegramId: u.telegramId, // 现在已经是String类型
           username: u.username,
           firstName: u.firstName,
           lastName: u.lastName,

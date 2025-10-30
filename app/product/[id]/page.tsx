@@ -4,24 +4,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  images: string[];
-  marketPrice: number;
-  totalShares: number;
-  pricePerShare: number;
-  currentRound: {
-    id: string;
-    soldShares: number;
-    totalShares: number;
-    progress: number;
-    remainingShares: number;
-  } | null;
-  recentParticipations: any[];
-}
+import ProductImageCarousel from '@/components/ProductImageCarousel';
+import MarketingBadgeDisplay from '@/components/MarketingBadgeDisplay';
+import type { Product } from '@/types';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -122,23 +107,19 @@ export default function ProductDetailPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* 左侧：商品图片 */}
-          <div className="bg-white rounded-xl p-6">
-            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-              {product.images && product.images[0] ? (
-                <img 
-                  src={product.images[0]} 
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-400">
-                  暂无图片
-                </div>
-              )}
-            </div>
+      <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          {/* 左侧：商品图片轮播 */}
+          <div className="bg-white rounded-xl p-4 md:p-6 relative">
+            {/* 营销角标 */}
+            <MarketingBadgeDisplay 
+              badge={product.marketingBadge} 
+              language={language as 'zh' | 'en' | 'ru'}
+            />
+            <ProductImageCarousel 
+              images={product.images} 
+              productName={product.name}
+            />
           </div>
 
           {/* 右侧：商品信息和参与区 */}

@@ -44,10 +44,10 @@ export async function GET(request: NextRequest) {
       }
     });
   } catch (error: any) {
-    console.error('Get products error:', error);
+    console.error('获取商品列表失败:', error);
     return NextResponse.json({
       success: false,
-      error: error.message || '获取商品失败'
+      error: '获取商品列表失败'
     }, { status: 500 });
   }
 }
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
     console.error('Create product error:', error);
     return NextResponse.json({
       success: false,
-      error: error.message || '创建商品失败'
+      error: '创建商品失败'
     }, { status: 500 });
   }
 }
@@ -211,7 +211,7 @@ export async function PUT(request: NextRequest) {
     console.error('Update product error:', error);
     return NextResponse.json({
       success: false,
-      error: error.message || '更新失败'
+      error: '更新商品失败'
     }, { status: 500 });
   }
 }
@@ -275,7 +275,7 @@ export async function DELETE(request: NextRequest) {
     console.error('Delete product error:', error);
     return NextResponse.json({
       success: false,
-      error: error.message || '删除失败'
+      error: '删除商品失败'
     }, { status: 500 });
   }
 }

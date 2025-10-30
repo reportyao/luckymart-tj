@@ -3,24 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
-interface Product {
-  id: string;
-  nameZh: string;
-  nameEn: string;
-  nameRu: string;
-  descriptionZh: string;
-  descriptionEn: string;
-  descriptionRu: string;
-  images: string[];
-  marketPrice: number;
-  totalShares: number;
-  pricePerShare: number;
-  category: string;
-  stock: number;
-  status: string;
-  createdAt: string;
-}
+import type { Product } from '@/types';
 
 export default function AdminProductsPage() {
   const router = useRouter();

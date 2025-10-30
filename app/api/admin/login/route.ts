@@ -1,7 +1,8 @@
 // 管理员登录
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { generateToken, verifyPassword } from '@/lib/auth';
+import { verifyPassword } from '@/lib/auth';
+import jwt from 'jsonwebtoken';
 import type { ApiResponse } from '@/types';
 
 export async function POST(request: Request) {
@@ -38,8 +39,16 @@ export async function POST(request: Request) {
       }, { status: 401 });
     }
 
-    // 生成 token
-    const token = generateToken(admin.id, `admin_${admin.id}`);
+    // 生成管理员 token（包含管理员信息）
+    const token = jwt.sign(
+      { 
+        adminId: admin.id,
+        username: admin.username, 
+        role: admin.role 
+      },
+      process.env.JWT_SECRET!,
+      { expiresIn: '24h' } // 管理员token有效期较短
+    );
 
     // 更新最后登录时间
     await prisma.admins.update({
@@ -64,7 +73,7 @@ export async function POST(request: Request) {
     console.error('管理员登录失败:', error);
     return NextResponse.json<ApiResponse>({
       success: false,
-      error: error.message || '登录失败'
+      error: '登录失败'
     }, { status: 500 });
   }
 }

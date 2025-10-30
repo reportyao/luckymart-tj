@@ -3,17 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { calculateWithdrawFee } from '@/lib/utils';
-
-interface WithdrawRequest {
-  id: number;
-  amount: number;
-  fee: number;
-  actualAmount: number;
-  paymentMethod: string;
-  paymentAccount: string;
-  status: string;
-  createdAt: string;
-}
+import type { WithdrawRequest } from '@/types';
 
 export default function WithdrawPage() {
   const router = useRouter();

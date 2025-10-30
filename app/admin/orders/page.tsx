@@ -3,17 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import type { Order } from '@/types';
 
-interface Order {
-  id: number;
-  orderNumber: string;
-  userId: number;
-  status: string;
-  recipientName?: string;
-  recipientPhone?: string;
-  shippingAddress?: string;
-  trackingNumber?: string;
-  createdAt: string;
+interface AdminOrder extends Order {
   users: {
     username?: string;
     firstName?: string;
@@ -28,7 +20,7 @@ interface Order {
 
 export default function AdminOrdersPage() {
   const router = useRouter();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('pending_shipment');
   const [processing, setProcessing] = useState<number | null>(null);

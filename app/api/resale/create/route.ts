@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
+import { sendResaleStatusNotification } from '../../../bot/index';
 import type { ApiResponse, ResaleListing } from '@/types';
 
 export async function POST(request: Request) {
@@ -125,6 +126,25 @@ export async function POST(request: Request) {
       success: true,
       data: resaleListing,
       message: '转售商品创建成功！正在寻找买家，预计1-10分钟内快速成交。'
+    }).then(async () => {
+      // 发送转售创建通知给用户
+      try {
+        const { data: user } = await supabaseAdmin
+          .from('users')
+          .select('telegram_id')
+          .eq('id', user.userId)
+          .single();
+        
+        if (user?.telegram_id) {
+          await sendResaleStatusNotification(
+            user.telegram_id.toString(),
+            resaleListing.id.toString(),
+            'created'
+          );
+        }
+      } catch (notificationError) {
+        console.error('发送转售创建通知失败:', notificationError);
+      }
     });
 
   } catch (error: any) {

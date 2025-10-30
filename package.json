@@ -17,28 +17,28 @@
     "pm2:logs": "pm2 logs luckymart-bot"
   },
   "dependencies": {
+    "@prisma/client": "^6.18.0",
+    "@supabase/supabase-js": "^2.46.1",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "jsonwebtoken": "^9.0.2",
     "next": "^14.2.33",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "@prisma/client": "^5.22.0",
-    "@supabase/supabase-js": "^2.46.1",
-    "telegraf": "^4.16.3",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2",
-    "dotenv": "^16.4.7"
+    "telegraf": "^4.16.3"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.14.15",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.7",
-    "typescript": "^5.6.2",
-    "tailwindcss": "^3.4.10",
-    "postcss": "^8.4.47",
     "autoprefixer": "^10.4.20",
-    "prisma": "^5.22.0",
+    "eslint": "^8.57.1",
+    "postcss": "^8.4.47",
+    "prisma": "^6.18.0",
+    "tailwindcss": "^3.4.10",
     "tsx": "^4.19.2",
-    "eslint": "^8.57.1"
+    "typescript": "^5.6.2"
   }
 }

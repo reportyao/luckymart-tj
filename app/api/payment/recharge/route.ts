@@ -68,19 +68,21 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // 真实支付 - 生成支付指引
+    // 真实支付 - 生成支付指引，隐藏敏感信息
     const paymentInstructions = {
       method: paymentMethod,
-      recipientPhone: paymentMethod === 'alif_mobi' 
-        ? process.env.ALIF_MOBI_PHONE 
-        : null,
-      recipientAccount: paymentMethod === 'dc_bank'
-        ? process.env.DC_BANK_ACCOUNT
+      // 不再暴露具体的收款账户信息
+      recipientInfo: paymentMethod === 'alif_mobi' 
+        ? '手机支付账户' 
+        : paymentMethod === 'dc_bank'
+        ? '银行账户'
         : null,
       recipientName: 'LuckyMart TJ',
       amount: parseFloat(pkg.price.toString()).toFixed(2),
       reference: orderNumber, // 必须填写的备注
-      expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+      // 添加安全提示
+      securityNote: '请确保转账信息与平台显示一致'
     };
 
     return NextResponse.json({
@@ -96,8 +98,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Create recharge order error:', error);
+    // 统一错误处理，不暴露敏感信息
     return NextResponse.json(
-      { error: '创建充值订单失败', message: error.message },
+      { error: '创建充值订单失败' },
       { status: 500 }
     );
   }

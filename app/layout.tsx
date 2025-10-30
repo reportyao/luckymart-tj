@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 export const metadata: Metadata = {
   title: "LuckyMart TJ - 幸运集市",
@@ -15,9 +16,11 @@ export default function RootLayout({
   return (
     <html lang="zh">
       <body className="antialiased">
-        <LanguageProvider>
-          {children}
-        </LanguageProvider>
+        <ErrorBoundary>
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

@@ -2,19 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import type { User } from '@/types';
 
-interface User {
-  firstName: string;
-  username?: string;
-  balance: number;
-  platformBalance: number;
-  vipLevel: number;
-  totalSpent: number;
-  freeDailyCount: number;
+interface ProfileUser extends Pick<User, 'firstName' | 'username' | 'balance' | 'platformBalance' | 'vipLevel' | 'totalSpent' | 'freeDailyCount'> {
 }
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

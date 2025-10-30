@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { generateOrderNumber } from '@/lib/utils';
+import { sendResaleStatusNotification, sendRichNotification } from '../../../bot/index';
 import type { ApiResponse } from '@/types';
 
 // 平台小号池 - 这些是模拟的"神秘买家"
@@ -89,6 +90,39 @@ export async function POST(request: Request) {
         platform_buyer_id: randomBuyer.id
       })
       .eq('id', listingId);
+
+    // 发送匹配开始通知
+    try {
+      const { data: listingWithUser } = await supabaseAdmin
+        .from('resale_listings')
+        .select(`
+          *,
+          orders!inner (
+            user_id
+          )
+        `)
+        .eq('id', listingId)
+        .single();
+
+      if (listingWithUser?.orders?.user_id) {
+        const { data: user } = await supabaseAdmin
+          .from('users')
+          .select('telegram_id')
+          .eq('id', listingWithUser.orders.user_id)
+          .single();
+
+        if (user?.telegram_id) {
+          await sendResaleStatusNotification(
+            user.telegram_id.toString(),
+            listingId,
+            'matching',
+            10 // 初始进度10%
+          );
+        }
+      }
+    } catch (notificationError) {
+      console.error('发送匹配开始通知失败:', notificationError);
+    }
 
     // 创建一个延迟任务来处理实际购买（这里用简单的setTimeout模拟）
     // 在实际生产环境中，应该使用任务队列如Bull或Redis
@@ -212,6 +246,34 @@ async function processPlatformPurchase(listingId: string, buyer: any) {
       .eq('id', order.id);
 
     console.log(`转售交易完成: ${product.name_zh}, 卖家获得 ${sellerNetAmount} TJS`);
+    
+    // 发送转售成功通知
+    try {
+      const { data: user } = await supabaseAdmin
+        .from('users')
+        .select('telegram_id')
+        .eq('id', order.user_id)
+        .single();
+
+      if (user?.telegram_id) {
+        await sendResaleStatusNotification(
+          user.telegram_id.toString(),
+          listingId,
+          'sold'
+        );
+
+        // 发送详细的成功消息
+        await sendRichNotification(
+          user.telegram_id.toString(),
+          '🎉 转售成功！',
+          `您的商品"${product.name_zh}"已成功售出！\n\n💰 成交金额：${listing.listing_price} TJS\n💳 扣除手续费：${platformFee} TJS\n🏆 实际收入：${sellerNetAmount} TJS\n\n资金已自动转入您的平台余额。`,
+          { text: '查看余额', url: `${process.env.MINI_APP_URL || 'http://localhost:3000'}/profile` },
+          'success'
+        );
+      }
+    } catch (notificationError) {
+      console.error('发送转售成功通知失败:', notificationError);
+    }
     
   } catch (error) {
     console.error('处理平台购买时出错:', error);

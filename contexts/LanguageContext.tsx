@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 type Language = 'zh' | 'en' | 'ru';
 
@@ -8,6 +8,7 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string) => string;
+  isLoading: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -37,6 +38,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.transactions': '交易记录',
     'nav.withdraw': '提现',
     'nav.recharge': '充值',
+    'nav.menu': '菜单',
+    'nav.language': '语言设置',
     
     // 商品详情
     'product.detail': '商品详情',
@@ -85,6 +88,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.transactions': 'Transactions',
     'nav.withdraw': 'Withdraw',
     'nav.recharge': 'Recharge',
+    'nav.menu': 'Menu',
+    'nav.language': 'Language',
     
     // Product Detail
     'product.detail': 'Product Detail',
@@ -133,6 +138,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.transactions': 'Транзакции',
     'nav.withdraw': 'Вывод средств',
     'nav.recharge': 'Пополнение',
+    'nav.menu': 'Меню',
+    'nav.language': 'Язык',
     
     // Детали товара
     'product.detail': 'Детали товара',
@@ -162,28 +169,62 @@ const translations: Record<Language, Record<string, string>> = {
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>('zh');
+  const [isLoading, setIsLoading] = useState(false);
 
+  // 从localStorage读取语言设置
   useEffect(() => {
-    // 从localStorage读取语言设置
     const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage && ['zh', 'en', 'ru'].includes(savedLanguage)) {
       setLanguageState(savedLanguage);
     }
   }, []);
 
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
-    localStorage.setItem('language', lang);
-    // 触发页面刷新以更新API数据
-    window.dispatchEvent(new Event('languageChange'));
-  };
+  // 改进的语言切换函数
+  const setLanguage = useCallback(async (lang: Language) => {
+    if (lang === language) return;
+    
+    setIsLoading(true);
+    
+    try {
+      setLanguageState(lang);
+      localStorage.setItem('language', lang);
+      
+      // 触发自定义事件通知其他组件
+      window.dispatchEvent(new CustomEvent('languageChange', { 
+        detail: { language: lang } 
+      }));
+      
+      // 可选：发送到服务器同步用户偏好
+      await syncLanguagePreference(lang);
+      
+    } catch (error) {
+      console.error('语言切换失败:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [language]);
 
-  const t = (key: string): string => {
-    return translations[language][key] || key;
+  // 翻译函数
+  const t = useCallback((key: string): string => {
+    return translations[language]?.[key] || key;
+  }, [language]);
+
+  // 同步语言偏好到服务器
+  const syncLanguagePreference = async (lang: Language) => {
+    try {
+      await fetch('/api/user/language', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ language: lang }),
+      });
+    } catch (error) {
+      // 静默失败，不影响用户体验
+      console.warn('同步语言偏好失败:', error);
+    }
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, isLoading }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -2,15 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-
-interface Transaction {
-  id: string;
-  type: string;
-  amount: number;
-  balance: number;
-  description: string;
-  createdAt: string;
-}
+import type { Transaction } from '@/types';
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);

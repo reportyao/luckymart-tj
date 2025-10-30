@@ -3,19 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import type { User } from '@/types';
 
-interface User {
-  id: string;
-  telegramId: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  language: string;
-  balance: number;
-  platformBalance: number;
-  vipLevel: number;
-  totalSpent: number;
-  createdAt: string;
+interface AdminUser extends User {
   stats: {
     participations: number;
     orders: number;
@@ -41,7 +31,7 @@ interface UserDetail {
 
 export default function AdminUsersPage() {
   const router = useRouter();
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);

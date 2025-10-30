@@ -338,17 +338,30 @@ bot.action('contact_support', async (ctx) => {
   );
 });
 
-// 发送通知函数（供其他模块调用）
-export async function sendNotification(telegramId: string, message: string, options?: any) {
-  try {
-    const numericId = parseInt(telegramId);
-    await bot.telegram.sendMessage(numericId, message, options);
-    return true;
-  } catch (error) {
-    console.error('Send notification error:', error);
-    return false;
+// 消息模板系统
+class MessageTemplates {
+  // 订单状态变更通知
+  static orderStatusChange(orderNumber: string, status: string, amount: number) {
+    const statusMessages = {
+      pending: `⏳ 订单${orderNumber}已创建，等待支付\n金额：${amount} TJS\n请在15分钟内完成支付`,
+      paid: `✅ 订单${orderNumber}支付成功！\n金额：${amount} TJS\n正在为您安排发货`,
+      shipped: `📦 订单${orderNumber}已发货\n运单号：LS${Date.now()}\n预计2-3个工作日送达`,
+      delivered: `🎉 订单${orderNumber}已送达\n感谢您的购买，欢迎再次光临！`
+    };
+    
+    return statusMessages[status as keyof typeof statusMessages] || `订单${orderNumber}状态更新：${status}`;
   }
-}
+
+  // 支付成功提醒
+  static paymentSuccess(orderNumber: string, amount: number, productName: string) {
+    return `💳 支付成功！
+
+📋 订单号：${orderNumber}
+💰 支付金额：${amount} TJS
+🎁 商品：${productName}
+
+✅ 支付已确认，正在安排发货
+📱 关注订单状态变化
 
 // 错误处理
 bot.catch((err, ctx) => {
@@ -365,9 +378,252 @@ export function startBot() {
   process.once('SIGTERM', () => bot.stop('SIGTERM'));
 }
 
+// 转售状态推送
+  static resaleStatusUpdate(resaleId: string, status: string, progress?: number) {
+    const statusMessages = {
+      created: `📦 转售申请已创建\n转售ID：${resaleId}\n正在寻找买家...`,
+      matching: `🔍 正在为您寻找买家\n转售ID：${resaleId}\n⏰ 预计匹配时间：5-10分钟`,
+      matched: `🎯 找到买家！\n转售ID：${resaleId}\n正在处理交易...`,
+      sold: `🎉 转售成功！\n转售ID：${resaleId}\n💰 资金已到账（扣除5%手续费）`,
+      cancelled: `❌ 转售已取消\n转售ID：${resaleId}`
+    };
+    
+    const message = statusMessages[status as keyof typeof statusMessages];
+    if (progress && status === 'matching') {
+      return `${message}\n📊 匹配进度：${progress}%`;
+    }
+    
+    return message;
+  }
+
+  // 系统通知消息
+  static systemNotification(title: string, content: string, type: 'info' | 'warning' | 'success' = 'info') {
+    const emojis = {
+      info: 'ℹ️',
+      warning: '⚠️',
+      success: '✅'
+    };
+    
+    return `${emojis[type]} ${title}\n\n${content}`;
+  }
+
+  // 开奖结果通知
+  static lotteryResult(roundId: string, productName: string, winnerId: string, isWinner: boolean) {
+    if (isWinner) {
+      return `🎉 恭喜您中奖！
+
+🎁 商品：${productName}
+🎫 期号：${roundId}
+👑 恭喜您获得本期奖品！
+
+💳 我们将联系您安排发货
+📦 请保持联系方式畅通`;
+    } else {
+      return `🎲 开奖结果
+
+🎁 商品：${productName}
+🎫 期号：${roundId}
+
+😔 很遗憾，本次未中奖
+💪 继续参与，下期中奖的就是您！
+
+🎯 立即参与更多商品夺宝`;
+    }
+  }
+
+  // VIP等级提升通知
+  static vipLevelUp(oldLevel: number, newLevel: number, benefits: string[]) {
+    const levelNames = ['普通用户', '青铜VIP', '白银VIP', '黄金VIP', '铂金VIP', '钻石VIP'];
+    const newLevelName = levelNames[newLevel] || `VIP${newLevel}`;
+    
+    return `🏆 VIP等级提升！
+
+从 ${levelNames[oldLevel] || `VIP${oldLevel}`} 升级到 ${newLevelName}
+
+🎁 新增特权：
+${benefits.map(benefit => `• ${benefit}`).join('\n')}
+
+感谢您的支持！`;
+  }
+}
+
+// 增强的发送通知函数（供其他模块调用）
+export async function sendNotification(telegramId: string, message: string, options?: any) {
+  try {
+    const numericId = parseInt(telegramId);
+    await bot.telegram.sendMessage(numericId, message, options);
+    return true;
+  } catch (error) {
+    console.error('Send notification error:', error);
+    return false;
+  }
+}
+
+// 发送富文本通知
+export async function sendRichNotification(
+  telegramId: string, 
+  title: string, 
+  content: string, 
+  actionButton?: { text: string; url: string },
+  type: 'info' | 'warning' | 'success' = 'info'
+) {
+  const message = MessageTemplates.systemNotification(title, content, type);
+  
+  const keyboard = actionButton ? 
+    Markup.inlineKeyboard([
+      [Markup.button.webApp(actionButton.text, actionButton.url)]
+    ]) : undefined;
+
+  return await sendNotification(telegramId, message, keyboard);
+}
+
+// 发送订单状态变更通知
+export async function sendOrderStatusNotification(
+  telegramId: string,
+  orderNumber: string,
+  status: string,
+  amount: number,
+  actionUrl?: string
+) {
+  const message = MessageTemplates.orderStatusChange(orderNumber, status, amount);
+  
+  const keyboard = actionUrl ? 
+    Markup.inlineKeyboard([
+      [Markup.button.webApp('查看订单', actionUrl)]
+    ]) : undefined;
+
+  return await sendNotification(telegramId, message, keyboard);
+}
+
+// 发送支付成功通知
+export async function sendPaymentSuccessNotification(
+  telegramId: string,
+  orderNumber: string,
+  amount: number,
+  productName: string
+) {
+  const message = MessageTemplates.paymentSuccess(orderNumber, amount, productName);
+  
+  return await sendNotification(telegramId, message,
+    Markup.inlineKeyboard([
+      [Markup.button.webApp('查看订单', `${MINI_APP_URL}/orders`)],
+      [Markup.button.webApp('继续购物', `${MINI_APP_URL}`)]
+    ])
+  );
+}
+
+// 发送转售状态通知
+export async function sendResaleStatusNotification(
+  telegramId: string,
+  resaleId: string,
+  status: string,
+  progress?: number
+) {
+  const message = MessageTemplates.resaleStatusUpdate(resaleId, status, progress);
+  
+  return await sendNotification(telegramId, message,
+    Markup.inlineKeyboard([
+      [Markup.button.webApp('查看转售', `${MINI_APP_URL}/resale/my-listings`)]
+    ])
+  );
+}
+
+// 发送开奖结果通知
+export async function sendLotteryResultNotification(
+  telegramId: string,
+  roundId: string,
+  productName: string,
+  winnerId: string,
+  isWinner: boolean
+) {
+  const message = MessageTemplates.lotteryResult(roundId, productName, winnerId, isWinner);
+  
+  return await sendNotification(telegramId, message,
+    Markup.inlineKeyboard([
+      [Markup.button.webApp(isWinner ? '查看奖品' : '继续参与', `${MINI_APP_URL}`)]
+    ])
+  );
+}
+
+// 发送VIP升级通知
+export async function sendVipUpgradeNotification(
+  telegramId: string,
+  oldLevel: number,
+  newLevel: number,
+  benefits: string[]
+) {
+  const message = MessageTemplates.vipLevelUp(oldLevel, newLevel, benefits);
+  
+  return await sendNotification(telegramId, message,
+    Markup.inlineKeyboard([
+      [Markup.button.webApp('查看权益', `${MINI_APP_URL}/vip`)],
+      [Markup.button.webApp('继续购物', `${MINI_APP_URL}`)]
+    ])
+  );
+}
+
+// 定时任务：每日免费次数重置
+async function resetDailyFreeCount() {
+  try {
+    const users = await prisma.users.findMany({
+      where: {
+        lastFreeResetDate: {
+          lt: new Date(new Date().setHours(0, 0, 0, 0))
+        }
+      }
+    });
+
+    for (const user of users) {
+      await prisma.users.update({
+        where: { id: user.id },
+        data: {
+          freeDailyCount: 0,
+          lastFreeResetDate: new Date()
+        }
+      });
+    }
+
+    console.log(`重置了 ${users.length} 个用户的每日免费次数`);
+  } catch (error) {
+    console.error('重置每日免费次数失败:', error);
+  }
+}
+
+// 定时任务：检查待开奖的彩票
+async function checkPendingLotteries() {
+  try {
+    const pendingRounds = await prisma.lotteryRounds.findMany({
+      where: {
+        status: 'active',
+        endTime: {
+          lte: new Date()
+        }
+      },
+      include: {
+        lotteryProduct: true
+      }
+    });
+
+    for (const round of pendingRounds) {
+      // 这里应该触发开奖逻辑
+      // 由于开奖算法比较复杂，暂时记录日志
+      console.log(`准备开奖：${round.id} - ${round.lotteryProduct?.name}`);
+    }
+  } catch (error) {
+    console.error('检查待开奖彩票失败:', error);
+  }
+}
+
 // 如果直接运行此文件，启动Bot
 if (require.main === module) {
   startBot();
+  
+  // 启动定时任务
+  // 每小时检查一次待开奖彩票
+  setInterval(checkPendingLotteries, 60 * 60 * 1000);
+  
+  // 每天凌晨重置免费次数
+  setInterval(resetDailyFreeCount, 24 * 60 * 60 * 1000);
 }
 
 export default bot;

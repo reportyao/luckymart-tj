@@ -1,26 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { validateTelegramWebAppData, generateJWT } from '@/lib/utils';
+import { withErrorHandling } from '@/lib/middleware';
+import { createRequestTracker, trackPerformance } from '@/lib/request-tracker';
+import { getLogger } from '@/lib/logger';
+import { getMonitor } from '@/lib/monitoring';
+import { respond } from '@/lib/responses';
+import { CommonErrors } from '@/lib/errors';
 
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandling(async (req: NextRequest) => {
+  const tracker = createRequestTracker(req);
+  const logger = getLogger();
+  const monitor = getMonitor();
+  const requestId = tracker.getRequestId();
+  const traceId = tracker.getTraceId();
+
+  logger.logRequest(req, { requestId, traceId });
+  
+  // 开始业务操作跟踪
+  const operationSpan = tracker.startSpan('telegram_auth');
+
   try {
-    const body = await request.json();
+    const body = await req.json();
     const { initData } = body;
 
     if (!initData) {
-      return NextResponse.json({ error: '缺少initData参数' }, { status: 400 });
+      logger.warn('Missing initData parameter', { requestId, traceId });
+      return NextResponse.json(
+        respond.validationError('缺少initData参数', 'initData').toJSON(),
+        { status: 400 }
+      );
     }
 
     // 验证Telegram WebApp数据
-    const telegramUser = validateTelegramWebAppData(initData);
+    let telegramUser;
+    try {
+      telegramUser = validateTelegramWebAppData(initData);
+    } catch (error) {
+      logger.warn('Invalid Telegram auth data', { 
+        error: (error as Error).message, 
+        requestId, 
+        traceId 
+      });
+      return NextResponse.json(
+        respond.validationError('Telegram认证数据无效').toJSON(),
+        { status: 400 }
+      );
+    }
 
+    // 开始数据库操作跟踪
+    const dbSpan = tracker.startSpan('user_lookup_create');
+    
     // 查找或创建用户
     let user = await prisma.users.findUnique({
       where: { telegramId: telegramUser.id }
     });
 
+    let isNewUser = false;
+
     if (!user) {
-      // 创建新用户并赠送50夺宝币
+      isNewUser = true;
+      
+      // 创建新用户
       user = await prisma.users.create({
         data: {
           telegramId: telegramUser.id,
@@ -45,15 +86,37 @@ export async function POST(request: NextRequest) {
         }
       });
 
-      // TODO: 发送欢迎通知（需要Bot Token配置后实现）
+      logger.info('New user created', {
+        telegramId: telegramUser.id,
+        username: telegramUser.username,
+        userId: user.id,
+      }, { requestId, traceId });
     }
 
-    // 生成JWT Token
-    const token = generateJWT(user.id, user.telegramId.toString());
+    dbSpan.finish(true, { userId: user.id, isNewUser });
 
-    return NextResponse.json({
-      success: true,
-      data: {
+    // 生成JWT Token
+    let token;
+    try {
+      token = generateJWT(user.id, user.telegramId.toString());
+    } catch (error) {
+      logger.error('Failed to generate JWT token', error as Error, { userId: user.id });
+      return NextResponse.json(
+        respond.customError('INTERNAL_ERROR', '生成认证令牌失败').toJSON(),
+        { status: 500 }
+      );
+    }
+
+    operationSpan.finish(true, { userId: user.id, isNewUser });
+
+    // 记录监控指标
+    monitor.recordRequest(req, 200);
+    monitor.recordResponseTime('/api/auth/telegram', Date.now() - tracker.getContext().startTime, 200);
+    monitor.increment('auth_success_total', 1, { method: 'telegram' });
+
+    // 返回成功响应
+    return NextResponse.json(
+      respond.success({
         token,
         user: {
           id: user.id,
@@ -68,14 +131,38 @@ export async function POST(request: NextRequest) {
           vipLevel: user.vipLevel,
           freeDailyCount: user.freeDailyCount,
         }
-      }
-    });
+      }, requestId, {
+        isNewUser,
+        loginMethod: 'telegram',
+      }).toJSON()
+    );
 
-  } catch (error: any) {
-    console.error('Auth error:', error);
-    return NextResponse.json({ 
-      error: '认证失败',
-      message: error.message 
-    }, { status: 500 });
+  } catch (error) {
+    operationSpan.finish(false, { error: (error as Error).message });
+    
+    logger.error('Telegram auth error', error as Error, {
+      requestId,
+      traceId,
+      endpoint: req.url,
+      method: req.method
+    }, { requestId, traceId });
+
+    monitor.recordRequest(req, 500);
+    monitor.increment('auth_error_total', 1, { method: 'telegram' });
+
+    throw error;
   }
-}
+});
+
+// 处理预检请求
+export const OPTIONS = async (req: NextRequest) => {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Request-ID, X-Trace-ID',
+      'Access-Control-Max-Age': '86400',
+    },
+  });
+};

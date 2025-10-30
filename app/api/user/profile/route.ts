@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
+import { convertUserFromPrisma } from '@/types';
+import { ApiResponse } from '@/types';
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,7 +21,10 @@ export async function GET(request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: '用户不存在' }, { status: 404 });
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: '用户不存在'
+      }, { status: 404 });
     }
 
     // 检查并重置每日免费次数
@@ -37,23 +42,9 @@ export async function GET(request: NextRequest) {
       user.freeDailyCount = 3;
     }
 
-    return NextResponse.json({
+    return NextResponse.json<ApiResponse>({
       success: true,
-      data: {
-        id: user.id,
-        telegramId: user.telegramId.toString(),
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        avatarUrl: user.avatarUrl,
-        language: user.language,
-        balance: parseFloat(user.balance.toString()),
-        platformBalance: parseFloat(user.platformBalance.toString()),
-        vipLevel: user.vipLevel,
-        totalSpent: parseFloat(user.totalSpent.toString()),
-        freeDailyCount: user.freeDailyCount,
-        createdAt: user.createdAt
-      }
+      data: convertUserFromPrisma(user)
     });
 
   } catch (error: any) {

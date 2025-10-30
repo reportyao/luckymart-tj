@@ -44,10 +44,10 @@ export async function GET(
       }
     });
   } catch (error: any) {
-    console.error('Get product error:', error);
+    console.error('获取商品详情失败:', error);
     return NextResponse.json({
       success: false,
-      error: error.message || '获取商品失败'
+      error: '获取商品详情失败'
     }, { status: 500 });
   }
 }

@@ -1,69 +1,98 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
+import { PerformanceMonitor } from '@/lib/performance';
+import { MemoryCache } from '@/lib/memory-cache';
+
+// 内存缓存实例
+const cache = new MemoryCache(100);
+const CACHE_TTL = 300000; // 5分钟
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const startTime = Date.now();
+  
   try {
     const { id } = params;
     const searchParams = request.nextUrl.searchParams;
     const language = searchParams.get('language') || 'zh';
 
-    // 获取商品信息
-    const product = await prisma.products.findUnique({
-      where: { id }
-    });
-
-    if (!product) {
-      return NextResponse.json({ error: '商品不存在' }, { status: 404 });
-    }
-
-    // 获取当前进行中的夺宝期次
-    const currentRound = await prisma.lotteryRounds.findFirst({
-      where: { 
-        productId: id,
-        status: 'active'
-      },
-      orderBy: { createdAt: 'desc' }
-    });
-
-    // 如果有进行中的期次，获取最近的参与记录
-    let recentParticipations: any[] = [];
-    if (currentRound) {
-      recentParticipations = await prisma.participations.findMany({
-        where: { roundId: currentRound.id },
-        orderBy: { createdAt: 'desc' },
-        take: 10
-      });
-
-      // 获取参与用户信息
-      const userIds = [...new Set(recentParticipations.map(p => p.userId))];
-      const users = await prisma.users.findMany({
-        where: { id: { in: userIds } },
-        select: { id: true, firstName: true, username: true }
-      });
-
-      recentParticipations = recentParticipations.map(p => {
-        const user = users.find(u => u.id === p.userId);
-        return {
-          id: p.id,
-          userId: p.userId,
-          userName: user?.firstName || user?.username || '匿名用户',
-          sharesCount: p.sharesCount,
-          numbers: p.numbers,
-          createdAt: p.createdAt
-        };
+    // 构建缓存键
+    const cacheKey = `products:detail:${id}:${language}`;
+    
+    // 尝试从缓存获取数据
+    const cached = cache.get(cacheKey);
+    if (cached) {
+      console.log('Cache hit for product detail:', id);
+      return NextResponse.json({
+        success: true,
+        data: cached,
+        cached: true,
+        responseTime: Date.now() - startTime
+      }, {
+        headers: {
+          'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+          'X-Response-Time': `${Date.now() - startTime}ms`,
+          'X-Cache-Status': 'HIT'
+        }
       });
     }
 
-    // 多语言处理
-    const langSuffix = language === 'zh' ? 'Zh' : language === 'en' ? 'En' : 'Ru';
+    return PerformanceMonitor.measure('products/detail', async () => {
+      // 使用单一查询获取所有相关数据，解决多次查询问题
+      const [product, currentRound, recentParticipations] = await Promise.all([
+        // 获取商品信息
+        prisma.products.findUnique({
+          where: { id }
+        }),
+        // 获取当前进行中的夺宝期次
+        prisma.lotteryRounds.findFirst({
+          where: { 
+            productId: id,
+            status: 'active'
+          },
+          orderBy: { createdAt: 'desc' }
+        }),
+        // 获取最近的参与记录
+        prisma.participations.findMany({
+          where: { 
+            roundId: currentRound?.id 
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+          include: {
+            user: {
+              select: { 
+                id: true, 
+                firstName: true, 
+                username: true,
+                telegramId: true 
+              }
+            }
+          }
+        }).catch(() => []) // 如果没有当前期次，返回空数组
+      ]);
 
-    return NextResponse.json({
-      success: true,
-      data: {
+      if (!product) {
+        return NextResponse.json({ error: '商品不存在' }, { status: 404 });
+      }
+
+      // 处理参与记录的用户信息（已在上面的查询中通过include获取）
+      const formattedParticipations = recentParticipations.map(p => ({
+        id: p.id,
+        userId: p.userId,
+        userName: p.user.firstName || p.user.username || '匿名用户',
+        sharesCount: p.sharesCount,
+        numbers: p.numbers,
+        createdAt: p.createdAt
+      }));
+
+      // 多语言处理
+      const langSuffix = language === 'zh' ? 'Zh' : language === 'en' ? 'En' : 'Ru';
+
+      const responseData = {
         id: product.id,
         name: product[`name${langSuffix}` as keyof typeof product],
         description: product[`description${langSuffix}` as keyof typeof product],
@@ -84,15 +113,44 @@ export async function GET(
           progress: Math.round((currentRound.soldShares / currentRound.totalShares) * 100),
           remainingShares: currentRound.totalShares - currentRound.soldShares
         } : null,
-        recentParticipations
-      }
+        recentParticipations: formattedParticipations
+      };
+
+      // 存储到缓存
+      cache.set(cacheKey, responseData, CACHE_TTL);
+
+      const responseTime = Date.now() - startTime;
+
+      return NextResponse.json({
+        success: true,
+        data: responseData,
+        cached: false,
+        responseTime,
+        timestamp: Date.now()
+      }, {
+        headers: {
+          'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
+          'X-Response-Time': `${responseTime}ms`,
+          'X-Cache-Status': 'MISS',
+          'X-Timestamp': Date.now().toString()
+        }
+      });
     });
 
   } catch (error: any) {
     console.error('Get product error:', error);
     return NextResponse.json(
-      { error: '获取商品详情失败', message: error.message },
-      { status: 500 }
+      { 
+        error: '获取商品详情失败', 
+        message: error.message,
+        responseTime: Date.now() - startTime 
+      },
+      { 
+        status: 500,
+        headers: {
+          'X-Response-Time': `${Date.now() - startTime}ms`
+        }
+      }
     );
   }
 }

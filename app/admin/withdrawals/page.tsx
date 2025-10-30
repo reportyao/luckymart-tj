@@ -2,17 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import type { WithdrawRequest } from '@/types';
 
-interface WithdrawRequest {
-  id: number;
-  userId: number;
-  amount: number;
-  fee: number;
-  actualAmount: number;
-  paymentMethod: string;
-  paymentAccount: string;
-  status: string;
-  createdAt: string;
+interface AdminWithdrawRequest extends WithdrawRequest {
   users: {
     username?: string;
     firstName?: string;
@@ -22,7 +14,7 @@ interface WithdrawRequest {
 
 export default function AdminWithdrawalsPage() {
   const router = useRouter();
-  const [withdrawals, setWithdrawals] = useState<WithdrawRequest[]>([]);
+  const [withdrawals, setWithdrawals] = useState<AdminWithdrawRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('pending');
   const [processing, setProcessing] = useState<number | null>(null);

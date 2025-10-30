@@ -1,11 +1,10 @@
 // 管理员登录
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyPassword } from '@/lib/auth';
-import jwt from 'jsonwebtoken';
+import { verifyPassword, generateAdminToken } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { username, password } = body;
@@ -30,6 +29,14 @@ export async function POST(request: Request) {
       }, { status: 401 });
     }
 
+    // 检查管理员是否激活
+    if (!admin.isActive) {
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: '账户已被禁用'
+      }, { status: 403 });
+    }
+
     // 验证密码
     const isValid = await verifyPassword(password, admin.passwordHash);
     if (!isValid) {
@@ -39,15 +46,20 @@ export async function POST(request: Request) {
       }, { status: 401 });
     }
 
-    // 生成管理员 token（包含管理员信息）
-    const token = jwt.sign(
-      { 
-        adminId: admin.id,
-        username: admin.username, 
-        role: admin.role 
-      },
-      process.env.JWT_SECRET!,
-      { expiresIn: '24h' } // 管理员token有效期较短
+    // 获取管理员权限
+    const permissions = await prisma.adminPermissions.findMany({
+      where: { adminId: admin.id }
+    });
+
+    // 构建权限数组
+    const permissionStrings = permissions.map(p => `${p.resource}:${p.action}`);
+
+    // 生成管理员 token（使用管理员专用JWT）
+    const token = generateAdminToken(
+      admin.id,
+      admin.username,
+      admin.role,
+      permissionStrings
     );
 
     // 更新最后登录时间
@@ -63,7 +75,8 @@ export async function POST(request: Request) {
         admin: {
           id: admin.id,
           username: admin.username,
-          role: admin.role
+          role: admin.role,
+          permissions: permissionStrings
         }
       },
       message: '登录成功'

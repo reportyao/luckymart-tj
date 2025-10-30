@@ -1,19 +1,28 @@
 // 管理员 - 提现审核
-import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { getAdminFromRequest } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
 
 // 获取提现申请列表
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    // 验证管理员权限（简化版，实际应该验证是否为管理员）
-    const user = getUserFromRequest(request);
-    if (!user) {
+    // 验证管理员权限
+    const admin = getAdminFromRequest(request);
+    if (!admin) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '未授权访问'
-      }, { status: 401 });
+        error: '管理员权限验证失败'
+      }, { status: 403 });
+    }
+
+    // 检查提现查看权限
+    const hasPermission = admin.permissions.includes('withdrawals:read') || admin.role === 'super_admin';
+    if (!hasPermission) {
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: '权限不足：无法查看提现列表'
+      }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -22,35 +31,41 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '20');
     const offset = (page - 1) * limit;
 
-    // 构建查询
-    let query = supabaseAdmin
-      .from('withdraw_requests')
-      .select(`
-        *,
-        users(id, username, firstName, telegramId)
-      `, { count: 'exact' })
-      .order('createdAt', { ascending: false });
-
-    // 状态筛选
+    // 构建查询条件
+    const where: any = {};
     if (status && ['pending', 'processing', 'completed', 'rejected'].includes(status)) {
-      query = query.eq('status', status);
+      where.status = status;
     }
 
-    // 分页
-    query = query.range(offset, offset + limit - 1);
-
-    const { data: withdrawals, error, count } = await query;
-
-    if (error) throw error;
+    // 获取提现列表和总数
+    const [withdrawals, total] = await Promise.all([
+      prisma.withdrawRequests.findMany({
+        where,
+        include: {
+          users: {
+            select: {
+              id: true,
+              username: true,
+              firstName: true,
+              telegramId: true
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: offset,
+        take: limit
+      }),
+      prisma.withdrawRequests.count({ where })
+    ]);
 
     return NextResponse.json<ApiResponse>({
       success: true,
       data: {
         withdrawals: withdrawals || [],
-        total: count || 0,
+        total,
         page,
         limit,
-        totalPages: Math.ceil((count || 0) / limit)
+        totalPages: Math.ceil(total / limit)
       }
     });
 
@@ -64,15 +79,24 @@ export async function GET(request: Request) {
 }
 
 // 审核提现申请
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     // 验证管理员权限
-    const user = getUserFromRequest(request);
-    if (!user) {
+    const admin = getAdminFromRequest(request);
+    if (!admin) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '未授权访问'
-      }, { status: 401 });
+        error: '管理员权限验证失败'
+      }, { status: 403 });
+    }
+
+    // 检查提现管理权限
+    const hasPermission = admin.permissions.includes('withdrawals:write') || admin.role === 'super_admin';
+    if (!hasPermission) {
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: '权限不足：无法处理提现申请'
+      }, { status: 403 });
     }
 
     const body = await request.json();
@@ -86,102 +110,91 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    // 获取提现申请
-    const { data: withdraw, error: withdrawError } = await supabaseAdmin
-      .from('withdraw_requests')
-      .select('*, users(platform_balance)')
-      .eq('id', withdrawId)
-      .single();
+    // 获取提现申请（为了验证申请存在性）
+    const withdraw = await prisma.withdrawRequests.findUnique({
+      where: { id: withdrawId }
+    });
 
-    if (withdrawError || !withdraw) {
+    if (!withdraw) {
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '提现申请不存在'
       }, { status: 404 });
     }
 
-    // 检查状态
-    if (withdraw.status !== 'pending') {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '该申请已经处理过了'
-      }, { status: 400 });
-    }
-
-    if (action === 'approve') {
-      // 通过申请
-      await supabaseAdmin
-        .from('withdraw_requests')
-        .update({
-          status: 'completed',
-          admin_note: adminNote || '审核通过',
-          processed_at: new Date().toISOString()
-        })
-        .eq('id', withdrawId);
-
-      // 发送通知
-      await supabaseAdmin
-        .from('notifications')
-        .insert({
-          user_id: withdraw.user_id,
-          type: 'withdraw_approved',
-          content: `您的提现申请已通过，${withdraw.actual_amount} TJS 将在1-3个工作日内到账`,
-          status: 'pending'
+    // 使用事务处理审核操作
+    const result = await prisma.$transaction(async (tx) => {
+      if (action === 'approve') {
+        // 通过申请 - 更新状态并扣减用户余额
+        const updatedWithdraw = await tx.withdrawRequests.update({
+          where: { id: withdrawId },
+          data: {
+            status: 'completed',
+            adminNote: adminNote || '审核通过',
+            processedAt: new Date()
+          }
         });
 
-    } else {
-      // 拒绝申请 - 退回余额
-      const totalAmount = withdraw.amount + withdraw.fee;
-      
-      await supabaseAdmin
-        .from('users')
-        .update({ 
-          platform_balance: withdraw.users.platform_balance + totalAmount 
-        })
-        .eq('id', withdraw.user_id);
-
-      await supabaseAdmin
-        .from('withdraw_requests')
-        .update({
-          status: 'rejected',
-          admin_note: adminNote || '审核未通过',
-          processed_at: new Date().toISOString()
-        })
-        .eq('id', withdrawId);
-
-      // 记录退款交易
-      await supabaseAdmin
-        .from('transactions')
-        .insert({
-          user_id: withdraw.user_id,
-          type: 'refund',
-          amount: totalAmount,
-          balance_type: 'platform_balance',
-          related_order_id: withdrawId,
-          description: `提现申请被拒绝，退回 ${totalAmount} TJS`
+        // 扣减用户余额（在实际应用中应该调用外部支付接口）
+        await tx.users.update({
+          where: { id: withdraw.userId },
+          data: {
+            balance: {
+              decrement: withdraw.amount
+            }
+          }
         });
 
-      // 发送通知
-      await supabaseAdmin
-        .from('notifications')
-        .insert({
-          user_id: withdraw.user_id,
-          type: 'withdraw_rejected',
-          content: `您的提现申请被拒绝，${totalAmount} TJS 已退回账户。原因：${adminNote || '未通过审核'}`,
-          status: 'pending'
+        return {
+          success: true,
+          message: '提现申请已通过',
+          data: updatedWithdraw
+        };
+        
+      } else {
+        // 拒绝申请 - 恢复用户余额并更新状态
+        const updatedWithdraw = await tx.withdrawRequests.update({
+          where: { id: withdrawId },
+          data: {
+            status: 'rejected',
+            adminNote: adminNote || '审核未通过',
+            processedAt: new Date()
+          }
         });
-    }
+
+        // 恢复用户余额
+        await tx.users.update({
+          where: { id: withdraw.userId },
+          data: {
+            balance: {
+              increment: withdraw.amount
+            }
+          }
+        });
+
+        return {
+          success: true,
+          message: '提现申请已拒绝',
+          data: updatedWithdraw
+        };
+      }
+    });
 
     return NextResponse.json<ApiResponse>({
       success: true,
-      message: action === 'approve' ? '提现申请已通过' : '提现申请已拒绝'
+      message: result.message,
+      data: result.data || null
     });
 
   } catch (error: any) {
     console.error('审核提现失败:', error);
+    
+    // 处理具体的错误信息
+    let errorMessage = error.message || '审核提现失败';
+    
     return NextResponse.json<ApiResponse>({
       success: false,
-      error: error.message || '审核提现失败'
+      error: errorMessage
     }, { status: 500 });
   }
 }

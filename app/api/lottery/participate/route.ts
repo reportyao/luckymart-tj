@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
+import { triggerImmediateDraw } from '@/lib/lottery';
 
 export async function POST(request: NextRequest) {
   try {
@@ -71,8 +72,29 @@ export async function POST(request: NextRequest) {
     const startNumber = round.soldShares + 10000001;
     const numbers = Array.from({ length: sharesCount }, (_, i) => startNumber + i);
 
+    // 检查是否售罄，用于触发立即开奖
+    const willBeSoldOut = round.soldShares + sharesCount >= round.totalShares;
+
     // 执行事务
     const result = await prisma.$transaction(async (tx) => {
+      // 使用原子性更新防止超售
+      const updatedRound = await tx.lotteryRounds.updateMany({
+        where: {
+          id: roundId,
+          status: 'ongoing', // 确保期次仍在进行中
+          soldShares: { lt: round.totalShares } // 确保更新前未满期
+        },
+        data: {
+          soldShares: { increment: sharesCount },
+          participants: { increment: 1 },
+          status: willBeSoldOut ? 'full' : 'ongoing'
+        }
+      });
+
+      if (updatedRound.count === 0) {
+        throw new Error('期次已结束或售罄，请选择其他期次');
+      }
+
       // 创建参与记录
       const participation = await tx.participations.create({
         data: {
@@ -84,16 +106,6 @@ export async function POST(request: NextRequest) {
           type: useType,
           cost: useType === 'paid' ? cost : 0,
           isWinner: false
-        }
-      });
-
-      // 更新夺宝期次
-      const updatedRound = await tx.lotteryRounds.update({
-        where: { id: roundId },
-        data: {
-          soldShares: { increment: sharesCount },
-          participants: { increment: 1 },
-          status: round.soldShares + sharesCount >= round.totalShares ? 'full' : 'ongoing'
         }
       });
 
@@ -126,10 +138,43 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      return { participation, updatedRound };
+      // 获取更新后的期次信息
+      const finalRound = await tx.lotteryRounds.findUnique({
+        where: { id: roundId }
+      });
+
+      return { participation, finalRound };
     });
 
-    // TODO: 如果期次已满，触发开奖（需要实现开奖逻辑）
+    // 如果期次已满，触发立即开奖
+    if (willBeSoldOut) {
+      try {
+        console.log(`[Participate] 期次 ${roundId} 已售罄，触发立即开奖`);
+        
+        // 异步执行开奖，不阻塞用户响应
+        triggerImmediateDraw(roundId).catch(error => {
+          console.error(`[Participate] 开奖失败:`, error);
+        });
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            participationId: result.participation.id,
+            numbers: result.participation.numbers,
+            sharesCount: result.participation.sharesCount,
+            roundStatus: 'full', // 立即返回full状态
+            soldShares: result.finalRound.soldShares,
+            totalShares: result.finalRound.totalShares,
+            immediateDraw: true, // 标记已触发立即开奖
+            message: '参与成功！期次已售罄，正在开奖中...'
+          },
+          message: '参与成功！期次已售罄，正在开奖中...'
+        });
+      } catch (error) {
+        console.error(`[Participate] 立即开奖失败:`, error);
+        // 即使开奖失败，也返回购买成功的结果
+      }
+    }
 
     return NextResponse.json({
       success: true,

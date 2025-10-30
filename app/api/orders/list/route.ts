@@ -31,29 +31,29 @@ export async function GET(request: NextRequest) {
       where.paymentStatus = status;
     }
 
-    // 查询订单
-    const [orders, total] = await Promise.all([
+    // 查询订单和关联信息，使用关联查询避免N+1问题
+    const [orders, total, products] = await Promise.all([
       prisma.orders.findMany({
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
+        // 暂时保留原有结构，products 将通过单独查询获取
       }),
-      prisma.orders.count({ where })
+      prisma.orders.count({ where }),
+      // 预加载所有相关商品信息
+      prisma.products.findMany({
+        where: { id: { in: orders.map(o => o.productId).filter(Boolean) } },
+        select: { id: true, nameZh: true, nameEn: true, images: true }
+      })
     ]);
 
-    // 获取关联的商品信息
-    const productIds = orders.map(o => o.productId).filter(Boolean) as string[];
-    const products = productIds.length > 0
-      ? await prisma.products.findMany({
-          where: { id: { in: productIds } },
-          select: { id: true, nameZh: true, images: true }
-        })
-      : [];
+    // 创建商品映射表
+    const productMap = new Map(products.map(p => [p.id, p]));
 
-    // 格式化订单数据
+    // 格式化订单数据，使用映射表避免循环查找
     const formattedOrders = orders.map(order => {
-      const product = products.find(p => p.id === order.productId);
+      const product = order.productId ? productMap.get(order.productId) : null;
       
       return {
         id: order.id,

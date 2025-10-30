@@ -1,19 +1,28 @@
 // 管理员 - 订单管理
-import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
-import { getUserFromRequest } from '@/lib/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { getAdminFromRequest } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
 
 // 获取订单列表
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     // 验证管理员权限
-    const user = getUserFromRequest(request);
-    if (!user) {
+    const admin = getAdminFromRequest(request);
+    if (!admin) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '未授权访问'
-      }, { status: 401 });
+        error: '管理员权限验证失败'
+      }, { status: 403 });
+    }
+
+    // 检查订单查看权限
+    const hasPermission = admin.permissions.includes('orders:read') || admin.role === 'super_admin';
+    if (!hasPermission) {
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: '权限不足：无法查看订单列表'
+      }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -22,36 +31,47 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = (page - 1) * limit;
 
-    // 构建查询
-    let query = supabaseAdmin
-      .from('orders')
-      .select(`
-        *,
-        users(username, firstName, telegramId),
-        products(nameZh, nameEn, imageUrl)
-      `, { count: 'exact' })
-      .order('createdAt', { ascending: false });
-
-    // 状态筛选
+    // 构建查询条件
+    const where: any = {};
     if (status) {
-      query = query.eq('status', status);
+      where.status = status;
     }
 
-    // 分页
-    query = query.range(offset, offset + limit - 1);
-
-    const { data: orders, error, count } = await query;
-
-    if (error) throw error;
+    // 获取订单列表和总数
+    const [orders, total] = await Promise.all([
+      prisma.orders.findMany({
+        where,
+        include: {
+          users: {
+            select: {
+              username: true,
+              firstName: true,
+              telegramId: true
+            }
+          },
+          products: {
+            select: {
+              nameZh: true,
+              nameEn: true,
+              images: true
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: offset,
+        take: limit
+      }),
+      prisma.orders.count({ where })
+    ]);
 
     return NextResponse.json<ApiResponse>({
       success: true,
       data: {
         orders: orders || [],
-        total: count || 0,
+        total,
         page,
         limit,
-        totalPages: Math.ceil((count || 0) / limit)
+        totalPages: Math.ceil(total / limit)
       }
     });
 
@@ -65,15 +85,24 @@ export async function GET(request: Request) {
 }
 
 // 更新订单状态（发货）
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     // 验证管理员权限
-    const user = getUserFromRequest(request);
-    if (!user) {
+    const admin = getAdminFromRequest(request);
+    if (!admin) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '未授权访问'
-      }, { status: 401 });
+        error: '管理员权限验证失败'
+      }, { status: 403 });
+    }
+
+    // 检查订单管理权限
+    const hasPermission = admin.permissions.includes('orders:write') || admin.role === 'super_admin';
+    if (!hasPermission) {
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: '权限不足：无法更新订单状态'
+      }, { status: 403 });
     }
 
     const body = await request.json();
@@ -88,13 +117,11 @@ export async function POST(request: Request) {
     }
 
     // 获取订单
-    const { data: order, error: orderError } = await supabaseAdmin
-      .from('orders')
-      .select('*')
-      .eq('id', orderId)
-      .single();
+    const order = await prisma.orders.findUnique({
+      where: { id: orderId }
+    });
 
-    if (orderError || !order) {
+    if (!order) {
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '订单不存在'
@@ -110,25 +137,29 @@ export async function POST(request: Request) {
     }
 
     // 更新订单状态
-    await supabaseAdmin
-      .from('orders')
-      .update({
+    await prisma.orders.update({
+      where: { id: orderId },
+      data: {
         status: 'shipped',
-        trackingNumber,
-        updatedAt: new Date().toISOString()
-      })
-      .eq('id', orderId);
+        trackingNumber
+      }
+    });
 
     // 发送通知
-    await supabaseAdmin
-      .from('notifications')
-      .insert({
-        userId: order.userId,
-        type: 'order_shipped',
-        title: '商品已发货',
-        content: `您的订单 ${order.orderNumber} 已发货，物流单号：${trackingNumber}`,
-        isRead: false
+    try {
+      await prisma.notifications.create({
+        data: {
+          userId: order.userId,
+          type: 'order_shipped',
+          title: '商品已发货',
+          content: `您的订单 ${order.orderNumber} 已发货，物流单号：${trackingNumber}`,
+          isRead: false
+        }
       });
+    } catch (notificationError) {
+      console.warn('发送通知失败:', notificationError);
+      // 通知失败不影响主要业务逻辑
+    }
 
     return NextResponse.json<ApiResponse>({
       success: true,

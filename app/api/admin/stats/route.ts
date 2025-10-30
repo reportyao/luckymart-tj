@@ -1,104 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
+import { getAdminFromRequest } from '@/lib/auth';
+import QueryOptimizer from '@/lib/query-optimizer';
 
 // GET /api/admin/stats - 获取后台统计数据
 export async function GET(request: NextRequest) {
   try {
-    // 验证管理员token
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // 验证管理员权限
+    const admin = getAdminFromRequest(request);
+    if (!admin) {
+      return NextResponse.json({
+        success: false,
+        error: '管理员权限验证失败'
+      }, { status: 403 });
     }
 
-    const token = authHeader.substring(7);
-    const decoded = verifyToken(token);
-    
-    if (!decoded || decoded.role !== 'admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    // 检查统计查看权限
+    const hasPermission = admin.permissions.includes('stats:read') || admin.role === 'super_admin';
+    if (!hasPermission) {
+      return NextResponse.json({
+        success: false,
+        error: '权限不足：无法查看统计数据'
+      }, { status: 403 });
     }
 
-    // 统计总用户数
-    const totalUsers = await prisma.users.count();
-
-    // 统计总订单数
-    const totalOrders = await prisma.orders.count();
-
-    // 统计待审核提现数
-    const pendingWithdrawals = await prisma.withdrawRequests.count({
-      where: {
-        status: 'pending'
-      }
-    });
-
-    // 统计进行中的抽奖轮次
-    const activeRounds = await prisma.lotteryRounds.count({
-      where: {
-        status: 'active'
-      }
-    });
-
-    // 统计今日新增用户
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayUsers = await prisma.users.count({
-      where: {
-        createdAt: {
-          gte: today
-        }
-      }
-    });
-
-    // 统计今日订单数
-    const todayOrders = await prisma.orders.count({
-      where: {
-        createdAt: {
-          gte: today
-        }
-      }
-    });
-
-    // 统计今日收入（订单总金额）
-    const todayRevenue = await prisma.orders.aggregate({
-      where: {
-        createdAt: {
-          gte: today
-        },
-        status: 'completed'
-      },
-      _sum: {
-        totalAmount: true
-      }
-    });
-
-    // 统计总收入
-    const totalRevenue = await prisma.orders.aggregate({
-      where: {
-        status: 'completed'
-      },
-      _sum: {
-        totalAmount: true
-      }
-    });
+    // 使用优化的统计查询
+    const stats = await QueryOptimizer.getDashboardStats();
 
     return NextResponse.json({
       success: true,
       data: {
-        totalUsers,
-        totalOrders,
-        pendingWithdrawals,
-        activeRounds,
-        todayUsers,
-        todayOrders,
-        todayRevenue: todayRevenue._sum.totalAmount?.toString() || '0',
-        totalRevenue: totalRevenue._sum.totalAmount?.toString() || '0'
+        totalUsers: Number(stats.total_users || 0),
+        totalOrders: Number(stats.total_orders || 0),
+        pendingWithdrawals: Number(stats.pending_withdrawals || 0),
+        activeRounds: Number(stats.active_rounds || 0),
+        todayUsers: Number(stats.today_users || 0),
+        todayOrders: Number(stats.today_orders || 0),
+        todayRevenue: stats.today_revenue?.toString() || '0',
+        totalRevenue: stats.total_revenue?.toString() || '0',
+        activeResaleListings: Number(stats.active_resale_listings || 0),
+        todayParticipations: Number(stats.today_participations || 0)
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Stats API error:', error);
     return NextResponse.json({
       success: false,
-      error: 'Failed to fetch stats'
+      error: error.message || 'Failed to fetch stats'
     }, { status: 500 });
   }
 }

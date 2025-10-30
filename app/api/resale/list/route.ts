@@ -1,9 +1,9 @@
 // 获取转售商品列表
-import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 import type { ApiResponse } from '@/types';
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -11,37 +11,58 @@ export async function GET(request: Request) {
     const category = searchParams.get('category');
     const offset = (page - 1) * limit;
 
-    // 构建查询 - 只显示活跃的转售商品
-    let query = supabaseAdmin
-      .from('resale_listings')
-      .select(`
-        *,
-        products(id, name_zh, name_en, image_url, market_price),
-        sellers:users!resale_listings_seller_user_id_fkey(username, first_name)
-      `, { count: 'exact' })
-      .eq('status', 'active')
-      .order('listed_at', { ascending: false });
+    // 构建查询条件
+    const where: any = { status: 'active' };
 
-    // 分类筛选
-    if (category) {
-      query = query.eq('products.category', category);
+    // 分类筛选需要先关联产品
+    let categoryFilter = '';
+    if (category && category !== 'all') {
+      categoryFilter = ` AND p.category = '${category}'`;
     }
 
-    // 分页
-    query = query.range(offset, offset + limit - 1);
+    // 使用原生SQL查询以获得最佳性能，关联转售列表、商品和卖家信息
+    const query = `
+      SELECT 
+        rl.*,
+        p.id as product_id,
+        p.name_zh as product_name_zh,
+        p.name_en as product_name_en,
+        p.images as product_images,
+        p.market_price as product_market_price,
+        p.category as product_category,
+        u.username as seller_username,
+        u.first_name as seller_first_name
+      FROM resale_listings rl
+      LEFT JOIN products p ON rl.product_id = p.id
+      LEFT JOIN users u ON rl.seller_user_id = u.id
+      WHERE rl.status = 'active'${categoryFilter}
+      ORDER BY rl.listed_at DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `;
 
-    const { data: listings, error, count } = await query;
+    const countQuery = `
+      SELECT COUNT(*) as total
+      FROM resale_listings rl
+      LEFT JOIN products p ON rl.product_id = p.id
+      WHERE rl.status = 'active'${categoryFilter}
+    `;
 
-    if (error) throw error;
+    // 执行查询
+    const [listings, countResult] = await Promise.all([
+      prisma.$queryRawUnsafe(query),
+      prisma.$queryRawUnsafe(countQuery)
+    ]);
+
+    const total = Number(countResult[0]?.total || 0);
 
     return NextResponse.json<ApiResponse>({
       success: true,
       data: {
         listings: listings || [],
-        total: count || 0,
+        total,
         page,
         limit,
-        totalPages: Math.ceil((count || 0) / limit)
+        totalPages: Math.ceil(total / limit)
       }
     });
 

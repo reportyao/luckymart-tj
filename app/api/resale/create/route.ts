@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { sendResaleStatusNotification } from '../../../bot/index';
+import { validationEngine } from '@/lib/validation';
 import type { ApiResponse, ResaleListing } from '@/types';
 
 export async function POST(request: Request) {
@@ -19,11 +20,20 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { order_id, listing_price } = body;
 
-    // 验证参数
-    if (!order_id || !listing_price || listing_price <= 0) {
+    // 基础参数验证
+    if (!order_id || listing_price === undefined || listing_price === null) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '无效的参数：order_id 和 listing_price 是必需的'
+        error: '订单ID和转售价格是必填项'
+      }, { status: 400 });
+    }
+
+    // 验证listing_price是否为有效数字
+    const price = Number(listing_price);
+    if (isNaN(price)) {
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: '转售价格必须是有效数字'
       }, { status: 400 });
     }
 
@@ -87,19 +97,37 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    // 价格范围验证（不能高于市场价的80%）
-    const maxPrice = Number(product.market_price) * 0.8;
-    if (listing_price > maxPrice) {
+    // 获取系统验证配置
+    try {
+      const { data: settings } = await supabaseAdmin
+        .from('system_validation_settings')
+        .select('*');
+      
+      if (settings) {
+        const config = settings.reduce((acc, setting) => {
+          acc[setting.setting_key] = setting.parsed_value;
+          return acc;
+        }, {} as any);
+        
+        validationEngine.setConfig(config);
+      }
+    } catch (configError) {
+      console.warn('无法获取系统验证配置，使用默认设置:', configError);
+    }
+
+    // 严格的价格验证
+    const priceValidation = validationEngine.validateResalePrice(price, Number(product.market_price));
+    if (!priceValidation.isValid) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: `转售价格不能高于市场价的80%（${maxPrice.toFixed(2)} TJS）`
+        error: priceValidation.error
       }, { status: 400 });
     }
 
-    // 计算平台手续费（2%）和净收入
-    const platformFeeRate = 0.02;
-    const platformFee = Math.round(listing_price * platformFeeRate * 100) / 100;
-    const netAmount = listing_price - platformFee;
+    // 计算平台手续费和净收入
+    const platformFeeRate = 0.02; // 可以从系统设置中获取
+    const platformFee = Math.round(price * platformFeeRate * 100) / 100;
+    const netAmount = price - platformFee;
 
     // 创建转售记录
     const { data: resaleListing, error: insertError } = await supabaseAdmin
@@ -108,7 +136,7 @@ export async function POST(request: Request) {
         order_id,
         seller_user_id: user.userId,
         product_id: order.product_id,
-        listing_price,
+        listing_price: price,
         platform_fee: platformFee,
         net_amount: netAmount,
         status: 'active'

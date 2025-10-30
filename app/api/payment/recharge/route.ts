@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { generateOrderNumber } from '@/lib/utils';
+import { validationEngine } from '@/lib/validation';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,6 +18,29 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { packageId, paymentMethod } = body;
 
+    // 基础参数验证
+    if (!packageId || !paymentMethod) {
+      return NextResponse.json({ error: '参数不完整：packageId和paymentMethod都是必需的' }, { status: 400 });
+    }
+
+    // 获取系统验证配置
+    try {
+      const { data: settings } = await supabaseAdmin
+        .from('system_validation_settings')
+        .select('*');
+      
+      if (settings) {
+        const config = settings.reduce((acc, setting) => {
+          acc[setting.setting_key] = setting.parsed_value;
+          return acc;
+        }, {} as any);
+        
+        validationEngine.setConfig(config);
+      }
+    } catch (configError) {
+      console.warn('无法获取系统验证配置，使用默认设置:', configError);
+    }
+
     // 验证礼包
     const pkg = await prisma.rechargePackages.findUnique({
       where: { id: packageId }
@@ -23,6 +48,13 @@ export async function POST(request: NextRequest) {
 
     if (!pkg || !pkg.isActive) {
       return NextResponse.json({ error: '礼包不存在或已下架' }, { status: 404 });
+    }
+
+    // 验证充值金额（通过套餐价格验证）
+    const packagePrice = Number(pkg.price);
+    const rechargeValidation = validationEngine.validateRechargeAmount(packagePrice);
+    if (!rechargeValidation.isValid) {
+      return NextResponse.json({ error: rechargeValidation.error }, { status: 400 });
     }
 
     // 验证支付方式

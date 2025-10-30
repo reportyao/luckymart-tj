@@ -1,30 +1,34 @@
 #!/usr/bin/env node
 
 /**
- * Telegram Bot启动脚本
- * 用于PM2管理Bot进程
+ * 增强的Telegram Bot启动脚本
+ * 集成完整容错机制的Bot启动器
  */
 
-const { startBot } = require('./index');
-
-console.log('Telegram Bot服务已启动...');
-console.log(`Bot连接到Mini App: ${process.env.MINI_APP_URL || 'http://localhost:3000'}`);
-
-// 启动Bot
-try {
-  startBot();
-} catch (error) {
-  console.error('Bot启动失败:', error);
-  process.exit(1);
+async function main() {
+  try {
+    // 导入增强启动器
+    const { default: BotLauncher } = require('./enhanced-launcher');
+    
+    console.log('🚀 启动增强版Telegram Bot...');
+    console.log('📊 环境:', process.env.NODE_ENV || 'development');
+    console.log('💻 平台:', process.platform, process.arch);
+    console.log('🔧 Node版本:', process.version);
+    console.log('');
+    
+    // 创建启动器实例并启动
+    const launcher = new BotLauncher();
+    await launcher.start();
+    
+  } catch (error) {
+    console.error('❌ Bot启动失败:', error);
+    console.error('堆栈信息:', error.stack);
+    process.exit(1);
+  }
 }
 
-// 优雅关闭处理
-process.once('SIGINT', () => {
-  console.log('收到SIGINT信号，正在关闭Bot...');
-  process.exit(0);
-});
-
-process.once('SIGTERM', () => {
-  console.log('收到SIGTERM信号，正在关闭Bot...');
-  process.exit(0);
+// 执行主函数
+main().catch((error) => {
+  console.error('💥 致命错误:', error);
+  process.exit(1);
 });

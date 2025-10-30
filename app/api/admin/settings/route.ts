@@ -96,7 +96,19 @@ export async function GET(request: NextRequest) {
     // 验证管理员权限
     const admin = getAdminFromRequest(request);
     if (!admin) {
-      return NextResponse.json({ error: '权限不足' }, { status: 403 });
+      return NextResponse.json({ 
+        success: false,
+        error: '管理员权限验证失败' 
+      }, { status: 403 });
+    }
+
+    // 检查设置查看权限
+    const hasPermission = admin.permissions.includes('settings:read') || admin.role === 'super_admin';
+    if (!hasPermission) {
+      return NextResponse.json({ 
+        success: false,
+        error: '权限不足：无法查看系统设置' 
+      }, { status: 403 });
     }
 
     const settings = await getAllSettings();
@@ -120,7 +132,19 @@ export async function POST(request: NextRequest) {
     // 验证管理员权限
     const admin = getAdminFromRequest(request);
     if (!admin) {
-      return NextResponse.json({ error: '权限不足' }, { status: 403 });
+      return NextResponse.json({ 
+        success: false,
+        error: '管理员权限验证失败' 
+      }, { status: 403 });
+    }
+
+    // 检查设置管理权限（超级管理员或设置权限）
+    const hasPermission = admin.permissions.includes('settings:write') || admin.role === 'super_admin';
+    if (!hasPermission) {
+      return NextResponse.json({ 
+        success: false,
+        error: '权限不足：无法修改系统设置' 
+      }, { status: 403 });
     }
 
     const data = await request.json();
@@ -135,8 +159,14 @@ export async function POST(request: NextRequest) {
     if (typeof data.minRechargeAmount === 'number') {
       updatePromises.push(updateSetting('min_recharge_amount', data.minRechargeAmount, 'number'));
     }
+    if (typeof data.maxRechargeAmount === 'number') {
+      updatePromises.push(updateSetting('max_recharge_amount', data.maxRechargeAmount, 'number'));
+    }
     if (typeof data.minWithdrawAmount === 'number') {
       updatePromises.push(updateSetting('min_withdraw_amount', data.minWithdrawAmount, 'number'));
+    }
+    if (typeof data.maxWithdrawAmount === 'number') {
+      updatePromises.push(updateSetting('max_withdraw_amount', data.maxWithdrawAmount, 'number'));
     }
     if (typeof data.withdrawFeeRate === 'number') {
       updatePromises.push(updateSetting('withdraw_fee_rate', data.withdrawFeeRate, 'number'));
@@ -144,6 +174,39 @@ export async function POST(request: NextRequest) {
     if (typeof data.freeDrawsPerDay === 'number') {
       updatePromises.push(updateSetting('free_draws_per_day', data.freeDrawsPerDay, 'number'));
     }
+    
+    // 转售价格限制设置
+    if (typeof data.resale_min_discount_rate === 'number') {
+      updatePromises.push(updateSetting('resale_min_discount_rate', data.resale_min_discount_rate, 'number'));
+    }
+    if (typeof data.resale_max_discount_rate === 'number') {
+      updatePromises.push(updateSetting('resale_max_discount_rate', data.resale_max_discount_rate, 'number'));
+    }
+    if (typeof data.resale_min_price === 'number') {
+      updatePromises.push(updateSetting('resale_min_price', data.resale_min_price, 'number'));
+    }
+    if (typeof data.resale_max_price === 'number') {
+      updatePromises.push(updateSetting('resale_max_price', data.resale_max_price, 'number'));
+    }
+    if (typeof data.resale_platform_fee_rate === 'number') {
+      updatePromises.push(updateSetting('resale_platform_fee_rate', data.resale_platform_fee_rate, 'number'));
+    }
+    
+    // 输入验证设置
+    if (typeof data.max_account_length === 'number') {
+      updatePromises.push(updateSetting('max_account_length', data.max_account_length, 'number'));
+    }
+    if (typeof data.max_description_length === 'number') {
+      updatePromises.push(updateSetting('max_description_length', data.max_description_length, 'number'));
+    }
+    if (typeof data.max_phone_length === 'number') {
+      updatePromises.push(updateSetting('max_phone_length', data.max_phone_length, 'number'));
+    }
+    if (typeof data.max_address_length === 'number') {
+      updatePromises.push(updateSetting('max_address_length', data.max_address_length, 'number'));
+    }
+    
+    // 功能开关
     if (typeof data.enableNotifications === 'boolean') {
       updatePromises.push(updateSetting('enable_notifications', data.enableNotifications, 'boolean'));
     }
@@ -152,6 +215,15 @@ export async function POST(request: NextRequest) {
     }
     if (typeof data.maintenanceMode === 'boolean') {
       updatePromises.push(updateSetting('maintenance_mode', data.maintenanceMode, 'boolean'));
+    }
+    if (typeof data.enable_price_limits === 'boolean') {
+      updatePromises.push(updateSetting('enable_price_limits', data.enable_price_limits, 'boolean'));
+    }
+    if (typeof data.enable_input_sanitization === 'boolean') {
+      updatePromises.push(updateSetting('enable_input_sanitization', data.enable_input_sanitization, 'boolean'));
+    }
+    if (typeof data.enable_amount_validation === 'boolean') {
+      updatePromises.push(updateSetting('enable_amount_validation', data.enable_amount_validation, 'boolean'));
     }
     
     // 银行充值信息（需要加密存储）

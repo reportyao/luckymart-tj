@@ -107,9 +107,21 @@ export default function CreateResalePage() {
   };
 
   const handleCustomPriceChange = (price: string) => {
-    setCustomPrice(price);
-    if (selectedOrder && price) {
-      fetchPriceRecommendations(selectedOrder.id, price);
+    // 基础验证：只允许数字和小数点
+    const numericPrice = price.replace(/[^0-9.]/g, '');
+    
+    // 限制小数位数
+    const parts = numericPrice.split('.');
+    if (parts.length > 2) {
+      return; // 不允许多个小数点
+    }
+    if (parts[1] && parts[1].length > 2) {
+      return; // 最多2位小数
+    }
+    
+    setCustomPrice(numericPrice);
+    if (selectedOrder && numericPrice && !isNaN(Number(numericPrice))) {
+      fetchPriceRecommendations(selectedOrder.id, numericPrice);
     }
   };
 

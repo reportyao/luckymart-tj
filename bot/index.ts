@@ -1,22 +1,61 @@
 import { Telegraf, Markup } from 'telegraf';
 import { prisma } from '../lib/prisma';
+import { logger, performanceLogger, errorTracker } from './utils/logger';
+import { faultToleranceManager } from './utils/fault-tolerance-manager';
+import { MessageQueue } from './utils/message-queue';
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const MINI_APP_URL = process.env.MINI_APP_URL || 'http://localhost:3000';
 
 if (!BOT_TOKEN) {
-  console.error('错误：TELEGRAM_BOT_TOKEN未配置');
+  logger.error('错误：TELEGRAM_BOT_TOKEN未配置');
   process.exit(1);
 }
 
+// 全局消息队列实例
+let messageQueue: MessageQueue;
+
 const bot = new Telegraf(BOT_TOKEN);
 
+// 初始化消息队列
+function initializeMessageQueue() {
+  messageQueue = faultToleranceManager.getMessageQueue();
+  
+  // 设置消息队列事件监听
+  messageQueue.on('message:success', (data) => {
+    logger.debug('Message processed successfully', {
+      messageId: data.messageId,
+      duration: data.duration
+    });
+  });
+
+  messageQueue.on('message:error', (data) => {
+    logger.warn('Message processing error', {
+      messageId: data.messageId,
+      error: data.error.message,
+      duration: data.duration
+    });
+  });
+}
+
 // /start命令 - 用户冷启动 + 用户注册
-bot.command('start', async (ctx) => {
+bot.command('start', performanceLogger('start_command'), async (ctx) => {
   const telegramUser = ctx.from;
   const telegramId = telegramUser.id.toString();
   
   try {
+    logger.info('Processing start command', { 
+      telegramId, 
+      username: telegramUser.username 
+    });
+
+    // 使用消息队列处理用户注册
+    await messageQueue.addMessage('telegram', {
+      type: 'user_registration',
+      telegramId,
+      userData: telegramUser
+    }, { priority: 'high' });
+
     // 使用upsert确保用户不存在时创建，存在时更新
     const user = await prisma.users.upsert({
       where: { telegramId },
@@ -56,31 +95,60 @@ bot.command('start', async (ctx) => {
 点击下方按钮进入幸运集市，开始您的幸运之旅吧！
 `;
 
-    await ctx.reply(welcomeMessage, 
-      Markup.inlineKeyboard([
+    // 使用消息队列发送欢迎消息
+    await messageQueue.addMessage('telegram', {
+      type: 'send_message',
+      chatId: ctx.chat.id,
+      text: welcomeMessage,
+      keyboard: Markup.inlineKeyboard([
         [Markup.button.webApp('进入幸运集市', MINI_APP_URL)],
         [Markup.button.callback('新手教程', 'help_tutorial')],
         [Markup.button.callback('语言设置', 'language_settings')]
       ])
-    );
+    }, { priority: 'high' });
+
+    // 记录业务事件
+    logger.business('user_registered', telegramId, {
+      userId: user.id,
+      username: user.username,
+      initialBalance: user.balance
+    });
     
   } catch (error) {
-    console.error('Start command error:', error);
-    await ctx.reply('注册失败，请稍后重试或联系客服');
+    logger.error('Start command error', { 
+      telegramId, 
+      error: (error as Error).message 
+    }, error as Error);
+    
+    errorTracker.recordError('start_command_error', error as Error);
+    
+    try {
+      await ctx.reply('注册失败，请稍后重试或联系客服');
+    } catch (replyError) {
+      logger.error('Failed to send error reply', { 
+        error: (replyError as Error).message 
+      }, replyError as Error);
+    }
   }
 });
 
 // /balance命令 - 查询余额
-bot.command('balance', async (ctx) => {
+bot.command('balance', performanceLogger('balance_command'), async (ctx) => {
   try {
     const telegramId = ctx.from.id.toString();
+    
+    logger.debug('Processing balance command', { telegramId });
     
     const user = await prisma.users.findUnique({
       where: { telegramId }
     });
 
     if (!user) {
-      await ctx.reply('您还未注册，请点击 /start 开始使用');
+      await messageQueue.addMessage('telegram', {
+        type: 'send_message',
+        chatId: ctx.chat.id,
+        text: '您还未注册，请点击 /start 开始使用'
+      });
       return;
     }
 
@@ -95,29 +163,61 @@ VIP等级：${user.vipLevel}
 点击下方按钮充值或查看更多
 `;
 
-    await ctx.reply(message,
-      Markup.inlineKeyboard([
+    // 使用消息队列发送余额信息
+    await messageQueue.addMessage('telegram', {
+      type: 'send_message',
+      chatId: ctx.chat.id,
+      text: message,
+      keyboard: Markup.inlineKeyboard([
         [Markup.button.webApp('前往充值', `${MINI_APP_URL}/recharge`)],
         [Markup.button.webApp('查看订单', `${MINI_APP_URL}/orders`)]
       ])
-    );
+    });
+
+    logger.business('balance_checked', telegramId, {
+      balance: user.balance,
+      platformBalance: user.platformBalance
+    });
+    
   } catch (error) {
-    console.error('Balance command error:', error);
-    await ctx.reply('查询失败，请稍后重试');
+    logger.error('Balance command error', { 
+      telegramId: ctx.from.id.toString(),
+      error: (error as Error).message 
+    }, error as Error);
+    
+    errorTracker.recordError('balance_command_error', error as Error);
+    
+    try {
+      await messageQueue.addMessage('telegram', {
+        type: 'send_message',
+        chatId: ctx.chat.id,
+        text: '查询失败，请稍后重试'
+      });
+    } catch (replyError) {
+      logger.error('Failed to send balance error reply', { 
+        error: (replyError as Error).message 
+      }, replyError as Error);
+    }
   }
 });
 
 // /orders命令 - 查询订单
-bot.command('orders', async (ctx) => {
+bot.command('orders', performanceLogger('orders_command'), async (ctx) => {
   try {
     const telegramId = ctx.from.id.toString();
+    
+    logger.debug('Processing orders command', { telegramId });
     
     const user = await prisma.users.findUnique({
       where: { telegramId }
     });
 
     if (!user) {
-      await ctx.reply('您还未注册，请点击 /start 开始使用');
+      await messageQueue.addMessage('telegram', {
+        type: 'send_message',
+        chatId: ctx.chat.id,
+        text: '您还未注册，请点击 /start 开始使用'
+      });
       return;
     }
 
@@ -129,11 +229,14 @@ bot.command('orders', async (ctx) => {
     });
 
     if (orders.length === 0) {
-      await ctx.reply('您还没有订单',
-        Markup.inlineKeyboard([
+      await messageQueue.addMessage('telegram', {
+        type: 'send_message',
+        chatId: ctx.chat.id,
+        text: '您还没有订单',
+        keyboard: Markup.inlineKeyboard([
           [Markup.button.webApp('去夺宝', MINI_APP_URL)]
         ])
-      );
+      });
       return;
     }
 
@@ -144,14 +247,40 @@ bot.command('orders', async (ctx) => {
       message += `   金额：${order.totalAmount} TJS\n\n`;
     });
 
-    await ctx.reply(message,
-      Markup.inlineKeyboard([
+    // 使用消息队列发送订单信息
+    await messageQueue.addMessage('telegram', {
+      type: 'send_message',
+      chatId: ctx.chat.id,
+      text: message,
+      keyboard: Markup.inlineKeyboard([
         [Markup.button.webApp('查看全部订单', `${MINI_APP_URL}/orders`)]
       ])
-    );
+    });
+
+    logger.business('orders_viewed', telegramId, {
+      orderCount: orders.length,
+      totalAmount: orders.reduce((sum, order) => sum + order.totalAmount, 0)
+    });
+    
   } catch (error) {
-    console.error('Orders command error:', error);
-    await ctx.reply('查询失败，请稍后重试');
+    logger.error('Orders command error', { 
+      telegramId: ctx.from.id.toString(),
+      error: (error as Error).message 
+    }, error as Error);
+    
+    errorTracker.recordError('orders_command_error', error as Error);
+    
+    try {
+      await messageQueue.addMessage('telegram', {
+        type: 'send_message',
+        chatId: ctx.chat.id,
+        text: '查询失败，请稍后重试'
+      });
+    } catch (replyError) {
+      logger.error('Failed to send orders error reply', { 
+        error: (replyError as Error).message 
+      }, replyError as Error);
+    }
   }
 });
 
@@ -365,17 +494,81 @@ class MessageTemplates {
 
 // 错误处理
 bot.catch((err, ctx) => {
-  console.error(`Bot error for ${ctx.updateType}:`, err);
+  const updateType = ctx.updateType || 'unknown';
+  const userId = ctx.from?.id.toString() || 'unknown';
+  
+  logger.error(`Bot error for ${updateType}`, {
+    userId,
+    updateType,
+    error: err.message,
+    stack: err.stack
+  }, err);
+  
+  errorTracker.recordError(`bot_${updateType}_error`, err);
+  
+  // 尝试发送错误回复给用户
+  if (ctx.chat && ctx.from) {
+    messageQueue?.addMessage('telegram', {
+      type: 'send_message',
+      chatId: ctx.chat.id,
+      text: '抱歉，处理您请求时出现了问题，请稍后重试或联系客服'
+    }).catch(replyError => {
+      logger.error('Failed to send error reply to user', { 
+        userId, 
+        error: (replyError as Error).message 
+      }, replyError as Error);
+    });
+  }
 });
 
 // 启动Bot
 export function startBot() {
-  bot.launch();
-  console.log('Telegram Bot已启动');
+  try {
+    // 初始化消息队列
+    initializeMessageQueue();
+    
+    // 启动Bot
+    bot.launch();
+    
+    logger.info('Telegram Bot启动成功', {
+      tokenConfigured: !!BOT_TOKEN,
+      miniAppUrl: MINI_APP_URL,
+      version: process.env.npm_package_version || '1.0.0',
+      environment: process.env.NODE_ENV || 'development'
+    });
 
-  // 优雅关闭
-  process.once('SIGINT', () => bot.stop('SIGINT'));
-  process.once('SIGTERM', () => bot.stop('SIGTERM'));
+    // 设置优雅关闭
+    process.once('SIGINT', () => {
+      logger.info('收到SIGINT信号，正在关闭Bot...');
+      bot.stop('SIGINT');
+    });
+    
+    process.once('SIGTERM', () => {
+      logger.info('收到SIGTERM信号，正在关闭Bot...');
+      bot.stop('SIGTERM');
+    });
+
+    // 记录Bot启动事件
+    logger.business('bot_started', undefined, {
+      timestamp: new Date().toISOString(),
+      platform: process.platform,
+      nodeVersion: process.version
+    });
+    
+  } catch (error) {
+    logger.error('Bot启动失败', { error: (error as Error).message }, error as Error);
+    throw error;
+  }
+}
+
+// 获取Bot实例（供其他模块使用）
+export function getBot() {
+  return bot;
+}
+
+// 获取消息队列（供其他模块使用）
+export function getMessageQueue(): MessageQueue | undefined {
+  return messageQueue;
 }
 
 // 转售状态推送

@@ -1,16 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getAdminFromRequest } from '@/lib/auth';
 
 // GET - 获取开奖轮次列表
 export async function GET(request: NextRequest) {
   try {
     // 验证管理员权限
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
+    const admin = getAdminFromRequest(request);
+    if (!admin) {
       return NextResponse.json({
         success: false,
-        error: '未授权'
-      }, { status: 401 });
+        error: '管理员权限验证失败'
+      }, { status: 403 });
+    }
+
+    // 检查抽奖查看权限
+    const hasPermission = admin.permissions.includes('lottery:read') || admin.role === 'super_admin';
+    if (!hasPermission) {
+      return NextResponse.json({
+        success: false,
+        error: '权限不足：无法查看抽奖轮次'
+      }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);

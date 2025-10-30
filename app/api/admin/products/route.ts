@@ -1,11 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
+import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { requireAdminPermission } from '@/lib/admin-auth-middleware';
 
 // GET - 获取所有商品
 export async function GET(request: NextRequest) {
   try {
-    // 验证管理员权限（可选，因为商品列表可能也需要公开访问）
+    // 验证管理员权限
+    const admin = getAdminFromRequest(request);
+    if (!admin) {
+      return NextResponse.json({
+        success: false,
+        error: '管理员权限验证失败'
+      }, { status: 403 });
+    }
+
+    // 检查商品查看权限
+    const hasPermission = admin.permissions.includes('products:read') || admin.role === 'super_admin';
+    if (!hasPermission) {
+      return NextResponse.json({
+        success: false,
+        error: '权限不足：无法查看商品列表'
+      }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
 
@@ -56,21 +74,21 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // 验证管理员权限
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
+    const admin = getAdminFromRequest(request);
+    if (!admin) {
       return NextResponse.json({
         success: false,
-        error: '未授权：缺少token'
-      }, { status: 401 });
+        error: '管理员权限验证失败'
+      }, { status: 403 });
     }
 
-    // 验证token有效性
-    const decoded = verifyToken(token);
-    if (!decoded) {
+    // 检查商品管理权限
+    const hasPermission = admin.permissions.includes('products:write') || admin.role === 'super_admin';
+    if (!hasPermission) {
       return NextResponse.json({
         success: false,
-        error: '未授权：token无效或已过期'
-      }, { status: 401 });
+        error: '权限不足：无法创建商品'
+      }, { status: 403 });
     }
 
     const body = await request.json();
@@ -154,21 +172,21 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     // 验证管理员权限
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
+    const admin = getAdminFromRequest(request);
+    if (!admin) {
       return NextResponse.json({
         success: false,
-        error: '未授权：缺少token'
-      }, { status: 401 });
+        error: '管理员权限验证失败'
+      }, { status: 403 });
     }
 
-    // 验证token有效性
-    const decoded = verifyToken(token);
-    if (!decoded) {
+    // 检查商品管理权限
+    const hasPermission = admin.permissions.includes('products:write') || admin.role === 'super_admin';
+    if (!hasPermission) {
       return NextResponse.json({
         success: false,
-        error: '未授权：token无效或已过期'
-      }, { status: 401 });
+        error: '权限不足：无法更新商品'
+      }, { status: 403 });
     }
 
     const body = await request.json();
@@ -220,21 +238,21 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     // 验证管理员权限
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
+    const admin = getAdminFromRequest(request);
+    if (!admin) {
       return NextResponse.json({
         success: false,
-        error: '未授权：缺少token'
-      }, { status: 401 });
+        error: '管理员权限验证失败'
+      }, { status: 403 });
     }
 
-    // 验证token有效性
-    const decoded = verifyToken(token);
-    if (!decoded) {
+    // 检查商品删除权限
+    const hasPermission = admin.permissions.includes('products:delete') || admin.role === 'super_admin';
+    if (!hasPermission) {
       return NextResponse.json({
         success: false,
-        error: '未授权：token无效或已过期'
-      }, { status: 401 });
+        error: '权限不足：无法删除商品'
+      }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);

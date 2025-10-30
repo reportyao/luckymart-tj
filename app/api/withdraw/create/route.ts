@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { calculateWithdrawFee } from '@/lib/utils';
+import { validationEngine } from '@/lib/validation';
 import type { ApiResponse, WithdrawRequest } from '@/types';
 
 export async function POST(request: Request) {
@@ -19,11 +20,11 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { amount, paymentMethod, paymentAccount } = body;
 
-    // 验证参数
-    if (!amount || amount <= 0) {
+    // 基础参数验证
+    if (amount === undefined || amount === null) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '提现金额必须大于0'
+        error: '提现金额是必填项'
       }, { status: 400 });
     }
 
@@ -34,19 +35,28 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    if (!paymentAccount) {
+    if (!paymentAccount || typeof paymentAccount !== 'string') {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '请提供收款账号'
+        error: '请提供有效的收款账号'
       }, { status: 400 });
     }
 
-    // 最低提现金额
-    const MIN_WITHDRAW = 50;
-    if (amount < MIN_WITHDRAW) {
+    // 验证提现金额
+    const amountNum = Number(amount);
+    if (isNaN(amountNum)) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: `最低提现金额为 ${MIN_WITHDRAW} TJS`
+        error: '提现金额必须是有效数字'
+      }, { status: 400 });
+    }
+
+    // 验证账户信息
+    const accountValidation = validationEngine.validateAccountInfo(paymentAccount, '收款账号');
+    if (!accountValidation.isValid) {
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: accountValidation.error
       }, { status: 400 });
     }
 
@@ -61,11 +71,38 @@ export async function POST(request: Request) {
       throw new Error('用户不存在');
     }
 
-    // 计算手续费
-    const fee = calculateWithdrawFee(amount);
-    const totalRequired = amount + fee;
+    // 获取系统验证配置
+    try {
+      const { data: settings } = await supabaseAdmin
+        .from('system_validation_settings')
+        .select('*');
+      
+      if (settings) {
+        const config = settings.reduce((acc, setting) => {
+          acc[setting.setting_key] = setting.parsed_value;
+          return acc;
+        }, {} as any);
+        
+        validationEngine.setConfig(config);
+      }
+    } catch (configError) {
+      console.warn('无法获取系统验证配置，使用默认设置:', configError);
+    }
 
-    // 检查余额
+    // 严格的提现金额验证
+    const withdrawValidation = validationEngine.validateWithdrawAmount(amountNum, userData.platform_balance);
+    if (!withdrawValidation.isValid) {
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: withdrawValidation.error
+      }, { status: 400 });
+    }
+
+    // 计算手续费
+    const fee = calculateWithdrawFee(amountNum);
+    const totalRequired = amountNum + fee;
+
+    // 重新检查余额（包含手续费）
     if (userData.platform_balance < totalRequired) {
       return NextResponse.json<ApiResponse>({
         success: false,
@@ -78,9 +115,9 @@ export async function POST(request: Request) {
       .from('withdraw_requests')
       .insert({
         user_id: user.userId,
-        amount,
+        amount: amountNum,
         fee,
-        actual_amount: amount - fee,
+        actual_amount: amountNum - fee,
         withdraw_method: paymentMethod,
         account_info: { account: paymentAccount },
         status: 'pending'
@@ -109,7 +146,7 @@ export async function POST(request: Request) {
         amount: -totalRequired,
         balance_type: 'platform_balance',
         related_order_id: withdrawRequest.id,
-        description: `提现申请 ${amount} TJS（手续费 ${fee} TJS）`
+        description: `提现申请 ${amountNum} TJS（手续费 ${fee} TJS）`
       });
 
     return NextResponse.json<ApiResponse<WithdrawRequest>>({

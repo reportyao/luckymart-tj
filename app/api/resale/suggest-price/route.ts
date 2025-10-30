@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
+import { validationEngine } from '@/lib/validation';
 import type { ApiResponse } from '@/types';
 
 export async function POST(request: Request) {
@@ -78,23 +79,52 @@ export async function POST(request: Request) {
       }
     ];
 
+    // 获取系统验证配置
+    try {
+      const { data: settings } = await supabaseAdmin
+        .from('system_validation_settings')
+        .select('*');
+      
+      if (settings) {
+        const config = settings.reduce((acc, setting) => {
+          acc[setting.setting_key] = setting.parsed_value;
+          return acc;
+        }, {} as any);
+        
+        validationEngine.setConfig(config);
+      }
+    } catch (configError) {
+      console.warn('无法获取系统验证配置，使用默认设置:', configError);
+    }
+
     // 如果用户输入了自定义价格，计算预期手续费和到账金额
     let customAnalysis = null;
     if (customPrice && customPrice > 0) {
+      const customPriceNum = Number(customPrice);
+      
+      // 验证自定义价格
+      const priceValidation = validationEngine.validateResalePrice(customPriceNum, marketPrice);
+      const isReasonable = priceValidation.isValid;
+      
       const platformFeeRate = 0.02; // 2% 平台手续费
-      const platformFee = Math.round(customPrice * platformFeeRate);
-      const netAmount = customPrice - platformFee;
+      const platformFee = Math.round(customPriceNum * platformFeeRate);
+      const netAmount = customPriceNum - platformFee;
+
+      // 获取建议价格范围
+      const suggestedMin = Math.round(marketPrice * (1 - 0.3)); // 70% 市场价
+      const suggestedMax = Math.round(marketPrice * (1 - 0.1)); // 90% 市场价
 
       customAnalysis = {
-        price: customPrice,
+        price: customPriceNum,
         platformFee,
         netAmount,
         platformFeeRate,
-        isReasonable: customPrice <= marketPrice * 0.9,
+        isReasonable,
         suggestedRange: {
-          min: Math.round(marketPrice * 0.75),
-          max: Math.round(marketPrice * 0.9)
-        }
+          min: suggestedMin,
+          max: suggestedMax
+        },
+        validationError: priceValidation.isValid ? null : priceValidation.error
       };
     }
 

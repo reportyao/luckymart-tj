@@ -7,12 +7,28 @@ import Link from 'next/link';
 interface SystemSettings {
   siteName: string;
   minRechargeAmount: number;
+  maxRechargeAmount: number;
   minWithdrawAmount: number;
+  maxWithdrawAmount: number;
   withdrawFeeRate: number;
   freeDrawsPerDay: number;
   enableNotifications: boolean;
   enableTelegramBot: boolean;
   maintenanceMode: boolean;
+  // 转售价格限制设置
+  resale_min_discount_rate: number;
+  resale_max_discount_rate: number;
+  resale_min_price: number;
+  resale_max_price: number;
+  resale_platform_fee_rate: number;
+  // 输入验证设置
+  max_account_length: number;
+  max_description_length: number;
+  max_phone_length: number;
+  max_address_length: number;
+  enable_price_limits: boolean;
+  enable_input_sanitization: boolean;
+  enable_amount_validation: boolean;
   // 银行充值信息
   rechargeBankName: string;
   rechargeBankAccountNumber: string;
@@ -26,12 +42,28 @@ export default function AdminSettings() {
   const [settings, setSettings] = useState<SystemSettings>({
     siteName: 'LuckyMart TJ',
     minRechargeAmount: 10,
+    maxRechargeAmount: 10000,
     minWithdrawAmount: 50,
+    maxWithdrawAmount: 5000,
     withdrawFeeRate: 0.05,
     freeDrawsPerDay: 3,
     enableNotifications: true,
     enableTelegramBot: true,
     maintenanceMode: false,
+    // 转售价格限制设置默认值
+    resale_min_discount_rate: 0.10,
+    resale_max_discount_rate: 0.90,
+    resale_min_price: 1.00,
+    resale_max_price: 99999.00,
+    resale_platform_fee_rate: 0.02,
+    // 输入验证设置默认值
+    max_account_length: 100,
+    max_description_length: 500,
+    max_phone_length: 20,
+    max_address_length: 200,
+    enable_price_limits: true,
+    enable_input_sanitization: true,
+    enable_amount_validation: true,
     // 银行充值信息默认值
     rechargeBankName: '',
     rechargeBankAccountNumber: '',
@@ -165,12 +197,36 @@ export default function AdminSettings() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+                    最大充值金额（索莫尼）
+                  </label>
+                  <input
+                    type="number"
+                    value={settings.maxRechargeAmount}
+                    onChange={(e) => setSettings({ ...settings, maxRechargeAmount: parseFloat(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     最小提现金额（索莫尼）
                   </label>
                   <input
                     type="number"
                     value={settings.minWithdrawAmount}
                     onChange={(e) => setSettings({ ...settings, minWithdrawAmount: parseFloat(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    最大提现金额（索莫尼）
+                  </label>
+                  <input
+                    type="number"
+                    value={settings.maxWithdrawAmount}
+                    onChange={(e) => setSettings({ ...settings, maxWithdrawAmount: parseFloat(e.target.value) })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -202,6 +258,204 @@ export default function AdminSettings() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 转售价格限制设置 */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">转售价格限制设置</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              设置转售价格的上下限，防止0价格或天价恶意转售
+            </p>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    最低折扣率（0-1）
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="1"
+                    value={settings.resale_min_discount_rate}
+                    onChange={(e) => setSettings({ ...settings, resale_min_discount_rate: parseFloat(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    例如：0.10 = 最低10%折扣（转售价不高于市场价的90%）
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    最高折扣率（0-1）
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="1"
+                    value={settings.resale_max_discount_rate}
+                    onChange={(e) => setSettings({ ...settings, resale_max_discount_rate: parseFloat(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    例如：0.90 = 最高90%折扣（转售价不低于市场价的10%）
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    最低价格（TJS）
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={settings.resale_min_price}
+                    onChange={(e) => setSettings({ ...settings, resale_min_price: parseFloat(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    最高价格（TJS）
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={settings.resale_max_price}
+                    onChange={(e) => setSettings({ ...settings, resale_max_price: parseFloat(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    转售平台手续费率（0-1）
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="1"
+                    value={settings.resale_platform_fee_rate}
+                    onChange={(e) => setSettings({ ...settings, resale_platform_fee_rate: parseFloat(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    例如：0.02 = 2%平台手续费
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 输入验证设置 */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">输入验证设置</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              控制各种输入字段的长度限制和验证规则
+            </p>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    账户信息最大长度
+                  </label>
+                  <input
+                    type="number"
+                    value={settings.max_account_length}
+                    onChange={(e) => setSettings({ ...settings, max_account_length: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    描述信息最大长度
+                  </label>
+                  <input
+                    type="number"
+                    value={settings.max_description_length}
+                    onChange={(e) => setSettings({ ...settings, max_description_length: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    电话号码最大长度
+                  </label>
+                  <input
+                    type="number"
+                    value={settings.max_phone_length}
+                    onChange={(e) => setSettings({ ...settings, max_phone_length: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    地址信息最大长度
+                  </label>
+                  <input
+                    type="number"
+                    value={settings.max_address_length}
+                    onChange={(e) => setSettings({ ...settings, max_address_length: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-md font-medium text-gray-900 mb-3">验证开关</h3>
+              <div className="space-y-3">
+                <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                  <div>
+                    <div className="font-medium text-gray-900">启用价格限制</div>
+                    <div className="text-sm text-gray-500">对转售价格进行上下限限制</div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={settings.enable_price_limits}
+                    onChange={(e) => setSettings({ ...settings, enable_price_limits: e.target.checked })}
+                    className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                  <div>
+                    <div className="font-medium text-gray-900">启用输入数据清理</div>
+                    <div className="text-sm text-gray-500">自动清理和验证用户输入数据</div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={settings.enable_input_sanitization}
+                    onChange={(e) => setSettings({ ...settings, enable_input_sanitization: e.target.checked })}
+                    className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100">
+                  <div>
+                    <div className="font-medium text-gray-900">启用金额验证</div>
+                    <div className="text-sm text-gray-500">对所有金额输入进行严格验证</div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={settings.enable_amount_validation}
+                    onChange={(e) => setSettings({ ...settings, enable_amount_validation: e.target.checked })}
+                    className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                  />
+                </label>
               </div>
             </div>
           </div>

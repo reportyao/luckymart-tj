@@ -18,11 +18,16 @@ const nextConfig = {
     optimizeCss: true,
     optimizePackageImports: ['@supabase/supabase-js'],
   },
-  // 压缩配置
-  compress: true,
-  
-  // 性能预算
+  // 强制模块解析
   webpack: (config, { dev, isServer }) => {
+    // 确保别名解析正确
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      path: false,
+      crypto: false,
+    };
+    
     if (!dev && !isServer) {
       config.optimization = {
         ...config.optimization,

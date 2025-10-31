@@ -8,6 +8,138 @@ import { getLogger } from '@/lib/logger';
 import { withRateLimit, rechargeRateLimit } from '@/lib/rate-limit-middleware';
 import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
 
+// 首充奖励配置
+const FIRST_RECHARGE_REWARDS = {
+  10: { reward: 2, rate: 0.20 },    // 充值10 Som → 奖励2 Som (20%)
+  20: { reward: 5, rate: 0.25 },    // 充值20 Som → 奖励5 Som (25%)
+  50: { reward: 15, rate: 0.30 },   // 充值50 Som → 奖励15 Som (30%)
+  100: { reward: 35, rate: 0.35 },  // 充值100 Som → 奖励35 Som (35%)
+} as const;
+
+type RechargeAmount = keyof typeof FIRST_RECHARGE_REWARDS;
+
+/**
+ * 检查并自动发放首充奖励
+ */
+async function checkAndGrantFirstRechargeReward(
+  userId: string,
+  rechargeAmount: number,
+  orderId: string
+): Promise<{ success: boolean; rewardAmount?: number; message?: string }> {
+  const logger = getLogger();
+  
+  try {
+    // 检查用户是否已有完成的首充记录
+    const existingRecharge = await prisma.orders.findFirst({
+      where: {
+        userId,
+        type: 'recharge',
+        paymentStatus: 'paid',
+        fulfillmentStatus: 'completed'
+      }
+    });
+
+    if (existingRecharge) {
+      return {
+        success: false,
+        message: '用户已有充值记录，不符合首充条件'
+      };
+    }
+
+    // 检查奖励配置是否存在
+    const rewardConfig = FIRST_RECHARGE_REWARDS[rechargeAmount as RechargeAmount];
+    if (!rewardConfig) {
+      return {
+        success: false,
+        message: `未找到充值金额${rechargeAmount}的奖励配置`
+      };
+    }
+
+    // 检查是否已领取过该档位奖励
+    const existingReward = await prisma.firstRechargeRewards.findUnique({
+      where: {
+        userId_rechargeAmount: {
+          userId,
+          rechargeAmount
+        }
+      }
+    });
+
+    if (existingReward) {
+      return {
+        success: false,
+        message: '该档位奖励已领取'
+      };
+    }
+
+    // 发放奖励
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. 创建奖励记录
+      const rewardRecord = await tx.firstRechargeRewards.create({
+        data: {
+          userId,
+          rechargeAmount,
+          rewardType: 'bonus_coins',
+          rewardAmount: rewardConfig.reward,
+          status: 'claimed',
+          claimedAt: new Date()
+        }
+      });
+
+      // 2. 增加用户余额
+      await tx.users.update({
+        where: { id: userId },
+        data: {
+          balance: { increment: rewardConfig.reward }
+        }
+      });
+
+      // 3. 记录钱包交易
+      await tx.walletTransactions.create({
+        data: {
+          userId,
+          type: 'first_recharge_reward',
+          amount: rewardConfig.reward,
+          currency: 'TJS',
+          description: `首充奖励：充值${rechargeAmount} Som获得${rewardConfig.reward} Som奖励`,
+          status: 'completed',
+          metadata: {
+            orderId,
+            rechargeAmount,
+            rewardRate: rewardConfig.rate,
+            rewardId: rewardRecord.id
+          }
+        }
+      });
+
+      return {
+        success: true,
+        rewardAmount: rewardConfig.reward
+      };
+    });
+
+    logger.info('首充奖励发放成功', {
+      userId,
+      rechargeAmount,
+      rewardAmount: result.rewardAmount
+    });
+
+    return result;
+  } catch (error: any) {
+    logger.error('发放首充奖励失败', error, {
+      userId,
+      rechargeAmount,
+      orderId,
+      error: error.message
+    });
+
+    return {
+      success: false,
+      message: '发放首充奖励失败'
+    };
+  }
+}
+
 // 应用速率限制的充值处理函数
 const handleRechargeRequest = async (request: NextRequest) => {
   const logger = getLogger();
@@ -359,7 +491,7 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
     });
   });
 
-  // 触发邀请奖励（独立事务，不影响充值逻辑）
+  // 触发邀请奖励和首充奖励（独立事务，不影响充值逻辑）
   try {
     logger.info('开始检查用户首次充值触发奖励', {
       requestId,
@@ -423,6 +555,49 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
           orderId
         });
       }
+    }
+
+    // 检查并自动发放首充奖励
+    try {
+      const rechargeAmount = parseFloat(order.totalAmount.toString());
+      const firstRechargeResult = await checkAndGrantFirstRechargeReward(
+        order.userId,
+        rechargeAmount,
+        orderId
+      );
+
+      if (firstRechargeResult.success) {
+        logger.info('首充奖励自动发放成功', {
+          requestId,
+          userId: order.userId,
+          orderId,
+          rechargeAmount,
+          rewardAmount: firstRechargeResult.rewardAmount
+        });
+
+        // 更新通知内容，包含首充奖励信息
+        await prisma.notifications.create({
+          data: {
+            userId: order.userId,
+            type: 'recharge_success_with_bonus',
+            content: `充值成功！您获得了${totalCoins}个夺宝币${firstRechargeResult.rewardAmount ? `，首充奖励${firstRechargeResult.rewardAmount} Som已到账` : ''}`,
+            status: 'pending'
+          }
+        });
+      } else {
+        logger.info('首充奖励检查结果', {
+          requestId,
+          userId: order.userId,
+          orderId,
+          message: firstRechargeResult.message || '不符合首充奖励条件'
+        });
+      }
+    } catch (firstRechargeError) {
+      logger.error('检查首充奖励时发生错误', firstRechargeError, {
+        requestId,
+        userId: order.userId,
+        orderId
+      });
     }
   } catch (rewardCheckError) {
     logger.error('检查用户首次充值状态时发生错误', rewardCheckError, {

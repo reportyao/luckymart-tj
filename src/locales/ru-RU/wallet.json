@@ -1,17 +1,1 @@
-{
-  "title": "钱包",
-  "balance": "余额",
-  "coins": "幸运币",
-  "recharge": "充值",
-  "withdraw": "提现",
-  "transactions": "交易记录",
-  "recharge_amount": "充值金额",
-  "withdraw_amount": "提现金额",
-  "confirm_recharge": "确认充值",
-  "confirm_withdraw": "确认提现",
-  "transaction_history": "交易历史",
-  "transaction_type": "交易类型",
-  "transaction_amount": "交易金额",
-  "transaction_time": "交易时间",
-  "transaction_status": "交易状态"
-}
+{"title": "Кошелек", "balance": "Баланс", "luckyCoins": "Удачные монеты", "transferToLuckyCoins": "Перевести в удачные монеты", "recharge": "Пополнение", "withdraw": "Вывод", "transfer": "Перевод", "transactions": "Транзакции", "quickActions": "Быстрые действия", "transactionHistory": "История транзакций", "noTransactions": "Транзакций не найдено", "recharge_amount": "Сумма пополнения", "withdraw_amount": "Сумма вывода", "confirm_recharge": "Подтвердить пополнение", "confirm_withdraw": "Подтвердить вывод", "transaction_history": "История транзакций", "transaction_type": "Тип транзакции", "transaction_amount": "Сумма транзакции", "transaction_time": "Время транзакции", "transaction_status": "Статус транзакции", "forPurchasing": "Для покупки товаров", "status": {"completed": "Завершено", "pending": "В ожидании", "failed": "Неудачно"}, "transaction": {"all": "Все", "recharge": "Пополнение", "transferIn": "Входящий перевод", "transferOut": "Исходящий перевод", "transfer": "Перевод", "purchase": "Покупка", "reward": "Награда", "pending": "В ожидании", "completed": "Завершено", "failed": "Неудачно"}, "transfer": {"title": "Перевод в удачные монеты", "subtitle": "Конвертация баланса в удачные монеты", "description": "Конвертируйте свой баланс в удачные монеты в соотношении 1:1 для покупки товаров", "amount": "Сумма перевода", "enterAmount": "Введите сумму перевода", "preview": "Предварительный просмотр перевода", "convertFrom": "Списать с баланса", "convertTo": "Получить удачные монеты", "rate": "Обменный курс", "max": "Максимум", "confirm": "Подтвердить перевод", "processing": "Обработка...", "success": "Перевод успешен!", "successMessage": "Ваш баланс успешно конвертирован в удачные монеты", "backToWallet": "Назад к кошельку", "note": "Примечания к переводу", "note1": "Перевод необратим, пожалуйста, действуйте осторожно", "note2": "Минимальная сумма перевода 1 TJS", "note3": "Коэффициент перевода 1:1, т.е. 1TJS=1LC", "invalidAmount": "Пожалуйста, введите действительную сумму перевода", "minAmount": "Минимальная сумма перевода 1 TJS", "failed": "Перевод не удался, пожалуйста, попробуйте еще раз"}, "common": {"retry": "Повторить", "cancel": "Отмена"}, "nav": {"wallet": "Кошелек"}}

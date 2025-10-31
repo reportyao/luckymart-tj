@@ -22,6 +22,8 @@ model users {
   balanceVersion          Int                 @default(1) @map("balance_version")
   platformBalance         Decimal             @default(0) @map("platform_balance") @db.Decimal(10, 2)
   platformBalanceVersion  Int                 @default(1) @map("platform_balance_version")
+  luckyCoins              Decimal             @default(0) @map("lucky_coins") @db.Decimal(10, 2)
+  luckyCoinsVersion       Int                 @default(1) @map("lucky_coins_version")
   vipLevel                Int                 @default(0) @map("vip_level")
   totalSpent              Decimal             @default(0) @map("total_spent") @db.Decimal(10, 2)
   freeDailyCount          Int                 @default(0) @map("free_daily_count")
@@ -30,6 +32,8 @@ model users {
   updatedAt               DateTime            @default(now()) @updatedAt @map("updated_at")
 
   @@index([preferredLanguage])
+  @@index([luckyCoins])
+  @@index([luckyCoinsVersion])
 }
 
 model userAddresses {
@@ -265,4 +269,77 @@ model processingLogs {
   @@index([status])
   @@index([requestId])
   @@map("processing_logs")
+}
+
+model walletTransactions {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  type        String    @db.VarChar(50) // 'recharge', 'transfer_in', 'transfer_out', 'purchase', 'reward'
+  amount      Decimal?  @db.Decimal(10, 2) // 余额变动金额
+  luckyCoins  Decimal?  @db.Decimal(10, 2) // 幸运币变动数量
+  currency    String    @default("TJS") @db.VarChar(10)
+  description String?
+  status      String    @default("completed") @db.VarChar(20) // 'pending', 'completed', 'failed'
+  metadata    Json?
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+  @@map("wallet_transactions")
+}
+
+// 新手激励系统相关模型
+
+model newUserTasks {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  taskType     String   @map("task_type") @db.VarChar(50) // 'register', 'recharge', 'lottery'
+  status       String   @default("pending") @db.VarChar(20) // 'pending', 'completed', 'claimed'
+  rewardAmount Decimal  @default(0) @map("reward_amount") @db.Decimal(10, 2)
+  completedAt  DateTime? @map("completed_at")
+  claimedAt    DateTime? @map("claimed_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([userId, taskType])
+  @@index([status])
+  @@unique([userId, taskType])
+  @@map("new_user_tasks")
+}
+
+model dailyCheckIns {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  checkInDate     DateTime @map("check_in_date") @db.Date
+  consecutiveDays Int      @default(1) @map("consecutive_days")
+  rewardAmount    Decimal  @default(0) @map("reward_amount") @db.Decimal(10, 2)
+  status          String   @default("claimed") @db.VarChar(20) // 'unclaimed', 'claimed'
+  claimedAt       DateTime @default(now()) @map("claimed_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([userId, checkInDate])
+  @@unique([userId, checkInDate])
+  @@map("daily_check_ins")
+}
+
+model firstRechargeRewards {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  rechargeAmount Decimal @default(0) @map("recharge_amount") @db.Decimal(10, 2)
+  rewardType   String   @map("reward_type") @db.VarChar(50) // 'bonus_coins', 'discount_coupon', 'vip_upgrade'
+  rewardAmount Decimal  @default(0) @map("reward_amount") @db.Decimal(10, 2)
+  status       String   @default("pending") @db.VarChar(20) // 'pending', 'claimed', 'expired'
+  claimedAt    DateTime? @map("claimed_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([userId, status])
+  @@unique([userId, rechargeAmount])
+  @@map("first_recharge_rewards")
 }

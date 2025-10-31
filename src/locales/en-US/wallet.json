@@ -1,17 +1,1 @@
-{
-  "title": "钱包",
-  "balance": "余额",
-  "coins": "幸运币",
-  "recharge": "充值",
-  "withdraw": "提现",
-  "transactions": "交易记录",
-  "recharge_amount": "充值金额",
-  "withdraw_amount": "提现金额",
-  "confirm_recharge": "确认充值",
-  "confirm_withdraw": "确认提现",
-  "transaction_history": "交易历史",
-  "transaction_type": "交易类型",
-  "transaction_amount": "交易金额",
-  "transaction_time": "交易时间",
-  "transaction_status": "交易状态"
-}
+{"title": "Wallet", "balance": "Balance", "luckyCoins": "Lucky Coins", "transferToLuckyCoins": "Transfer to Lucky Coins", "recharge": "Recharge", "withdraw": "Withdraw", "transfer": "Transfer", "transactions": "Transactions", "quickActions": "Quick Actions", "transactionHistory": "Transaction History", "noTransactions": "No transactions found", "recharge_amount": "Recharge Amount", "withdraw_amount": "Withdraw Amount", "confirm_recharge": "Confirm Recharge", "confirm_withdraw": "Confirm Withdraw", "transaction_history": "Transaction History", "transaction_type": "Transaction Type", "transaction_amount": "Transaction Amount", "transaction_time": "Transaction Time", "transaction_status": "Transaction Status", "forPurchasing": "For purchasing products", "status": {"completed": "Completed", "pending": "Pending", "failed": "Failed"}, "transaction": {"all": "All", "recharge": "Recharge", "transferIn": "Transfer In", "transferOut": "Transfer Out", "transfer": "Transfer", "purchase": "Purchase", "reward": "Reward", "pending": "Pending", "completed": "Completed", "failed": "Failed"}, "transfer": {"title": "Transfer to Lucky Coins", "subtitle": "Convert Balance to Lucky Coins", "description": "Convert your balance to lucky coins at 1:1 ratio for product purchases", "amount": "Transfer Amount", "enterAmount": "Enter transfer amount", "preview": "Transfer Preview", "convertFrom": "Deduct from Balance", "convertTo": "Receive Lucky Coins", "rate": "Exchange Rate", "max": "Max", "confirm": "Confirm Transfer", "processing": "Processing...", "success": "Transfer Successful!", "successMessage": "Your balance has been successfully converted to lucky coins", "backToWallet": "Back to Wallet", "note": "Transfer Notes", "note1": "Transfer is irreversible, please proceed with caution", "note2": "Minimum transfer amount is 1 TJS", "note3": "Transfer ratio is 1:1, i.e., 1TJS=1LC", "invalidAmount": "Please enter a valid transfer amount", "minAmount": "Minimum transfer amount is 1 TJS", "failed": "Transfer failed, please try again"}, "common": {"retry": "Retry", "cancel": "Cancel"}, "nav": {"wallet": "Wallet"}}

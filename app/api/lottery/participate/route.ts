@@ -16,7 +16,7 @@ const handleLotteryParticipation = async (request: NextRequest) => {
   let decoded: { userId: string } | null = null;
 
   try {
-    logger.info('夺宝参与请求开始', {
+    logger.info('抽奖参与请求开始', {
       requestId,
       ip: request.headers.get('x-forwarded-for') || 'unknown',
       userAgent: request.headers.get('user-agent') || 'unknown'
@@ -57,10 +57,10 @@ const handleLotteryParticipation = async (request: NextRequest) => {
         select: {
           id: true,
           status: true,
-          maxShares: true,
+          totalShares: true,
           soldShares: true,
           pricePerShare: true,
-          endTime: true
+          drawTime: true
         }
       });
 
@@ -74,20 +74,20 @@ const handleLotteryParticipation = async (request: NextRequest) => {
       }
 
       // 验证期次是否已结束
-      if (round.endTime && new Date() > new Date(round.endTime)) {
+      if (round.drawTime && new Date() > new Date(round.drawTime)) {
         throw new Error('夺宝期次已结束');
       }
 
       // 验证剩余份额
-      const availableShares = round.maxShares - round.soldShares;
+      const availableShares = round.totalShares - round.soldShares;
       if (quantity > availableShares) {
         throw new Error(`剩余份额不足，仅剩${availableShares}份`);
       }
 
-      // 验证用户余额
+      // 验证用户幸运币余额
       const user = await tx.users.findUnique({
         where: { id: decoded!.userId },
-        select: { balance: true }
+        select: { luckyCoins: true }
       });
 
       if (!user) {
@@ -95,29 +95,40 @@ const handleLotteryParticipation = async (request: NextRequest) => {
       }
 
       const totalCost = round.pricePerShare * quantity;
-      if (user.balance < totalCost) {
-        throw new Error('余额不足');
+      if (Number(user.luckyCoins) < Number(totalCost)) {
+        throw new Error('幸运币余额不足');
+      }
+
+      // 获取商品信息用于参与记录
+      const roundWithProduct = await tx.lotteryRounds.findUnique({
+        where: { id: roundId },
+        select: { productId: true }
+      });
+
+      if (!roundWithProduct) {
+        throw new Error('无法获取商品信息');
       }
 
       // 创建夺宝参与记录
-      const participation = await tx.lotteryParticipations.create({
+      const participation = await tx.participations.create({
         data: {
           roundId: round.id,
           userId: decoded!.userId,
-          shares: quantity,
-          costPerShare: round.pricePerShare,
-          totalCost: totalCost,
-          status: 'active'
+          productId: roundWithProduct.productId,
+          numbers: Array.from({ length: quantity }, () => Math.floor(Math.random() * 100) + 1),
+          sharesCount: quantity,
+          type: 'lottery',
+          cost: totalCost
         }
       });
 
-      // 更新用户余额
+      // 更新用户幸运币余额
       await tx.users.update({
         where: { id: decoded!.userId },
         data: {
-          balance: { decrement: totalCost },
+          luckyCoins: { decrement: totalCost },
           totalSpent: { increment: totalCost },
-          balanceVersion: { increment: 1 }
+          luckyCoinsVersion: { increment: 1 }
         }
       });
 
@@ -135,9 +146,9 @@ const handleLotteryParticipation = async (request: NextRequest) => {
           userId: decoded!.userId,
           type: 'lottery_participation',
           amount: -totalCost,
-          balanceType: 'lottery_coin',
+          balanceType: 'lucky_coins',
           relatedOrderId: participation.id,
-          description: `夺宝参与 - 第${round.id}期 ${quantity}份`
+          description: `抽奖参与 - 第${round.id}期 ${quantity}份`
         }
       });
 
@@ -146,7 +157,7 @@ const handleLotteryParticipation = async (request: NextRequest) => {
         data: {
           userId: decoded!.userId,
           type: 'lottery_participation',
-          content: `夺宝参与成功！您购买了第${round.id}期 ${quantity}份夺宝币`,
+          content: `抽奖参与成功！您购买了第${round.id}期 ${quantity}份幸运币`,
           status: 'pending'
         }
       });
@@ -184,7 +195,7 @@ const handleLotteryParticipation = async (request: NextRequest) => {
       responseTime: Date.now() - startTime
     });
 
-    logger.info('夺宝参与成功', {
+    logger.info('抽奖参与成功', {
       requestId,
       userId: decoded!.userId,
       roundId,
@@ -196,11 +207,11 @@ const handleLotteryParticipation = async (request: NextRequest) => {
     return NextResponse.json({
       success: true,
       data: result,
-      message: '夺宝参与成功！'
+      message: '抽奖参与成功！'
     });
 
   } catch (error: any) {
-    logger.error('夺宝参与失败', error, {
+    logger.error('抽奖参与失败', error, {
       requestId,
       userId: decoded?.userId, // 现在decoded确保不会为undefined
       roundId: body?.roundId,
@@ -227,14 +238,14 @@ const handleLotteryParticipation = async (request: NextRequest) => {
 
     // 根据错误类型返回不同状态码
     let statusCode = 500;
-    let errorMessage = '夺宝参与失败';
+    let errorMessage = '抽奖参与失败';
 
-    if (error.message.includes('余额不足')) {
+    if (error.message.includes('幸运币余额不足')) {
       statusCode = 400;
-      errorMessage = '余额不足';
+      errorMessage = '幸运币余额不足';
     } else if (error.message.includes('夺宝期次不存在')) {
       statusCode = 404;
-      errorMessage = '夺宝期次不存在';
+      errorMessage = '抽奖期次不存在';
     } else if (error.message.includes('份额不足')) {
       statusCode = 400;
       errorMessage = error.message;
@@ -254,7 +265,7 @@ const handleLotteryParticipation = async (request: NextRequest) => {
 const processRequest = withRateLimit(handleLotteryParticipation, lotteryRateLimit({
   onLimitExceeded: async (result, request) => {
     const logger = getLogger();
-    logger.warn('夺宝参与接口速率限制触发', {
+    logger.warn('抽奖参与接口速率限制触发', {
       identifier: 'unknown',
       endpoint: '/api/lottery/participate',
       limit: result.totalHits + result.remaining,
@@ -265,7 +276,7 @@ const processRequest = withRateLimit(handleLotteryParticipation, lotteryRateLimi
     return NextResponse.json(
       {
         success: false,
-        error: '参与夺宝过于频繁，请稍后再试',
+        error: '参与抽奖过于频繁，请稍后再试',
         rateLimit: {
           limit: result.totalHits + result.remaining,
           remaining: result.remaining,

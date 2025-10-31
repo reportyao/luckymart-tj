@@ -28,12 +28,18 @@ model users {
   totalSpent              Decimal             @default(0) @map("total_spent") @db.Decimal(10, 2)
   freeDailyCount          Int                 @default(0) @map("free_daily_count")
   lastFreeResetDate       DateTime            @default(now()) @map("last_free_reset_date") @db.Date
+  // 邀请系统相关字段
+  referralCode            String?             @unique @map("referral_code") @db.VarChar(10)
+  referredByUserId        String?             @map("referred_by_user_id") @db.Uuid
+  referralLevel           Int                 @default(1) @map("referral_level")
   createdAt               DateTime            @default(now()) @map("created_at")
   updatedAt               DateTime            @default(now()) @updatedAt @map("updated_at")
 
   @@index([preferredLanguage])
   @@index([luckyCoins])
   @@index([luckyCoinsVersion])
+  @@index([referralCode])
+  @@index([referredByUserId])
 }
 
 model userAddresses {
@@ -395,4 +401,54 @@ model FirstRechargeRewards {
   @@index([orderId])
   @@unique([userId]) // 每个用户只能享受一次首充奖励
   @@map("first_recharge_rewards")
+}
+
+// ================================
+// 邀请裂变系统相关模型 (Invitation & Referral System)
+// ================================
+
+// 邀请关系表
+model ReferralRelationships {
+  id                String    @id @default(uuid()) @db.Uuid
+  referrerUserId    String    @map("referrer_user_id") @db.Uuid // 邀请人ID
+  referredUserId    String    @map("referred_user_id") @db.Uuid // 被邀请人ID
+  referralCode      String    @map("referral_code") @db.VarChar(10) // 邀请码
+  rewardAmount      Decimal   @default(0) @map("reward_amount") @db.Decimal(10, 2) // 奖励金额
+  status            String    @default("pending") @db.VarChar(20) // 'pending', 'completed', 'cancelled'
+  createdAt         DateTime  @default(now()) @map("created_at")
+  completedAt       DateTime? @map("completed_at") @db.Timestamptz
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([referrerUserId])
+  @@index([referredUserId])
+  @@index([status])
+  @@unique([referredUserId]) // 每个用户只能被邀请一次
+  @@map("referral_relationships")
+}
+
+// 邀请奖励记录表
+model InvitationRewards {
+  id                    String    @id @default(uuid()) @db.Uuid
+  referrerUserId        String    @map("referrer_user_id") @db.Uuid // 邀请人ID
+  referredUserId        String    @map("referred_user_id") @db.Uuid // 被邀请人ID
+  referralRelationshipId String?  @map("referral_relationship_id") @db.Uuid // 邀请关系ID
+  rewardType            String    @map("reward_type") @db.VarChar(50) // 'first_recharge', 'commission'
+  rewardAmount          Decimal   @default(0) @map("reward_amount") @db.Decimal(10, 2) // 奖励金额
+  currency              String    @default("TJS") @db.VarChar(10) // 货币类型
+  relatedOrderId        String?   @map("related_order_id") @db.Uuid // 关联订单ID
+  description           String?   @db.Text // 奖励描述
+  isClaimed             Boolean   @default(false) @map("is_claimed") // 是否已领取
+  claimedAt             DateTime? @map("claimed_at") @db.Timestamptz // 领取时间
+  expiresAt             DateTime? @map("expires_at") @db.Timestamptz // 过期时间
+  status                String    @default("available") @db.VarChar(20) // 'available', 'claimed', 'expired'
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([referrerUserId])
+  @@index([referredUserId])
+  @@index([referralRelationshipId])
+  @@index([rewardType])
+  @@index([isClaimed])
+  @@index([expiresAt])
+  @@map("invitation_rewards")
 }

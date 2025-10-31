@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-// import { calculateWinningNumber, generateDrawProof, findWinner } from '@/lib/lottery-algorithm';
+import { calculateSecureWinningNumber, generateSecureDrawProof, findWinner } from '@/lib/lottery-algorithm';
 
 /**
  * 手动触发开奖API
@@ -82,8 +82,16 @@ export async function POST(request: NextRequest) {
 
     // 5. 执行开奖算法
     const participationIds = participations.map(p => p.id);
-    const drawResult = calculateWinningNumber(
+    const participationData = participations.map(p => ({
+      userId: p.userId,
+      numbers: p.numbers,
+      amount: Number(p.cost),
+      createdAt: p.createdAt
+    }));
+    
+    const drawResult = calculateSecureWinningNumber(
       participationIds,
+      participationData,
       round.productId,
       round.totalShares
     );
@@ -180,7 +188,7 @@ export async function POST(request: NextRequest) {
           firstName: winner?.firstName
         },
         drawResult,
-        proof: generateDrawProof(drawResult)
+        proof: generateSecureDrawProof(drawResult)
       }
     });
   } catch (error: any) {
@@ -206,18 +214,14 @@ export async function GET(request: NextRequest) {
       }, { status: 401 });
     }
 
-    // 查询已售罄但未开奖的轮次
-    const readyRounds = await prisma.lotteryRounds.findMany({
-      where: {
-        status: 'active',
-        soldShares: {
-          gte: prisma.lotteryRounds.fields.totalShares
-        }
-      },
-      orderBy: {
-        createdAt: 'asc'
-      }
+    // 查询已售罄但未开奖的轮次（soldShares >= totalShares）
+    const allActiveRounds = await prisma.lotteryRounds.findMany({
+      where: { status: 'active' },
+      orderBy: { createdAt: 'asc' }
     });
+    
+    // 筛选出已售罄的轮次
+    const readyRounds = allActiveRounds.filter(r => r.soldShares >= r.totalShares);
 
     // 手动查询产品信息和参与人数
     const roundsWithDetails = await Promise.all(

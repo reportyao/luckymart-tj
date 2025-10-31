@@ -454,6 +454,135 @@ export interface ReferralRelationship {
   completedAt?: Date;
 }
 
+// 邀请奖励类型
+export interface InvitationReward {
+  id: string;
+  referrerUserId: string; // 邀请人ID
+  referredUserId: string; // 被邀请人ID
+  referralRelationshipId?: string; // 邀请关系ID
+  rewardType: 'first_recharge' | 'commission'; // 奖励类型：首充奖励或消费返利
+  rewardAmount: number; // 奖励金额
+  currency: string; // 货币类型
+  relatedOrderId?: string; // 关联订单ID
+  description?: string; // 奖励描述
+  isClaimed: boolean; // 是否已领取
+  claimedAt?: Date; // 领取时间
+  expiresAt?: Date; // 过期时间
+  status: 'available' | 'claimed' | 'expired'; // 奖励状态
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// 邀请统计数据类型
+export interface ReferralStats {
+  userId: string;
+  referralCode: string;
+  firstName: string;
+  username?: string;
+  totalInvites: number; // 总邀请人数
+  successfulInvites: number; // 成功邀请人数
+  totalRewards: number; // 总奖励次数
+  claimedRewards: number; // 已领取奖励
+  unclaimedRewards: number; // 未领取奖励
+  totalCommission: number; // 总佣金金额
+  claimedCommission: number; // 已领取佣金
+  unclaimedCommission: number; // 未领取佣金
+  lastInviteDate?: Date; // 最后邀请时间
+  lastRewardDate?: Date; // 最后奖励时间
+}
+
+// 生成邀请码请求类型
+export interface GenerateReferralCodeRequest {
+  // 无需参数，由服务器根据当前用户自动生成
+}
+
+// 生成邀请码响应类型
+export interface GenerateReferralCodeResponse {
+  referralCode: string;
+  shareLinks: ShareLinks;
+  shareTexts: ShareTexts;
+  qrCodeUrl?: string;
+}
+
+// 绑定邀请关系请求类型
+export interface BindReferralRequest {
+  referralCode: string; // 要绑定的邀请码
+}
+
+// 绑定邀请关系响应类型
+export interface BindReferralResponse {
+  success: boolean;
+  referrerUserId?: string;
+  referrerName?: string;
+  message: string;
+}
+
+// 邀请奖励查询参数类型
+export interface InvitationRewardsQuery {
+  page?: number;
+  limit?: number;
+  rewardType?: 'first_recharge' | 'commission';
+  status?: 'available' | 'claimed' | 'expired';
+  startDate?: string; // ISO日期字符串
+  endDate?: string; // ISO日期字符串
+}
+
+// 邀请奖励查询响应类型
+export interface InvitationRewardsResponse {
+  rewards: InvitationReward[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+  summary: {
+    totalAvailable: number;
+    totalClaimed: number;
+    totalAmount: number;
+  };
+}
+
+// 消费返利查询参数类型
+export interface CommissionQuery {
+  page?: number;
+  limit?: number;
+  startDate?: string;
+  endDate?: string;
+}
+
+// 消费返利查询响应类型
+export interface CommissionResponse {
+  commissions: InvitationReward[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+  summary: {
+    totalCommissions: number;
+    claimedCommissions: number;
+    unclaimedCommissions: number;
+  };
+}
+
+// 领取奖励请求类型
+export interface ClaimRewardRequest {
+  rewardIds: string[]; // 要领取的奖励ID列表
+}
+
+// 领取奖励响应类型
+export interface ClaimRewardResponse {
+  success: boolean;
+  claimedRewards: string[]; // 成功领取的奖励ID
+  failedRewards: Array<{
+    rewardId: string;
+    reason: string;
+  }>; // 失败的奖励及原因
+  totalClaimedAmount: number; // 总领取金额
+}
+
 // 转换邀请关系数据
 export function convertReferralRelationshipFromPrisma(relationship: any): ReferralRelationship {
   return {
@@ -464,4 +593,40 @@ export function convertReferralRelationshipFromPrisma(relationship: any): Referr
 
 export function convertReferralRelationshipsFromPrisma(relationships: any[]): ReferralRelationship[] {
   return relationships.map(convertReferralRelationshipFromPrisma);
+}
+
+// 转换邀请奖励数据
+export function convertInvitationRewardFromPrisma(reward: any): InvitationReward {
+  return {
+    ...reward,
+    rewardAmount: toNumber(reward.rewardAmount),
+    claimedAt: reward.claimed_at ? new Date(reward.claimed_at) : undefined,
+    expiresAt: reward.expires_at ? new Date(reward.expires_at) : undefined,
+    createdAt: new Date(reward.created_at),
+    updatedAt: new Date(reward.updated_at)
+  };
+}
+
+export function convertInvitationRewardsFromPrisma(rewards: any[]): InvitationReward[] {
+  return rewards.map(convertInvitationRewardFromPrisma);
+}
+
+// 转换邀请统计数据
+export function convertReferralStatsFromPrisma(stats: any): ReferralStats {
+  return {
+    userId: stats.user_id,
+    referralCode: stats.referral_code,
+    firstName: stats.first_name,
+    username: stats.username,
+    totalInvites: parseInt(stats.total_invites || '0'),
+    successfulInvites: parseInt(stats.successful_invites || '0'),
+    totalRewards: parseInt(stats.total_rewards || '0'),
+    claimedRewards: parseInt(stats.claimed_rewards || '0'),
+    unclaimedRewards: parseInt(stats.unclaimed_rewards || '0'),
+    totalCommission: toNumber(stats.total_commission || 0),
+    claimedCommission: toNumber(stats.claimed_commission || 0),
+    unclaimedCommission: toNumber(stats.unclaimed_commission || 0),
+    lastInviteDate: stats.last_invite_date ? new Date(stats.last_invite_date) : undefined,
+    lastRewardDate: stats.last_reward_date ? new Date(stats.last_reward_date) : undefined
+  };
 }

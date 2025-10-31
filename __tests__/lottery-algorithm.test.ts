@@ -8,9 +8,13 @@ import crypto from 'crypto';
 import {
   generateSystemSeed,
   calculateSecureParticipationHash,
-  performSecureDraw,
-  generateWinningNumbers,
-  verifyDrawResult,
+  calculateSecureWinningNumber,
+  findWinner,
+  verifySecureDrawResult,
+  generateSecureDrawProof,
+  getTajikistanTime,
+  isValidDrawTime,
+  optimizedRandomGeneration,
   SecureDrawResult
 } from '../lib/lottery-algorithm';
 
@@ -106,9 +110,16 @@ describe('VRF开奖算法测试', () => {
 
   describe('开奖结果生成测试', () => {
     const totalShares = 100;
+    const productId = 'test-product-id';
+    const participationIds = mockParticipations.map(p => p.id);
 
     test('应该生成有效的开奖结果', async () => {
-      const result = await performSecureDraw(mockParticipations, totalShares);
+      const result = calculateSecureWinningNumber(
+        participationIds,
+        mockParticipations,
+        productId,
+        totalShares
+      );
       
       expect(result).toBeDefined();
       expect(typeof result.winningNumber).toBe('number');
@@ -123,23 +134,44 @@ describe('VRF开奖算法测试', () => {
       expect(result.seed).toBeDefined();
     });
 
-    test('相同的输入应该产生相同的结果', async () => {
-      const result1 = await performSecureDraw(mockParticipations, totalShares);
-      const result2 = await performSecureDraw(mockParticipations, totalShares);
+    test('相同的输入应该产生相同的结果', () => {
+      const result1 = calculateSecureWinningNumber(
+        participationIds,
+        mockParticipations,
+        productId,
+        totalShares
+      );
+      const result2 = calculateSecureWinningNumber(
+        participationIds,
+        mockParticipations,
+        productId,
+        totalShares
+      );
       
       expect(result1.winningNumber).toBe(result2.winningNumber);
-      expect(result1.seed).toBe(result2.seed); // 系统种子在算法中可能有所不同
+      expect(result1.A).toBe(result2.A);
+      expect(result1.B).toBe(result2.B);
     });
 
-    test('开奖号码应该在有效范围内', async () => {
-      const result = await performSecureDraw(mockParticipations, totalShares);
+    test('开奖号码应该在有效范围内', () => {
+      const result = calculateSecureWinningNumber(
+        participationIds,
+        mockParticipations,
+        productId,
+        totalShares
+      );
       
       expect(result.winningNumber).toBeGreaterThanOrEqual(10000001);
       expect(result.winningNumber).toBeLessThanOrEqual(10000000 + totalShares);
     });
 
-    test('应该包含所有必要的验证信息', async () => {
-      const result = await performSecureDraw(mockParticipations, totalShares);
+    test('应该包含所有必要的验证信息', () => {
+      const result = calculateSecureWinningNumber(
+        participationIds,
+        mockParticipations,
+        productId,
+        totalShares
+      );
       
       expect(result.algorithmVersion).toBeDefined();
       expect(result.totalShares).toBe(totalShares);
@@ -154,7 +186,7 @@ describe('VRF开奖算法测试', () => {
 
   describe('开奖号码生成测试', () => {
     test('应该生成在指定范围内的号码', () => {
-      const winningNumber = generateWinningNumbers(100, 12345, 67890, 99999);
+      const winningNumber = optimizedRandomGeneration('test-seed', 100);
       
       expect(typeof winningNumber).toBe('number');
       expect(winningNumber).toBeGreaterThanOrEqual(10000001);
@@ -163,41 +195,56 @@ describe('VRF开奖算法测试', () => {
 
     test('相同的种子应该产生相同的号码', () => {
       const seed = crypto.randomBytes(32).toString('hex');
-      const number1 = generateWinningNumbers(100, 12345, 67890, seed);
-      const number2 = generateWinningNumbers(100, 12345, 67890, seed);
+      const number1 = optimizedRandomGeneration(seed, 100);
+      const number2 = optimizedRandomGeneration(seed, 100);
       
       expect(number1).toBe(number2);
     });
 
     test('不同的种子应该产生不同的号码', () => {
-      const number1 = generateWinningNumbers(100, 12345, 67890, 'seed1');
-      const number2 = generateWinningNumbers(100, 12345, 67890, 'seed2');
+      const number1 = optimizedRandomGeneration('seed1', 100);
+      const number2 = optimizedRandomGeneration('seed2', 100);
       
       expect(number1).not.toBe(number2);
     });
 
     test('应该拒绝无效的份额数量', () => {
       expect(() => {
-        generateWinningNumbers(0, 12345, 67890, 'seed');
+        optimizedRandomGeneration('seed', 0);
       }).toThrow();
       
       expect(() => {
-        generateWinningNumbers(-1, 12345, 67890, 'seed');
+        optimizedRandomGeneration('seed', -1);
       }).toThrow();
     });
   });
 
   describe('开奖结果验证测试', () => {
     let drawResult: SecureDrawResult;
+    const productId = 'test-product-id';
+    const totalShares = 100;
+    const participationIds = mockParticipations.map(p => p.id);
 
-    beforeEach(async () => {
-      drawResult = await performSecureDraw(mockParticipations, 100);
+    beforeEach(() => {
+      drawResult = calculateSecureWinningNumber(
+        participationIds,
+        mockParticipations,
+        productId,
+        totalShares
+      );
     });
 
     test('应该验证有效的开奖结果', () => {
-      const isValid = verifyDrawResult(drawResult, mockParticipations);
+      const verification = verifySecureDrawResult(
+        participationIds,
+        mockParticipations,
+        productId,
+        totalShares,
+        drawResult.seed,
+        drawResult.winningNumber
+      );
       
-      expect(isValid).toBe(true);
+      expect(verification.isValid).toBe(true);
     });
 
     test('应该拒绝被篡改的结果', () => {
@@ -206,8 +253,16 @@ describe('VRF开奖算法测试', () => {
         winningNumber: drawResult.winningNumber + 1 // 修改中奖号码
       };
       
-      const isValid = verifyDrawResult(modifiedResult, mockParticipations);
-      expect(isValid).toBe(false);
+      const verification = verifySecureDrawResult(
+        participationIds,
+        mockParticipations,
+        productId,
+        totalShares,
+        drawResult.seed,
+        modifiedResult.winningNumber
+      );
+      
+      expect(verification.isValid).toBe(false);
     });
 
     test('应该拒绝修改后的参与数据', () => {
@@ -222,8 +277,16 @@ describe('VRF开奖算法测试', () => {
         }
       ];
       
-      const isValid = verifyDrawResult(drawResult, modifiedParticipations);
-      expect(isValid).toBe(false);
+      const verification = verifySecureDrawResult(
+        participationIds,
+        modifiedParticipations,
+        productId,
+        totalShares,
+        drawResult.seed,
+        drawResult.winningNumber
+      );
+      
+      expect(verification.isValid).toBe(false);
     });
 
     test('应该验证所有哈希值', () => {
@@ -288,7 +351,10 @@ describe('VRF开奖算法测试', () => {
   });
 
   describe('性能测试', () => {
-    test('开奖算法性能', async () => {
+    const productId = 'test-product-id';
+    const totalShares = 10000;
+
+    test('开奖算法性能', () => {
       const largeParticipations = Array(1000).fill(0).map((_, i) => ({
         id: `part-${i}`,
         userId: `user-${i}`,
@@ -299,7 +365,12 @@ describe('VRF开奖算法测试', () => {
       
       const startTime = process.hrtime.bigint();
       
-      const result = await performSecureDraw(largeParticipations, 10000);
+      const result = calculateSecureWinningNumber(
+        largeParticipations.map(p => p.id),
+        largeParticipations,
+        productId,
+        totalShares
+      );
       
       const endTime = process.hrtime.bigint();
       const duration = Number(endTime - startTime) / 1000000;
@@ -328,43 +399,80 @@ describe('VRF开奖算法测试', () => {
   });
 
   describe('边界条件测试', () => {
-    test('应该处理空参与列表', async () => {
-      const result = await performSecureDraw([], 100);
+    const productId = 'test-product-id';
+
+    test('应该处理空参与列表', () => {
+      const result = calculateSecureWinningNumber(
+        [],
+        [],
+        productId,
+        100
+      );
       
       expect(result).toBeDefined();
       expect(result.winningNumber).toBeDefined();
       expect(result.A).toBe(0); // 没有参与时A应该为0
     });
 
-    test('应该处理单份参与', async () => {
+    test('应该处理单份参与', () => {
       const singleParticipation = [mockParticipations[0]];
-      const result = await performSecureDraw(singleParticipation, 1);
+      const participationIds = singleParticipation.map(p => p.id);
+      
+      const result = calculateSecureWinningNumber(
+        participationIds,
+        singleParticipation,
+        productId,
+        1
+      );
       
       expect(result).toBeDefined();
       expect(result.winningNumber).toBe(10000001); // 只有一份时应该返回第一个号码
     });
 
-    test('应该处理大量份额', async () => {
-      const result = await performSecureDraw(mockParticipations, 1000000);
+    test('应该处理大量份额', () => {
+      const participationIds = mockParticipations.map(p => p.id);
+      
+      const result = calculateSecureWinningNumber(
+        participationIds,
+        mockParticipations,
+        productId,
+        1000000
+      );
       
       expect(result).toBeDefined();
       expect(result.winningNumber).toBeGreaterThanOrEqual(10000001);
       expect(result.winningNumber).toBeLessThanOrEqual(1000000 + 10000000);
     });
 
-    test('应该拒绝零份额', async () => {
-      await expect(
-        performSecureDraw(mockParticipations, 0)
-      ).rejects.toThrow();
+    test('应该拒绝零份额', () => {
+      const participationIds = mockParticipations.map(p => p.id);
+      
+      expect(() => {
+        calculateSecureWinningNumber(
+          participationIds,
+          mockParticipations,
+          productId,
+          0
+        );
+      }).toThrow();
     });
   });
 
   describe('一致性测试', () => {
-    test('相同输入的确定性结果', async () => {
+    const productId = 'test-product-id';
+    const totalShares = 100;
+
+    test('相同输入的确定性结果', () => {
       // 多次运行相同输入应该产生可验证的一致结果
-      const results = await Promise.all(
-        Array(5).fill(0).map(() => performSecureDraw(mockParticipations, 100))
-      );
+      const participationIds = mockParticipations.map(p => p.id);
+      
+      const results = [
+        calculateSecureWinningNumber(participationIds, mockParticipations, productId, totalShares),
+        calculateSecureWinningNumber(participationIds, mockParticipations, productId, totalShares),
+        calculateSecureWinningNumber(participationIds, mockParticipations, productId, totalShares),
+        calculateSecureWinningNumber(participationIds, mockParticipations, productId, totalShares),
+        calculateSecureWinningNumber(participationIds, mockParticipations, productId, totalShares)
+      ];
       
       // 提取所有可验证的共同属性
       const hashes = results.map(r => calculateSecureParticipationHash(mockParticipations));
@@ -380,6 +488,57 @@ describe('VRF开奖算法测试', () => {
         expect(result.hashB).toBeDefined();
         expect(result.hashC).toBeDefined();
       });
+    });
+  });
+
+  describe('塔吉克斯坦时区测试', () => {
+    test('应该正确获取塔吉克斯坦时间', () => {
+      const tajikTime = getTajikistanTime();
+      
+      expect(tajikTime).toBeInstanceOf(Date);
+      // 验证时间格式正确
+      expect(tajikTime.toISOString()).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+    });
+
+    test('应该验证开奖时间有效性', () => {
+      const tajikTime = getTajikistanTime();
+      const scheduledTime = new Date(tajikTime.getTime() + 60000); // 1分钟后
+      
+      const isValid = isValidDrawTime(scheduledTime, tajikTime);
+      expect(isValid).toBe(true);
+    });
+
+    test('应该拒绝无效的开奖时间窗口', () => {
+      const tajikTime = getTajikistanTime();
+      const futureTime = new Date(tajikTime.getTime() + 600000); // 10分钟后（超出最大窗口）
+      
+      const isValid = isValidDrawTime(futureTime, tajikTime);
+      expect(isValid).toBe(false);
+    });
+  });
+
+  describe('安全验证测试', () => {
+    test('应该生成安全的抽奖证明', () => {
+      const productId = 'test-product-id';
+      const totalShares = 100;
+      const participationIds = mockParticipations.map(p => p.id);
+      
+      const result = calculateSecureWinningNumber(
+        participationIds,
+        mockParticipations,
+        productId,
+        totalShares
+      );
+      
+      const proof = generateSecureDrawProof(result);
+      expect(proof).toBeDefined();
+      expect(typeof proof).toBe('string');
+      
+      // 验证证明包含必要信息
+      const proofData = JSON.parse(proof);
+      expect(proofData.algorithm).toBeDefined();
+      expect(proofData.winningNumber).toBe(result.winningNumber);
+      expect(proofData.hashes).toBeDefined();
     });
   });
 });

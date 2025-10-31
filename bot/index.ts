@@ -1068,6 +1068,302 @@ async function checkPendingLotteries() {
   }
 }
 
+// 发送中奖通知 - 增强版
+export async function sendEnhancedWinNotification(
+  telegramId: string,
+  participationId: string,
+  roundId: string,
+  productName: string,
+  winningNumber: number,
+  prizeAmount: number,
+  prizeType: string = 'standard',
+  userLanguage: string = 'tg-TJ'
+) {
+  try {
+    // 防止重复通知
+    const existingNotification = await prisma.notifications.findFirst({
+      where: {
+        type: 'lottery_win',
+        content: {
+          contains: participationId
+        }
+      }
+    });
+
+    if (existingNotification) {
+      logger.info('中奖通知已存在，跳过发送:', { participationId, telegramId });
+      return false;
+    }
+
+    // 获取用户信息
+    const user = await prisma.users.findFirst({
+      where: { telegramId }
+    });
+
+    if (!user) {
+      logger.warn('用户不存在:', telegramId);
+      return false;
+    }
+
+    // 生成中奖通知内容
+    const notificationContent = generateEnhancedWinNotification({
+      productName,
+      roundId,
+      winningNumber,
+      prizeAmount,
+      prizeType,
+      userLanguage
+    });
+
+    // 构建键盘按钮
+    const keyboard = Markup.inlineKeyboard([
+      [
+        Markup.button.webApp(
+          getButtonText(userLanguage, 'claimPrize'), 
+          `${MINI_APP_URL}/lottery/claim?participationId=${participationId}`
+        )
+      ],
+      [
+        Markup.button.webApp(
+          getButtonText(userLanguage, 'viewRecords'), 
+          `${MINI_APP_URL}/lottery/records`
+        ),
+        Markup.button.webApp(
+          getButtonText(userLanguage, 'continueLottery'), 
+          `${MINI_APP_URL}`
+        )
+      ]
+    ]);
+
+    // 发送通知
+    const success = await sendNotification(telegramId, notificationContent, keyboard);
+
+    if (success) {
+      // 记录通知发送历史
+      await prisma.notifications.create({
+        data: {
+          userId: user.id,
+          type: 'lottery_win',
+          content: JSON.stringify({
+            participationId,
+            roundId,
+            productName,
+            winningNumber,
+            prizeAmount,
+            prizeType,
+            sentAt: new Date().toISOString()
+          }),
+          status: 'sent',
+          sentAt: new Date(),
+          createdAt: new Date()
+        }
+      });
+
+      logger.info('中奖通知发送成功:', { 
+        telegramId, 
+        participationId, 
+        prizeAmount 
+      });
+    }
+
+    return success;
+  } catch (error) {
+    logger.error('发送中奖通知失败:', { 
+      telegramId, 
+      participationId, 
+      error: (error as Error).message 
+    }, error as Error);
+    return false;
+  }
+}
+
+// 发送批量中奖通知
+export async function sendBatchWinNotifications(
+  notifications: Array<{
+    telegramId: string;
+    participationId: string;
+    roundId: string;
+    productName: string;
+    winningNumber: number;
+    prizeAmount: number;
+    prizeType: string;
+    userLanguage: string;
+  }>
+) {
+  logger.info('开始发送批量中奖通知:', { count: notifications.length });
+  
+  const results = await Promise.allSettled(
+    notifications.map(notification => 
+      sendEnhancedWinNotification(
+        notification.telegramId,
+        notification.participationId,
+        notification.roundId,
+        notification.productName,
+        notification.winningNumber,
+        notification.prizeAmount,
+        notification.prizeType,
+        notification.userLanguage
+      )
+    )
+  );
+
+  const successCount = results.filter(result => 
+    result.status === 'fulfilled' && result.value
+  ).length;
+
+  logger.info('批量中奖通知发送完成:', {
+    total: notifications.length,
+    success: successCount,
+    failed: notifications.length - successCount
+  });
+
+  return {
+    total: notifications.length,
+    success: successCount,
+    failed: notifications.length - successCount
+  };
+}
+
+// 生成增强版中奖通知内容
+function generateEnhancedWinNotification(params: {
+  productName: string;
+  roundId: string;
+  winningNumber: number;
+  prizeAmount: number;
+  prizeType: string;
+  userLanguage: string;
+}): string {
+  const { productName, roundId, winningNumber, prizeAmount, prizeType, userLanguage } = params;
+  
+  const templates = {
+    'zh-CN': {
+      title: '🎉🎉🎉 恭喜中奖！🎉🎉🎉',
+      message: `🏆 <b>特大喜讯！您中奖了！</b>
+
+📦 <b>商品名称：</b>${productName}
+🎯 <b>期号：</b>${roundId}
+🔢 <b>中奖号码：</b><code>${winningNumber}</code>
+💰 <b>奖金金额：</b><b>${prizeAmount} TJS</b>
+🏅 <b>奖金类型：</b>${getPrizeTypeText(prizeType, 'zh-CN')}
+
+🎊 <b>恭喜恭喜！幸运降临在您身上！</b>
+📞 我们将尽快联系您安排领奖事宜
+💝 感谢您的参与，继续支持我们吧～`,
+      emoji: '🎉'
+    },
+    'en-US': {
+      title: '🎉🎉🎉 Congratulations! You Won! 🎉🎉🎉',
+      message: `🏆 <b>Great News! You are the Winner!</b>
+
+📦 <b>Product:</b> ${productName}
+🎯 <b>Round:</b> ${roundId}
+🔢 <b>Winning Number:</b> <code>${winningNumber}</code>
+💰 <b>Prize Amount:</b> <b>${prizeAmount} TJS</b>
+🏅 <b>Prize Type:</b> ${getPrizeTypeText(prizeType, 'en-US')}
+
+🎊 <b>Congratulations! Luck is on your side!</b>
+📞 We will contact you soon to arrange prize collection
+💝 Thank you for your participation, continue supporting us~`,
+      emoji: '🎉'
+    },
+    'ru-RU': {
+      title: '🎉🎉🎉 Поздравляем! Вы выиграли! 🎉🎉🎉',
+      message: `🏆 <b>Отличные новости! Вы победитель!</b>
+
+📦 <b>Товар:</b> ${productName}
+🎯 <b>Раунд:</b> ${roundId}
+🔢 <b>Выигрышный номер:</b> <code>${winningNumber}</code>
+💰 <b>Сумма приза:</b> <b>${prizeAmount} TJS</b>
+🏅 <b>Тип приза:</b> ${getPrizeTypeText(prizeType, 'ru-RU')}
+
+🎊 <b>Поздравляем! Удача на вашей стороне!</b>
+📞 Мы свяжемся с вами в ближайшее время для организации получения приза
+💝 Спасибо за участие, продолжайте поддерживать нас~`,
+      emoji: '🎉'
+    },
+    'tg-TJ': {
+      title: '🎉🎉🎉 Таҳният! Шумо ғолиб шудед! 🎉🎉🎉',
+      message: `🏆 <b>Хабари хуб! Шумо ғолиб ҳастед!</b>
+
+📦 <b>Маҳсулот:</b> ${productName}
+🎯 <b>Давра:</b> ${roundId}
+🔢 <b>Рақами ғолиб:</b> <code>${winningNumber}</code>
+💰 <b>Маблағи ҷойиза:</b> <b>${prizeAmount} TJS</b>
+🏅 <b>Навъи ҷойиза:</b> ${getPrizeTypeText(prizeType, 'tg-TJ')}
+
+🎊 <b>Таҳният! Бахт дар тарафи шумост!</b>
+📞 Мо бо шумо зуд тамос мегирем барои ташкили гирифтани ҷойиза
+💝 Барои иштироки шумо ташаккур, идомаи дастгирии мо кунед~`,
+      emoji: '🎉'
+    }
+  };
+
+  const template = templates[userLanguage as keyof typeof templates] || templates['zh-CN'];
+  return `${template.title}\n\n${template.message}`;
+}
+
+// 获取按钮文本
+function getButtonText(language: string, buttonType: string): string {
+  const buttonTexts = {
+    'zh-CN': {
+      claimPrize: '🎁 立即领奖',
+      viewRecords: '📋 查看记录',
+      continueLottery: '🎲 继续抽奖'
+    },
+    'en-US': {
+      claimPrize: '🎁 Claim Prize',
+      viewRecords: '📋 View Records',
+      continueLottery: '🎲 Continue Lottery'
+    },
+    'ru-RU': {
+      claimPrize: '🎁 Получить приз',
+      viewRecords: '📋 Посмотреть записи',
+      continueLottery: '🎲 Продолжить лотерею'
+    },
+    'tg-TJ': {
+      claimPrize: '🎁 Ҷойиза гирифтан',
+      viewRecords: '📋 Дидани сабтҳо',
+      continueLottery: '🎲 Идомаи розиғш'
+    }
+  };
+
+  const texts = buttonTexts[language as keyof typeof buttonTexts] || buttonTexts['zh-CN'];
+  return texts[buttonType as keyof typeof texts] || 'Button';
+}
+
+// 获取奖金类型文本
+function getPrizeTypeText(prizeType: string, language: string): string {
+  const typeTexts = {
+    'zh-CN': {
+      jackpot: '💎 超级大奖',
+      major: '🏆 大奖',
+      medium: '🥉 中奖',
+      standard: '🎊 奖品'
+    },
+    'en-US': {
+      jackpot: '💎 Super Jackpot',
+      major: '🏆 Major Prize',
+      medium: '🥉 Prize',
+      standard: '🎊 Prize'
+    },
+    'ru-RU': {
+      jackpot: '💎 Суперджекпот',
+      major: '🏆 Главный приз',
+      medium: '🥉 Приз',
+      standard: '🎊 Приз'
+    },
+    'tg-TJ': {
+      jackpot: '💎 Джекпоти бузург',
+      major: '🏆 Ҷойизаи калон',
+      medium: '🥉 Ҷойиза',
+      standard: '🎊 Ҷойиза'
+    }
+  };
+
+  const texts = typeTexts[language as keyof typeof typeTexts] || typeTexts['zh-CN'];
+  return texts[prizeType as keyof typeof texts] || texts.standard;
+}
+
 // Bot启动函数
 async function startBot() {
   try {

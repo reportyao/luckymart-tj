@@ -1,11 +1,61 @@
 {
-  "network_error": "网络错误，请稍后重试",
-  "server_error": "服务器错误",
-  "not_found": "资源不存在",
-  "unauthorized": "未授权，请先登录",
-  "forbidden": "无权限访问",
-  "validation_error": "验证失败",
-  "insufficient_balance": "余额不足",
-  "operation_failed": "操作失败",
-  "unknown_error": "未知错误"
+  "network_error": "Хатои шабака, баъдтар кӯшиш кунед",
+  "server_error": "Хатои сервер",
+  "not_found": "Манбаи маълумот ёфт нашуд",
+  "unauthorized": "Иҷозаат нест, аввал ворид шавед",
+  "forbidden": "Дастрасӣ манъ аст",
+  "validation_error": "Тасдиқи корбар номувафарқият",
+  "insufficient_balance": "Маблағи нокифоя",
+  "operation_failed": "Амалиёт бомувафарқият",
+  "unknown_error": "Хатои номаълум",
+  
+  "network": {
+    "offline": "Алоқаи шабака қатъ шуд",
+    "timeout": "Вақти интизорӣ ба итмом расид, баъдтар кӯшиш кунед",
+    "maxRetries": "Шабака ноустувор аст, баъдтар кӯшиш кунед",
+    "unknown": "Номаълум",
+    "online": "Дар шабака",
+    "quality": {
+      "excellent": "Аъло",
+      "good": "Хуб",
+      "fair": "Миёна",
+      "poor": "Баъд"
+    },
+    "status": "Ҳолати шабака",
+    "type": "Навъи шабака",
+    "downlink": "Суръат (поён)",
+    "rtt": "Таъхир",
+    "saveData": "Махфӣ кардани маълумот",
+    "enabled": "Фаъол",
+    "disabled": "Ғайрифаъол",
+    "never": "Ҳеҷ гоҳ",
+    "lastOnline": "Охирин маротиба дар шабака",
+    "refresh": "Навсозии ҳолат",
+    "refreshing": "Навсозӣ...",
+    "recommendations": "Тавсияҳои шабака"
+  },
+  
+  "offline": {
+    "title": "Муаммои алоқаи шабака",
+    "message": "Алоқаи шабака қатъ шуд ({{duration}})",
+    "duration": {
+      "minutes": "{{count}} дақиқа",
+      "seconds": "{{count}} сония"
+    },
+    "loading": "Боркунӣ...",
+    "retry": "Алоқаро дубора кӯшиш кунед",
+    "retrying": "Кӯшиш карда истодааст...",
+    "refresh": "Саҳифаро навсозӣ кунед",
+    "duration_full": "Вақти бешабака: {{duration}}",
+    "showDetails": "Тафсилотро нишон диҳед",
+    "hideDetails": "Тафсилотро пинҳон кунед",
+    "diagnostics": "Ташхиси шабака",
+    "status": "Ҳолат",
+    "quality": "Сифати шабака",
+    "retryCount": "Миқдори кӯшиш",
+    "connectionType": "Навъи алоқа",
+    "recommendations": "Тавсияҳо",
+    "connected": "Алоқа дорад",
+    "disconnected": "Алоқа надорад"
+  }
 }

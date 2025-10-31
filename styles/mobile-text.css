@@ -1,0 +1,477 @@
+/**
+ * 移动端多语言文本样式优化
+ * 支持4种语言的响应式字体大小和文本长度控制
+ */
+
+/* 基础移动端文本设置 */
+.mobile-text {
+  /* 基础字体大小，会根据语言调整 */
+  font-size: 14px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  
+  /* 防止文本溢出 */
+  max-width: 100%;
+  display: block;
+}
+
+/* 多语言响应式字体大小 */
+.mobile-text--zh {
+  /* 中文：紧凑字体，可以稍大 */
+  font-size: 14px;
+  line-height: 1.3;
+  letter-spacing: 0.5px;
+}
+
+.mobile-text--en {
+  /* 英文：标准字体 */
+  font-size: 13px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.mobile-text--ru {
+  /* 俄文：字符较多，稍小字体 */
+  font-size: 12px;
+  line-height: 1.3;
+  font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+  /* 强制使用标准字体渲染 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mobile-text--tg {
+  /* 塔吉克语：文本较长，需要更紧凑 */
+  font-size: 11px;
+  line-height: 1.2;
+  word-break: break-word;
+  /* 允许更积极的换行 */
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+}
+
+/* 文本长度限制类 */
+.mobile-text--truncate {
+  /* 单行截断 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-text--truncate-2 {
+  /* 双行截断 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-text--truncate-3 {
+  /* 三行截断 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 容器宽度控制 */
+.mobile-text-container {
+  /* 基础容器 */
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 特定尺寸的文本容器 */
+.mobile-text--sm {
+  max-width: 80px;
+}
+
+.mobile-text--md {
+  max-width: 120px;
+}
+
+.mobile-text--lg {
+  max-width: 200px;
+}
+
+.mobile-text--xl {
+  max-width: 280px;
+}
+
+/* 按钮文本优化 */
+.mobile-button-text {
+  font-weight: 500;
+  text-align: center;
+  /* 确保按钮内文本不溢出 */
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 按钮文本语言特化 */
+.mobile-button-text--zh {
+  font-size: 13px;
+  padding: 8px 12px;
+  min-height: 40px;
+}
+
+.mobile-button-text--en {
+  font-size: 12px;
+  padding: 10px 12px;
+  min-height: 42px;
+  /* 英文单词换行优化 */
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.mobile-button-text--ru {
+  font-size: 11px;
+  padding: 12px 8px;
+  min-height: 44px;
+  /* 俄文强制换行 */
+  word-break: break-all;
+}
+
+.mobile-button-text--tg {
+  font-size: 10px;
+  padding: 14px 8px;
+  min-height: 46px;
+  /* 塔吉克语最长的文本处理 */
+  word-break: break-all;
+  hyphens: auto;
+}
+
+/* 导航菜单文本 */
+.mobile-nav-text {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.mobile-nav-text--zh {
+  font-size: 15px;
+}
+
+.mobile-nav-text--en {
+  font-size: 14px;
+}
+
+.mobile-nav-text--ru {
+  font-size: 13px;
+}
+
+.mobile-nav-text--tg {
+  font-size: 12px;
+}
+
+/* 产品卡片文本优化 */
+.mobile-product-title {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.mobile-product-title--zh {
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.mobile-product-title--en {
+  font-size: 15px;
+  line-height: 1.4;
+  /* 处理英文长词 */
+  word-break: break-word;
+}
+
+.mobile-product-title--ru {
+  font-size: 14px;
+  line-height: 1.3;
+  /* 俄文字符优化 */
+  font-feature-settings: "kern" 1;
+}
+
+.mobile-product-title--tg {
+  font-size: 13px;
+  line-height: 1.2;
+  /* 塔吉克语文本压缩 */
+  font-variant-numeric: tabular-nums;
+}
+
+.mobile-product-meta {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.mobile-product-meta--zh {
+  font-size: 13px;
+}
+
+.mobile-product-meta--en {
+  font-size: 12px;
+}
+
+.mobile-product-meta--ru {
+  font-size: 11px;
+}
+
+.mobile-product-meta--tg {
+  font-size: 10px;
+}
+
+/* 状态标签优化 */
+.mobile-status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  text-align: center;
+  white-space: nowrap;
+  /* 确保标签不溢出容器 */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-status-badge--zh {
+  font-size: 11px;
+  padding: 4px 8px;
+}
+
+.mobile-status-badge--en {
+  font-size: 10px;
+  padding: 4px 6px;
+  /* 英文状态文本截断 */
+  word-break: break-all;
+}
+
+.mobile-status-badge--ru {
+  font-size: 9px;
+  padding: 4px 6px;
+  /* 俄文短截断 */
+  text-overflow: clip;
+}
+
+.mobile-status-badge--tg {
+  font-size: 9px;
+  padding: 3px 5px;
+  /* 塔吉克语状态强制单行 */
+  white-space: nowrap;
+  font-size: 8px;
+  padding: 3px 4px;
+}
+
+/* 价格文本优化 */
+.mobile-price {
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.mobile-price--zh {
+  font-size: 18px;
+}
+
+.mobile-price--en {
+  font-size: 17px;
+}
+
+.mobile-price--ru {
+  font-size: 16px;
+}
+
+.mobile-price--tg {
+  font-size: 15px;
+}
+
+/* 进度条文本 */
+.mobile-progress-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.mobile-progress-text--zh {
+  font-size: 12px;
+}
+
+.mobile-progress-text--en {
+  font-size: 11px;
+}
+
+.mobile-progress-text--ru {
+  font-size: 11px;
+}
+
+.mobile-progress-text--tg {
+  font-size: 10px;
+}
+
+/* 表单标签优化 */
+.mobile-form-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.mobile-form-label--zh {
+  font-size: 14px;
+}
+
+.mobile-form-label--en {
+  font-size: 13px;
+}
+
+.mobile-form-label--ru {
+  font-size: 12px;
+}
+
+.mobile-form-label--tg {
+  font-size: 11px;
+}
+
+/* 输入框占位符优化 */
+.mobile-input-placeholder {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.mobile-input-placeholder--zh {
+  font-size: 14px;
+}
+
+.mobile-input-placeholder--en {
+  font-size: 13px;
+}
+
+.mobile-input-placeholder--ru {
+  font-size: 12px;
+}
+
+.mobile-input-placeholder--tg {
+  font-size: 11px;
+}
+
+/* 错误消息优化 */
+.mobile-error-text {
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: 4px;
+}
+
+.mobile-error-text--zh {
+  font-size: 12px;
+}
+
+.mobile-error-text--en {
+  font-size: 11px;
+}
+
+.mobile-error-text--ru {
+  font-size: 11px;
+}
+
+.mobile-error-text--tg {
+  font-size: 10px;
+}
+
+/* 成功消息优化 */
+.mobile-success-text {
+  font-size: 12px;
+  color: #10b981;
+  margin-top: 4px;
+}
+
+.mobile-success-text--zh {
+  font-size: 12px;
+}
+
+.mobile-success-text--en {
+  font-size: 11px;
+}
+
+.mobile-success-text--ru {
+  font-size: 11px;
+}
+
+.mobile-success-text--tg {
+  font-size: 10px;
+}
+
+/* 响应式断点优化 */
+@media (max-width: 360px) {
+  /* 超小屏幕额外压缩 */
+  .mobile-text--tg {
+    font-size: 10px;
+    line-height: 1.1;
+  }
+  
+  .mobile-button-text--tg {
+    font-size: 9px;
+    padding: 12px 6px;
+  }
+  
+  .mobile-status-badge--tg {
+    font-size: 7px;
+    padding: 2px 3px;
+  }
+}
+
+@media (min-width: 768px) {
+  /* 平板端适度放宽 */
+  .mobile-text--tg {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  
+  .mobile-button-text--tg {
+    font-size: 11px;
+    padding: 12px 16px;
+  }
+}
+
+/* 无障碍支持 */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-text {
+    transition: none;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .mobile-text {
+    font-weight: 500;
+  }
+  
+  .mobile-product-title {
+    font-weight: 700;
+  }
+}
+
+/* 暗色主题适配 */
+@media (prefers-color-scheme: dark) {
+  .mobile-product-title {
+    color: #f9fafb;
+  }
+  
+  .mobile-product-meta {
+    color: #d1d5db;
+  }
+  
+  .mobile-progress-text {
+    color: #d1d5db;
+  }
+  
+  .mobile-form-label {
+    color: #f9fafb;
+  }
+}

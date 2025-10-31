@@ -55,5 +55,80 @@
     "about_us": "About Us",
     "version": "LuckyMart TJ v1.0.0",
     "copyright": "© 2025 LuckyMart. All rights reserved."
+  },
+
+  "gesture": {
+    "tap": {
+      "short": "Tap",
+      "long": "Long Press",
+      "double": "Double Tap"
+    },
+    "swipe": {
+      "left": {
+        "start": "Swipe Left",
+        "end": "Swipe Complete",
+        "success": "Swipe Left Success"
+      },
+      "right": {
+        "start": "Swipe Right",
+        "end": "Swipe Complete",
+        "success": "Swipe Right Success"
+      },
+      "up": {
+        "start": "Swipe Up",
+        "end": "Swipe Complete",
+        "success": "Swipe Up Success"
+      },
+      "down": {
+        "start": "Swipe Down",
+        "end": "Swipe Complete",
+        "success": "Swipe Down Success"
+      }
+    },
+    "press": {
+      "short": "Press",
+      "long": "Long Press",
+      "duration": "Press {{duration}}ms"
+    },
+    "states": {
+      "ready": "Ready",
+      "active": "Gesture Active",
+      "success": "Success",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "actions": {
+      "delete": "Delete",
+      "edit": "Edit",
+      "favorite": "Favorite",
+      "share": "Share",
+      "more": "More",
+      "back": "Back",
+      "forward": "Forward",
+      "refresh": "Refresh",
+      "menu": "Menu"
+    },
+    "guidance": {
+      "intro": "Gesture Guide",
+      "hint": "Try gesture",
+      "help": "Help",
+      "tutorial": "Tutorial",
+      "next": "Next",
+      "previous": "Previous",
+      "skip": "Skip",
+      "finish": "Finish"
+    },
+    "errors": {
+      "invalid": "Invalid Action",
+      "timeout": "Timeout",
+      "cancelled": "Cancelled",
+      "blocked": "Blocked",
+      "unsupported": "Unsupported Gesture"
+    },
+    "success": {
+      "completed": "Completed",
+      "action": "Action Success",
+      "feedback": "Feedback Success"
+    }
   }
 }

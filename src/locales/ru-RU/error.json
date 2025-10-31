@@ -1,11 +1,61 @@
 {
-  "network_error": "网络错误，请稍后重试",
-  "server_error": "服务器错误",
-  "not_found": "资源不存在",
-  "unauthorized": "未授权，请先登录",
-  "forbidden": "无权限访问",
-  "validation_error": "验证失败",
-  "insufficient_balance": "余额不足",
-  "operation_failed": "操作失败",
-  "unknown_error": "未知错误"
+  "network_error": "Ошибка сети, попробуйте позже",
+  "server_error": "Ошибка сервера",
+  "not_found": "Ресурс не найден",
+  "unauthorized": "Не авторизован, пожалуйста, сначала войдите в систему",
+  "forbidden": "Доступ запрещен",
+  "validation_error": "Проверка не пройдена",
+  "insufficient_balance": "Недостаточно средств",
+  "operation_failed": "Операция не удалась",
+  "unknown_error": "Неизвестная ошибка",
+  
+  "network": {
+    "offline": "Соединение с сетью потеряно",
+    "timeout": "Таймаут запроса, попробуйте позже",
+    "maxRetries": "Нестабильная сеть, попробуйте позже",
+    "unknown": "Неизвестно",
+    "online": "В сети",
+    "quality": {
+      "excellent": "Отлично",
+      "good": "Хорошо",
+      "fair": "Удовлетворительно",
+      "poor": "Плохо"
+    },
+    "status": "Статус сети",
+    "type": "Тип сети",
+    "downlink": "Нисходящий канал",
+    "rtt": "Задержка",
+    "saveData": "Экономия данных",
+    "enabled": "Включено",
+    "disabled": "Отключено",
+    "never": "Никогда",
+    "lastOnline": "Последний раз онлайн",
+    "refresh": "Обновить статус",
+    "refreshing": "Обновление...",
+    "recommendations": "Рекомендации по сети"
+  },
+  
+  "offline": {
+    "title": "Проблема подключения к сети",
+    "message": "Соединение с сетью потеряно ({{duration}})",
+    "duration": {
+      "minutes": "{{count}} минут",
+      "seconds": "{{count}} секунд"
+    },
+    "loading": "Загрузка...",
+    "retry": "Повторить подключение",
+    "retrying": "Повтор...",
+    "refresh": "Обновить страницу",
+    "duration_full": "Длительность офлайн: {{duration}}",
+    "showDetails": "Показать детали",
+    "hideDetails": "Скрыть детали",
+    "diagnostics": "Диагностика сети",
+    "status": "Статус",
+    "quality": "Качество сети",
+    "retryCount": "Количество повторов",
+    "connectionType": "Тип подключения",
+    "recommendations": "Рекомендации",
+    "connected": "Подключено",
+    "disconnected": "Отключено"
+  }
 }

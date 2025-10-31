@@ -1,0 +1,4893 @@
+{
+  "summary": {
+    "totalFiles": 36,
+    "processedFiles": 36,
+    "issuesFound": 0,
+    "qualityScore": 20,
+    "completenessScore": 75.77777777777777,
+    "consistencyScore": 85
+  },
+  "files": {
+    "zh-CN/common": {
+      "exists": true,
+      "size": 2791,
+      "keysCount": 94,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 货币",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 金额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 余额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 充值",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 提现",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 时间",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 日期",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 今天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 昨天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 明天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 点击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 滑动",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 长按",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 双击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 确认",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 92 个特殊字符问题",
+          "details": [
+            {
+              "key": "app_name",
+              "char": "幸",
+              "context": "kyMart TJ 幸运集市"
+            },
+            {
+              "key": "welcome",
+              "char": "欢",
+              "context": "欢迎"
+            },
+            {
+              "key": "language",
+              "char": "语",
+              "context": "语言设置"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "gesture.press.duration": [
+          "duration"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "zh-CN/auth": {
+      "exists": true,
+      "size": 312,
+      "keysCount": 13,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 货币",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 金额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 余额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 充值",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 提现",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 时间",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 日期",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 今天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 昨天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 明天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 点击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 滑动",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 长按",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 双击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 确认",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 13 个特殊字符问题",
+          "details": [
+            {
+              "key": "login",
+              "char": "登",
+              "context": "登录"
+            },
+            {
+              "key": "logout",
+              "char": "退",
+              "context": "退出"
+            },
+            {
+              "key": "register",
+              "char": "注",
+              "context": "注册"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "zh-CN/lottery": {
+      "exists": true,
+      "size": 729,
+      "keysCount": 27,
+      "issues": [
+        {
+          "type": "invalid_placeholder",
+          "severity": "medium",
+          "message": "无效的占位符: 0",
+          "key": "product_card.round_label"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 货币",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 金额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 余额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 充值",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 提现",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 时间",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 日期",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 今天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 昨天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 明天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 点击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 滑动",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 长按",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 双击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 确认",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 27 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "抽",
+              "context": "抽奖"
+            },
+            {
+              "key": "participate",
+              "char": "立",
+              "context": "立即参与"
+            },
+            {
+              "key": "detail",
+              "char": "商",
+              "context": "商品详情"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "product_card.round_label": [
+          "0"
+        ]
+      },
+      "quality": {
+        "consistency": 49,
+        "completeness": 66,
+        "quality": 15
+      }
+    },
+    "zh-CN/wallet": {
+      "exists": true,
+      "size": 398,
+      "keysCount": 15,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 货币",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 金额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 余额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 充值",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 提现",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 时间",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 日期",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 今天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 昨天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 明天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 点击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 滑动",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 长按",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 双击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 确认",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 15 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "钱",
+              "context": "钱包"
+            },
+            {
+              "key": "balance",
+              "char": "余",
+              "context": "余额"
+            },
+            {
+              "key": "coins",
+              "char": "幸",
+              "context": "幸运币"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "zh-CN/referral": {
+      "exists": true,
+      "size": 3579,
+      "keysCount": 126,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 货币",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 金额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 余额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 充值",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 提现",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 时间",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 日期",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 今天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 昨天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 明天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 点击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 滑动",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 长按",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 双击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 确认",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 126 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "我",
+              "context": "我的邀请"
+            },
+            {
+              "key": "subtitle",
+              "char": "邀",
+              "context": "邀请好友，获取奖励"
+            },
+            {
+              "key": "invite_code",
+              "char": "邀",
+              "context": "邀请码"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "list.page_info": [
+          "start",
+          "end",
+          "total"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "zh-CN/task": {
+      "exists": true,
+      "size": 217,
+      "keysCount": 8,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 货币",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 金额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 余额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 充值",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 提现",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 时间",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 日期",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 今天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 昨天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 明天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 点击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 滑动",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 长按",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 双击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 确认",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 8 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "任",
+              "context": "任务中心"
+            },
+            {
+              "key": "daily_tasks",
+              "char": "每",
+              "context": "每日任务"
+            },
+            {
+              "key": "task_completed",
+              "char": "任",
+              "context": "任务已完成"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "zh-CN/error": {
+      "exists": true,
+      "size": 1372,
+      "keysCount": 49,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 货币",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 金额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 余额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 充值",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 提现",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 时间",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 日期",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 今天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 昨天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 明天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 点击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 滑动",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 长按",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 双击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 确认",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 49 个特殊字符问题",
+          "details": [
+            {
+              "key": "network_error",
+              "char": "网",
+              "context": "网络错误，请稍后重试"
+            },
+            {
+              "key": "server_error",
+              "char": "服",
+              "context": "服务器错误"
+            },
+            {
+              "key": "not_found",
+              "char": "资",
+              "context": "资源不存在"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "offline.message": [
+          "duration"
+        ],
+        "offline.duration.minutes": [
+          "count"
+        ],
+        "offline.duration.seconds": [
+          "count"
+        ],
+        "offline.duration_full": [
+          "duration"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "zh-CN/admin": {
+      "exists": true,
+      "size": 7118,
+      "keysCount": 246,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 货币",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 金额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 余额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 充值",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 提现",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 时间",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 日期",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 今天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 昨天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 明天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 点击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 滑动",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 长按",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 双击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 确认",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 243 个特殊字符问题",
+          "details": [
+            {
+              "key": "welcome",
+              "char": "欢",
+              "context": "欢迎"
+            },
+            {
+              "key": "logout",
+              "char": "退",
+              "context": "退出登录"
+            },
+            {
+              "key": "title",
+              "char": "奖",
+              "context": "奖励配置管理"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "reward_config.page_info": [
+          "page",
+          "totalPages"
+        ],
+        "reward_config.selected_count": [
+          "count"
+        ],
+        "products_section.form.upload_limit": [
+          "count"
+        ],
+        "products_section.validation.name_max_length": [
+          "count"
+        ],
+        "products_section.validation.description_max_length": [
+          "count"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "zh-CN/bot": {
+      "exists": true,
+      "size": 6002,
+      "keysCount": 104,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 货币",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 金额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 余额",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 充值",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 提现",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 时间",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 日期",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 今天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 昨天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 明天",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 点击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 滑动",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 长按",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 双击",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 确认",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 104 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "\ud83c",
+              "context": "🎉 欢迎来到 Lu"
+            },
+            {
+              "key": "message",
+              "char": "\ud83c",
+              "context": "🌟 亲爱的 {fi"
+            },
+            {
+              "key": "enter_market",
+              "char": "\ud83c",
+              "context": "🎲 进入幸运集市"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "bot.welcome.message": [
+          "firstName",
+          "balance"
+        ],
+        "bot.registration_reward.message": [
+          "rewardAmount",
+          "balance"
+        ],
+        "bot.balance.message": [
+          "balance",
+          "platformBalance",
+          "vipLevel",
+          "freeCount"
+        ],
+        "bot.orders.message": [
+          "firstName",
+          "orderList"
+        ],
+        "bot.order_status.message": [
+          "orderNumber",
+          "status",
+          "amount",
+          "trackingNumber",
+          "status_message"
+        ],
+        "bot.payment_success.message": [
+          "orderNumber",
+          "amount",
+          "productName"
+        ],
+        "bot.lottery_win.message": [
+          "productName",
+          "roundId",
+          "prizeValue"
+        ],
+        "bot.lottery_lose.message": [
+          "productName",
+          "roundId",
+          "participants"
+        ],
+        "bot.vip_level_up.message": [
+          "oldLevel",
+          "newLevel",
+          "benefits"
+        ],
+        "bot.system_notification.message": [
+          "title",
+          "content"
+        ],
+        "bot.language_changed.message": [
+          "language"
+        ],
+        "bot.referral_reward.message": [
+          "rewardAmount",
+          "balance"
+        ],
+        "bot.resale_status.message": [
+          "resaleId",
+          "status",
+          "progress",
+          "status_message"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "en-US/common": {
+      "exists": true,
+      "size": 3475,
+      "keysCount": 94,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: currency",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: amount",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: balance",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: recharge",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: withdraw",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: time",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: date",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: today",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: yesterday",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tomorrow",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: swipe",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: long press",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: double tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: confirm",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 1 个特殊字符问题",
+          "details": [
+            {
+              "key": "copyright",
+              "char": "©",
+              "context": "© 2025 Luc"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "gesture.press.duration": [
+          "duration"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "en-US/auth": {
+      "exists": true,
+      "size": 312,
+      "keysCount": 13,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: currency",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: amount",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: balance",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: recharge",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: withdraw",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: time",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: date",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: today",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: yesterday",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tomorrow",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: swipe",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: long press",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: double tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: confirm",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 13 个特殊字符问题",
+          "details": [
+            {
+              "key": "login",
+              "char": "登",
+              "context": "登录"
+            },
+            {
+              "key": "logout",
+              "char": "退",
+              "context": "退出"
+            },
+            {
+              "key": "register",
+              "char": "注",
+              "context": "注册"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "en-US/lottery": {
+      "exists": true,
+      "size": 970,
+      "keysCount": 27,
+      "issues": [
+        {
+          "type": "invalid_placeholder",
+          "severity": "medium",
+          "message": "无效的占位符: 0",
+          "key": "product_card.round_label"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: currency",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: amount",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: balance",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: recharge",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: withdraw",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: time",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: date",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: today",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: yesterday",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tomorrow",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: swipe",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: long press",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: double tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: confirm",
+          "category": "actions"
+        }
+      ],
+      "placeholders": {
+        "product_card.round_label": [
+          "0"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "en-US/wallet": {
+      "exists": true,
+      "size": 398,
+      "keysCount": 15,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: currency",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: amount",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: balance",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: recharge",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: withdraw",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: time",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: date",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: today",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: yesterday",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tomorrow",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: swipe",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: long press",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: double tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: confirm",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 15 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "钱",
+              "context": "钱包"
+            },
+            {
+              "key": "balance",
+              "char": "余",
+              "context": "余额"
+            },
+            {
+              "key": "coins",
+              "char": "幸",
+              "context": "幸运币"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "en-US/referral": {
+      "exists": true,
+      "size": 5002,
+      "keysCount": 126,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: currency",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: amount",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: balance",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: recharge",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: withdraw",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: time",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: date",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: today",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: yesterday",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tomorrow",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: swipe",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: long press",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: double tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: confirm",
+          "category": "actions"
+        }
+      ],
+      "placeholders": {
+        "list.page_info": [
+          "start",
+          "end",
+          "total"
+        ]
+      },
+      "quality": {
+        "consistency": 55,
+        "completeness": 70,
+        "quality": 25
+      }
+    },
+    "en-US/task": {
+      "exists": true,
+      "size": 217,
+      "keysCount": 8,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: currency",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: amount",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: balance",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: recharge",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: withdraw",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: time",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: date",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: today",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: yesterday",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tomorrow",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: swipe",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: long press",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: double tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: confirm",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 8 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "任",
+              "context": "任务中心"
+            },
+            {
+              "key": "daily_tasks",
+              "char": "每",
+              "context": "每日任务"
+            },
+            {
+              "key": "task_completed",
+              "char": "任",
+              "context": "任务已完成"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "en-US/error": {
+      "exists": true,
+      "size": 1868,
+      "keysCount": 49,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: currency",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: amount",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: balance",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: recharge",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: withdraw",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: time",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: date",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: today",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: yesterday",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tomorrow",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: swipe",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: long press",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: double tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: confirm",
+          "category": "actions"
+        }
+      ],
+      "placeholders": {
+        "offline.message": [
+          "duration"
+        ],
+        "offline.duration.minutes": [
+          "count"
+        ],
+        "offline.duration.seconds": [
+          "count"
+        ],
+        "offline.duration_full": [
+          "duration"
+        ]
+      },
+      "quality": {
+        "consistency": 55,
+        "completeness": 70,
+        "quality": 25
+      }
+    },
+    "en-US/admin": {
+      "exists": true,
+      "size": 9531,
+      "keysCount": 246,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: currency",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: amount",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: balance",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: recharge",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: withdraw",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: time",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: date",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: today",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: yesterday",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tomorrow",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: swipe",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: long press",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: double tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: confirm",
+          "category": "actions"
+        }
+      ],
+      "placeholders": {
+        "reward_config.page_info": [
+          "page",
+          "totalPages"
+        ],
+        "reward_config.selected_count": [
+          "count"
+        ],
+        "products_section.form.upload_limit": [
+          "count"
+        ],
+        "products_section.validation.name_max_length": [
+          "count"
+        ],
+        "products_section.validation.description_max_length": [
+          "count"
+        ]
+      },
+      "quality": {
+        "consistency": 55,
+        "completeness": 70,
+        "quality": 25
+      }
+    },
+    "en-US/bot": {
+      "exists": true,
+      "size": 9074,
+      "keysCount": 104,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: currency",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: amount",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: balance",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: recharge",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: withdraw",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: time",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: date",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: today",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: yesterday",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tomorrow",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: swipe",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: long press",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: double tap",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: confirm",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 65 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "\ud83c",
+              "context": "🎉 Welcome"
+            },
+            {
+              "key": "message",
+              "char": "\ud83c",
+              "context": "🌟 Dear {f"
+            },
+            {
+              "key": "enter_market",
+              "char": "\ud83c",
+              "context": "🎲 Enter L"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "bot.welcome.message": [
+          "firstName",
+          "balance"
+        ],
+        "bot.registration_reward.message": [
+          "rewardAmount",
+          "balance"
+        ],
+        "bot.balance.message": [
+          "balance",
+          "platformBalance",
+          "vipLevel",
+          "freeCount"
+        ],
+        "bot.orders.message": [
+          "firstName",
+          "orderList"
+        ],
+        "bot.order_status.message": [
+          "orderNumber",
+          "status",
+          "amount",
+          "trackingNumber",
+          "status_message"
+        ],
+        "bot.payment_success.message": [
+          "orderNumber",
+          "amount",
+          "productName"
+        ],
+        "bot.lottery_win.message": [
+          "productName",
+          "roundId",
+          "prizeValue"
+        ],
+        "bot.lottery_lose.message": [
+          "productName",
+          "roundId",
+          "participants"
+        ],
+        "bot.vip_level_up.message": [
+          "oldLevel",
+          "newLevel",
+          "benefits"
+        ],
+        "bot.system_notification.message": [
+          "title",
+          "content"
+        ],
+        "bot.language_changed.message": [
+          "language"
+        ],
+        "bot.referral_reward.message": [
+          "rewardAmount",
+          "balance"
+        ],
+        "bot.resale_status.message": [
+          "resaleId",
+          "status",
+          "progress",
+          "status_message"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "ru-RU/common": {
+      "exists": true,
+      "size": 3660,
+      "keysCount": 94,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: валюта",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сумма",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пополнение",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вывод",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: время",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дата",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сегодня",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вчера",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: завтра",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: нажать",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: свайп",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: долгое нажатие",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: двойной тап",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: подтвердить",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 90 个特殊字符问题",
+          "details": [
+            {
+              "key": "welcome",
+              "char": "Д",
+              "context": "Добро пожа"
+            },
+            {
+              "key": "language",
+              "char": "Я",
+              "context": "Язык"
+            },
+            {
+              "key": "loading",
+              "char": "З",
+              "context": "Загрузка.."
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "gesture.press.duration": [
+          "duration"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "ru-RU/auth": {
+      "exists": true,
+      "size": 312,
+      "keysCount": 13,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: валюта",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сумма",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пополнение",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вывод",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: время",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дата",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сегодня",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вчера",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: завтра",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: нажать",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: свайп",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: долгое нажатие",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: двойной тап",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: подтвердить",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 13 个特殊字符问题",
+          "details": [
+            {
+              "key": "login",
+              "char": "登",
+              "context": "登录"
+            },
+            {
+              "key": "logout",
+              "char": "退",
+              "context": "退出"
+            },
+            {
+              "key": "register",
+              "char": "注",
+              "context": "注册"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "ru-RU/lottery": {
+      "exists": true,
+      "size": 981,
+      "keysCount": 27,
+      "issues": [
+        {
+          "type": "invalid_placeholder",
+          "severity": "medium",
+          "message": "无效的占位符: 0",
+          "key": "product_card.round_label"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: валюта",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сумма",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пополнение",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вывод",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: время",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дата",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сегодня",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вчера",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: завтра",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: нажать",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: свайп",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: долгое нажатие",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: двойной тап",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: подтвердить",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 27 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "Л",
+              "context": "Лотерея уд"
+            },
+            {
+              "key": "participate",
+              "char": "П",
+              "context": "Присоедини"
+            },
+            {
+              "key": "detail",
+              "char": "П",
+              "context": "Подробност"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "product_card.round_label": [
+          "0"
+        ]
+      },
+      "quality": {
+        "consistency": 49,
+        "completeness": 66,
+        "quality": 15
+      }
+    },
+    "ru-RU/wallet": {
+      "exists": true,
+      "size": 398,
+      "keysCount": 15,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: валюта",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сумма",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пополнение",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вывод",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: время",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дата",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сегодня",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вчера",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: завтра",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: нажать",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: свайп",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: долгое нажатие",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: двойной тап",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: подтвердить",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 15 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "钱",
+              "context": "钱包"
+            },
+            {
+              "key": "balance",
+              "char": "余",
+              "context": "余额"
+            },
+            {
+              "key": "coins",
+              "char": "幸",
+              "context": "幸运币"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "ru-RU/referral": {
+      "exists": true,
+      "size": 5447,
+      "keysCount": 126,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: валюта",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сумма",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пополнение",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вывод",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: время",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дата",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сегодня",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вчера",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: завтра",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: нажать",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: свайп",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: долгое нажатие",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: двойной тап",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: подтвердить",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 126 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "М",
+              "context": "Мои пригла"
+            },
+            {
+              "key": "subtitle",
+              "char": "П",
+              "context": "Приглашайт"
+            },
+            {
+              "key": "invite_code",
+              "char": "К",
+              "context": "Код пригла"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "list.page_info": [
+          "start",
+          "end",
+          "total"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "ru-RU/task": {
+      "exists": true,
+      "size": 217,
+      "keysCount": 8,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: валюта",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сумма",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пополнение",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вывод",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: время",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дата",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сегодня",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вчера",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: завтра",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: нажать",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: свайп",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: долгое нажатие",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: двойной тап",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: подтвердить",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 8 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "任",
+              "context": "任务中心"
+            },
+            {
+              "key": "daily_tasks",
+              "char": "每",
+              "context": "每日任务"
+            },
+            {
+              "key": "task_completed",
+              "char": "任",
+              "context": "任务已完成"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "ru-RU/error": {
+      "exists": true,
+      "size": 1936,
+      "keysCount": 49,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: валюта",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сумма",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пополнение",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вывод",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: время",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дата",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сегодня",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вчера",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: завтра",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: нажать",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: свайп",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: долгое нажатие",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: двойной тап",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: подтвердить",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 49 个特殊字符问题",
+          "details": [
+            {
+              "key": "network_error",
+              "char": "О",
+              "context": "Ошибка сет"
+            },
+            {
+              "key": "server_error",
+              "char": "О",
+              "context": "Ошибка сер"
+            },
+            {
+              "key": "not_found",
+              "char": "Р",
+              "context": "Ресурс не "
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "offline.message": [
+          "duration"
+        ],
+        "offline.duration.minutes": [
+          "count"
+        ],
+        "offline.duration.seconds": [
+          "count"
+        ],
+        "offline.duration_full": [
+          "duration"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "ru-RU/admin": {
+      "exists": true,
+      "size": 10205,
+      "keysCount": 246,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: валюта",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сумма",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пополнение",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вывод",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: время",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дата",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сегодня",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вчера",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: завтра",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: нажать",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: свайп",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: долгое нажатие",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: двойной тап",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: подтвердить",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 246 个特殊字符问题",
+          "details": [
+            {
+              "key": "welcome",
+              "char": "Д",
+              "context": "Добро пожа"
+            },
+            {
+              "key": "logout",
+              "char": "В",
+              "context": "Выйти"
+            },
+            {
+              "key": "title",
+              "char": "У",
+              "context": "Управление"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "reward_config.page_info": [
+          "page",
+          "totalPages"
+        ],
+        "reward_config.selected_count": [
+          "count"
+        ],
+        "products_section.form.upload_limit": [
+          "count"
+        ],
+        "products_section.validation.name_max_length": [
+          "count"
+        ],
+        "products_section.validation.description_max_length": [
+          "count"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "ru-RU/bot": {
+      "exists": true,
+      "size": 9606,
+      "keysCount": 104,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: валюта",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сумма",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пополнение",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вывод",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: время",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дата",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: сегодня",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вчера",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: завтра",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: нажать",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: свайп",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: долгое нажатие",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: двойной тап",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: подтвердить",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 104 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "\ud83c",
+              "context": "🎉 Добро п"
+            },
+            {
+              "key": "message",
+              "char": "\ud83c",
+              "context": "🌟 Дорогой"
+            },
+            {
+              "key": "enter_market",
+              "char": "\ud83c",
+              "context": "🎲 Войти н"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "bot.welcome.message": [
+          "firstName",
+          "balance"
+        ],
+        "bot.registration_reward.message": [
+          "rewardAmount",
+          "balance"
+        ],
+        "bot.balance.message": [
+          "balance",
+          "platformBalance",
+          "vipLevel",
+          "freeCount"
+        ],
+        "bot.orders.message": [
+          "firstName",
+          "orderList"
+        ],
+        "bot.order_status.message": [
+          "orderNumber",
+          "status",
+          "amount",
+          "trackingNumber",
+          "status_message"
+        ],
+        "bot.payment_success.message": [
+          "orderNumber",
+          "amount",
+          "productName"
+        ],
+        "bot.lottery_win.message": [
+          "productName",
+          "roundId",
+          "prizeValue"
+        ],
+        "bot.lottery_lose.message": [
+          "productName",
+          "roundId",
+          "participants"
+        ],
+        "bot.vip_level_up.message": [
+          "oldLevel",
+          "newLevel",
+          "benefits"
+        ],
+        "bot.system_notification.message": [
+          "title",
+          "content"
+        ],
+        "bot.language_changed.message": [
+          "language"
+        ],
+        "bot.referral_reward.message": [
+          "rewardAmount",
+          "balance"
+        ],
+        "bot.resale_status.message": [
+          "resaleId",
+          "status",
+          "progress",
+          "status_message"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "tg-TJ/common": {
+      "exists": true,
+      "size": 3800,
+      "keysCount": 94,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пул",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: маблағ",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пардохт",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: кашондан",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вақт",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: рӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: имрӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дирӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: фардо",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 糖ворт",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: давидани дароз",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дубора пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: тасдиқ",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 90 个特殊字符问题",
+          "details": [
+            {
+              "key": "welcome",
+              "char": "Х",
+              "context": "Хуш омадед"
+            },
+            {
+              "key": "language",
+              "char": "З",
+              "context": "Забон"
+            },
+            {
+              "key": "loading",
+              "char": "Б",
+              "context": "Боркунӣ..."
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "gesture.press.duration": [
+          "duration"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "tg-TJ/auth": {
+      "exists": true,
+      "size": 312,
+      "keysCount": 13,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пул",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: маблағ",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пардохт",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: кашондан",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вақт",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: рӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: имрӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дирӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: фардо",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 糖ворт",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: давидани дароз",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дубора пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: тасдиқ",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 13 个特殊字符问题",
+          "details": [
+            {
+              "key": "login",
+              "char": "登",
+              "context": "登录"
+            },
+            {
+              "key": "logout",
+              "char": "退",
+              "context": "退出"
+            },
+            {
+              "key": "register",
+              "char": "注",
+              "context": "注册"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "tg-TJ/lottery": {
+      "exists": true,
+      "size": 1037,
+      "keysCount": 27,
+      "issues": [
+        {
+          "type": "invalid_placeholder",
+          "severity": "medium",
+          "message": "无效的占位符: 0",
+          "key": "product_card.round_label"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пул",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: маблағ",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пардохт",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: кашондан",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вақт",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: рӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: имрӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дирӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: фардо",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 糖ворт",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: давидани дароз",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дубора пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: тасдиқ",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 27 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "Л",
+              "context": "Лутфи қисм"
+            },
+            {
+              "key": "participate",
+              "char": "И",
+              "context": "Иштирок ка"
+            },
+            {
+              "key": "detail",
+              "char": "Т",
+              "context": "Тафсилоти "
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "product_card.round_label": [
+          "0"
+        ]
+      },
+      "quality": {
+        "consistency": 49,
+        "completeness": 66,
+        "quality": 15
+      }
+    },
+    "tg-TJ/wallet": {
+      "exists": true,
+      "size": 398,
+      "keysCount": 15,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пул",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: маблағ",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пардохт",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: кашондан",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вақт",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: рӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: имрӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дирӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: фардо",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 糖ворт",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: давидани дароз",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дубора пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: тасдиқ",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 15 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "钱",
+              "context": "钱包"
+            },
+            {
+              "key": "balance",
+              "char": "余",
+              "context": "余额"
+            },
+            {
+              "key": "coins",
+              "char": "幸",
+              "context": "幸运币"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "tg-TJ/referral": {
+      "exists": true,
+      "size": 5334,
+      "keysCount": 126,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пул",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: маблағ",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пардохт",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: кашондан",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вақт",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: рӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: имрӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дирӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: фардо",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 糖ворт",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: давидани дароз",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дубора пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: тасдиқ",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 126 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "Д",
+              "context": "Даъватҳои "
+            },
+            {
+              "key": "subtitle",
+              "char": "Д",
+              "context": "Дӯстонро д"
+            },
+            {
+              "key": "invite_code",
+              "char": "К",
+              "context": "Коди даъва"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "list.page_info": [
+          "start",
+          "end",
+          "total"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "tg-TJ/task": {
+      "exists": true,
+      "size": 217,
+      "keysCount": 8,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пул",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: маблағ",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пардохт",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: кашондан",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вақт",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: рӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: имрӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дирӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: фардо",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 糖ворт",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: давидани дароз",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дубора пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: тасдиқ",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 8 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "任",
+              "context": "任务中心"
+            },
+            {
+              "key": "daily_tasks",
+              "char": "每",
+              "context": "每日任务"
+            },
+            {
+              "key": "task_completed",
+              "char": "任",
+              "context": "任务已完成"
+            }
+          ]
+        }
+      ],
+      "placeholders": {},
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "tg-TJ/error": {
+      "exists": true,
+      "size": 1946,
+      "keysCount": 49,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пул",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: маблағ",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пардохт",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: кашондан",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вақт",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: рӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: имрӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дирӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: фардо",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 糖ворт",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: давидани дароз",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дубора пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: тасдиқ",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 49 个特殊字符问题",
+          "details": [
+            {
+              "key": "network_error",
+              "char": "Х",
+              "context": "Хатои шаба"
+            },
+            {
+              "key": "server_error",
+              "char": "Х",
+              "context": "Хатои серв"
+            },
+            {
+              "key": "not_found",
+              "char": "М",
+              "context": "Манбаи маъ"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "offline.message": [
+          "duration"
+        ],
+        "offline.duration.minutes": [
+          "count"
+        ],
+        "offline.duration.seconds": [
+          "count"
+        ],
+        "offline.duration_full": [
+          "duration"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "tg-TJ/admin": {
+      "exists": true,
+      "size": 10113,
+      "keysCount": 246,
+      "issues": [
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пул",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: маблағ",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пардохт",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: кашондан",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вақт",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: рӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: имрӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дирӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: фардо",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 糖ворт",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: давидани дароз",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дубора пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: тасдиқ",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 246 个特殊字符问题",
+          "details": [
+            {
+              "key": "welcome",
+              "char": "Х",
+              "context": "Хуш омадед"
+            },
+            {
+              "key": "logout",
+              "char": "Б",
+              "context": "Баромадан"
+            },
+            {
+              "key": "title",
+              "char": "И",
+              "context": "Идоракунии"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "reward_config.page_info": [
+          "page",
+          "totalPages"
+        ],
+        "reward_config.selected_count": [
+          "count"
+        ],
+        "products_section.form.upload_limit": [
+          "count"
+        ],
+        "products_section.validation.name_max_length": [
+          "count"
+        ],
+        "products_section.validation.description_max_length": [
+          "count"
+        ]
+      },
+      "quality": {
+        "consistency": 52,
+        "completeness": 68,
+        "quality": 20
+      }
+    },
+    "tg-TJ/bot": {
+      "exists": true,
+      "size": 9598,
+      "keysCount": 104,
+      "issues": [
+        {
+          "type": "invalid_placeholder",
+          "severity": "medium",
+          "message": "无效的占位符: нафар",
+          "key": "bot.lottery_lose.message"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пул",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: маблағ",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: баланс",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пардохт",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: кашондан",
+          "category": "currency"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: вақт",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: рӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: имрӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дирӯз",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: фардо",
+          "category": "time"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: 糖ворт",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: давидани дароз",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: дубора пахш",
+          "category": "actions"
+        },
+        {
+          "type": "translation_quality",
+          "severity": "low",
+          "message": "缺少关键术语: тасдиқ",
+          "category": "actions"
+        },
+        {
+          "type": "special_characters",
+          "severity": "low",
+          "message": "发现 104 个特殊字符问题",
+          "details": [
+            {
+              "key": "title",
+              "char": "\ud83c",
+              "context": "🎉 Ба Luck"
+            },
+            {
+              "key": "message",
+              "char": "\ud83c",
+              "context": "🌟 Азизи {"
+            },
+            {
+              "key": "enter_market",
+              "char": "\ud83c",
+              "context": "🎲 Дохил ш"
+            }
+          ]
+        }
+      ],
+      "placeholders": {
+        "bot.welcome.message": [
+          "firstName",
+          "balance"
+        ],
+        "bot.registration_reward.message": [
+          "rewardAmount",
+          "balance"
+        ],
+        "bot.balance.message": [
+          "balance",
+          "platformBalance",
+          "vipLevel",
+          "freeCount"
+        ],
+        "bot.orders.message": [
+          "firstName",
+          "orderList"
+        ],
+        "bot.order_status.message": [
+          "orderNumber",
+          "status",
+          "amount",
+          "trackingNumber",
+          "status_message"
+        ],
+        "bot.payment_success.message": [
+          "orderNumber",
+          "amount",
+          "productName"
+        ],
+        "bot.lottery_win.message": [
+          "productName",
+          "roundId",
+          "prizeValue"
+        ],
+        "bot.lottery_lose.message": [
+          "productName",
+          "roundId",
+          "нафар"
+        ],
+        "bot.vip_level_up.message": [
+          "oldLevel",
+          "newLevel",
+          "benefits"
+        ],
+        "bot.system_notification.message": [
+          "title",
+          "content"
+        ],
+        "bot.language_changed.message": [
+          "language"
+        ],
+        "bot.referral_reward.message": [
+          "rewardAmount",
+          "balance"
+        ],
+        "bot.resale_status.message": [
+          "resaleId",
+          "status",
+          "progress",
+          "status_message"
+        ]
+      },
+      "quality": {
+        "consistency": 49,
+        "completeness": 66,
+        "quality": 15
+      }
+    }
+  },
+  "issues": [],
+  "recommendations": [
+    {
+      "priority": "high",
+      "category": "quality",
+      "title": "整体翻译质量需要改进",
+      "description": "当前翻译质量分数较低，建议优先解决高严重程度问题"
+    },
+    {
+      "priority": "high",
+      "category": "completeness",
+      "title": "翻译完整性不足",
+      "description": "部分语言或命名空间翻译不完整，建议补充缺失翻译"
+    }
+  ],
+  "statistics": {
+    "issuesByType": {},
+    "issuesBySeverity": {},
+    "filesWithIssues": 36,
+    "topIssues": []
+  }
+}

@@ -1,11 +1,61 @@
 {
-  "network_error": "网络错误，请稍后重试",
-  "server_error": "服务器错误",
-  "not_found": "资源不存在",
-  "unauthorized": "未授权，请先登录",
-  "forbidden": "无权限访问",
-  "validation_error": "验证失败",
-  "insufficient_balance": "余额不足",
-  "operation_failed": "操作失败",
-  "unknown_error": "未知错误"
+  "network_error": "Network error, please try again later",
+  "server_error": "Server error",
+  "not_found": "Resource not found",
+  "unauthorized": "Unauthorized, please login first",
+  "forbidden": "Access forbidden",
+  "validation_error": "Validation failed",
+  "insufficient_balance": "Insufficient balance",
+  "operation_failed": "Operation failed",
+  "unknown_error": "Unknown error",
+  
+  "network": {
+    "offline": "Network connection lost",
+    "timeout": "Request timeout, please try again later",
+    "maxRetries": "Network unstable, please try again later",
+    "unknown": "Unknown",
+    "online": "Online",
+    "quality": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "fair": "Fair", 
+      "poor": "Poor"
+    },
+    "status": "Network Status",
+    "type": "Network Type",
+    "downlink": "Downlink",
+    "rtt": "Latency",
+    "saveData": "Data Saver",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "never": "Never",
+    "lastOnline": "Last Online",
+    "refresh": "Refresh Status",
+    "refreshing": "Refreshing...",
+    "recommendations": "Network Recommendations"
+  },
+  
+  "offline": {
+    "title": "Network Connection Issue",
+    "message": "Network connection lost ({{duration}})",
+    "duration": {
+      "minutes": "{{count}} minutes",
+      "seconds": "{{count}} seconds"
+    },
+    "loading": "Loading...",
+    "retry": "Retry Connection",
+    "retrying": "Retrying...",
+    "refresh": "Refresh Page",
+    "duration_full": "Offline duration: {{duration}}",
+    "showDetails": "Show Details",
+    "hideDetails": "Hide Details",
+    "diagnostics": "Network Diagnostics",
+    "status": "Status",
+    "quality": "Network Quality",
+    "retryCount": "Retry Count",
+    "connectionType": "Connection Type",
+    "recommendations": "Recommendations",
+    "connected": "Connected",
+    "disconnected": "Disconnected"
+  }
 }

@@ -1,0 +1,393 @@
+{
+  "version": "1.0.0",
+  "description": "翻译文件渐进式加载策略配置",
+  "lastUpdated": "2025-10-31T14:04:22Z",
+
+  "loadingStrategy": {
+    "initialLoad": {
+      "enabled": true,
+      "criticalNamespaces": ["common", "auth", "error"],
+      "maxInitialSize": 51200,
+      "timeout": 3000,
+      "retryAttempts": 2,
+      "priorityOrder": [
+        { "namespace": "common", "weight": 100, "required": true },
+        { "namespace": "auth", "weight": 95, "required": true },
+        { "namespace": "error", "weight": 90, "required": true }
+      ]
+    },
+
+    "preloadRules": {
+      "routeBased": {
+        "enabled": true,
+        "predictionAccuracy": 0.7,
+        "prefetchDistance": 200,
+        "maxConcurrentRoutes": 3,
+        "routePatterns": {
+          "/admin*": ["admin", "auth"],
+          "/orders*": ["orders", "common"],
+          "/profile*": ["profile", "auth", "wallet"],
+          "/resale*": ["resale", "referral"],
+          "/transactions*": ["transactions", "wallet"],
+          "/withdraw*": ["withdraw", "wallet"],
+          "/recharge*": ["recharge", "wallet"],
+          "/referral*": ["referral", "auth"],
+          "/lottery*": ["lottery", "common"],
+          "/bot*": ["bot", "auth"],
+          "/task*": ["task", "auth"]
+        }
+      },
+
+      "behaviorBased": {
+        "enabled": true,
+        "trackingLevel": "comprehensive",
+        "predictionWindow": 300000,
+        "minConfidence": 0.6,
+        "maxPredictions": 5,
+        "behaviorPatterns": {
+          "scrollDirection": {
+            "down": ["/load-more", "/next-page"],
+            "up": ["/back", "/previous"]
+          },
+          "clickFrequency": {
+            "high": ["navigation", "menu"],
+            "medium": ["content", "links"],
+            "low": ["footer", "sidebar"]
+          },
+          "hoverDuration": {
+            "long": ["navigation-items", "menu-items"],
+            "medium": ["buttons", "links"],
+            "short": ["text", "images"]
+          }
+        }
+      },
+
+      "timeBased": {
+        "enabled": true,
+        "idleThreshold": 1000,
+        "batchInterval": 500,
+        "cleanupInterval": 1800000,
+        "predictiveIntervals": [
+          { "delay": 10000, "actions": ["analyze-usage"] },
+          { "delay": 60000, "actions": ["cleanup-cache", "update-predictions"] }
+        ]
+      }
+    },
+
+    "cacheStrategy": {
+      "enabled": true,
+      "maxCacheSize": 10485760,
+      "cacheTimeout": 1800000,
+      "compressionEnabled": true,
+      "compressionLevel": 6,
+      "supportedAlgorithms": ["gzip", "brotli"],
+      "cacheLevels": {
+        "memory": {
+          "maxSize": 5242880,
+          "ttl": 600000,
+          "priority": "high"
+        },
+        "localStorage": {
+          "maxSize": 4194304,
+          "ttl": 86400000,
+          "priority": "medium"
+        },
+        "sessionStorage": {
+          "maxSize": 2097152,
+          "ttl": 3600000,
+          "priority": "low"
+        }
+      }
+    },
+
+    "performance": {
+      "enableGzip": true,
+      "enableBrotli": true,
+      "batchLoadSize": 3,
+      "maxConcurrentLoads": 3,
+      "requestTimeout": 5000,
+      "retryDelays": [1000, 3000, 5000],
+      "loadBalancing": {
+        "strategy": "round-robin",
+        "fallbackEnabled": true,
+        "healthCheck": {
+          "interval": 30000,
+          "timeout": 5000,
+          "failureThreshold": 3
+        }
+      },
+      "optimization": {
+        "treeShaking": true,
+        "codeSplitting": true,
+        "dynamicImports": true,
+        "lazyLoading": true,
+        "progressiveLoading": true
+      }
+    }
+  },
+
+  "namespaceConfig": {
+    "common": {
+      "priority": "critical",
+      "size": 15360,
+      "dependencies": [],
+      "routePattern": "*",
+      "preload": true,
+      "compression": "gzip",
+      "fallback": "zh-CN"
+    },
+    "auth": {
+      "priority": "critical", 
+      "size": 12288,
+      "dependencies": ["common"],
+      "routePattern": "*auth*",
+      "preload": true,
+      "compression": "gzip",
+      "fallback": "zh-CN"
+    },
+    "error": {
+      "priority": "critical",
+      "size": 8192,
+      "dependencies": ["common"],
+      "routePattern": "*error*",
+      "preload": true,
+      "compression": "gzip",
+      "fallback": "zh-CN"
+    },
+    "admin": {
+      "priority": "high",
+      "size": 25600,
+      "dependencies": ["common", "auth"],
+      "routePattern": "/admin*",
+      "preload": false,
+      "compression": "brotli",
+      "fallback": "zh-CN"
+    },
+    "lottery": {
+      "priority": "high",
+      "size": 30720,
+      "dependencies": ["common"],
+      "routePattern": "/lottery*",
+      "preload": true,
+      "compression": "brotli",
+      "fallback": "zh-CN"
+    },
+    "referral": {
+      "priority": "normal",
+      "size": 20480,
+      "dependencies": ["common", "auth"],
+      "routePattern": "/referral*",
+      "preload": true,
+      "compression": "gzip",
+      "fallback": "zh-CN"
+    },
+    "wallet": {
+      "priority": "normal",
+      "size": 18432,
+      "dependencies": ["common", "auth"],
+      "routePattern": "*wallet*",
+      "preload": false,
+      "compression": "gzip",
+      "fallback": "zh-CN"
+    },
+    "bot": {
+      "priority": "low",
+      "size": 16384,
+      "dependencies": ["common", "auth"],
+      "routePattern": "/bot*",
+      "preload": false,
+      "compression": "gzip",
+      "fallback": "zh-CN"
+    },
+    "task": {
+      "priority": "low",
+      "size": 14336,
+      "dependencies": ["common", "auth"],
+      "routePattern": "/task*",
+      "preload": false,
+      "compression": "gzip",
+      "fallback": "zh-CN"
+    }
+  },
+
+  "routing": {
+    "preloadTriggers": {
+      "routeChange": {
+        "enabled": true,
+        "debounceDelay": 100,
+        "predictionAccuracy": 0.8
+      },
+      "userInteraction": {
+        "enabled": true,
+        "interactions": ["click", "hover", "scroll", "keydown"],
+        "predictionWindow": 2000
+      },
+      "networkIdle": {
+        "enabled": true,
+        "idleTimeout": 2000,
+        "resourceTypes": ["translation", "script", "style"]
+      }
+    },
+
+    "routeMapping": {
+      "/": ["common"],
+      "/login": ["auth", "common"],
+      "/register": ["auth", "common"],
+      "/orders": ["orders", "common"],
+      "/profile": ["profile", "auth", "wallet"],
+      "/resale": ["resale", "referral"],
+      "/settings": ["settings", "common"],
+      "/transactions": ["transactions", "wallet"],
+      "/withdraw": ["withdraw", "wallet"],
+      "/recharge": ["recharge", "wallet"],
+      "/referral": ["referral", "auth"],
+      "/lottery": ["lottery", "common"],
+      "/admin/*": ["admin", "auth"],
+      "/bot/*": ["bot", "auth"],
+      "/task/*": ["task", "auth"]
+    }
+  },
+
+  "monitoring": {
+    "performanceMetrics": {
+      "enabled": true,
+      "collectInterval": 5000,
+      "metrics": [
+        "loadTime",
+        "cacheHitRate",
+        "preloadAccuracy",
+        "memoryUsage",
+        "networkRequests",
+        "errorRate"
+      ]
+    },
+    
+    "analytics": {
+      "enabled": true,
+      "trackUserBehavior": true,
+      "trackPerformance": true,
+      "trackErrors": true,
+      "anonymizeData": true,
+      "retentionPeriod": 2592000
+    },
+
+    "alerts": {
+      "enabled": true,
+      "thresholds": {
+        "loadTime": 1000,
+        "cacheHitRate": 0.8,
+        "errorRate": 0.05,
+        "memoryUsage": 52428800
+      },
+      "notificationChannels": ["console", "remote"]
+    }
+  },
+
+  "optimization": {
+    "compression": {
+      "algorithms": {
+        "gzip": {
+          "level": 6,
+          "windowBits": 15,
+          "memLevel": 8
+        },
+        "brotli": {
+          "level": 4,
+          "windowBits": 22,
+          "mode": 0
+        }
+      },
+      "autoDetect": true,
+      "fallbackAlgorithm": "gzip"
+    },
+
+    "bundling": {
+      "strategy": "intelligent",
+      "combineCritical": true,
+      "splitByUsage": true,
+      "lazyLoad": true,
+      "dynamicChunks": true
+    },
+
+    "caching": {
+      "intelligent": true,
+      "predictive": true,
+      "evictionPolicy": "lru",
+      "warmup": {
+        "enabled": true,
+        "strategies": ["usage-based", "time-based", "route-based"]
+      }
+    }
+  },
+
+  "compatibility": {
+    "browsers": {
+      "modern": {
+        "minVersion": "Chrome 80",
+        "features": ["dynamic-imports", "web-workers", "intersection-observer"]
+      },
+      "legacy": {
+        "enabled": true,
+        "fallbackStrategy": "progressive-enhancement",
+        "polyfills": ["dynamic-imports"]
+      }
+    },
+    
+    "networkConditions": {
+      "fast": {
+        "downloadSpeed": 1000000,
+        "preloadAggressively": true
+      },
+      "average": {
+        "downloadSpeed": 500000,
+        "preloadModerately": true
+      },
+      "slow": {
+        "downloadSpeed": 100000,
+        "preloadConservatively": false
+      },
+      "offline": {
+        "strategy": "cache-first",
+        "fallbackLanguage": "zh-CN"
+      }
+    }
+  },
+
+  "development": {
+    "debugMode": {
+      "enabled": false,
+      "logLevel": "info",
+      "showPreloadIndicator": true,
+      "trackPredictions": true
+    },
+    
+    "testing": {
+      "enabled": true,
+      "mockNetworkDelays": true,
+      "simulateSlowConnections": true,
+      "validateTranslations": true
+    }
+  },
+
+  "deployment": {
+    "cdn": {
+      "enabled": true,
+      "strategy": "geographic",
+      "regions": ["asia", "europe", "americas"],
+      "fallback": "origin"
+    },
+    
+    "buildOptimization": {
+      "minify": true,
+      "compress": true,
+      "treeShake": true,
+      "scopeHoist": true
+    },
+    
+    "versioning": {
+      "strategy": "content-hash",
+      "cacheBusting": true,
+      "invalidateOnDeploy": true
+    }
+  }
+}

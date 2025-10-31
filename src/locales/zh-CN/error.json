@@ -7,5 +7,55 @@
   "validation_error": "验证失败",
   "insufficient_balance": "余额不足",
   "operation_failed": "操作失败",
-  "unknown_error": "未知错误"
+  "unknown_error": "未知错误",
+  
+  "network": {
+    "offline": "网络连接已断开",
+    "timeout": "请求超时，请稍后重试",
+    "maxRetries": "网络不稳定，请稍后再试",
+    "unknown": "未知",
+    "online": "在线",
+    "quality": {
+      "excellent": "优秀",
+      "good": "良好", 
+      "fair": "一般",
+      "poor": "较差"
+    },
+    "status": "网络状态",
+    "type": "网络类型",
+    "downlink": "下行带宽",
+    "rtt": "延迟",
+    "saveData": "数据节省",
+    "enabled": "已启用",
+    "disabled": "已禁用",
+    "never": "从未",
+    "lastOnline": "最后在线",
+    "refresh": "刷新状态",
+    "refreshing": "刷新中...",
+    "recommendations": "网络建议"
+  },
+  
+  "offline": {
+    "title": "网络连接异常",
+    "message": "网络连接已断开 ({{duration}})",
+    "duration": {
+      "minutes": "{{count}}分钟",
+      "seconds": "{{count}}秒"
+    },
+    "loading": "加载中...",
+    "retry": "重试连接",
+    "retrying": "重试中...",
+    "refresh": "刷新页面",
+    "duration_full": "离线时长: {{duration}}",
+    "showDetails": "显示详情",
+    "hideDetails": "隐藏详情",
+    "diagnostics": "网络诊断",
+    "status": "状态",
+    "quality": "网络质量",
+    "retryCount": "重试次数",
+    "connectionType": "连接类型",
+    "recommendations": "建议",
+    "connected": "已连接",
+    "disconnected": "未连接"
+  }
 }

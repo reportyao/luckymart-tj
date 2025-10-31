@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { 
+  QualityAssessor, 
+  QualityDimension, 
+  SeverityLevel, 
+  getQualityLevel,
+  type TranslationQualityAssessment,
+  type QualityIssue
+} from '../utils/translation-quality-metrics';
+import { AutomatedQualityChecker } from '../utils/automated-quality-checker';
 
 interface TranslationStats {
   language: string;
@@ -10,6 +19,10 @@ interface TranslationStats {
   qualityScore: number;
   lastUpdated: string;
   issues: TranslationIssue[];
+  dimensionScores: {
+    [key in QualityDimension]?: number;
+  };
+  assessment?: TranslationQualityAssessment;
 }
 
 interface TranslationIssue {
@@ -17,18 +30,42 @@ interface TranslationIssue {
   severity: 'critical' | 'high' | 'medium' | 'low';
   message: string;
   count: number;
+  location?: string;
+  suggestedFix?: string;
 }
 
 interface QualityDashboardProps {
   refreshInterval?: number;
   showRecommendations?: boolean;
   compact?: boolean;
+  autoRefresh?: boolean;
+  showTrends?: boolean;
+  enableRealTimeMonitoring?: boolean;
+}
+
+interface QualityTrend {
+  date: string;
+  score: number;
+  completeness: number;
+  issues: number;
+}
+
+interface QualityAlert {
+  id: string;
+  type: 'quality_drop' | 'critical_issue' | 'missing_translations';
+  severity: SeverityLevel;
+  message: string;
+  timestamp: Date;
+  acknowledged: boolean;
 }
 
 const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
   refreshInterval = 30000, // 30秒刷新
   showRecommendations = true,
-  compact = false
+  compact = false,
+  autoRefresh = true,
+  showTrends = true,
+  enableRealTimeMonitoring = false
 }) => {
   const { t, i18n } = useTranslation();
   const [stats, setStats] = useState<TranslationStats[]>([]);
@@ -37,8 +74,22 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
   const [selectedNamespace, setSelectedNamespace] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [trends, setTrends] = useState<QualityTrend[]>([]);
+  const [alerts, setAlerts] = useState<QualityAlert[]>([]);
+  const [qualityChecker] = useState(() => new AutomatedQualityChecker({
+    sourceLanguage: 'zh-CN',
+    targetLanguages: ['en-US', 'ru-RU', 'tg-TJ'],
+    namespaces: ['common', 'auth', 'lottery', 'wallet', 'referral', 'task', 'error', 'admin', 'bot'],
+    threshold: 70,
+    autoFix: false,
+    generateReport: false,
+    batchSize: 10,
+    parallel: true,
+    excludePatterns: [],
+    includeOnlyUpdated: false
+  }));
 
-  // 模拟数据 - 实际使用时应该从API获取
+  // 生成模拟质量数据
   const generateMockData = (): TranslationStats[] => {
     const languages = ['zh-CN', 'en-US', 'ru-RU', 'tg-TJ'];
     const namespaces = ['common', 'auth', 'lottery', 'wallet', 'referral', 'task', 'error', 'admin', 'bot'];
@@ -51,6 +102,15 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
         const missingKeys = Math.floor(Math.random() * 10);
         const completeness = Math.max(0, 100 - (missingKeys * 5));
         const qualityScore = Math.floor(Math.random() * 30) + 70;
+        
+        const dimensionScores: any = {
+          [QualityDimension.ACCURACY]: qualityScore + Math.random() * 10 - 5,
+          [QualityDimension.FLUENCY]: qualityScore + Math.random() * 10 - 5,
+          [QualityDimension.CONSISTENCY]: qualityScore + Math.random() * 10 - 5,
+          [QualityDimension.CULTURAL_ADAPTATION]: qualityScore + Math.random() * 10 - 5,
+          [QualityDimension.COMPLETENESS]: completeness,
+          [QualityDimension.TECHNICAL_QUALITY]: qualityScore + Math.random() * 15 - 7.5
+        };
         
         const issues: TranslationIssue[] = [];
         
@@ -81,6 +141,21 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
           });
         }
         
+        // 模拟评估对象
+        const assessment: TranslationQualityAssessment = {
+          translationKey: `${language}:${namespace}`,
+          sourceText: '示例源文本',
+          translatedText: '示例翻译文本',
+          sourceLanguage: 'zh-CN',
+          targetLanguage: language,
+          namespace,
+          overallScore: qualityScore,
+          dimensionScores: [],
+          issues: [],
+          recommendations: [],
+          assessmentDate: new Date()
+        };
+        
         mockData.push({
           language,
           namespace,
@@ -89,7 +164,9 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
           completeness,
           qualityScore,
           lastUpdated: new Date().toISOString(),
-          issues
+          issues,
+          dimensionScores,
+          assessment
         });
       }
     }
@@ -101,18 +178,127 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
   const fetchStats = async () => {
     setLoading(true);
     try {
-      // 实际实现时应该调用API
-      // const response = await fetch('/api/translation-stats');
-      // const data = await response.json();
-      
-      // 暂时使用模拟数据
+      // 实际实现时应该调用质量检查器
       const data = generateMockData();
       setStats(data);
+      
+      // 生成趋势数据
+      if (showTrends) {
+        await generateTrends();
+      }
+      
+      // 检查告警
+      if (enableRealTimeMonitoring) {
+        await checkQualityAlerts(data);
+      }
+      
       setLastRefresh(new Date());
     } catch (error) {
       console.error('获取翻译统计失败:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 生成质量趋势数据
+  const generateTrends = async () => {
+    const now = new Date();
+    const trendsData: QualityTrend[] = [];
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      
+      trendsData.push({
+        date: date.toISOString().split('T')[0],
+        score: 70 + Math.random() * 25,
+        completeness: 80 + Math.random() * 15,
+        issues: Math.floor(Math.random() * 20)
+      });
+    }
+    
+    setTrends(trendsData);
+  };
+
+  // 检查质量告警
+  const checkQualityAlerts = async (statsData: TranslationStats[]) => {
+    const newAlerts: QualityAlert[] = [];
+    
+    // 检查整体质量下降
+    const avgScore = statsData.reduce((sum, stat) => sum + stat.qualityScore, 0) / statsData.length;
+    if (avgScore < 70) {
+      newAlerts.push({
+        id: `quality_drop_${Date.now()}`,
+        type: 'quality_drop',
+        severity: SeverityLevel.HIGH,
+        message: `整体质量分数下降至 ${avgScore.toFixed(1)}`,
+        timestamp: new Date(),
+        acknowledged: false
+      });
+    }
+    
+    // 检查严重问题
+    const criticalIssues = statsData.flatMap(stat => stat.issues)
+      .filter(issue => issue.severity === 'critical');
+    if (criticalIssues.length > 0) {
+      newAlerts.push({
+        id: `critical_issues_${Date.now()}`,
+        type: 'critical_issue',
+        severity: SeverityLevel.CRITICAL,
+        message: `发现 ${criticalIssues.length} 个严重问题`,
+        timestamp: new Date(),
+        acknowledged: false
+      });
+    }
+    
+    // 检查缺失翻译
+    const totalMissing = statsData.reduce((sum, stat) => sum + stat.missingKeys, 0);
+    if (totalMissing > 50) {
+      newAlerts.push({
+        id: `missing_translations_${Date.now()}`,
+        type: 'missing_translations',
+        severity: SeverityLevel.HIGH,
+        message: `存在 ${totalMissing} 个缺失翻译`,
+        timestamp: new Date(),
+        acknowledged: false
+      });
+    }
+    
+    setAlerts(prev => [...prev, ...newAlerts]);
+  };
+
+  // 确认告警
+  const acknowledgeAlert = (alertId: string) => {
+    setAlerts(prev => prev.map(alert => 
+      alert.id === alertId ? { ...alert, acknowledged: true } : alert
+    ));
+  };
+
+  // 执行质量检查
+  const performQualityCheck = async () => {
+    try {
+      setLoading(true);
+      const result = await qualityChecker.performQualityCheck();
+      console.log('质量检查完成:', result.stats);
+      await fetchStats(); // 重新获取数据
+    } catch (error) {
+      console.error('质量检查失败:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 生成质量报告
+  const generateReport = async (format: string = 'json') => {
+    try {
+      const reportPath = await qualityChecker.generateComprehensiveReport({
+        format,
+        languages: selectedLanguage !== 'all' ? [selectedLanguage] : undefined,
+        namespaces: selectedNamespace !== 'all' ? [selectedNamespace] : undefined
+      });
+      console.log('质量报告已生成:', reportPath);
+    } catch (error) {
+      console.error('生成报告失败:', error);
     }
   };
 
@@ -229,6 +415,55 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
+      {/* 告警面板 */}
+      {alerts.length > 0 && (
+        <div className="mb-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-red-600 font-semibold">🚨 质量告警</span>
+                <span className="ml-2 px-2 py-1 bg-red-100 text-red-800 text-sm rounded">
+                  {alerts.filter(a => !a.acknowledged).length} 未确认
+                </span>
+              </div>
+              <button
+                onClick={() => setAlerts([])}
+                className="text-red-600 hover:text-red-800"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="mt-3 space-y-2">
+              {alerts.slice(0, 3).map(alert => (
+                <div key={alert.id} className="flex items-center justify-between bg-white p-3 rounded border">
+                  <div className="flex items-center">
+                    <span className={`w-2 h-2 rounded-full mr-3 ${
+                      alert.severity === 'critical' ? 'bg-red-500' :
+                      alert.severity === 'high' ? 'bg-orange-500' :
+                      alert.severity === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
+                    }`}></span>
+                    <span className="text-sm">{alert.message}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500">
+                      {alert.timestamp.toLocaleTimeString()}
+                    </span>
+                    {!alert.acknowledged && (
+                      <button
+                        onClick={() => acknowledgeAlert(alert.id)}
+                        className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                      >
+                        确认
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 头部 */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -241,17 +476,40 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
             </p>
           </div>
           <div className="flex items-center space-x-4">
+            {enableRealTimeMonitoring && (
+              <div className="flex items-center space-x-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span className="text-sm text-gray-600">实时监控</span>
+              </div>
+            )}
             <div className="text-sm text-gray-500">
               {t('translationDashboard.lastUpdate', '最后更新')}: {lastRefresh.toLocaleTimeString()}
             </div>
-            <button
-              onClick={fetchStats}
-              disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-            >
-              <span>🔄</span>
-              <span>{loading ? t('translationDashboard.refreshing', '刷新中...') : t('translationDashboard.refresh', '刷新')}</span>
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={performQualityCheck}
+                disabled={loading}
+                className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 text-sm"
+              >
+                <span>🔍</span>
+                <span>质量检查</span>
+              </button>
+              <button
+                onClick={() => generateReport('html')}
+                className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center space-x-2 text-sm"
+              >
+                <span>📊</span>
+                <span>生成报告</span>
+              </button>
+              <button
+                onClick={fetchStats}
+                disabled={loading}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              >
+                <span>🔄</span>
+                <span>{loading ? t('translationDashboard.refreshing', '刷新中...') : t('translationDashboard.refresh', '刷新')}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -402,6 +660,28 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
               </div>
 
               <div className="space-y-3">
+                {/* 维度评分 */}
+                {stat.dimensionScores && (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-gray-700">质量维度</p>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      {Object.entries(stat.dimensionScores).slice(0, 4).map(([dimension, score]) => (
+                        <div key={dimension} className="flex justify-between">
+                          <span className="text-gray-600">
+                            {dimension === QualityDimension.ACCURACY ? '准确性' :
+                             dimension === QualityDimension.FLUENCY ? '流畅性' :
+                             dimension === QualityDimension.CONSISTENCY ? '一致性' :
+                             dimension === QualityDimension.CULTURAL_ADAPTATION ? '文化适应' :
+                             dimension === QualityDimension.COMPLETENESS ? '完整性' :
+                             dimension === QualityDimension.TECHNICAL_QUALITY ? '技术质量' : dimension}
+                          </span>
+                          <span className={getHealthColor(score || 0)}>{(score || 0).toFixed(0)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-gray-600">{t('translationDashboard.completeness', '完整性')}</span>
@@ -427,9 +707,19 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
                       {t('translationDashboard.issues', '问题')}:
                     </p>
                     {stat.issues.slice(0, 3).map((issue, idx) => (
-                      <div key={idx} className="flex items-center space-x-2 text-sm">
-                        <span>{getSeverityIcon(issue.severity)}</span>
-                        <span className="text-gray-600">{issue.message}</span>
+                      <div key={idx} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center space-x-2">
+                          <span>{getSeverityIcon(issue.severity)}</span>
+                          <span className="text-gray-600">{issue.message}</span>
+                        </div>
+                        {issue.suggestedFix && (
+                          <button
+                            className="text-blue-600 hover:text-blue-800"
+                            title={issue.suggestedFix}
+                          >
+                            💡
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -437,6 +727,32 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* 质量趋势图 */}
+      {showTrends && trends.length > 0 && (
+        <div className="mt-8 bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center">
+            <span className="mr-2">📈</span>
+            {t('translationDashboard.qualityTrends', '质量趋势')}
+          </h3>
+          <div className="h-64 flex items-end justify-between space-x-2">
+            {trends.map((trend, index) => (
+              <div key={index} className="flex-1 flex flex-col items-center">
+                <div className="w-full bg-gray-200 rounded-t" style={{ height: '120px' }}>
+                  <div 
+                    className="bg-blue-500 rounded-t w-full transition-all duration-300"
+                    style={{ height: `${trend.score}%` }}
+                    title={`${trend.date}: ${trend.score.toFixed(1)}分`}
+                  />
+                </div>
+                <div className="text-xs text-gray-600 mt-1">
+                  {new Date(trend.date).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -455,11 +771,22 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
                   <span className="text-red-600 font-medium">🚨 {t('translationDashboard.criticalIssues', '严重问题')}</div>
                 </div>
                 <p className="text-sm text-red-700">
-                  {t('translationDashboard.criticalIssuesDesc', '存在严重问题需要立即修复')}
+                  存在 {overallStats.criticalIssues} 个严重问题需要立即修复
                 </p>
-                <button className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
-                  {t('translationDashboard.fixNow', '立即修复')}
-                </button>
+                <div className="mt-2 space-x-2">
+                  <button 
+                    onClick={performQualityCheck}
+                    className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                  >
+                    执行检查
+                  </button>
+                  <button 
+                    onClick={() => generateReport('html')}
+                    className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700"
+                  >
+                    生成报告
+                  </button>
+                </div>
               </div>
             )}
 
@@ -468,11 +795,16 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
                 <span className="text-yellow-600 font-medium">⚠️ {t('translationDashboard.missingTranslations', '缺失翻译')}</div>
               </div>
               <p className="text-sm text-yellow-700">
-                {t('translationDashboard.missingTranslationsDesc', '补充缺失的翻译键以提高完整性')}
+                检测到缺失翻译，建议补充以提高完整性
               </p>
-              <button className="mt-2 px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700">
-                {t('translationDashboard.generateKeys', '生成键')}
-              </button>
+              <div className="mt-2 space-x-2">
+                <button className="px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700">
+                  自动补全
+                </button>
+                <button className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700">
+                  查看详情
+                </button>
+              </div>
             </div>
 
             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -480,10 +812,57 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
                 <span className="text-blue-600 font-medium">📊 {t('translationDashboard.qualityReport', '质量报告')}</div>
               </div>
               <p className="text-sm text-blue-700">
-                {t('translationDashboard.qualityReportDesc', '生成详细的翻译质量分析报告')}
+                生成详细的翻译质量分析报告和趋势分析
               </p>
-              <button className="mt-2 px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
-                {t('translationDashboard.generateReport', '生成报告')}
+              <div className="mt-2 space-x-2">
+                <button 
+                  onClick={() => generateReport('html')}
+                  className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                >
+                  HTML报告
+                </button>
+                <button 
+                  onClick={() => generateReport('json')}
+                  className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700"
+                >
+                  JSON数据
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center mb-2">
+                <span className="text-green-600 font-medium">🔍 {t('translationDashboard.qualityAnalysis', '质量分析')}</div>
+              </div>
+              <p className="text-sm text-green-700">
+                深度分析翻译质量问题并提供改进建议
+              </p>
+              <button className="mt-2 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                开始分析
+              </button>
+            </div>
+
+            <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+              <div className="flex items-center mb-2">
+                <span className="text-purple-600 font-medium">⚙️ {t('translationDashboard.autoFix', '自动修复')}</div>
+              </div>
+              <p className="text-sm text-purple-700">
+                尝试自动修复可识别的翻译质量问题
+              </p>
+              <button className="mt-2 px-3 py-1 bg-purple-600 text-white text-sm rounded hover:bg-purple-700">
+                启用自动修复
+              </button>
+            </div>
+
+            <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+              <div className="flex items-center mb-2">
+                <span className="text-indigo-600 font-medium">📋 {t('translationDashboard.terminologyCheck', '术语检查')}</div>
+              </div>
+              <p className="text-sm text-indigo-700">
+                检查术语一致性和标准化翻译
+              </p>
+              <button className="mt-2 px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700">
+                执行检查
               </button>
             </div>
           </div>

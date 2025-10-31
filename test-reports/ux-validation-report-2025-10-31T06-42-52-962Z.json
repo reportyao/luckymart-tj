@@ -1,0 +1,95 @@
+{
+  "timestamp": "2025-10-31T06:42:52.962Z",
+  "summary": {
+    "total": 16,
+    "passed": 12,
+    "warnings": 3,
+    "failed": 1
+  },
+  "results": [
+    {
+      "file": "./tests/user-experience.test.ts",
+      "status": "PASS",
+      "message": "用户体验测试套件文件存在"
+    },
+    {
+      "file": "./tests/accessibility.test.ts",
+      "status": "PASS",
+      "message": "无障碍测试套件文件存在"
+    },
+    {
+      "file": "./utils/ux-evaluator.ts",
+      "status": "PASS",
+      "message": "用户体验评估工具文件存在"
+    },
+    {
+      "file": "./scripts/run-ux-tests.ts",
+      "status": "PASS",
+      "message": "测试执行脚本文件存在"
+    },
+    {
+      "file": "./tests/user-experience.test.ts",
+      "status": "FAIL",
+      "message": "缺少必要的组件",
+      "details": "缺少: UserBehavior"
+    },
+    {
+      "file": "./tests/user-experience.test.ts",
+      "status": "PASS",
+      "message": "测试场景数量充足 (8个)"
+    },
+    {
+      "file": "./tests/accessibility.test.ts",
+      "status": "PASS",
+      "message": "无障碍测试文件结构完整"
+    },
+    {
+      "file": "./tests/accessibility.test.ts",
+      "status": "PASS",
+      "message": "WCAG合规性测试覆盖充分"
+    },
+    {
+      "file": "./utils/ux-evaluator.ts",
+      "status": "PASS",
+      "message": "UX评估工具文件结构完整"
+    },
+    {
+      "file": "./tests/user-experience.test.ts",
+      "status": "WARNING",
+      "message": "用户体验测试文件类型检查有警告",
+      "details": "Command failed: npx tsc --noEmit --strict tests/user-experience.test.ts"
+    },
+    {
+      "file": "./tests/accessibility.test.ts",
+      "status": "WARNING",
+      "message": "无障碍测试文件类型检查有警告",
+      "details": "Command failed: npx tsc --noEmit --strict tests/accessibility.test.ts"
+    },
+    {
+      "file": "./utils/ux-evaluator.ts",
+      "status": "WARNING",
+      "message": "UX评估工具TypeScript类型检查有警告",
+      "details": "Command failed: npx tsc --noEmit --strict utils/ux-evaluator.ts"
+    },
+    {
+      "file": "./tests/user-experience.test.ts",
+      "status": "PASS",
+      "message": "测试方法数量充足 (4个)"
+    },
+    {
+      "file": "./tests/user-experience.test.ts",
+      "status": "PASS",
+      "message": "评分系统实现完整"
+    },
+    {
+      "file": "./tests/accessibility.test.ts",
+      "status": "PASS",
+      "message": "WCAG四个原则测试覆盖完整"
+    },
+    {
+      "file": "./utils/ux-evaluator.ts",
+      "status": "PASS",
+      "message": "核心功能实现完整"
+    }
+  ]
+}

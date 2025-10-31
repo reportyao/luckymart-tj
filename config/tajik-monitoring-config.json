@@ -1,0 +1,186 @@
+# 塔吉克语翻译质量监控配置文件
+
+{
+  "checkInterval": 3600000,
+  "qualityThreshold": 80,
+  "enableAutoFix": false,
+  "notifications": {
+    "slack": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK",
+    "email": "dev-team@luckymart.tj",
+    "webhook": "https://api.luckymart.tj/translation-alerts"
+  },
+  "schedules": {
+    "daily": "09:00",
+    "weekly": "Mon 09:00", 
+    "monthly": "1 09:00"
+  },
+  "alerts": {
+    "lowQuality": true,
+    "missingTranslations": true,
+    "terminologyInconsistency": true
+  },
+  "thresholds": {
+    "overallScore": {
+      "excellent": 90,
+      "good": 80,
+      "warning": 70,
+      "critical": 60
+    },
+    "completionRate": {
+      "excellent": 95,
+      "good": 90,
+      "warning": 85,
+      "critical": 80
+    },
+    "fileQuality": {
+      "excellent": 90,
+      "good": 80,
+      "warning": 70,
+      "critical": 60
+    }
+  },
+  "rules": {
+    "autoOptimize": {
+      "enabled": false,
+      "confidenceThreshold": 85,
+      "categories": ["terminology", "cultural"]
+    },
+    "qualityGates": {
+      "requireReviewForScoresBelow": 75,
+      "blockDeploymentBelow": 70,
+      "requireManagerApprovalBelow": 60
+    },
+    "notifications": {
+      "quietHours": {
+        "start": "22:00",
+        "end": "08:00"
+      },
+      "escalation": {
+        "afterLowQualityMinutes": 60,
+        "afterMissingTranslationsMinutes": 30,
+        "criticalAlertImmediate": true
+      }
+    }
+  },
+  "reporting": {
+    "formats": ["markdown", "json", "html"],
+    "retentionDays": 90,
+    "autoGenerate": {
+      "daily": true,
+      "weekly": true,
+      "monthly": true
+    },
+    "recipients": {
+      "daily": ["dev-team@luckymart.tj"],
+      "weekly": ["qa-team@luckymart.tj"],
+      "monthly": ["management@luckymart.tj"]
+    }
+  },
+  "integrations": {
+    "ci": {
+      "enabled": true,
+      "failOnScoreBelow": 70,
+      "commentOnPR": true
+    },
+    "jira": {
+      "enabled": false,
+      "projectKey": "LOC",
+      "autoCreateTickets": false,
+      "ticketTypes": {
+        "lowQuality": "Bug",
+        "missingTranslation": "Task",
+        "terminologyIssue": "Improvement"
+      }
+    },
+    "github": {
+      "enabled": true,
+      "repository": "luckymart-tj",
+      "autoLabelPR": true,
+      "labelPrefix": "tajik-translation"
+    }
+  },
+  "customization": {
+    "terminology": {
+      "enforceConsistency": true,
+      "approvedTermsFile": "docs/tajik-approved-terms.json",
+      "newTermsRequireApproval": true
+    },
+    "cultural": {
+      "dateFormat": "dd.mm.yyyy",
+      "currencyFormat": "1,234.56 сомонӣ",
+      "numberFormat": "1,234.56",
+      "politenessLevel": "formal"
+    },
+    "ui": {
+      "maxSentenceLength": 150,
+      "preferConciseLanguage": true,
+      "useFriendlyTone": true
+    }
+  },
+  "workflow": {
+    "translationProcess": {
+      "step1": {
+        "name": "Initial Translation",
+        "required": true,
+        "tools": ["google-translate", "deepl"],
+        "qualityCheck": false
+      },
+      "step2": {
+        "name": "Quality Review",
+        "required": true,
+        "reviewers": ["native-speaker"],
+        "tools": ["evaluator", "optimizer"]
+      },
+      "step3": {
+        "name": "Cultural Adaptation",
+        "required": true,
+        "checklist": ["cultural-appropriateness", "local-customs"],
+        "approval": "cultural-expert"
+      },
+      "step4": {
+        "name": "Final Validation",
+        "required": true,
+        "tests": ["ui-testing", "user-acceptance"],
+        "approval": "product-owner"
+      }
+    },
+    "approval": {
+      "thresholds": {
+        "excellent": "auto-approve",
+        "good": "one-approval",
+        "needs_improvement": "two-approvals",
+        "critical": "manager-approval"
+      },
+      "escalation": {
+        "timeoutHours": 24,
+        "escalateToRole": "senior-manager"
+      }
+    }
+  },
+  "metrics": {
+    "track": {
+      "translationVelocity": true,
+      "qualityTrends": true,
+      "userSatisfaction": true,
+      "maintenanceEffort": true
+    },
+    "targets": {
+      "overallScoreTarget": 85,
+      "completionRateTarget": 95,
+      "responseTimeTarget": "2h",
+      "accuracyRateTarget": 90
+    },
+    "alerts": {
+      "scoreDrop": {
+        "enabled": true,
+        "threshold": 5,
+        "timeWindow": "24h"
+      },
+      "completionStagnation": {
+        "enabled": true,
+        "threshold": 0,
+        "timeWindow": "48h"
+      }
+    }
+  }
+}

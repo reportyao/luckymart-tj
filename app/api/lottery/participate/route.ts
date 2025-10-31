@@ -53,7 +53,7 @@ const handleLotteryParticipation = async (request: NextRequest) => {
 
     // 开始数据库事务
     const result = await prisma.$transaction(async (tx) => {
-      // 1. 验证夺宝期次
+      // 1. 使用行级锁验证夺宝期次，防止竞态条件
       const round = await tx.lotteryRounds.findUnique({
         where: { id: roundId },
         select: {
@@ -62,7 +62,8 @@ const handleLotteryParticipation = async (request: NextRequest) => {
           totalShares: true,
           soldShares: true,
           pricePerShare: true,
-          drawTime: true
+          drawTime: true,
+          version: true
         }
       });
 
@@ -80,10 +81,33 @@ const handleLotteryParticipation = async (request: NextRequest) => {
         throw new Error('夺宝期次已结束');
       }
 
-      // 验证剩余份额
+      // 2. 使用条件更新验证剩余份额，防止竞态条件
       const availableShares = round.totalShares - round.soldShares;
       if (quantity > availableShares) {
         throw new Error(`剩余份额不足，仅剩${availableShares}份`);
+      }
+
+      // 3. 原子性更新期次已售份额（使用乐观锁）
+      const updatedRound = await tx.lotteryRounds.updateMany({
+        where: {
+          id: roundId,
+          soldShares: round.soldShares, // 乐观锁：只有在soldShares没有变化时才更新
+          status: 'active'
+        },
+        data: {
+          soldShares: { increment: quantity }
+        }
+      });
+
+      if (updatedRound.count === 0) {
+        // 说明soldShares已经发生变化，可能存在竞态条件
+        const currentRound = await tx.lotteryRounds.findUnique({
+          where: { id: roundId },
+          select: { soldShares: true }
+        });
+        
+        const currentAvailable = round.totalShares - (currentRound?.soldShares || 0);
+        throw new Error(`份额已被其他用户抢购，当前剩余${currentAvailable}份，请重试`);
       }
 
       // 验证用户幸运币余额
@@ -124,9 +148,29 @@ const handleLotteryParticipation = async (request: NextRequest) => {
         }
       });
 
-      // 更新用户幸运币余额
-      await tx.users.update({
+      // 获取并锁定用户记录，验证幸运币余额
+      const userWithVersion = await tx.users.findUnique({
         where: { id: decoded!.userId },
+        select: { 
+          luckyCoins: true,
+          luckyCoinsVersion: true 
+        }
+      });
+
+      if (!userWithVersion) {
+        throw new Error('用户不存在');
+      }
+
+      if (Number(userWithVersion.luckyCoins) < Number(totalCost)) {
+        throw new Error('幸运币余额不足');
+      }
+
+      // 使用乐观锁更新用户余额
+      const updatedUser = await tx.users.updateMany({
+        where: {
+          id: decoded!.userId,
+          luckyCoinsVersion: userWithVersion.luckyCoinsVersion
+        },
         data: {
           luckyCoins: { decrement: totalCost },
           totalSpent: { increment: totalCost },
@@ -134,13 +178,11 @@ const handleLotteryParticipation = async (request: NextRequest) => {
         }
       });
 
-      // 更新期次已售份额
-      await tx.lotteryRounds.update({
-        where: { id: round.id },
-        data: {
-          soldShares: { increment: quantity }
-        }
-      });
+      if (updatedUser.count === 0) {
+        throw new Error('用户余额更新失败，可能是并发操作，请重试');
+      }
+
+      // 期次已售份额已在上面使用乐观锁原子性更新
 
       // 记录交易
       await tx.transactions.create({

@@ -80,7 +80,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
     <div className={`relative ${className}`}>
       {/* 主图区域 */}
       <div 
-        className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer group"
+        className="relative aspect-square luckymart-bg-gray-light luckymart-rounded-lg overflow-hidden cursor-pointer group"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -104,10 +104,10 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                 e.stopPropagation();
                 handlePrevious();
               }}
-              className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full luckymart-padding-sm opacity-0 group-hover:opacity-100 transition-opacity"
               aria-label="上一张"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="luckymart-size-md luckymart-size-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -116,10 +116,10 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                 e.stopPropagation();
                 handleNext();
               }}
-              className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full luckymart-padding-sm opacity-0 group-hover:opacity-100 transition-opacity"
               aria-label="下一张"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="luckymart-size-md luckymart-size-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
@@ -128,7 +128,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
         {/* 图片计数器 */}
         {images.length > 1 && (
-          <div className="absolute top-2 right-2 bg-black/60 text-white px-2 py-1 rounded-full text-sm">
+          <div className="absolute top-2 right-2 bg-black/60 text-white px-2 py-1 rounded-full luckymart-text-sm">
             {currentIndex + 1} / {images.length}
           </div>
         )}
@@ -143,7 +143,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
       {/* 缩略图导航 */}
       {images.length > 1 && (
-        <div className="flex gap-2 mt-3 overflow-x-auto pb-2">
+        <div className="luckymart-layout-flex gap-2 mt-3 overflow-x-auto pb-2">
           {images.map((image, index) => (
             <button
               key={index}
@@ -170,7 +170,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
       {/* 指示器点 - 移动端 */}
       {images.length > 1 && images.length <= 5 && (
-        <div className="flex justify-center gap-2 mt-3 md:hidden">
+        <div className="luckymart-layout-flex justify-center gap-2 mt-3 md:hidden">
           {images.map((_, index) => (
             <button
               key={index}

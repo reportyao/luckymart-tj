@@ -27,7 +27,7 @@ const COMPONENT_CONFIGS: Record<string, CodeSplitConfig> = {
   AdminDashboard: {
     component: 'admin/dashboard',
     threshold: 0.8, // 80%概率触发预加载
-    fallback: <div className="animate-pulse bg-gray-200 h-64 rounded-lg" />,
+    fallback: <div className="luckymart-animation-pulse bg-gray-200 h-64 luckymart-rounded-lg" />,
     priority: 'low'
   },
   
@@ -35,14 +35,14 @@ const COMPONENT_CONFIGS: Record<string, CodeSplitConfig> = {
   ProductCarousel: {
     component: 'product/carousel',
     threshold: 0.6,
-    fallback: <div className="animate-pulse bg-gray-200 h-48 rounded-lg" />,
+    fallback: <div className="luckymart-animation-pulse bg-gray-200 h-48 luckymart-rounded-lg" />,
     priority: 'medium'
   },
   
   ProductImageCarousel: {
     component: 'product/image-carousel',
     threshold: 0.5,
-    fallback: <div className="animate-pulse bg-gray-200 h-56 rounded-lg" />,
+    fallback: <div className="luckymart-animation-pulse bg-gray-200 h-56 luckymart-rounded-lg" />,
     priority: 'medium'
   },
   
@@ -50,7 +50,7 @@ const COMPONENT_CONFIGS: Record<string, CodeSplitConfig> = {
   LanguageSwitcher: {
     component: 'i18n/language-switcher',
     threshold: 0.9,
-    fallback: <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />,
+    fallback: <div className="luckymart-size-lg luckymart-size-lg bg-gray-200 rounded-full luckymart-animation-pulse" />,
     priority: 'high'
   },
   
@@ -58,7 +58,7 @@ const COMPONENT_CONFIGS: Record<string, CodeSplitConfig> = {
   PerformanceCharts: {
     component: 'charts/performance',
     threshold: 0.3, // 仅在明确需要时加载
-    fallback: <div className="animate-pulse bg-gray-200 h-80 rounded-lg" />,
+    fallback: <div className="luckymart-animation-pulse bg-gray-200 h-80 luckymart-rounded-lg" />,
     priority: 'low'
   },
   
@@ -74,7 +74,7 @@ const COMPONENT_CONFIGS: Record<string, CodeSplitConfig> = {
   InstagramPoster: {
     component: 'social/instagram-poster',
     threshold: 0.2,
-    fallback: <div className="animate-pulse bg-gray-200 h-64 rounded-lg" />,
+    fallback: <div className="luckymart-animation-pulse bg-gray-200 h-64 luckymart-rounded-lg" />,
     priority: 'low'
   }
 };
@@ -82,33 +82,36 @@ const COMPONENT_CONFIGS: Record<string, CodeSplitConfig> = {
 // 动态加载组件的映射
 const DYNAMIC_COMPONENTS = {
   AdminDashboard: dynamic(() => import('../app/admin/dashboard/page').then(mod => mod.default), {
-    loading: () => <div className="animate-pulse bg-gray-200 h-64 rounded-lg" />
+    loading: () => <div className="luckymart-animation-pulse bg-gray-200 h-64 luckymart-rounded-lg" />
   }),
   
   ProductCarousel: dynamic(() => import('../components/ProductCarousel').then(mod => mod.default), {
-    loading: () => <div className="animate-pulse bg-gray-200 h-48 rounded-lg" />
+    loading: () => <div className="luckymart-animation-pulse bg-gray-200 h-48 luckymart-rounded-lg" />
   }),
   
   ProductImageCarousel: dynamic(() => import('../components/ProductImageCarousel').then(mod => mod.default), {
-    loading: () => <div className="animate-pulse bg-gray-200 h-56 rounded-lg" />
+    loading: () => <div className="luckymart-animation-pulse bg-gray-200 h-56 luckymart-rounded-lg" />
   }),
   
   LanguageSwitcher: dynamic(() => import('../components/LanguageSwitcher').then(mod => mod.default), {
-    loading: () => <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+    loading: () => <div className="luckymart-size-lg luckymart-size-lg bg-gray-200 rounded-full luckymart-animation-pulse" />
   }),
   
   PerformanceCharts: dynamic(() => import('../components/Charts').then(mod => mod.default), {
-    loading: () => <div className="animate-pulse bg-gray-200 h-80 rounded-lg" />
+    loading: () => <div className="luckymart-animation-pulse bg-gray-200 h-80 luckymart-rounded-lg" />
   }),
   
   InstagramPoster: dynamic(() => import('../components/InstagramPoster').then(mod => mod.default), {
-    loading: () => <div className="animate-pulse bg-gray-200 h-64 rounded-lg" />
+    loading: () => <div className="luckymart-animation-pulse bg-gray-200 h-64 luckymart-rounded-lg" />
   })
 };
 
-export const CodeSplitOptimizer: React.FC<{
+interface CodeSplitOptimizerProps {
+  /** 子组件 */
   children?: React.ReactNode;
-}> = ({ children }) => {
+}
+
+export const CodeSplitOptimizer: React.FC<CodeSplitOptimizerProps> = ({ children }) => {
   const [loadedComponents, setLoadedComponents] = useState<Set<string>>(new Set());
   const [performanceData, setPerformanceData] = useState<PerformanceData | null>(null);
   const [optimizationEnabled, setOptimizationEnabled] = useState(true);
@@ -273,7 +276,7 @@ export const CodeSplitOptimizer: React.FC<{
       
       {/* 性能监控面板 (开发模式下显示) */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-4 right-4 bg-black bg-opacity-75 text-white p-4 rounded-lg text-sm z-50">
+        <div className="fixed bottom-4 right-4 bg-black bg-opacity-75 text-white luckymart-padding-md luckymart-rounded-lg luckymart-text-sm z-50">
           <div className="mb-2">
             <strong>代码分割状态:</strong>
           </div>
@@ -287,7 +290,7 @@ export const CodeSplitOptimizer: React.FC<{
             </>
           )}
           <button
-            className="mt-2 px-2 py-1 bg-blue-600 rounded text-xs"
+            className="mt-2 px-2 py-1 bg-blue-600 luckymart-rounded text-xs"
             onClick={() => setOptimizationEnabled(!optimizationEnabled)}
           >
             {optimizationEnabled ? '禁用优化' : '启用优化'}
@@ -326,13 +329,13 @@ export const LazyComponent: React.FC<{
   }, [componentName]);
 
   if (!shouldLoad) {
-    return fallback || <div className="animate-pulse bg-gray-200 h-32 rounded-lg" />;
+    return fallback || <div className="luckymart-animation-pulse bg-gray-200 h-32 luckymart-rounded-lg" />;
   }
 
   const DynamicComponent = DYNAMIC_COMPONENTS[componentName];
   
   return (
-    <Suspense fallback={fallback || <div className="animate-pulse bg-gray-200 h-32 rounded-lg" />}>
+    <Suspense fallback={fallback || <div className="luckymart-animation-pulse bg-gray-200 h-32 luckymart-rounded-lg" />}>
       <DynamicComponent {...props} />
     </Suspense>
   );

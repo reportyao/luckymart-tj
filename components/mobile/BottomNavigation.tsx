@@ -259,7 +259,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({
                     {/* 触摸波纹效果 */}
                     {!isActive && (
                       <motion.div
-                        className="absolute inset-0 bg-purple-100/50 rounded-lg opacity-0"
+                        className="absolute inset-0 bg-purple-100/50 luckymart-rounded-lg opacity-0"
                         whileTap={{ opacity: 1 }}
                         transition={{ duration: 0.1 }}
                       />
@@ -368,7 +368,7 @@ export const BottomNavigationWithFAB: React.FC<{
         <AnimatePresence>
           {fabOpen && (
             <motion.div
-              className="absolute bottom-0 right-0 space-y-3"
+              className="absolute bottom-0 right-0 luckymart-spacing-md"
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0 }}
@@ -376,7 +376,7 @@ export const BottomNavigationWithFAB: React.FC<{
               {fabItems.map((fab, index) => (
                 <motion.button
                   key={fab.id}
-                  className="w-12 h-12 bg-purple-600 text-white rounded-full shadow-lg flex items-center justify-center"
+                  className="w-12 h-12 bg-purple-600 text-white rounded-full luckymart-shadow-lg luckymart-layout-flex luckymart-layout-center justify-center"
                   onClick={() => {
                     fab.onClick();
                     setFabOpen(false);
@@ -400,13 +400,13 @@ export const BottomNavigationWithFAB: React.FC<{
 
         {/* 主 FAB 按钮 */}
         <motion.button
-          className="w-14 h-14 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full shadow-xl flex items-center justify-center"
+          className="w-14 h-14 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full shadow-xl luckymart-layout-flex luckymart-layout-center justify-center"
           onClick={() => setFabOpen(!fabOpen)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           animate={{ rotate: fabOpen ? 45 : 0 }}
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="luckymart-size-md luckymart-size-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
         </motion.button>

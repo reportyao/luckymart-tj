@@ -1,5 +1,21 @@
 'use client';
 
+import { useState, useEffect, useCallback } from 'react';
+
+// Props接口定义
+export interface InvitationStatsProps {
+  /** 自定义CSS类名 */
+  className?: string;
+  /** 是否显示图表 */
+  showCharts?: boolean;
+  /** 默认激活的视图类型 */
+  defaultView?: 'overview' | 'trends' | 'distribution';
+  /** 自定义数据获取函数 */
+  fetchData?: () => Promise<any>;
+  /** 错误回调函数 */
+  onError?: (error: Error) => void;
+}
+
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/src/i18n/useLanguageCompat';
@@ -58,12 +74,18 @@ interface StatsData {
   }>;
 }
 
-export default function InvitationStats() {
+const InvitationStats: React.FC<InvitationStatsProps> = ({
+  className = '',
+  showCharts = true,
+  defaultView = 'overview',
+  fetchData,
+  onError
+}) => {
   const { t } = useTranslation('referral');
   const { currentLanguage } = useLanguage();
   const [statsData, setStatsData] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeView, setActiveView] = useState<'overview' | 'trends' | 'distribution'>('overview');
+  const [activeView, setActiveView] = useState<'overview' | 'trends' | 'distribution'>(defaultView);
 
   // 模拟获取统计数据
   useEffect(() => {
@@ -116,10 +138,10 @@ export default function InvitationStats() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="p-6">
-            <div className="animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-              <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+          <Card key={i} className="luckymart-padding-lg">
+            <div className="luckymart-animation-pulse">
+              <div className="h-4 bg-gray-200 luckymart-rounded w-3/4 mb-2"></div>
+              <div className="luckymart-size-lg bg-gray-200 luckymart-rounded w-1/2"></div>
             </div>
           </Card>
         ))}
@@ -129,9 +151,9 @@ export default function InvitationStats() {
 
   if (!statsData) {
     return (
-      <Card className="p-6 text-center">
-        <p className="text-gray-500">{t('error_title', '数据加载失败')}</p>
-        <Button onClick={() => window.location.reload()} className="mt-4">
+      <Card className="luckymart-padding-lg luckymart-text-center">
+        <p className="luckymart-text-secondary">{t('error_title', '数据加载失败')}</p>
+        <Button onClick={() => window.location.reload()} className="luckymart-spacing-md">
           {t('retry', '重试')}
         </Button>
       </Card>
@@ -141,40 +163,40 @@ export default function InvitationStats() {
   const activeRate = ((statsData.activeReferrals / statsData.totalReferrals) * 100).toFixed(1);
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${className}`}>
       {/* 概览卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-lg bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm font-medium text-blue-600">{t('total_referrals', '总推荐数')}</p>
-              <p className="text-2xl font-bold text-blue-700">{statsData.totalReferrals}</p>
-              <p className="text-xs text-blue-500 mt-1">
+              <p className="luckymart-text-sm luckymart-font-medium text-blue-600">{t('total_referrals', '总推荐数')}</p>
+              <p className="text-2xl luckymart-font-bold text-blue-700">{statsData.totalReferrals}</p>
+              <p className="text-xs luckymart-text-primary mt-1">
                 {t('active_users', '活跃用户')}: {statsData.activeReferrals}
               </p>
             </div>
-            <Users className="w-10 h-10 text-blue-500" />
+            <Users className="w-10 h-10 luckymart-text-primary" />
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-lg bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm font-medium text-green-600">{t('total_rewards', '总奖励金额')}</p>
-              <p className="text-2xl font-bold text-green-700">${statsData.totalRewards}</p>
-              <p className="text-xs text-green-500 mt-1">
+              <p className="luckymart-text-sm luckymart-font-medium text-green-600">{t('total_rewards', '总奖励金额')}</p>
+              <p className="text-2xl luckymart-font-bold text-green-700">${statsData.totalRewards}</p>
+              <p className="text-xs luckymart-text-success mt-1">
                 {t('weekly_rewards', '本周奖励')}: ${statsData.weeklyRewards}
               </p>
             </div>
-            <DollarSign className="w-10 h-10 text-green-500" />
+            <DollarSign className="w-10 h-10 luckymart-text-success" />
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-lg bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm font-medium text-purple-600">{t('active_rate', '活跃率')}</p>
-              <p className="text-2xl font-bold text-purple-700">{activeRate}%</p>
+              <p className="luckymart-text-sm luckymart-font-medium text-purple-600">{t('active_rate', '活跃率')}</p>
+              <p className="text-2xl luckymart-font-bold text-purple-700">{activeRate}%</p>
               <p className="text-xs text-purple-500 mt-1">
                 {t('total_members', '团队总人数')}: {statsData.totalReferrals}
               </p>
@@ -183,11 +205,11 @@ export default function InvitationStats() {
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-lg bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm font-medium text-orange-600">{t('monthly_earnings', '月度收益')}</p>
-              <p className="text-2xl font-bold text-orange-700">${statsData.monthlyRewards}</p>
+              <p className="luckymart-text-sm luckymart-font-medium text-orange-600">{t('monthly_earnings', '月度收益')}</p>
+              <p className="text-2xl luckymart-font-bold text-orange-700">${statsData.monthlyRewards}</p>
               <p className="text-xs text-orange-500 mt-1">
                 {t('rank', '排名')}: #15
               </p>
@@ -198,7 +220,7 @@ export default function InvitationStats() {
       </div>
 
       {/* 图表切换按钮 */}
-      <div className="flex flex-wrap gap-2 justify-center">
+      <div className="luckymart-layout-flex flex-wrap gap-2 justify-center">
         <Button
           variant={activeView === 'overview' ? 'default' : 'outline'}
           size="sm"
@@ -226,7 +248,7 @@ export default function InvitationStats() {
       </div>
 
       {/* 图表内容 */}
-      <Card className="p-6">
+      <Card className="luckymart-padding-lg">
         <div className="h-80">
           {activeView === 'overview' && (
             <ResponsiveContainer width="100%" height="100%">
@@ -321,7 +343,7 @@ export default function InvitationStats() {
           )}
 
           {activeView === 'distribution' && (
-            <div className="flex items-center justify-center h-full">
+            <div className="luckymart-layout-flex luckymart-layout-center justify-center h-full">
               <ResponsiveContainer width="60%" height="100%">
                 <RechartsPieChart>
                   <Pie
@@ -348,15 +370,15 @@ export default function InvitationStats() {
                   />
                 </RechartsPieChart>
               </ResponsiveContainer>
-              <div className="ml-8 space-y-3">
+              <div className="ml-8 luckymart-spacing-md">
                 {statsData.levelDistribution.map((item, index) => (
-                  <div key={index} className="flex items-center space-x-3">
+                  <div key={index} className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
                     <div 
                       className="w-4 h-4 rounded-full" 
                       style={{ backgroundColor: item.color }}
                     ></div>
-                    <span className="text-sm font-medium">{item.name}</span>
-                    <span className="text-sm text-gray-500">({item.value})</span>
+                    <span className="luckymart-text-sm luckymart-font-medium">{item.name}</span>
+                    <span className="luckymart-text-sm luckymart-text-secondary">({item.value})</span>
                   </div>
                 ))}
               </div>
@@ -366,29 +388,31 @@ export default function InvitationStats() {
       </Card>
 
       {/* 成就徽章 */}
-      <Card className="p-6 bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <Award className="w-5 h-5 mr-2 text-yellow-600" />
+      <Card className="luckymart-padding-lg bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200">
+        <h3 className="luckymart-text-lg font-semibold text-gray-800 luckymart-spacing-md luckymart-layout-flex luckymart-layout-center">
+          <Award className="luckymart-size-sm luckymart-size-sm mr-2 text-yellow-600" />
           {t('rank_benefits', '等级权益')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center p-4 bg-white rounded-lg shadow-sm">
-            <Badge variant="default" className="mb-2 bg-blue-500">青铜级</Badge>
-            <p className="text-sm text-gray-600">已完成</p>
-            <p className="text-xs text-gray-500">推荐1-9人</p>
+          <div className="luckymart-text-center luckymart-padding-md luckymart-bg-white luckymart-rounded-lg luckymart-shadow-sm">
+            <Badge variant="default" className="mb-2 luckymart-bg-primary">青铜级</Badge>
+            <p className="luckymart-text-sm text-gray-600">已完成</p>
+            <p className="text-xs luckymart-text-secondary">推荐1-9人</p>
           </div>
-          <div className="text-center p-4 bg-white rounded-lg shadow-sm border-2 border-yellow-300">
+          <div className="luckymart-text-center luckymart-padding-md luckymart-bg-white luckymart-rounded-lg luckymart-shadow-sm border-2 border-yellow-300">
             <Badge variant="default" className="mb-2 bg-yellow-500">白银级</Badge>
-            <p className="text-sm font-medium text-gray-800">当前等级</p>
-            <p className="text-xs text-gray-500">推荐10-49人</p>
+            <p className="luckymart-text-sm luckymart-font-medium text-gray-800">当前等级</p>
+            <p className="text-xs luckymart-text-secondary">推荐10-49人</p>
           </div>
-          <div className="text-center p-4 bg-white rounded-lg shadow-sm opacity-60">
+          <div className="luckymart-text-center luckymart-padding-md luckymart-bg-white luckymart-rounded-lg luckymart-shadow-sm opacity-60">
             <Badge variant="default" className="mb-2 bg-gray-400">黄金级</Badge>
-            <p className="text-sm text-gray-500">待解锁</p>
+            <p className="luckymart-text-sm luckymart-text-secondary">待解锁</p>
             <p className="text-xs text-gray-400">推荐50-99人</p>
           </div>
         </div>
       </Card>
     </div>
   );
-}
+};
+
+export default InvitationStats;

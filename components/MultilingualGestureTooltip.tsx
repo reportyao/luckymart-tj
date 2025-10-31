@@ -286,7 +286,7 @@ const MultilingualGestureTooltip: React.FC<MultilingualGestureTooltipProps> = ({
               ${gestureState === 'active' ? 'animate-pulse' : ''}
             `}>
               {/* 提示内容 */}
-              <div className="flex items-center gap-2">
+              <div className="luckymart-layout-flex luckymart-layout-center gap-2">
                 <GestureIcon />
                 <span>{getTooltipText()}</span>
               </div>

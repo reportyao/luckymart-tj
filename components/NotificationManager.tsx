@@ -3,6 +3,28 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Bell, Settings, Check, X } from 'lucide-react';
 
+// Props接口定义
+export interface NotificationManagerProps {
+  /** 自定义CSS类名 */
+  className?: string;
+  /** 是否自动请求权限 */
+  autoRequestPermission?: boolean;
+  /** 是否显示测试通知按钮 */
+  showTestNotification?: boolean;
+  /** 初始权限状态 */
+  initialPermission?: 'granted' | 'denied' | 'default';
+  /** 自定义VAPID公钥 */
+  customVapidKey?: string;
+  /** 权限状态变化回调 */
+  onPermissionChange?: (permission: string) => void;
+  /** 订阅状态变化回调 */
+  onSubscriptionChange?: (isSubscribed: boolean) => void;
+  /** 测试通知回调 */
+  onTestNotification?: () => void;
+  /** 错误回调函数 */
+  onError?: (error: Error) => void;
+}
+
 interface NotificationPermission {
   granted: boolean;
   denied: boolean;
@@ -17,7 +39,17 @@ interface PushSubscription {
   };
 }
 
-export default function NotificationManager() {
+const NotificationManager: React.FC<NotificationManagerProps> = ({
+  className = '',
+  autoRequestPermission = false,
+  showTestNotification = true,
+  initialPermission,
+  customVapidKey,
+  onPermissionChange,
+  onSubscriptionChange,
+  onTestNotification,
+  onError
+}) => {
   const [permission, setPermission] = useState<NotificationPermission['granted'] | NotificationPermission['denied'] | NotificationPermission['default']>('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscription, setSubscription] = useState<PushSubscription | null>(null);
@@ -267,15 +299,15 @@ export default function NotificationManager() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <Bell className="w-5 h-5 text-indigo-600 mr-2" />
-          <h3 className="text-lg font-semibold text-gray-900">推送通知</h3>
+    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 ${className}`}>
+      <div className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-spacing-md">
+        <div className="luckymart-layout-flex luckymart-layout-center">
+          <Bell className="luckymart-size-sm luckymart-size-sm text-indigo-600 mr-2" />
+          <h3 className="luckymart-text-lg font-semibold text-gray-900">推送通知</h3>
         </div>
         
         {/* 通知状态指示器 */}
-        <div className="flex items-center">
+        <div className="luckymart-layout-flex luckymart-layout-center">
           <div className={`w-3 h-3 rounded-full mr-2 ${
             permission === 'granted' && isSubscribed 
               ? 'bg-green-500' 
@@ -283,7 +315,7 @@ export default function NotificationManager() {
                 ? 'bg-red-500' 
                 : 'bg-yellow-500'
           }`} />
-          <span className="text-sm text-gray-600">
+          <span className="luckymart-text-sm text-gray-600">
             {permission === 'granted' && isSubscribed 
               ? '已启用' 
               : permission === 'denied' 
@@ -295,19 +327,19 @@ export default function NotificationManager() {
 
       {/* 权限提示 */}
       {showPermissionPrompt && permission === 'default' && (
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex items-start">
-            <Bell className="w-5 h-5 text-blue-600 mr-2 mt-0.5" />
+        <div className="luckymart-spacing-md luckymart-padding-md bg-blue-50 luckymart-border border-blue-200 luckymart-rounded-lg">
+          <div className="luckymart-layout-flex items-start">
+            <Bell className="luckymart-size-sm luckymart-size-sm text-blue-600 mr-2 mt-0.5" />
             <div className="flex-1">
-              <h4 className="text-sm font-medium text-blue-900 mb-1">
+              <h4 className="luckymart-text-sm luckymart-font-medium text-blue-900 mb-1">
                 启用推送通知
               </h4>
-              <p className="text-sm text-blue-700 mb-3">
+              <p className="luckymart-text-sm text-blue-700 mb-3">
                 接收订单状态更新、促销活动、抽奖提醒等重要通知
               </p>
               <button
                 onClick={handleNotificationToggle}
-                className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors"
+                className="luckymart-text-sm bg-blue-600 text-white px-3 py-1 luckymart-rounded hover:bg-blue-700 transition-colors"
               >
                 启用通知
               </button>
@@ -325,12 +357,12 @@ export default function NotificationManager() {
       {/* 通知设置 */}
       <div className="space-y-4">
         {/* 主开关 */}
-        <div className="flex items-center justify-between">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-between">
           <div>
-            <h4 className="text-sm font-medium text-gray-900">
+            <h4 className="luckymart-text-sm luckymart-font-medium text-gray-900">
               推送通知
             </h4>
-            <p className="text-sm text-gray-500">
+            <p className="luckymart-text-sm luckymart-text-secondary">
               {permission === 'granted' && isSubscribed 
                 ? '您将接收重要通知消息' 
                 : '启用后可接收订单和活动通知'}
@@ -357,55 +389,55 @@ export default function NotificationManager() {
 
         {/* 通知类型设置 */}
         {permission === 'granted' && isSubscribed && (
-          <div className="space-y-3">
-            <h4 className="text-sm font-medium text-gray-900">通知类型</h4>
+          <div className="luckymart-spacing-md">
+            <h4 className="luckymart-text-sm luckymart-font-medium text-gray-900">通知类型</h4>
             
-            <div className="space-y-2">
-              <label className="flex items-center">
+            <div className="luckymart-spacing-sm">
+              <label className="luckymart-layout-flex luckymart-layout-center">
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 luckymart-rounded"
                 />
-                <span className="ml-2 text-sm text-gray-700">订单状态更新</span>
+                <span className="ml-2 luckymart-text-sm text-gray-700">订单状态更新</span>
               </label>
               
-              <label className="flex items-center">
+              <label className="luckymart-layout-flex luckymart-layout-center">
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 luckymart-rounded"
                 />
-                <span className="ml-2 text-sm text-gray-700">促销活动</span>
+                <span className="ml-2 luckymart-text-sm text-gray-700">促销活动</span>
               </label>
               
-              <label className="flex items-center">
+              <label className="luckymart-layout-flex luckymart-layout-center">
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 luckymart-rounded"
                 />
-                <span className="ml-2 text-sm text-gray-700">抽奖提醒</span>
+                <span className="ml-2 luckymart-text-sm text-gray-700">抽奖提醒</span>
               </label>
               
-              <label className="flex items-center">
+              <label className="luckymart-layout-flex luckymart-layout-center">
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 luckymart-rounded"
                 />
-                <span className="ml-2 text-sm text-gray-700">签到提醒</span>
+                <span className="ml-2 luckymart-text-sm text-gray-700">签到提醒</span>
               </label>
             </div>
           </div>
         )}
 
         {/* 操作按钮 */}
-        <div className="flex space-x-3 pt-4">
+        <div className="luckymart-layout-flex luckymart-spacing-md pt-4">
           {permission === 'granted' && isSubscribed && (
             <button
               onClick={sendTestNotification}
-              className="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center justify-center"
+              className="flex-1 bg-indigo-600 text-white py-2 px-4 luckymart-rounded-lg luckymart-text-sm luckymart-font-medium hover:bg-indigo-700 transition-colors luckymart-layout-flex luckymart-layout-center justify-center"
             >
               <Check className="w-4 h-4 mr-1" />
               发送测试通知
@@ -414,7 +446,7 @@ export default function NotificationManager() {
           
           <button
             onClick={showPermissionPromptIfNeeded}
-            className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center justify-center"
+            className="flex-1 luckymart-border border-gray-300 text-gray-700 py-2 px-4 luckymart-rounded-lg luckymart-text-sm luckymart-font-medium hover:bg-gray-50 transition-colors luckymart-layout-flex luckymart-layout-center justify-center"
           >
             <Settings className="w-4 h-4 mr-1" />
             设置
@@ -424,10 +456,12 @@ export default function NotificationManager() {
 
       {/* 加载状态 */}
       {isLoading && (
-        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-lg">
-          <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+        <div className="absolute inset-0 luckymart-bg-white bg-opacity-75 luckymart-layout-flex luckymart-layout-center justify-center luckymart-rounded-lg">
+          <div className="luckymart-size-md luckymart-size-md border-2 border-indigo-600 border-t-transparent rounded-full luckymart-animation-spin" />
         </div>
       )}
     </div>
   );
-}
+};
+
+export default NotificationManager;

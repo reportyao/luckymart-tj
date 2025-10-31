@@ -127,9 +127,9 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
     const detailedStatus = getDetailedStatus();
     
     return (
-      <div className="bg-gray-800 text-white p-3 rounded-lg shadow-lg text-xs min-w-48">
+      <div className="bg-gray-800 text-white p-3 luckymart-rounded-lg luckymart-shadow-lg text-xs min-w-48">
         <div className="space-y-1">
-          <div className="flex justify-between">
+          <div className="luckymart-layout-flex justify-between">
             <span>{t('network.status', '网络状态')}:</span>
             <span className={`font-semibold ${
               detailedStatus.isOnline ? 'text-green-400' : 'text-red-400'
@@ -140,7 +140,7 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
           
           {detailedStatus.isOnline && (
             <>
-              <div className="flex justify-between">
+              <div className="luckymart-layout-flex justify-between">
                 <span>{t('network.quality', '网络质量')}:</span>
                 <span className={`font-semibold ${
                   networkQuality === NetworkQuality.EXCELLENT ? 'text-green-400' :
@@ -153,14 +153,14 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
               </div>
               
               {detailedStatus.connectionType !== t('network.unknown', '未知') && (
-                <div className="flex justify-between">
+                <div className="luckymart-layout-flex justify-between">
                   <span>{t('network.type', '网络类型')}:</span>
                   <span className="text-gray-300">{detailedStatus.connectionType}</span>
                 </div>
               )}
               
               {detailedStatus.downlink !== t('network.unknown', '未知') && (
-                <div className="flex justify-between">
+                <div className="luckymart-layout-flex justify-between">
                   <span>{t('network.downlink', '下行带宽')}:</span>
                   <span className="text-gray-300">{detailedStatus.downlink}</span>
                 </div>
@@ -188,13 +188,13 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
     const detailedStatus = getDetailedStatus();
     
     return (
-      <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-sm">
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
+      <div className="luckymart-bg-white luckymart-border luckymart-border-light luckymart-rounded-lg luckymart-shadow-lg luckymart-padding-md luckymart-text-sm">
+        <div className="luckymart-spacing-md">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <h3 className="font-semibold text-gray-800">{t('network.details', '网络详情')}</h3>
             <button
               onClick={() => setShowDetailsPanel(false)}
-              className="text-gray-500 hover:text-gray-700"
+              className="luckymart-text-secondary hover:text-gray-700"
             >
               ✕
             </button>
@@ -268,7 +268,7 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full luckymart-bg-primary text-white py-2 px-4 luckymart-rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isRefreshing ? t('network.refreshing', '刷新中...') : t('network.refresh', '刷新状态')}
               </button>

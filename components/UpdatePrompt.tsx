@@ -234,20 +234,20 @@ export default function UpdatePrompt({ onUpdate, onDismiss }: UpdatePromptProps)
       <div className="fixed inset-0 bg-black bg-opacity-50 z-50" />
       
       {/* 更新提示卡片 */}
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-2xl border border-gray-200 z-50 max-w-md w-full mx-4">
-        <div className="p-6">
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 luckymart-bg-white luckymart-rounded-lg shadow-2xl luckymart-border luckymart-border-light z-50 max-w-md w-full mx-4">
+        <div className="luckymart-padding-lg">
           {/* 关闭按钮 */}
           {!updateInfo?.critical && (
             <button
               onClick={handleDismiss}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="luckymart-size-sm luckymart-size-sm" />
             </button>
           )}
           
           {/* 图标和标题 */}
-          <div className="flex items-center mb-4">
+          <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
             <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${
               updateInfo?.critical 
                 ? 'bg-red-100' 
@@ -256,14 +256,14 @@ export default function UpdatePrompt({ onUpdate, onDismiss }: UpdatePromptProps)
               {updateInfo?.critical ? (
                 <Clock className={`w-6 h-6 ${updateInfo.critical ? 'text-red-600' : 'text-indigo-600'}`} />
               ) : (
-                <Download className="w-6 h-6 text-indigo-600" />
+                <Download className="luckymart-size-md luckymart-size-md text-indigo-600" />
               )}
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="luckymart-text-lg font-semibold text-gray-900">
                 {updateInfo?.critical ? '重要更新' : '应用更新'}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="luckymart-text-sm text-gray-600">
                 版本 {updateInfo?.version} 可用
               </p>
             </div>
@@ -271,22 +271,22 @@ export default function UpdatePrompt({ onUpdate, onDismiss }: UpdatePromptProps)
           
           {/* 更新信息 */}
           <div className="mb-6">
-            <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+            <div className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-text-sm luckymart-text-secondary mb-3">
               <span>大小: {updateInfo ? formatSize(updateInfo.size) : ''}</span>
               <span>发布日期: {updateInfo ? formatDate(updateInfo.releaseDate) : ''}</span>
             </div>
             
-            <p className="text-sm text-gray-700 mb-3">
+            <p className="luckymart-text-sm text-gray-700 mb-3">
               {updateInfo?.description}
             </p>
             
             {updateInfo?.features && updateInfo.features.length > 0 && (
               <div>
-                <h4 className="text-sm font-medium text-gray-900 mb-2">更新内容:</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
+                <h4 className="luckymart-text-sm luckymart-font-medium text-gray-900 mb-2">更新内容:</h4>
+                <ul className="luckymart-text-sm text-gray-600 space-y-1">
                   {updateInfo.features.map((feature, index) => (
-                    <li key={index} className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+                    <li key={index} className="luckymart-layout-flex luckymart-layout-center">
+                      <CheckCircle className="w-4 h-4 luckymart-text-success mr-2 flex-shrink-0" />
                       {feature}
                     </li>
                   ))}
@@ -297,8 +297,8 @@ export default function UpdatePrompt({ onUpdate, onDismiss }: UpdatePromptProps)
           
           {/* 进度条 */}
           {(isUpdating || updateProgress > 0) && (
-            <div className="mb-4">
-              <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+            <div className="luckymart-spacing-md">
+              <div className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-text-sm text-gray-600 mb-2">
                 <span>{isUpdating ? '正在更新...' : '更新完成'}</span>
                 <span>{Math.round(updateProgress)}%</span>
               </div>
@@ -316,11 +316,11 @@ export default function UpdatePrompt({ onUpdate, onDismiss }: UpdatePromptProps)
           )}
           
           {/* 操作按钮 */}
-          <div className="flex space-x-3">
+          <div className="luckymart-layout-flex luckymart-spacing-md">
             {updateInfo?.critical && (
               <button
                 onClick={handleDismiss}
-                className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                className="flex-1 luckymart-border border-gray-300 text-gray-700 py-2 px-4 luckymart-rounded-lg luckymart-text-sm luckymart-font-medium hover:bg-gray-50 transition-colors"
               >
                 稍后更新
               </button>
@@ -329,11 +329,11 @@ export default function UpdatePrompt({ onUpdate, onDismiss }: UpdatePromptProps)
             <button
               onClick={handleUpdateClick}
               disabled={isUpdating}
-              className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:from-indigo-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
+              className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 luckymart-rounded-lg luckymart-text-sm luckymart-font-medium hover:from-indigo-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 luckymart-layout-flex luckymart-layout-center justify-center"
             >
               {isUpdating ? (
                 <>
-                  <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                  <RefreshCw className="w-4 h-4 mr-1 luckymart-animation-spin" />
                   更新中...
                 </>
               ) : updateProgress === 100 ? (
@@ -352,11 +352,11 @@ export default function UpdatePrompt({ onUpdate, onDismiss }: UpdatePromptProps)
           
           {/* 手动检查更新 */}
           {!isUpdating && updateProgress === 0 && (
-            <div className="mt-3 pt-3 border-t border-gray-200">
+            <div className="mt-3 pt-3 border-t luckymart-border-light">
               <button
                 onClick={checkForUpdates}
                 disabled={isChecking}
-                className="w-full text-sm text-indigo-600 hover:text-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                className="w-full luckymart-text-sm text-indigo-600 hover:text-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors luckymart-layout-flex luckymart-layout-center justify-center"
               >
                 <RefreshCw className={`w-4 h-4 mr-1 ${isChecking ? 'animate-spin' : ''}`} />
                 {isChecking ? '检查中...' : '手动检查更新'}

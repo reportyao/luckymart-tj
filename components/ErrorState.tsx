@@ -18,26 +18,26 @@ const ErrorState: React.FC<ErrorStateProps> = ({
 }) => {
   return (
     <div className={`bg-red-50 border border-red-200 rounded-lg p-4 ${className}`}>
-      <div className="flex items-start">
+      <div className="luckymart-layout-flex items-start">
         <div className="flex-shrink-0">
-          <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="luckymart-size-sm luckymart-size-sm text-red-400" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
           </svg>
         </div>
         
         <div className="ml-3 flex-1">
-          <h3 className="text-sm font-medium text-red-800">
+          <h3 className="luckymart-text-sm luckymart-font-medium text-red-800">
             操作失败
           </h3>
-          <p className="mt-1 text-sm text-red-700">
+          <p className="mt-1 luckymart-text-sm text-red-700">
             {error}
           </p>
           
-          <div className="mt-4 flex space-x-3">
+          <div className="luckymart-spacing-md luckymart-layout-flex luckymart-spacing-md">
             {onRetry && (
               <button
                 onClick={onRetry}
-                className="text-sm bg-red-100 text-red-800 px-3 py-1 rounded hover:bg-red-200 transition"
+                className="luckymart-text-sm bg-red-100 text-red-800 px-3 py-1 luckymart-rounded hover:bg-red-200 transition"
               >
                 重试
               </button>
@@ -46,7 +46,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
             {onDismiss && (
               <button
                 onClick={onDismiss}
-                className="text-sm text-red-600 hover:text-red-800 transition"
+                className="luckymart-text-sm text-red-600 hover:text-red-800 transition"
               >
                 关闭
               </button>

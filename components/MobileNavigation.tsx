@@ -6,7 +6,29 @@ import { usePathname } from 'next/navigation';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const MobileNavigation: React.FC = () => {
+interface MobileNavigationProps {
+  /** 是否显示语言切换器 */
+  showLanguageSwitcher?: boolean;
+  /** 自定义导航项 */
+  customItems?: NavigationItem[];
+  /** 是否固定在顶部 */
+  fixed?: boolean;
+  /** 自定义类名 */
+  className?: string;
+}
+
+interface NavigationItem {
+  href: string;
+  label: string;
+  icon: string;
+}
+
+const MobileNavigation: React.FC<MobileNavigationProps> = ({
+  showLanguageSwitcher = true,
+  customItems,
+  fixed = true,
+  className = ''
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const { t } = useLanguage();
@@ -54,7 +76,7 @@ const MobileNavigation: React.FC = () => {
     };
 
     return (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="luckymart-size-md luckymart-size-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={iconPaths[iconName] || iconPaths.home} />
       </svg>
     );
@@ -63,17 +85,17 @@ const MobileNavigation: React.FC = () => {
   return (
     <>
       {/* 顶部导航栏 */}
-      <header className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <header className="luckymart-bg-white luckymart-shadow-sm sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 py-3 luckymart-layout-flex justify-between luckymart-layout-center">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          <Link href="/" className="luckymart-layout-flex luckymart-layout-center">
+            <h1 className="luckymart-text-xl md:text-2xl luckymart-font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               {t('home.title')}
             </h1>
           </Link>
 
           {/* 桌面端导航 */}
-          <nav className="hidden lg:flex items-center gap-6">
+          <nav className="hidden lg:flex luckymart-layout-center gap-6">
             <Link href="/resale" className="text-gray-600 hover:text-purple-600 transition">
               {t('nav.resale')}
             </Link>
@@ -95,15 +117,15 @@ const MobileNavigation: React.FC = () => {
           {/* 移动端菜单按钮 */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition"
+            className="lg:hidden luckymart-padding-sm luckymart-rounded-lg hover:bg-gray-100 transition"
             aria-label={isOpen ? t('nav.menu') : `打开${t('nav.menu')}`}
           >
             {isOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="luckymart-size-md luckymart-size-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="luckymart-size-md luckymart-size-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             )}
@@ -125,21 +147,21 @@ const MobileNavigation: React.FC = () => {
           onClick={(e) => e.stopPropagation()}
         >
           {/* 侧边栏头部 */}
-          <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="text-lg font-bold text-gray-900">{t('nav.menu')}</h2>
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-padding-md border-b">
+            <h2 className="luckymart-text-lg luckymart-font-bold text-gray-900">{t('nav.menu')}</h2>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-2 rounded-lg hover:bg-gray-100 transition"
+              className="luckymart-padding-sm luckymart-rounded-lg hover:bg-gray-100 transition"
               aria-label={`关闭${t('nav.menu')}`}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="luckymart-size-md luckymart-size-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           {/* 导航项 */}
-          <nav className="p-4 space-y-2">
+          <nav className="luckymart-padding-md luckymart-spacing-sm">
             {navigationItems.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -160,8 +182,8 @@ const MobileNavigation: React.FC = () => {
           </nav>
 
           {/* 语言切换 */}
-          <div className="p-4 border-t mt-auto">
-            <div className="text-sm text-gray-600 mb-2">{t('nav.language')}</div>
+          <div className="luckymart-padding-md border-t mt-auto">
+            <div className="luckymart-text-sm text-gray-600 mb-2">{t('nav.language')}</div>
             <LanguageSwitcher />
           </div>
         </div>

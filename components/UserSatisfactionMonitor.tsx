@@ -264,9 +264,9 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
   if (isLoading) {
     return (
       <Card className="w-full">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <CardContent className="luckymart-padding-lg">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-center h-64">
+            <div className="luckymart-animation-spin rounded-full luckymart-size-lg luckymart-size-lg border-b-2 border-blue-600"></div>
             <span className="ml-3">加载满意度数据...</span>
           </div>
         </CardContent>
@@ -277,8 +277,8 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
   if (!analytics) {
     return (
       <Card className="w-full">
-        <CardContent className="p-6">
-          <div className="text-center text-gray-500">
+        <CardContent className="luckymart-padding-lg">
+          <div className="luckymart-text-center luckymart-text-secondary">
             暂无满意度数据
           </div>
         </CardContent>
@@ -292,7 +292,7 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
     <div className="space-y-6">
       {/* 预警显示 */}
       {showAlerts && unacknowledgedAlerts.length > 0 && (
-        <div className="space-y-3">
+        <div className="luckymart-spacing-md">
           {unacknowledgedAlerts.map(alert => (
             <Alert 
               key={alert.id} 
@@ -304,9 +304,9 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
               }`}
             >
               <AlertTriangle className="h-4 w-4" />
-              <AlertDescription className="flex items-center justify-between">
+              <AlertDescription className="luckymart-layout-flex luckymart-layout-center justify-between">
                 <span>{alert.message}</span>
-                <div className="flex items-center gap-2">
+                <div className="luckymart-layout-flex luckymart-layout-center gap-2">
                   <Badge variant={
                     alert.severity === 'critical' ? 'destructive' :
                     alert.severity === 'high' ? 'destructive' :
@@ -333,7 +333,7 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
               variant="outline" 
               size="sm" 
               onClick={clearAcknowledgedAlerts}
-              className="text-sm"
+              className="luckymart-text-sm"
             >
               清除已确认预警 ({alerts.filter(a => a.acknowledged).length})
             </Button>
@@ -344,8 +344,8 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
       {/* 概览指标 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">平均满意度</CardTitle>
+          <CardHeader className="luckymart-layout-flex flex-row luckymart-layout-center justify-between space-y-0 pb-2">
+            <CardTitle className="luckymart-text-sm luckymart-font-medium">平均满意度</CardTitle>
             <Star className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -363,8 +363,8 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">质量分数</CardTitle>
+          <CardHeader className="luckymart-layout-flex flex-row luckymart-layout-center justify-between space-y-0 pb-2">
+            <CardTitle className="luckymart-text-sm luckymart-font-medium">质量分数</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -385,18 +385,18 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">反馈总数</CardTitle>
+          <CardHeader className="luckymart-layout-flex flex-row luckymart-layout-center justify-between space-y-0 pb-2">
+            <CardTitle className="luckymart-text-sm luckymart-font-medium">反馈总数</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.totalFeedbacks}</div>
+            <div className="text-2xl luckymart-font-bold">{analytics.totalFeedbacks}</div>
             <p className="text-xs text-muted-foreground">
               已收集用户反馈
             </p>
-            <div className="flex items-center mt-2 text-xs">
+            <div className="luckymart-layout-flex luckymart-layout-center mt-2 text-xs">
               {analytics.resolvedRate > 0.7 ? (
-                <CheckCircle className="h-3 w-3 text-green-500 mr-1" />
+                <CheckCircle className="h-3 w-3 luckymart-text-success mr-1" />
               ) : (
                 <Clock className="h-3 w-3 text-orange-500 mr-1" />
               )}
@@ -406,8 +406,8 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">活跃预警</CardTitle>
+          <CardHeader className="luckymart-layout-flex flex-row luckymart-layout-center justify-between space-y-0 pb-2">
+            <CardTitle className="luckymart-text-sm luckymart-font-medium">活跃预警</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -421,11 +421,11 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
             <p className="text-xs text-muted-foreground">
               需要关注的问题
             </p>
-            <div className="flex items-center mt-2 text-xs">
+            <div className="luckymart-layout-flex luckymart-layout-center mt-2 text-xs">
               {analytics.trendingIssues.filter(i => i.trend === 'increasing').length > 0 ? (
-                <TrendingUp className="h-3 w-3 text-red-500 mr-1" />
+                <TrendingUp className="h-3 w-3 luckymart-text-error mr-1" />
               ) : (
-                <TrendingDown className="h-3 w-3 text-green-500 mr-1" />
+                <TrendingDown className="h-3 w-3 luckymart-text-success mr-1" />
               )}
               {analytics.trendingIssues.filter(i => i.trend === 'increasing').length} 项趋势上升
             </div>
@@ -439,8 +439,8 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
           {/* 满意度趋势图 */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
+              <CardTitle className="luckymart-layout-flex luckymart-layout-center gap-2">
+                <TrendingUp className="luckymart-size-sm luckymart-size-sm" />
                 满意度趋势
               </CardTitle>
             </CardHeader>
@@ -475,8 +475,8 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
           {/* 反馈类型分布 */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Eye className="h-5 w-5" />
+              <CardTitle className="luckymart-layout-flex luckymart-layout-center gap-2">
+                <Eye className="luckymart-size-sm luckymart-size-sm" />
                 反馈类型分布
               </CardTitle>
             </CardHeader>
@@ -508,8 +508,8 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
           {/* 问题趋势 */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5" />
+              <CardTitle className="luckymart-layout-flex luckymart-layout-center gap-2">
+                <Zap className="luckymart-size-sm luckymart-size-sm" />
                 问题趋势分析
               </CardTitle>
             </CardHeader>
@@ -541,8 +541,8 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
           {/* 评分分布 */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5" />
+              <CardTitle className="luckymart-layout-flex luckymart-layout-center gap-2">
+                <Star className="luckymart-size-sm luckymart-size-sm" />
                 评分分布
               </CardTitle>
             </CardHeader>
@@ -574,12 +574,12 @@ export const UserSatisfactionMonitor: React.FC<UserSatisfactionMonitorProps> = (
       )}
 
       {/* 底部信息 */}
-      <div className="flex items-center justify-between text-sm text-gray-500">
-        <div className="flex items-center gap-2">
+      <div className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-text-sm luckymart-text-secondary">
+        <div className="luckymart-layout-flex luckymart-layout-center gap-2">
           <Clock className="h-4 w-4" />
           最后更新: {lastUpdated.toLocaleString('zh-CN')}
         </div>
-        <div className="flex items-center gap-4">
+        <div className="luckymart-layout-flex luckymart-layout-center gap-4">
           <span>自动刷新: {refreshInterval / 1000}秒</span>
           <Button 
             variant="outline" 

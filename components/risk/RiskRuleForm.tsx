@@ -108,18 +108,18 @@ export const RiskRuleForm: React.FC<RiskRuleFormProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
+    <div className="fixed inset-0 bg-black bg-opacity-50 luckymart-layout-flex luckymart-layout-center justify-center luckymart-padding-md z-50">
+      <div className="luckymart-bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="luckymart-padding-lg">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between mb-6">
+            <h2 className="text-2xl luckymart-font-bold text-gray-900">
               {isEditing ? '编辑风控规则' : '创建风控规则'}
             </h2>
             <button
               onClick={onCancel}
               className="text-gray-400 hover:text-gray-600"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="luckymart-size-md luckymart-size-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -127,8 +127,8 @@ export const RiskRuleForm: React.FC<RiskRuleFormProps> = ({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                规则名称 <span className="text-red-500">*</span>
+              <label className="block luckymart-text-sm luckymart-font-medium text-gray-700 mb-2">
+                规则名称 <span className="luckymart-text-error">*</span>
               </label>
               <input
                 type="text"
@@ -140,13 +140,13 @@ export const RiskRuleForm: React.FC<RiskRuleFormProps> = ({
                 placeholder="请输入规则名称"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                <p className="mt-1 luckymart-text-sm text-red-600">{errors.name}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                规则描述 <span className="text-red-500">*</span>
+              <label className="block luckymart-text-sm luckymart-font-medium text-gray-700 mb-2">
+                规则描述 <span className="luckymart-text-error">*</span>
               </label>
               <textarea
                 value={formData.description}
@@ -158,19 +158,19 @@ export const RiskRuleForm: React.FC<RiskRuleFormProps> = ({
                 placeholder="请输入规则描述"
               />
               {errors.description && (
-                <p className="mt-1 text-sm text-red-600">{errors.description}</p>
+                <p className="mt-1 luckymart-text-sm text-red-600">{errors.description}</p>
               )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block luckymart-text-sm luckymart-font-medium text-gray-700 mb-2">
                   规则分类
                 </label>
                 <select
                   value={formData.category}
                   onChange={(e) => handleInputChange('category', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                  className="w-full px-3 py-2 luckymart-border border-gray-300 luckymart-rounded-lg focus:ring-purple-500 focus:border-purple-500"
                 >
                   <option value="login">登录安全</option>
                   <option value="transaction">交易安全</option>
@@ -181,8 +181,8 @@ export const RiskRuleForm: React.FC<RiskRuleFormProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  风险类型 <span className="text-red-500">*</span>
+                <label className="block luckymart-text-sm luckymart-font-medium text-gray-700 mb-2">
+                  风险类型 <span className="luckymart-text-error">*</span>
                 </label>
                 <input
                   type="text"
@@ -194,14 +194,14 @@ export const RiskRuleForm: React.FC<RiskRuleFormProps> = ({
                   placeholder="风险类型"
                 />
                 {errors.riskType && (
-                  <p className="mt-1 text-sm text-red-600">{errors.riskType}</p>
+                  <p className="mt-1 luckymart-text-sm text-red-600">{errors.riskType}</p>
                 )}
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                触发条件 <span className="text-red-500">*</span>
+              <label className="block luckymart-text-sm luckymart-font-medium text-gray-700 mb-2">
+                触发条件 <span className="luckymart-text-error">*</span>
               </label>
               <textarea
                 value={formData.condition}
@@ -213,14 +213,14 @@ export const RiskRuleForm: React.FC<RiskRuleFormProps> = ({
                 placeholder="请输入触发条件"
               />
               {errors.condition && (
-                <p className="mt-1 text-sm text-red-600">{errors.condition}</p>
+                <p className="mt-1 luckymart-text-sm text-red-600">{errors.condition}</p>
               )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  阈值 <span className="text-red-500">*</span>
+                <label className="block luckymart-text-sm luckymart-font-medium text-gray-700 mb-2">
+                  阈值 <span className="luckymart-text-error">*</span>
                 </label>
                 <input
                   type="number"
@@ -234,18 +234,18 @@ export const RiskRuleForm: React.FC<RiskRuleFormProps> = ({
                   placeholder="风险阈值 (0-100)"
                 />
                 {errors.threshold && (
-                  <p className="mt-1 text-sm text-red-600">{errors.threshold}</p>
+                  <p className="mt-1 luckymart-text-sm text-red-600">{errors.threshold}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block luckymart-text-sm luckymart-font-medium text-gray-700 mb-2">
                   执行动作
                 </label>
                 <select
                   value={formData.action}
                   onChange={(e) => handleInputChange('action', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                  className="w-full px-3 py-2 luckymart-border border-gray-300 luckymart-rounded-lg focus:ring-purple-500 focus:border-purple-500"
                 >
                   <option value="block">阻止操作</option>
                   <option value="alert">发出警告</option>
@@ -255,30 +255,30 @@ export const RiskRuleForm: React.FC<RiskRuleFormProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="luckymart-layout-flex luckymart-layout-center gap-2">
               <input
                 type="checkbox"
                 id="isActive"
                 checked={formData.isActive}
                 onChange={(e) => handleInputChange('isActive', e.target.checked)}
-                className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                className="luckymart-rounded border-gray-300 text-purple-600 focus:ring-purple-500"
               />
-              <label htmlFor="isActive" className="text-sm text-gray-700">
+              <label htmlFor="isActive" className="luckymart-text-sm text-gray-700">
                 启用此规则
               </label>
             </div>
 
-            <div className="flex gap-3 pt-4">
+            <div className="luckymart-layout-flex gap-3 pt-4">
               <button
                 type="submit"
-                className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors"
+                className="flex-1 bg-purple-600 text-white py-2 px-4 luckymart-rounded-lg hover:bg-purple-700 transition-colors"
               >
                 {isEditing ? '保存修改' : '创建规则'}
               </button>
               <button
                 type="button"
                 onClick={onCancel}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors"
+                className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 luckymart-rounded-lg hover:bg-gray-400 transition-colors"
               >
                 取消
               </button>
@@ -331,35 +331,35 @@ export const RiskRuleItem: React.FC<RiskRuleItemProps> = ({
 
   return (
     <div className={`bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow ${className}`}>
-      <div className="flex items-start justify-between mb-3">
+      <div className="luckymart-layout-flex items-start justify-between mb-3">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-lg font-semibold text-gray-900">{rule.name}</h3>
+          <div className="luckymart-layout-flex luckymart-layout-center gap-2 mb-1">
+            <h3 className="luckymart-text-lg font-semibold text-gray-900">{rule.name}</h3>
             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
               rule.isActive ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'
             }`}>
               {rule.isActive ? '启用' : '禁用'}
             </span>
           </div>
-          <p className="text-sm text-gray-600 mb-2">{rule.description}</p>
-          <div className="flex items-center gap-4 text-xs text-gray-500">
-            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
+          <p className="luckymart-text-sm text-gray-600 mb-2">{rule.description}</p>
+          <div className="luckymart-layout-flex luckymart-layout-center gap-4 text-xs luckymart-text-secondary">
+            <span className="bg-blue-100 text-blue-800 px-2 py-1 luckymart-rounded">
               {getCategoryLabel(rule.category)}
             </span>
             <span>风险类型: {rule.riskType}</span>
             <span>动作: {getActionLabel(rule.action)}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="luckymart-layout-flex luckymart-layout-center gap-2">
           <button
             onClick={() => onView?.(rule)}
-            className="text-purple-600 hover:text-purple-900 text-sm"
+            className="text-purple-600 hover:text-purple-900 luckymart-text-sm"
           >
             查看
           </button>
           <button
             onClick={() => onEdit?.(rule)}
-            className="text-blue-600 hover:text-blue-900 text-sm"
+            className="text-blue-600 hover:text-blue-900 luckymart-text-sm"
           >
             编辑
           </button>
@@ -371,7 +371,7 @@ export const RiskRuleItem: React.FC<RiskRuleItemProps> = ({
           </button>
           <button
             onClick={() => onDelete?.(rule.id)}
-            className="text-red-600 hover:text-red-900 text-sm"
+            className="text-red-600 hover:text-red-900 luckymart-text-sm"
           >
             删除
           </button>
@@ -380,20 +380,20 @@ export const RiskRuleItem: React.FC<RiskRuleItemProps> = ({
       
       <div className="grid grid-cols-4 gap-4 text-xs text-gray-600">
         <div>
-          <span className="text-gray-500">阈值:</span>
-          <span className="ml-1 font-medium">{rule.threshold}</span>
+          <span className="luckymart-text-secondary">阈值:</span>
+          <span className="ml-1 luckymart-font-medium">{rule.threshold}</span>
         </div>
         <div>
-          <span className="text-gray-500">执行次数:</span>
-          <span className="ml-1 font-medium">{rule.executionCount}</span>
+          <span className="luckymart-text-secondary">执行次数:</span>
+          <span className="ml-1 luckymart-font-medium">{rule.executionCount}</span>
         </div>
         <div>
-          <span className="text-gray-500">成功率:</span>
-          <span className="ml-1 font-medium">{rule.successRate}%</span>
+          <span className="luckymart-text-secondary">成功率:</span>
+          <span className="ml-1 luckymart-font-medium">{rule.successRate}%</span>
         </div>
         <div>
-          <span className="text-gray-500">修改时间:</span>
-          <span className="ml-1 font-medium">
+          <span className="luckymart-text-secondary">修改时间:</span>
+          <span className="ml-1 luckymart-font-medium">
             {new Date(rule.lastModified).toLocaleDateString('zh-CN')}
           </span>
         </div>

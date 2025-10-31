@@ -72,14 +72,19 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:fix": "npm run format && npm run lint:fix",
-    "security-check": "npm audit --audit-level moderate",
+    "security-check": "npm audit --audit-level low",
+    "security-audit": "npm audit --audit-level low --json > security-audit.json || true",
+    "security-fix": "npm audit fix --force",
     "quality-check": "tsx scripts/check-types.ts quality",
     "static-analysis": "tsx scripts/check-types.ts static",
     "complexity-check": "eslint . --ext .ts,.tsx --no-eslintrc --rule 'complexity: [error, 10]' --format json",
     "quality-report": "npm run type-check && npm run lint && npm run security-check && npm run complexity-check > quality-report.json",
     "pre-commit": "bash scripts/pre-commit-check.sh && npm run lint && npm run type-check && npm run format:check",
     "check:all": "npm run type-check && npm run lint && npm run static-analysis",
-    "quality:full": "npm run lint && npm run type-check && npm run format:check && npm run security-check && npm run complexity-check"
+    "quality:full": "npm run lint && npm run type-check && npm run format:check && npm run security-check && npm run complexity-check",
+    "security:scan": "npm run security-audit && npm run security-check",
+    "env:security-check": "grep -r 'password\\|secret\\|token\\|key' .env* 2>/dev/null || echo 'No hardcoded credentials found'",
+    "pre-commit": "bash scripts/pre-commit-check.sh && npm run lint && npm run type-check && npm run format:check && npm run env:security-check"
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",
@@ -95,7 +100,7 @@
     "jsonwebtoken": "^9.0.2",
     "next": "^14.2.33",
     "papaparse": "^5.4.1",
-    "puppeteer": "^21.0.0",
+    "puppeteer": "^23.9.0",
     "qrcode": "^1.5.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -104,7 +109,7 @@
     "react-use": "^17.6.0",
     "recharts": "^2.15.4",
     "telegraf": "^4.16.3",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.20.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

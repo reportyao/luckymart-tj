@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { webpush } from 'web-push';
 
-// VAPID配置
-const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa40HI80NQD6F0jFSJj7Up5khOs8HCAHOqBZGNqn1jWiGCZbfZMUjO_gCZME4Pg';
-const vapidPrivateKey = '4F-AaOzBwUnU2tz9dSbW9kUOGwAf3S6iGK9T9a8X7Q8'; // 示例密钥
+// VAPID配置 - 从环境变量获取
+const vapidPublicKey = process.env.VAPID_PUBLIC_KEY;
+const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
+
+// 验证VAPID密钥是否配置
+if (!vapidPublicKey || !vapidPrivateKey) {
+  throw new Error('VAPID密钥未配置，请检查环境变量 VAPID_PUBLIC_KEY 和 VAPID_PRIVATE_KEY');
+}
+
+// 验证VAPID密钥格式
+if (!/^[A-Za-z0-9_-]{20,}$/.test(vapidPublicKey) || !/^[A-Za-z0-9_-]{20,}$/.test(vapidPrivateKey)) {
+  throw new Error('VAPID密钥格式无效');
+}
 
 // 配置web-push
 webpush.setVapidDetails(

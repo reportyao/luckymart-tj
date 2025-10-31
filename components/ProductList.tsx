@@ -175,21 +175,21 @@ const ProductList: React.FC<ProductListProps> = ({
 
   // 加载状态组件
   const LoadingSpinner = () => (
-    <div className="flex justify-center items-center py-8">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+    <div className="luckymart-layout-flex justify-center luckymart-layout-center py-8">
+      <div className="luckymart-animation-spin rounded-full luckymart-size-lg luckymart-size-lg border-b-2 border-red-600"></div>
       <span className="ml-2 text-gray-600">加载中...</span>
     </div>
   );
 
   // 空状态组件
   const EmptyState = () => (
-    <div className="text-center py-12">
-      <div className="text-gray-400 text-6xl mb-4">📦</div>
-      <h3 className="text-lg font-medium text-gray-900 mb-2">暂无商品</h3>
-      <p className="text-gray-600 mb-4">当前筛选条件下没有找到商品</p>
+    <div className="luckymart-text-center py-12">
+      <div className="text-gray-400 text-6xl luckymart-spacing-md">📦</div>
+      <h3 className="luckymart-text-lg luckymart-font-medium text-gray-900 mb-2">暂无商品</h3>
+      <p className="text-gray-600 luckymart-spacing-md">当前筛选条件下没有找到商品</p>
       <button
         onClick={handleRefresh}
-        className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"
+        className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 luckymart-rounded-lg transition-colors"
       >
         刷新试试
       </button>
@@ -198,13 +198,13 @@ const ProductList: React.FC<ProductListProps> = ({
 
   // 错误状态组件
   const ErrorState = () => (
-    <div className="text-center py-12">
-      <div className="text-red-500 text-6xl mb-4">❌</div>
-      <h3 className="text-lg font-medium text-gray-900 mb-2">加载失败</h3>
-      <p className="text-gray-600 mb-4">{error}</p>
+    <div className="luckymart-text-center py-12">
+      <div className="luckymart-text-error text-6xl luckymart-spacing-md">❌</div>
+      <h3 className="luckymart-text-lg luckymart-font-medium text-gray-900 mb-2">加载失败</h3>
+      <p className="text-gray-600 luckymart-spacing-md">{error}</p>
       <button
         onClick={() => fetchProducts(1, false)}
-        className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"
+        className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 luckymart-rounded-lg transition-colors"
       >
         重试
       </button>
@@ -214,17 +214,17 @@ const ProductList: React.FC<ProductListProps> = ({
   return (
     <div className="space-y-6">
       {/* 筛选器 */}
-      <div className="bg-white rounded-lg shadow-sm p-4">
-        <div className="flex flex-wrap gap-4">
+      <div className="luckymart-bg-white luckymart-rounded-lg luckymart-shadow-sm luckymart-padding-md">
+        <div className="luckymart-layout-flex flex-wrap gap-4">
           {/* 类别筛选 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block luckymart-text-sm luckymart-font-medium text-gray-700 mb-2">
               商品类别
             </label>
             <select
               value={category}
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="luckymart-border border-gray-300 luckymart-rounded-md px-3 py-2 luckymart-text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               {filterOptions.categories.map((cat) => (
                 <option key={cat} value={cat}>
@@ -236,13 +236,13 @@ const ProductList: React.FC<ProductListProps> = ({
 
           {/* 状态筛选 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block luckymart-text-sm luckymart-font-medium text-gray-700 mb-2">
               商品状态
             </label>
             <select
               value={status}
               onChange={(e) => handleStatusChange(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="luckymart-border border-gray-300 luckymart-rounded-md px-3 py-2 luckymart-text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               {filterOptions.statuses.map((stat) => (
                 <option key={stat} value={stat}>
@@ -255,11 +255,11 @@ const ProductList: React.FC<ProductListProps> = ({
           </div>
 
           {/* 刷新按钮 */}
-          <div className="flex items-end">
+          <div className="luckymart-layout-flex items-end">
             <button
               onClick={handleRefresh}
               disabled={loading}
-              className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-md text-sm transition-colors"
+              className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white px-4 py-2 luckymart-rounded-md luckymart-text-sm transition-colors"
             >
               {loading ? '刷新中...' : '刷新'}
             </button>
@@ -289,11 +289,11 @@ const ProductList: React.FC<ProductListProps> = ({
 
           {/* 加载更多指示器 */}
           {hasMore && (
-            <div ref={loadMoreRef} className="text-center py-8">
+            <div ref={loadMoreRef} className="luckymart-text-center py-8">
               {loadingMore ? (
                 <LoadingSpinner />
               ) : (
-                <div className="text-gray-500">
+                <div className="luckymart-text-secondary">
                   滚动加载更多...
                 </div>
               )}
@@ -302,7 +302,7 @@ const ProductList: React.FC<ProductListProps> = ({
 
           {/* 没有更多数据 */}
           {!hasMore && products.length > 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="luckymart-text-center py-8 luckymart-text-secondary">
               没有更多商品了
             </div>
           )}

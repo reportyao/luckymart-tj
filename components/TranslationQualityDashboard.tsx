@@ -386,10 +386,10 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
   if (compact) {
     // 紧凑模式
     return (
-      <div className="bg-white rounded-lg shadow p-4">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-semibold">翻译状态</h3>
-          <div className="flex items-center space-x-2">
+      <div className="luckymart-bg-white luckymart-rounded-lg luckymart-shadow luckymart-padding-md">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-between mb-2">
+          <h3 className="luckymart-text-lg font-semibold">翻译状态</h3>
+          <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getHealthBgColor(overallStats.avgQuality)}`}>
               <span className={getHealthColor(overallStats.avgQuality)}>
                 {overallStats.avgQuality}/100
@@ -397,14 +397,14 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
             </span>
             <button 
               onClick={fetchStats}
-              className="p-1 text-gray-500 hover:text-gray-700"
+              className="p-1 luckymart-text-secondary hover:text-gray-700"
               disabled={loading}
             >
               🔄
             </button>
           </div>
         </div>
-        <div className="text-sm text-gray-600">
+        <div className="luckymart-text-sm text-gray-600">
           <div>文件: {overallStats.totalFiles}</div>
           <div>完整性: {overallStats.avgCompleteness}%</div>
           <div>问题: {overallStats.totalIssues}</div>
@@ -414,15 +414,15 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
+    <div className="max-w-7xl mx-auto luckymart-padding-lg bg-gray-50 min-h-screen">
       {/* 告警面板 */}
       {alerts.length > 0 && (
         <div className="mb-6">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
+          <div className="bg-red-50 luckymart-border border-red-200 luckymart-rounded-lg luckymart-padding-md">
+            <div className="luckymart-layout-flex luckymart-layout-center justify-between">
+              <div className="luckymart-layout-flex luckymart-layout-center">
                 <span className="text-red-600 font-semibold">🚨 质量告警</span>
-                <span className="ml-2 px-2 py-1 bg-red-100 text-red-800 text-sm rounded">
+                <span className="ml-2 px-2 py-1 bg-red-100 text-red-800 luckymart-text-sm luckymart-rounded">
                   {alerts.filter(a => !a.acknowledged).length} 未确认
                 </span>
               </div>
@@ -433,25 +433,25 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
                 ✕
               </button>
             </div>
-            <div className="mt-3 space-y-2">
+            <div className="mt-3 luckymart-spacing-sm">
               {alerts.slice(0, 3).map(alert => (
-                <div key={alert.id} className="flex items-center justify-between bg-white p-3 rounded border">
-                  <div className="flex items-center">
+                <div key={alert.id} className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-bg-white p-3 luckymart-rounded luckymart-border">
+                  <div className="luckymart-layout-flex luckymart-layout-center">
                     <span className={`w-2 h-2 rounded-full mr-3 ${
                       alert.severity === 'critical' ? 'bg-red-500' :
                       alert.severity === 'high' ? 'bg-orange-500' :
                       alert.severity === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
                     }`}></span>
-                    <span className="text-sm">{alert.message}</span>
+                    <span className="luckymart-text-sm">{alert.message}</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs text-gray-500">
+                  <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
+                    <span className="text-xs luckymart-text-secondary">
                       {alert.timestamp.toLocaleTimeString()}
                     </span>
                     {!alert.acknowledged && (
                       <button
                         onClick={() => acknowledgeAlert(alert.id)}
-                        className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                        className="text-xs px-2 py-1 bg-blue-100 text-blue-800 luckymart-rounded hover:bg-blue-200"
                       >
                         确认
                       </button>
@@ -466,37 +466,37 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
 
       {/* 头部 */}
       <div className="mb-8">
-        <div className="flex items-center justify-between">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl luckymart-font-bold text-gray-900">
               {t('translationDashboard.title', '翻译质量监控仪表板')}
             </h1>
             <p className="text-gray-600 mt-2">
               {t('translationDashboard.subtitle', '实时监控翻译完整性和质量状态')}
             </p>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="luckymart-layout-flex luckymart-layout-center space-x-4">
             {enableRealTimeMonitoring && (
-              <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span className="text-sm text-gray-600">实时监控</span>
+              <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
+                <span className="w-2 h-2 luckymart-bg-success rounded-full luckymart-animation-pulse"></span>
+                <span className="luckymart-text-sm text-gray-600">实时监控</span>
               </div>
             )}
-            <div className="text-sm text-gray-500">
+            <div className="luckymart-text-sm luckymart-text-secondary">
               {t('translationDashboard.lastUpdate', '最后更新')}: {lastRefresh.toLocaleTimeString()}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
               <button
                 onClick={performQualityCheck}
                 disabled={loading}
-                className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 text-sm"
+                className="px-3 py-2 bg-green-600 text-white luckymart-rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm luckymart-text-sm"
               >
                 <span>🔍</span>
                 <span>质量检查</span>
               </button>
               <button
                 onClick={() => generateReport('html')}
-                className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center space-x-2 text-sm"
+                className="px-3 py-2 bg-purple-600 text-white luckymart-rounded-lg hover:bg-purple-700 luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm luckymart-text-sm"
               >
                 <span>📊</span>
                 <span>生成报告</span>
@@ -504,7 +504,7 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
               <button
                 onClick={fetchStats}
                 disabled={loading}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-4 py-2 bg-blue-600 text-white luckymart-rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm"
               >
                 <span>🔄</span>
                 <span>{loading ? t('translationDashboard.refreshing', '刷新中...') : t('translationDashboard.refresh', '刷新')}</span>
@@ -516,25 +516,25 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
 
       {/* 汇总统计 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
+        <div className="luckymart-bg-white luckymart-rounded-lg luckymart-shadow luckymart-padding-lg">
+          <div className="luckymart-layout-flex luckymart-layout-center">
+            <div className="luckymart-padding-sm bg-blue-100 luckymart-rounded-lg">
               <span className="text-2xl">📁</span>
             </div>
             <div className="ml-4">
-              <p className="text-sm text-gray-600">{t('translationDashboard.totalFiles', '总文件数')}</p>
+              <p className="luckymart-text-sm text-gray-600">{t('translationDashboard.totalFiles', '总文件数')}</p>
               <p className="text-2xl font-semibold text-gray-900">{overallStats.totalFiles}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+        <div className="luckymart-bg-white luckymart-rounded-lg luckymart-shadow luckymart-padding-lg">
+          <div className="luckymart-layout-flex luckymart-layout-center">
+            <div className="luckymart-padding-sm bg-green-100 luckymart-rounded-lg">
               <span className="text-2xl">📊</span>
             </div>
             <div className="ml-4">
-              <p className="text-sm text-gray-600">{t('translationDashboard.avgCompleteness', '平均完整性')}</p>
+              <p className="luckymart-text-sm text-gray-600">{t('translationDashboard.avgCompleteness', '平均完整性')}</p>
               <p className={`text-2xl font-semibold ${getHealthColor(overallStats.avgCompleteness)}`}>
                 {overallStats.avgCompleteness}%
               </p>
@@ -542,13 +542,13 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-purple-100 rounded-lg">
+        <div className="luckymart-bg-white luckymart-rounded-lg luckymart-shadow luckymart-padding-lg">
+          <div className="luckymart-layout-flex luckymart-layout-center">
+            <div className="luckymart-padding-sm bg-purple-100 luckymart-rounded-lg">
               <span className="text-2xl">⭐</span>
             </div>
             <div className="ml-4">
-              <p className="text-sm text-gray-600">{t('translationDashboard.avgQuality', '平均质量')}</p>
+              <p className="luckymart-text-sm text-gray-600">{t('translationDashboard.avgQuality', '平均质量')}</p>
               <p className={`text-2xl font-semibold ${getHealthColor(overallStats.avgQuality)}`}>
                 {overallStats.avgQuality}/100
               </p>
@@ -556,16 +556,16 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-red-100 rounded-lg">
+        <div className="luckymart-bg-white luckymart-rounded-lg luckymart-shadow luckymart-padding-lg">
+          <div className="luckymart-layout-flex luckymart-layout-center">
+            <div className="luckymart-padding-sm bg-red-100 luckymart-rounded-lg">
               <span className="text-2xl">⚠️</span>
             </div>
             <div className="ml-4">
-              <p className="text-sm text-gray-600">{t('translationDashboard.totalIssues', '总问题数')}</p>
+              <p className="luckymart-text-sm text-gray-600">{t('translationDashboard.totalIssues', '总问题数')}</p>
               <p className="text-2xl font-semibold text-gray-900">{overallStats.totalIssues}</p>
               {overallStats.criticalIssues > 0 && (
-                <p className="text-sm text-red-600">
+                <p className="luckymart-text-sm text-red-600">
                   {overallStats.criticalIssues} {t('translationDashboard.critical', '严重')}
                 </p>
               )}
@@ -575,16 +575,16 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
       </div>
 
       {/* 筛选器 */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center space-x-2">
-            <label className="text-sm font-medium text-gray-700">
+      <div className="luckymart-bg-white luckymart-rounded-lg luckymart-shadow luckymart-padding-lg mb-6">
+        <div className="luckymart-layout-flex flex-wrap luckymart-layout-center gap-4">
+          <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
+            <label className="luckymart-text-sm luckymart-font-medium text-gray-700">
               {t('translationDashboard.language', '语言')}:
             </label>
             <select
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-1 text-sm"
+              className="luckymart-border border-gray-300 luckymart-rounded-md px-3 py-1 luckymart-text-sm"
             >
               <option value="all">{t('translationDashboard.all', '全部')}</option>
               {['zh-CN', 'en-US', 'ru-RU', 'tg-TJ'].map(lang => (
@@ -593,14 +593,14 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
             </select>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <label className="text-sm font-medium text-gray-700">
+          <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
+            <label className="luckymart-text-sm luckymart-font-medium text-gray-700">
               {t('translationDashboard.namespace', '命名空间')}:
             </label>
             <select
               value={selectedNamespace}
               onChange={(e) => setSelectedNamespace(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-1 text-sm"
+              className="luckymart-border border-gray-300 luckymart-rounded-md px-3 py-1 luckymart-text-sm"
             >
               <option value="all">{t('translationDashboard.all', '全部')}</option>
               {['common', 'auth', 'lottery', 'wallet', 'referral', 'task', 'error', 'admin', 'bot'].map(ns => (
@@ -609,11 +609,11 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
             </select>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <label className="text-sm font-medium text-gray-700">
+          <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
+            <label className="luckymart-text-sm luckymart-font-medium text-gray-700">
               {t('translationDashboard.view', '视图')}:
             </label>
-            <div className="flex border border-gray-300 rounded-md overflow-hidden">
+            <div className="luckymart-layout-flex luckymart-border border-gray-300 luckymart-rounded-md overflow-hidden">
               <button
                 onClick={() => setViewMode('grid')}
                 className={`px-3 py-1 text-sm ${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'}`}
@@ -633,8 +633,8 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
 
       {/* 状态列表/网格 */}
       {loading ? (
-        <div className="bg-white rounded-lg shadow p-8 text-center">
-          <div className="text-gray-500">加载中...</div>
+        <div className="luckymart-bg-white luckymart-rounded-lg luckymart-shadow p-8 luckymart-text-center">
+          <div className="luckymart-text-secondary">加载中...</div>
         </div>
       ) : (
         <div className={viewMode === 'grid' 
@@ -643,12 +643,12 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
         }>
           {filteredStats.map((stat, index) => (
             <div key={`${stat.language}-${stat.namespace}`} className={`bg-white rounded-lg shadow ${viewMode === 'list' ? 'p-4' : 'p-6'}`}>
-              <div className="flex items-center justify-between mb-4">
+              <div className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-spacing-md">
                 <div>
                   <h3 className="font-semibold text-gray-900">
                     {getLanguageName(stat.language)} / {getNamespaceDisplayName(stat.namespace)}
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="luckymart-text-sm luckymart-text-secondary">
                     {stat.totalKeys} {t('translationDashboard.keys', '键')}
                   </p>
                 </div>
@@ -659,14 +659,14 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="luckymart-spacing-md">
                 {/* 维度评分 */}
                 {stat.dimensionScores && (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-gray-700">质量维度</p>
+                  <div className="luckymart-spacing-sm">
+                    <p className="luckymart-text-sm luckymart-font-medium text-gray-700">质量维度</p>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       {Object.entries(stat.dimensionScores).slice(0, 4).map(([dimension, score]) => (
-                        <div key={dimension} className="flex justify-between">
+                        <div key={dimension} className="luckymart-layout-flex justify-between">
                           <span className="text-gray-600">
                             {dimension === QualityDimension.ACCURACY ? '准确性' :
                              dimension === QualityDimension.FLUENCY ? '流畅性' :
@@ -683,7 +683,7 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
                 )}
 
                 <div>
-                  <div className="flex justify-between text-sm mb-1">
+                  <div className="luckymart-layout-flex justify-between luckymart-text-sm mb-1">
                     <span className="text-gray-600">{t('translationDashboard.completeness', '完整性')}</span>
                     <span className={getHealthColor(stat.completeness)}>{stat.completeness}%</span>
                   </div>
@@ -696,19 +696,19 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
                 </div>
 
                 {stat.missingKeys > 0 && (
-                  <div className="text-sm text-red-600">
+                  <div className="luckymart-text-sm text-red-600">
                     ⚠️ {stat.missingKeys} {t('translationDashboard.missingKeys', '个缺失键')}
                   </div>
                 )}
 
                 {stat.issues.length > 0 && (
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-gray-700">
+                    <p className="luckymart-text-sm luckymart-font-medium text-gray-700">
                       {t('translationDashboard.issues', '问题')}:
                     </p>
                     {stat.issues.slice(0, 3).map((issue, idx) => (
-                      <div key={idx} className="flex items-center justify-between text-sm">
-                        <div className="flex items-center space-x-2">
+                      <div key={idx} className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-text-sm">
+                        <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
                           <span>{getSeverityIcon(issue.severity)}</span>
                           <span className="text-gray-600">{issue.message}</span>
                         </div>
@@ -732,17 +732,17 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
 
       {/* 质量趋势图 */}
       {showTrends && trends.length > 0 && (
-        <div className="mt-8 bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center">
+        <div className="mt-8 luckymart-bg-white luckymart-rounded-lg luckymart-shadow luckymart-padding-lg">
+          <h3 className="luckymart-text-lg font-semibold luckymart-spacing-md luckymart-layout-flex luckymart-layout-center">
             <span className="mr-2">📈</span>
             {t('translationDashboard.qualityTrends', '质量趋势')}
           </h3>
-          <div className="h-64 flex items-end justify-between space-x-2">
+          <div className="h-64 luckymart-layout-flex items-end justify-between luckymart-spacing-sm">
             {trends.map((trend, index) => (
-              <div key={index} className="flex-1 flex flex-col items-center">
+              <div key={index} className="flex-1 luckymart-layout-flex flex-col luckymart-layout-center">
                 <div className="w-full bg-gray-200 rounded-t" style={{ height: '120px' }}>
                   <div 
-                    className="bg-blue-500 rounded-t w-full transition-all duration-300"
+                    className="luckymart-bg-primary rounded-t w-full transition-all duration-300"
                     style={{ height: `${trend.score}%` }}
                     title={`${trend.date}: ${trend.score.toFixed(1)}分`}
                   />
@@ -758,31 +758,31 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
 
       {/* 建议和修复提示 */}
       {showRecommendations && overallStats.totalIssues > 0 && (
-        <div className="mt-8 bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center">
+        <div className="mt-8 luckymart-bg-white luckymart-rounded-lg luckymart-shadow luckymart-padding-lg">
+          <h3 className="luckymart-text-lg font-semibold luckymart-spacing-md luckymart-layout-flex luckymart-layout-center">
             <span className="mr-2">💡</span>
             {t('translationDashboard.recommendations', '修复建议')}
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {overallStats.criticalIssues > 0 && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                <div className="flex items-center mb-2">
-                  <span className="text-red-600 font-medium">🚨 {t('translationDashboard.criticalIssues', '严重问题')}</div>
+              <div className="luckymart-padding-md bg-red-50 luckymart-border border-red-200 luckymart-rounded-lg">
+                <div className="luckymart-layout-flex luckymart-layout-center mb-2">
+                  <span className="text-red-600 luckymart-font-medium">🚨 {t('translationDashboard.criticalIssues', '严重问题')}</div>
                 </div>
-                <p className="text-sm text-red-700">
+                <p className="luckymart-text-sm text-red-700">
                   存在 {overallStats.criticalIssues} 个严重问题需要立即修复
                 </p>
-                <div className="mt-2 space-x-2">
+                <div className="mt-2 luckymart-spacing-sm">
                   <button 
                     onClick={performQualityCheck}
-                    className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                    className="px-3 py-1 bg-red-600 text-white luckymart-text-sm luckymart-rounded hover:bg-red-700"
                   >
                     执行检查
                   </button>
                   <button 
                     onClick={() => generateReport('html')}
-                    className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700"
+                    className="px-3 py-1 bg-gray-600 text-white luckymart-text-sm luckymart-rounded hover:bg-gray-700"
                   >
                     生成报告
                   </button>
@@ -790,78 +790,78 @@ const TranslationQualityDashboard: React.FC<QualityDashboardProps> = ({
               </div>
             )}
 
-            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <div className="flex items-center mb-2">
-                <span className="text-yellow-600 font-medium">⚠️ {t('translationDashboard.missingTranslations', '缺失翻译')}</div>
+            <div className="luckymart-padding-md bg-yellow-50 luckymart-border border-yellow-200 luckymart-rounded-lg">
+              <div className="luckymart-layout-flex luckymart-layout-center mb-2">
+                <span className="text-yellow-600 luckymart-font-medium">⚠️ {t('translationDashboard.missingTranslations', '缺失翻译')}</div>
               </div>
-              <p className="text-sm text-yellow-700">
+              <p className="luckymart-text-sm text-yellow-700">
                 检测到缺失翻译，建议补充以提高完整性
               </p>
-              <div className="mt-2 space-x-2">
-                <button className="px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700">
+              <div className="mt-2 luckymart-spacing-sm">
+                <button className="px-3 py-1 bg-yellow-600 text-white luckymart-text-sm luckymart-rounded hover:bg-yellow-700">
                   自动补全
                 </button>
-                <button className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700">
+                <button className="px-3 py-1 bg-gray-600 text-white luckymart-text-sm luckymart-rounded hover:bg-gray-700">
                   查看详情
                 </button>
               </div>
             </div>
 
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center mb-2">
-                <span className="text-blue-600 font-medium">📊 {t('translationDashboard.qualityReport', '质量报告')}</div>
+            <div className="luckymart-padding-md bg-blue-50 luckymart-border border-blue-200 luckymart-rounded-lg">
+              <div className="luckymart-layout-flex luckymart-layout-center mb-2">
+                <span className="text-blue-600 luckymart-font-medium">📊 {t('translationDashboard.qualityReport', '质量报告')}</div>
               </div>
-              <p className="text-sm text-blue-700">
+              <p className="luckymart-text-sm text-blue-700">
                 生成详细的翻译质量分析报告和趋势分析
               </p>
-              <div className="mt-2 space-x-2">
+              <div className="mt-2 luckymart-spacing-sm">
                 <button 
                   onClick={() => generateReport('html')}
-                  className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                  className="px-3 py-1 bg-blue-600 text-white luckymart-text-sm luckymart-rounded hover:bg-blue-700"
                 >
                   HTML报告
                 </button>
                 <button 
                   onClick={() => generateReport('json')}
-                  className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700"
+                  className="px-3 py-1 bg-gray-600 text-white luckymart-text-sm luckymart-rounded hover:bg-gray-700"
                 >
                   JSON数据
                 </button>
               </div>
             </div>
 
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center mb-2">
-                <span className="text-green-600 font-medium">🔍 {t('translationDashboard.qualityAnalysis', '质量分析')}</div>
+            <div className="luckymart-padding-md bg-green-50 luckymart-border border-green-200 luckymart-rounded-lg">
+              <div className="luckymart-layout-flex luckymart-layout-center mb-2">
+                <span className="text-green-600 luckymart-font-medium">🔍 {t('translationDashboard.qualityAnalysis', '质量分析')}</div>
               </div>
-              <p className="text-sm text-green-700">
+              <p className="luckymart-text-sm text-green-700">
                 深度分析翻译质量问题并提供改进建议
               </p>
-              <button className="mt-2 px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+              <button className="mt-2 px-3 py-1 bg-green-600 text-white luckymart-text-sm luckymart-rounded hover:bg-green-700">
                 开始分析
               </button>
             </div>
 
-            <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-              <div className="flex items-center mb-2">
-                <span className="text-purple-600 font-medium">⚙️ {t('translationDashboard.autoFix', '自动修复')}</div>
+            <div className="luckymart-padding-md bg-purple-50 luckymart-border border-purple-200 luckymart-rounded-lg">
+              <div className="luckymart-layout-flex luckymart-layout-center mb-2">
+                <span className="text-purple-600 luckymart-font-medium">⚙️ {t('translationDashboard.autoFix', '自动修复')}</div>
               </div>
-              <p className="text-sm text-purple-700">
+              <p className="luckymart-text-sm text-purple-700">
                 尝试自动修复可识别的翻译质量问题
               </p>
-              <button className="mt-2 px-3 py-1 bg-purple-600 text-white text-sm rounded hover:bg-purple-700">
+              <button className="mt-2 px-3 py-1 bg-purple-600 text-white luckymart-text-sm luckymart-rounded hover:bg-purple-700">
                 启用自动修复
               </button>
             </div>
 
-            <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
-              <div className="flex items-center mb-2">
-                <span className="text-indigo-600 font-medium">📋 {t('translationDashboard.terminologyCheck', '术语检查')}</div>
+            <div className="luckymart-padding-md bg-indigo-50 luckymart-border border-indigo-200 luckymart-rounded-lg">
+              <div className="luckymart-layout-flex luckymart-layout-center mb-2">
+                <span className="text-indigo-600 luckymart-font-medium">📋 {t('translationDashboard.terminologyCheck', '术语检查')}</div>
               </div>
-              <p className="text-sm text-indigo-700">
+              <p className="luckymart-text-sm text-indigo-700">
                 检查术语一致性和标准化翻译
               </p>
-              <button className="mt-2 px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700">
+              <button className="mt-2 px-3 py-1 bg-indigo-600 text-white luckymart-text-sm luckymart-rounded hover:bg-indigo-700">
                 执行检查
               </button>
             </div>

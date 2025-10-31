@@ -1,4 +1,18 @@
 {
+  "login": {
+    "title": "LuckyMart TJ",
+    "subtitle": "Бэкэнд управления операциями",
+    "admin_login": "Вход администратора",
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "login_failed": "Вход не удался",
+    "login_failed_retry": "Вход не удался, пожалуйста, попробуйте еще раз",
+    "please_enter_username": "Пожалуйста, введите имя пользователя",
+    "please_enter_password": "Пожалуйста, введите пароль",
+    "login": "Войти",
+    "logging_in": "Вход...",
+    "back_to_home": "На главную"
+  },
   "welcome": "Добро пожаловать",
   "logout": "Выйти",
   "reward_config": {

@@ -3,6 +3,30 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Wifi, WifiOff, RefreshCw, Download, Clock } from 'lucide-react';
 
+// Props接口定义
+export interface OfflineIndicatorProps {
+  /** 自定义CSS类名 */
+  className?: string;
+  /** 是否显示离线横幅 */
+  showOfflineBanner?: boolean;
+  /** 是否显示同步状态栏 */
+  showSyncStatus?: boolean;
+  /** 是否显示离线队列管理 */
+  showQueueManagement?: boolean;
+  /** 离线队列最大数量 */
+  maxQueueSize?: number;
+  /** 是否自动同步 */
+  autoSync?: boolean;
+  /** 同步间隔（毫秒） */
+  syncInterval?: number;
+  /** 网络状态变化回调 */
+  onNetworkChange?: (isOnline: boolean) => void;
+  /** 同步完成回调 */
+  onSyncComplete?: (success: boolean) => void;
+  /** 错误回调函数 */
+  onError?: (error: Error) => void;
+}
+
 interface OfflineQueueItem {
   id: string;
   url: string;
@@ -14,7 +38,18 @@ interface OfflineQueueItem {
   maxRetries: number;
 }
 
-export default function OfflineIndicator() {
+const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
+  className = '',
+  showOfflineBanner = true,
+  showSyncStatus = true,
+  showQueueManagement = true,
+  maxQueueSize = 50,
+  autoSync = true,
+  syncInterval = 30000,
+  onNetworkChange,
+  onSyncComplete,
+  onError
+}) => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showOfflineBanner, setShowOfflineBanner] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -223,14 +258,15 @@ export default function OfflineIndicator() {
   }
 
   return (
-    <>
+    <div className={className}>
+      <>
       {/* 离线横幅 */}
       {showOfflineBanner && (
         <div className="fixed top-0 left-0 right-0 bg-red-600 text-white py-2 px-4 z-50">
-          <div className="flex items-center justify-between max-w-7xl mx-auto">
-            <div className="flex items-center">
-              <WifiOff className="w-5 h-5 mr-2" />
-              <span className="text-sm font-medium">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between max-w-7xl mx-auto">
+            <div className="luckymart-layout-flex luckymart-layout-center">
+              <WifiOff className="luckymart-size-sm luckymart-size-sm mr-2" />
+              <span className="luckymart-text-sm luckymart-font-medium">
                 网络连接已断开，某些功能可能受限
               </span>
             </div>
@@ -246,16 +282,16 @@ export default function OfflineIndicator() {
 
       {/* 同步状态栏 */}
       {(isSyncing || syncProgress > 0) && (
-        <div className="fixed bottom-4 left-4 right-4 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-w-sm mx-auto">
-          <div className="p-4">
-            <div className="flex items-center mb-3">
+        <div className="fixed bottom-4 left-4 right-4 luckymart-bg-white luckymart-rounded-lg luckymart-shadow-lg luckymart-border luckymart-border-light z-50 max-w-sm mx-auto">
+          <div className="luckymart-padding-md">
+            <div className="luckymart-layout-flex luckymart-layout-center mb-3">
               <RefreshCw className={`w-5 h-5 text-indigo-600 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
               <div className="flex-1">
-                <h3 className="text-sm font-medium text-gray-900">
+                <h3 className="luckymart-text-sm luckymart-font-medium text-gray-900">
                   {isSyncing ? '正在同步数据...' : '数据同步完成'}
                 </h3>
                 {offlineQueue.length > 0 && (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs luckymart-text-secondary">
                     待同步 {offlineQueue.length} 项
                   </p>
                 )}
@@ -270,8 +306,8 @@ export default function OfflineIndicator() {
               />
             </div>
             
-            <div className="flex justify-between items-center mt-3">
-              <span className="text-xs text-gray-500">
+            <div className="luckymart-layout-flex justify-between luckymart-layout-center mt-3">
+              <span className="text-xs luckymart-text-secondary">
                 {Math.round(syncProgress)}%
               </span>
               
@@ -291,18 +327,18 @@ export default function OfflineIndicator() {
       {/* 离线队列管理按钮 */}
       {offlineQueue.length > 0 && !isSyncing && !showOfflineBanner && (
         <div className="fixed bottom-4 right-4 z-50">
-          <div className="bg-white rounded-full shadow-lg border border-gray-200 p-3">
-            <div className="flex items-center space-x-2">
+          <div className="luckymart-bg-white rounded-full luckymart-shadow-lg luckymart-border luckymart-border-light p-3">
+            <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
               <div className="relative">
-                <Clock className="w-5 h-5 text-gray-600" />
-                <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                <Clock className="luckymart-size-sm luckymart-size-sm text-gray-600" />
+                <div className="absolute -top-1 -right-1 luckymart-bg-error text-white text-xs rounded-full w-4 h-4 luckymart-layout-flex luckymart-layout-center justify-center">
                   {offlineQueue.length}
                 </div>
               </div>
               
               <button
                 onClick={retrySync}
-                className="bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition-colors"
+                className="bg-indigo-600 text-white luckymart-padding-sm rounded-full hover:bg-indigo-700 transition-colors"
                 title="同步数据"
               >
                 <RefreshCw className="w-4 h-4" />
@@ -341,22 +377,22 @@ export default function OfflineIndicator() {
 
       {/* 离线提示模态框 */}
       {showOfflineBanner && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-sm w-full p-6">
-            <div className="text-center">
-              <WifiOff className="w-12 h-12 text-red-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 luckymart-layout-flex luckymart-layout-center justify-center luckymart-padding-md">
+          <div className="luckymart-bg-white luckymart-rounded-lg shadow-xl max-w-sm w-full luckymart-padding-lg">
+            <div className="luckymart-text-center">
+              <WifiOff className="w-12 h-12 luckymart-text-error mx-auto luckymart-spacing-md" />
+              <h3 className="luckymart-text-lg font-semibold text-gray-900 mb-2">
                 网络连接中断
               </h3>
               <p className="text-gray-600 mb-6">
                 您正在使用离线模式，已缓存的内容仍可访问。当网络恢复时，离线的操作将自动同步。
               </p>
               
-              <div className="space-y-3">
+              <div className="luckymart-spacing-md">
                 <button
                   onClick={retrySync}
                   disabled={isSyncing}
-                  className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                  className="w-full bg-indigo-600 text-white py-2 px-4 luckymart-rounded-lg luckymart-font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors luckymart-layout-flex luckymart-layout-center justify-center"
                 >
                   <RefreshCw className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
                   {isSyncing ? '正在同步...' : '立即同步'}
@@ -364,7 +400,7 @@ export default function OfflineIndicator() {
                 
                 <button
                   onClick={() => setShowOfflineBanner(false)}
-                  className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="w-full luckymart-border border-gray-300 text-gray-700 py-2 px-4 luckymart-rounded-lg luckymart-font-medium hover:bg-gray-50 transition-colors"
                 >
                   继续使用
                 </button>
@@ -374,5 +410,8 @@ export default function OfflineIndicator() {
         </div>
       )}
     </>
+    </div>
   );
-}
+};
+
+export default OfflineIndicator;

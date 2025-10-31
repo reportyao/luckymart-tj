@@ -283,7 +283,7 @@ export const DynamicImport: React.FC<{
         <p>组件加载失败</p>
         <button 
           onClick={() => window.location.reload()} 
-          className="text-sm text-blue-600 hover:text-blue-800 mt-2"
+          className="luckymart-text-sm text-blue-600 hover:text-blue-800 mt-2"
         >
           重新加载
         </button>
@@ -433,4 +433,29 @@ export const CodeSplitConfig = {
   }
 };
 
-export default createLazyComponent;
+export { 
+  createLazyComponent,
+  useRoutePreloader,
+  useSmartPreloader,
+  DynamicImport,
+  LazyRoute
+} from './CodeSplitOptimizerTools';
+
+// 重命名导出，避免与主组件冲突
+export const CodeSplitOptimizerTools = {
+  createLazyComponent,
+  useRoutePreloader,
+  useSmartPreloader,
+  DynamicImport,
+  LazyRoute
+};
+
+export { 
+  createLazyComponent,
+  useRoutePreloader,
+  useSmartPreloader,
+  DynamicImport,
+  LazyRoute,
+  PreloadStrategy,
+  usePreloadManager
+};

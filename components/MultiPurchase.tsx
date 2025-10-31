@@ -129,19 +129,19 @@ export default function MultiPurchase({
   // 余额不足的处理
   if (coinBalance < pricePerShare) {
     return (
-      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-        <div className="flex items-center mb-2">
-          <svg className="w-5 h-5 text-orange-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="bg-orange-50 luckymart-border border-orange-200 luckymart-rounded-lg luckymart-padding-md">
+        <div className="luckymart-layout-flex luckymart-layout-center mb-2">
+          <svg className="luckymart-size-sm luckymart-size-sm text-orange-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
-          <span className="text-orange-800 font-medium">幸运币不足</span>
+          <span className="text-orange-800 luckymart-font-medium">幸运币不足</span>
         </div>
-        <p className="text-orange-700 text-sm mb-3">
+        <p className="text-orange-700 luckymart-text-sm mb-3">
           当前余额：{coinBalance} 幸运币，最低需要 {pricePerShare} 幸运币参与
         </p>
         <button
           onClick={() => router.push('/wallet/recharge')}
-          className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors font-medium"
+          className="w-full bg-orange-500 text-white py-2 px-4 luckymart-rounded-lg hover:bg-orange-600 transition-colors luckymart-font-medium"
         >
           立即充值幸运币
         </button>
@@ -154,18 +154,18 @@ export default function MultiPurchase({
   const discountAmount = pricePerShare * selectedShares * (1 - discount);
 
   return (
-    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
-      <div className="flex items-center mb-3">
-        <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="bg-gradient-to-r from-green-50 to-emerald-50 luckymart-border border-green-200 luckymart-rounded-lg luckymart-padding-md">
+      <div className="luckymart-layout-flex luckymart-layout-center mb-3">
+        <svg className="luckymart-size-sm luckymart-size-sm text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg>
-        <span className="text-green-800 font-medium">多份购买</span>
+        <span className="text-green-800 luckymart-font-medium">多份购买</span>
         <span className="ml-auto text-xs text-green-600">批量优惠</span>
       </div>
 
       {/* 份数选择 */}
-      <div className="mb-4">
-        <div className="text-sm text-gray-700 mb-2">选择购买份数</div>
+      <div className="luckymart-spacing-md">
+        <div className="luckymart-text-sm text-gray-700 mb-2">选择购买份数</div>
         
         {/* 预设选项 */}
         <div className="grid grid-cols-5 gap-2 mb-3">
@@ -188,8 +188,8 @@ export default function MultiPurchase({
         </div>
 
         {/* 自定义输入 */}
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600">或输入：</span>
+        <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
+          <span className="luckymart-text-sm text-gray-600">或输入：</span>
           <input
             type="number"
             min="1"
@@ -203,38 +203,38 @@ export default function MultiPurchase({
             }`}
             placeholder="1-10"
           />
-          <span className="text-sm text-gray-600">份</span>
+          <span className="luckymart-text-sm text-gray-600">份</span>
         </div>
       </div>
 
       {/* 价格计算 */}
-      <div className="bg-white rounded-lg p-3 mb-4">
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
+      <div className="luckymart-bg-white luckymart-rounded-lg p-3 luckymart-spacing-md">
+        <div className="luckymart-spacing-sm">
+          <div className="luckymart-layout-flex justify-between luckymart-text-sm">
             <span className="text-gray-600">购买份数</span>
-            <span className="font-medium">{selectedShares} 份</span>
+            <span className="luckymart-font-medium">{selectedShares} 份</span>
           </div>
           
-          <div className="flex justify-between text-sm">
+          <div className="luckymart-layout-flex justify-between luckymart-text-sm">
             <span className="text-gray-600">单价</span>
             <span>{pricePerShare} 幸运币</span>
           </div>
 
           {discount < 1 && (
             <>
-              <div className="flex justify-between text-sm text-green-600">
+              <div className="luckymart-layout-flex justify-between luckymart-text-sm text-green-600">
                 <span>批量折扣</span>
-                <span className="font-medium">{Math.round((1 - discount) * 100)}% 优惠</span>
+                <span className="luckymart-font-medium">{Math.round((1 - discount) * 100)}% 优惠</span>
               </div>
-              <div className="flex justify-between text-sm text-green-600">
+              <div className="luckymart-layout-flex justify-between luckymart-text-sm text-green-600">
                 <span>节省金额</span>
-                <span className="font-medium">{discountAmount} 幸运币</span>
+                <span className="luckymart-font-medium">{discountAmount} 幸运币</span>
               </div>
             </>
           )}
           
           <div className="border-t pt-2">
-            <div className="flex justify-between text-lg font-bold">
+            <div className="luckymart-layout-flex justify-between luckymart-text-lg luckymart-font-bold">
               <span className="text-gray-700">总价</span>
               <span className="text-green-600">{totalCost} 幸运币</span>
             </div>
@@ -244,12 +244,12 @@ export default function MultiPurchase({
 
       {/* 折扣提示 */}
       {discount < 1 && (
-        <div className="bg-green-100 rounded-lg p-3 mb-4">
-          <div className="flex items-center text-green-800">
+        <div className="bg-green-100 luckymart-rounded-lg p-3 luckymart-spacing-md">
+          <div className="luckymart-layout-flex luckymart-layout-center text-green-800">
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
             </svg>
-            <span className="text-sm font-medium">
+            <span className="luckymart-text-sm luckymart-font-medium">
               购买 {selectedShares} 份可享受 {Math.round((1 - discount) * 100)}% 折扣
             </span>
           </div>
@@ -268,7 +268,7 @@ export default function MultiPurchase({
       >
         {loading ? (
           <>
-            <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+            <svg className="luckymart-animation-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
@@ -285,7 +285,7 @@ export default function MultiPurchase({
       </button>
 
       {/* 余额提示 */}
-      <div className="mt-2 text-center">
+      <div className="mt-2 luckymart-text-center">
         <span className="text-xs text-gray-600">
           余额：{coinBalance} 幸运币
         </span>

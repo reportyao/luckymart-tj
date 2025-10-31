@@ -45,11 +45,11 @@ const AuthGuide: React.FC<AuthGuideProps> = ({ onStatusChange, onRetry }) => {
       case 'preparing':
       case 'validating':
       case 'retrying':
-        return <Loader2 className="animate-spin h-5 w-5 text-blue-500" />;
+        return <Loader2 className="luckymart-animation-spin luckymart-size-sm luckymart-size-sm luckymart-text-primary" />;
       case 'completed':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="luckymart-size-sm luckymart-size-sm luckymart-text-success" />;
       case 'error':
-        return <AlertCircle className="h-5 w-5 text-red-500" />;
+        return <AlertCircle className="luckymart-size-sm luckymart-size-sm luckymart-text-error" />;
       default:
         return null;
     }
@@ -99,21 +99,21 @@ const AuthGuide: React.FC<AuthGuideProps> = ({ onStatusChange, onRetry }) => {
   return (
     <div className={`max-w-md mx-auto p-6 rounded-lg border-2 ${getStatusColor()} transition-all duration-300`}>
       {/* 状态图标和消息 */}
-      <div className="flex items-center space-x-3 mb-4">
+      <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md luckymart-spacing-md">
         {getStatusIcon()}
         <div className="flex-1">
-          <h3 className="font-medium text-gray-900">{status.message}</h3>
+          <h3 className="luckymart-font-medium text-gray-900">{status.message}</h3>
           {status.action && (
-            <p className="text-sm text-gray-600 mt-1">{status.action}</p>
+            <p className="luckymart-text-sm text-gray-600 mt-1">{status.action}</p>
           )}
         </div>
       </div>
 
       {/* 进度条 */}
-      <div className="mb-4">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium text-gray-700">验证进度</span>
-          <span className="text-sm text-gray-500">{status.progress}%</span>
+      <div className="luckymart-spacing-md">
+        <div className="luckymart-layout-flex justify-between luckymart-layout-center mb-2">
+          <span className="luckymart-text-sm luckymart-font-medium text-gray-700">验证进度</span>
+          <span className="luckymart-text-sm luckymart-text-secondary">{status.progress}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div 
@@ -125,9 +125,9 @@ const AuthGuide: React.FC<AuthGuideProps> = ({ onStatusChange, onRetry }) => {
 
       {/* 错误信息和重试按钮 */}
       {status.state === 'error' && (
-        <div className="space-y-3">
-          <div className="bg-red-100 border border-red-200 rounded-md p-3">
-            <p className="text-sm text-red-700">
+        <div className="luckymart-spacing-md">
+          <div className="bg-red-100 luckymart-border border-red-200 luckymart-rounded-md p-3">
+            <p className="luckymart-text-sm text-red-700">
               登录验证出现问题，我们正在优化验证流程
             </p>
           </div>
@@ -135,14 +135,14 @@ const AuthGuide: React.FC<AuthGuideProps> = ({ onStatusChange, onRetry }) => {
           {status.canRetry !== false && (
             <button
               onClick={handleRetry}
-              className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+              className="w-full luckymart-layout-flex luckymart-layout-center justify-center luckymart-spacing-sm px-4 py-2 luckymart-bg-primary text-white luckymart-rounded-md hover:bg-blue-600 transition-colors"
             >
               <RefreshCw className="h-4 w-4" />
               <span>重新尝试</span>
             </button>
           )}
           
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs luckymart-text-secondary luckymart-text-center">
             如问题持续，请联系客服支持
           </p>
         </div>
@@ -150,17 +150,17 @@ const AuthGuide: React.FC<AuthGuideProps> = ({ onStatusChange, onRetry }) => {
 
       {/* 成功信息 */}
       {status.state === 'completed' && (
-        <div className="bg-green-100 border border-green-200 rounded-md p-3">
-          <p className="text-sm text-green-700">
+        <div className="bg-green-100 luckymart-border border-green-200 luckymart-rounded-md p-3">
+          <p className="luckymart-text-sm text-green-700">
             登录验证成功！正在为您准备个性化体验...
           </p>
         </div>
       )}
 
       {/* 状态详情 */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        <div className="flex items-center justify-between text-xs text-gray-500">
-          <span className="flex items-center space-x-1">
+      <div className="luckymart-spacing-md pt-4 border-t luckymart-border-light">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-between text-xs luckymart-text-secondary">
+          <span className="luckymart-layout-flex luckymart-layout-center space-x-1">
             <Clock className="h-3 w-3" />
             <span>
               {status.state === 'preparing' && '准备验证环境'}
@@ -172,7 +172,7 @@ const AuthGuide: React.FC<AuthGuideProps> = ({ onStatusChange, onRetry }) => {
           </span>
           
           {status.errorCode && (
-            <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+            <span className="font-mono luckymart-bg-gray-light px-2 py-1 luckymart-rounded">
               {status.errorCode}
             </span>
           )}

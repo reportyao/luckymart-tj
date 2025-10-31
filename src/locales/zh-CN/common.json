@@ -130,5 +130,27 @@
       "action": "操作成功",
       "feedback": "反馈成功"
     }
-  }
+  },
+
+  "operation_success": "操作成功",
+  "operation_failed": "操作失败",
+  "save_failed": "保存失败",
+  "delete_success": "删除成功",
+  "delete_failed": "删除失败",
+  "confirm_delete": "确认删除该地址？",
+  "add_address": "新增地址",
+  "edit_address": "编辑地址",
+  "address_management": "地址管理",
+  "recipient_name": "收货人姓名",
+  "recipient_phone": "收货人电话",
+  "province": "省份",
+  "city": "城市",
+  "district": "区县",
+  "detail_address": "详细地址",
+  "set_default": "设为默认",
+  "edit": "编辑",
+  "delete": "删除",
+  "add_new_address": "新增地址",
+  "no_addresses": "暂无地址",
+  "please_add_address": "请先添加收货地址"
 }

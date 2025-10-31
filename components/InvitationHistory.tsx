@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/src/i18n/useLanguageCompat';
 import { Card } from '@/components/ui/card';
@@ -21,6 +21,36 @@ import {
   DollarSign,
   Award
 } from 'lucide-react';
+
+// Props接口定义
+export interface InvitationHistoryProps {
+  /** 自定义CSS类名 */
+  className?: string;
+  /** 每页显示数量 */
+  pageSize?: number;
+  /** 是否显示导出功能 */
+  showExport?: boolean;
+  /** 是否显示统计摘要 */
+  showSummary?: boolean;
+  /** 默认搜索关键词 */
+  defaultSearch?: string;
+  /** 默认状态筛选 */
+  defaultStatusFilter?: string;
+  /** 默认级别筛选 */
+  defaultLevelFilter?: string;
+  /** 自定义数据获取函数 */
+  fetchData?: (params: any) => Promise<any>;
+  /** 导出回调函数 */
+  onExport?: (data: any[]) => void;
+  /** 分页回调函数 */
+  onPageChange?: (page: number) => void;
+  /** 搜索回调函数 */
+  onSearch?: (keyword: string) => void;
+  /** 筛选回调函数 */
+  onFilter?: (filters: { status?: string; level?: string }) => void;
+  /** 错误回调函数 */
+  onError?: (error: Error) => void;
+}
 
 interface InvitationRecord {
   id: string;
@@ -44,20 +74,34 @@ interface PaginationInfo {
   totalPages: number;
 }
 
-export default function InvitationHistory() {
+const InvitationHistory: React.FC<InvitationHistoryProps> = ({
+  className = '',
+  pageSize = 10,
+  showExport = true,
+  showSummary = true,
+  defaultSearch = '',
+  defaultStatusFilter = 'all',
+  defaultLevelFilter = 'all',
+  fetchData,
+  onExport,
+  onPageChange,
+  onSearch,
+  onFilter,
+  onError
+}) => {
   const { t } = useTranslation('referral');
   const { currentLanguage } = useLanguage();
   const [records, setRecords] = useState<InvitationRecord[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo>({
     page: 1,
-    limit: 10,
+    limit: pageSize,
     total: 0,
     totalPages: 0
   });
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [levelFilter, setLevelFilter] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState(defaultSearch);
+  const [statusFilter, setStatusFilter] = useState<string>(defaultStatusFilter);
+  const [levelFilter, setLevelFilter] = useState<string>(defaultLevelFilter);
 
   // 模拟获取邀请历史数据
   useEffect(() => {
@@ -207,15 +251,20 @@ export default function InvitationHistory() {
     });
   };
 
-  const handleExport = () => {
-    // 实现导出功能
-    console.log('导出邀请历史');
-  };
+  const handleExport = useCallback(() => {
+    if (onExport) {
+      onExport(filteredRecords);
+    } else {
+      // 实现导出功能
+      console.log('导出邀请历史');
+    }
+  }, [onExport, filteredRecords]);
 
-  const handlePageChange = (newPage: number) => {
+  const handlePageChange = useCallback((newPage: number) => {
     setPagination(prev => ({ ...prev, page: newPage }));
+    onPageChange?.(newPage);
     // 这里应该重新获取数据
-  };
+  }, [onPageChange]);
 
   // 过滤数据
   const filteredRecords = records.filter(record => {
@@ -228,10 +277,10 @@ export default function InvitationHistory() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${className}`}>
       {/* 筛选和搜索 */}
-      <Card className="p-4">
-        <div className="flex flex-col lg:flex-row gap-4">
+      <Card className="luckymart-padding-md">
+        <div className="luckymart-layout-flex flex-col lg:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -244,11 +293,11 @@ export default function InvitationHistory() {
             </div>
           </div>
           
-          <div className="flex gap-3">
+          <div className="luckymart-layout-flex gap-3">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 luckymart-border border-gray-300 luckymart-rounded-md luckymart-text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">{t('all_status', '所有状态')}</option>
               <option value="pending">{t('pending', '待确认')}</option>
@@ -259,7 +308,7 @@ export default function InvitationHistory() {
             <select
               value={levelFilter}
               onChange={(e) => setLevelFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 luckymart-border border-gray-300 luckymart-rounded-md luckymart-text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">{t('all_levels', '所有级别')}</option>
               <option value="1">{t('level_1', '一级')}</option>
@@ -267,10 +316,12 @@ export default function InvitationHistory() {
               <option value="3">{t('level_3', '三级')}</option>
             </select>
 
-            <Button onClick={handleExport} variant="outline" size="sm">
-              <Download className="w-4 h-4 mr-2" />
-              {t('export', '导出')}
-            </Button>
+            {showExport && (
+              <Button onClick={handleExport} variant="outline" size="sm">
+                <Download className="w-4 h-4 mr-2" />
+                {t('export', '导出')}
+              </Button>
+            )}
           </div>
         </div>
       </Card>
@@ -281,42 +332,42 @@ export default function InvitationHistory() {
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                   {t('username', '用户名')}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                   {t('referral_level', '推荐级别')}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                   {t('join_date', '加入时间')}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                   {t('status', '状态')}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                   {t('total_consumption', '总消费')}
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                   {t('rewards', '我的奖励')}
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="luckymart-bg-white divide-y divide-gray-200">
               {loading ? (
                 // 加载骨架屏
                 [...Array(5)].map((_, i) => (
                   <tr key={i}>
                     {[...Array(6)].map((_, j) => (
                       <td key={j} className="px-4 py-4">
-                        <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-4 bg-gray-200 luckymart-rounded luckymart-animation-pulse"></div>
                       </td>
                     ))}
                   </tr>
                 ))
               ) : filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
-                    <User className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                  <td colSpan={6} className="px-4 py-8 luckymart-text-center luckymart-text-secondary">
+                    <User className="w-12 h-12 mx-auto luckymart-spacing-md text-gray-300" />
                     <p>{t('no_data', '暂无邀请记录')}</p>
                   </td>
                 </tr>
@@ -324,13 +375,13 @@ export default function InvitationHistory() {
                 filteredRecords.map((record) => (
                   <tr key={record.id} className="hover:bg-gray-50">
                     <td className="px-4 py-4">
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                      <div className="luckymart-layout-flex luckymart-layout-center">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full luckymart-layout-flex luckymart-layout-center justify-center text-white luckymart-font-medium">
                           {record.username.charAt(0).toUpperCase()}
                         </div>
                         <div className="ml-3">
-                          <p className="text-sm font-medium text-gray-900">{record.username}</p>
-                          <p className="text-sm text-gray-500">{record.email}</p>
+                          <p className="luckymart-text-sm luckymart-font-medium text-gray-900">{record.username}</p>
+                          <p className="luckymart-text-sm luckymart-text-secondary">{record.email}</p>
                           {record.phone && (
                             <p className="text-xs text-gray-400">{record.phone}</p>
                           )}
@@ -341,31 +392,31 @@ export default function InvitationHistory() {
                       {getLevelBadge(record.referralLevel)}
                     </td>
                     <td className="px-4 py-4">
-                      <div className="text-sm text-gray-900">
+                      <div className="luckymart-text-sm text-gray-900">
                         {formatDate(record.joinDate)}
                       </div>
                       {record.location && (
-                        <div className="text-xs text-gray-500">{record.location}</div>
+                        <div className="text-xs luckymart-text-secondary">{record.location}</div>
                       )}
                     </td>
                     <td className="px-4 py-4">
                       {getStatusBadge(record.status)}
                     </td>
                     <td className="px-4 py-4">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="luckymart-text-sm luckymart-font-medium text-gray-900">
                         ${record.totalSpent.toFixed(2)}
                       </div>
                       {record.firstPurchaseDate && (
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs luckymart-text-secondary">
                           {t('first_purchase', '首次购买')}: {formatDate(record.firstPurchaseDate)}
                         </div>
                       )}
                     </td>
                     <td className="px-4 py-4">
-                      <div className="text-sm font-medium text-green-600">
+                      <div className="luckymart-text-sm luckymart-font-medium text-green-600">
                         ${record.rewards.toFixed(2)}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs luckymart-text-secondary">
                         {((record.rewards / Math.max(record.totalSpent, 1)) * 100).toFixed(1)}%
                       </div>
                     </td>
@@ -378,15 +429,15 @@ export default function InvitationHistory() {
 
         {/* 分页 */}
         {!loading && filteredRecords.length > 0 && (
-          <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
-            <div className="text-sm text-gray-700">
+          <div className="px-4 py-3 border-t luckymart-border-light luckymart-layout-flex luckymart-layout-center justify-between">
+            <div className="luckymart-text-sm text-gray-700">
               {t('page_info', '显示 {{start}} - {{end}} 条，共 {{total}} 条', {
                 start: (pagination.page - 1) * pagination.limit + 1,
                 end: Math.min(pagination.page * pagination.limit, pagination.total),
                 total: pagination.total
               })}
             </div>
-            <div className="flex space-x-2">
+            <div className="luckymart-layout-flex luckymart-spacing-sm">
               <Button
                 variant="outline"
                 size="sm"
@@ -395,7 +446,7 @@ export default function InvitationHistory() {
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <span className="px-3 py-2 text-sm text-gray-700">
+              <span className="px-3 py-2 luckymart-text-sm text-gray-700">
                 {pagination.page} / {pagination.totalPages}
               </span>
               <Button
@@ -412,53 +463,55 @@ export default function InvitationHistory() {
       </Card>
 
       {/* 统计摘要 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
+      {showSummary && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="luckymart-padding-md">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">{t('total_invitations', '总邀请数')}</p>
-              <p className="text-2xl font-bold text-gray-800">{records.length}</p>
+              <p className="luckymart-text-sm text-gray-600">{t('total_invitations', '总邀请数')}</p>
+              <p className="text-2xl luckymart-font-bold text-gray-800">{records.length}</p>
             </div>
-            <User className="w-8 h-8 text-blue-500" />
+            <User className="luckymart-size-lg luckymart-size-lg luckymart-text-primary" />
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-md">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">{t('confirmed_count', '已确认数')}</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="luckymart-text-sm text-gray-600">{t('confirmed_count', '已确认数')}</p>
+              <p className="text-2xl luckymart-font-bold text-green-600">
                 {records.filter(r => r.status === 'confirmed').length}
               </p>
             </div>
-            <CheckCircle className="w-8 h-8 text-green-500" />
+            <CheckCircle className="luckymart-size-lg luckymart-size-lg luckymart-text-success" />
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-md">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">{t('total_spent', '总消费额')}</p>
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="luckymart-text-sm text-gray-600">{t('total_spent', '总消费额')}</p>
+              <p className="text-2xl luckymart-font-bold text-purple-600">
                 ${records.reduce((sum, r) => sum + r.totalSpent, 0).toFixed(2)}
               </p>
             </div>
-            <DollarSign className="w-8 h-8 text-purple-500" />
+            <DollarSign className="luckymart-size-lg luckymart-size-lg text-purple-500" />
           </div>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-md">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">{t('total_earned', '总获得奖励')}</p>
-              <p className="text-2xl font-bold text-orange-600">
+              <p className="luckymart-text-sm text-gray-600">{t('total_earned', '总获得奖励')}</p>
+              <p className="text-2xl luckymart-font-bold text-orange-600">
                 ${records.reduce((sum, r) => sum + r.rewards, 0).toFixed(2)}
               </p>
             </div>
-            <Award className="w-8 h-8 text-orange-500" />
+            <Award className="luckymart-size-lg luckymart-size-lg text-orange-500" />
           </div>
         </Card>
       </div>
+      )}
     </div>
   );
-}
+};\n\nexport default InvitationHistory;

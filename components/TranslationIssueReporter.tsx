@@ -309,7 +309,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
   };
 
   const renderStepIndicator = () => (
-    <div className="flex items-center justify-center mb-6">
+    <div className="luckymart-layout-flex luckymart-layout-center justify-center mb-6">
       {[1, 2, 3, 4].map((step) => (
         <React.Fragment key={step}>
           <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
@@ -335,7 +335,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
         return (
           <div className="space-y-6">
             <div>
-              <Label htmlFor="title" className="text-base font-medium">
+              <Label htmlFor="title" className="text-base luckymart-font-medium">
                 问题标题 *
               </Label>
               <Input
@@ -348,7 +348,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
             </div>
 
             <div>
-              <Label htmlFor="description" className="text-base font-medium">
+              <Label htmlFor="description" className="text-base luckymart-font-medium">
                 详细描述 *
               </Label>
               <Textarea
@@ -363,11 +363,11 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-base font-medium">问题分类 *</Label>
+                <Label className="text-base luckymart-font-medium">问题分类 *</Label>
                 <select
                   value={formData.category || ''}
                   onChange={(e) => handleInputChange('category', e.target.value)}
-                  className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full mt-2 px-3 py-2 luckymart-border border-gray-300 luckymart-rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {categories.map(cat => (
                     <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -376,17 +376,17 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
               </div>
 
               <div>
-                <Label className="text-base font-medium">严重程度 *</Label>
+                <Label className="text-base luckymart-font-medium">严重程度 *</Label>
                 <select
                   value={formData.severity || ''}
                   onChange={(e) => handleInputChange('severity', e.target.value)}
-                  className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full mt-2 px-3 py-2 luckymart-border border-gray-300 luckymart-rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {severityOptions.map(sev => (
                     <option key={sev.value} value={sev.value}>{sev.label}</option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs luckymart-text-secondary mt-1">
                   {severityOptions.find(s => s.value === formData.severity)?.description}
                 </p>
               </div>
@@ -394,17 +394,17 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-base font-medium">优先级</Label>
-                <div className="flex gap-2 mt-2">
+                <Label className="text-base luckymart-font-medium">优先级</Label>
+                <div className="luckymart-layout-flex gap-2 mt-2">
                   {priorityOptions.map(priority => (
-                    <label key={priority.value} className="flex items-center space-x-2">
+                    <label key={priority.value} className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
                       <input
                         type="radio"
                         name="priority"
                         value={priority.value}
                         checked={formData.priority === priority.value}
                         onChange={(e) => handleInputChange('priority', e.target.value)}
-                        className="rounded"
+                        className="luckymart-rounded"
                       />
                       <Badge className={priority.color}>
                         {priority.label}
@@ -414,25 +414,25 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
                 </div>
               </div>
 
-              <div className="flex items-center space-x-4 mt-6">
-                <label className="flex items-center space-x-2">
+              <div className="luckymart-layout-flex luckymart-layout-center space-x-4 mt-6">
+                <label className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
                   <input
                     type="checkbox"
                     checked={formData.isUrgent || false}
                     onChange={(e) => handleInputChange('isUrgent', e.target.checked)}
-                    className="rounded"
+                    className="luckymart-rounded"
                   />
-                  <span className="text-sm">紧急问题</span>
+                  <span className="luckymart-text-sm">紧急问题</span>
                 </label>
 
-                <label className="flex items-center space-x-2">
+                <label className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
                   <input
                     type="checkbox"
                     checked={formData.isPublic !== false}
                     onChange={(e) => handleInputChange('isPublic', e.target.checked)}
-                    className="rounded"
+                    className="luckymart-rounded"
                   />
-                  <span className="text-sm">公开问题</span>
+                  <span className="luckymart-text-sm">公开问题</span>
                 </label>
               </div>
             </div>
@@ -444,11 +444,11 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-base font-medium">源语言 *</Label>
+                <Label className="text-base luckymart-font-medium">源语言 *</Label>
                 <select
                   value={formData.sourceLanguage || ''}
                   onChange={(e) => handleInputChange('sourceLanguage', e.target.value)}
-                  className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full mt-2 px-3 py-2 luckymart-border border-gray-300 luckymart-rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="en-US">English (US)</option>
                   <option value="zh-CN">中文 (简体)</option>
@@ -459,11 +459,11 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
               </div>
 
               <div>
-                <Label className="text-base font-medium">目标语言 *</Label>
+                <Label className="text-base luckymart-font-medium">目标语言 *</Label>
                 <select
                   value={formData.targetLanguage || ''}
                   onChange={(e) => handleInputChange('targetLanguage', e.target.value)}
-                  className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full mt-2 px-3 py-2 luckymart-border border-gray-300 luckymart-rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="zh-CN">中文 (简体)</option>
                   <option value="zh-TW">中文 (繁體)</option>
@@ -475,7 +475,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
             </div>
 
             <div>
-              <Label htmlFor="originalText" className="text-base font-medium">
+              <Label htmlFor="originalText" className="text-base luckymart-font-medium">
                 原文内容 *
               </Label>
               <Textarea
@@ -489,7 +489,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
             </div>
 
             <div>
-              <Label htmlFor="translatedText" className="text-base font-medium">
+              <Label htmlFor="translatedText" className="text-base luckymart-font-medium">
                 译文内容 *
               </Label>
               <Textarea
@@ -503,7 +503,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
             </div>
 
             <div>
-              <Label htmlFor="context" className="text-base font-medium">
+              <Label htmlFor="context" className="text-base luckymart-font-medium">
                 使用场景/上下文
               </Label>
               <Textarea
@@ -518,7 +518,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="page" className="text-base font-medium">
+                <Label htmlFor="page" className="text-base luckymart-font-medium">
                   所在页面
                 </Label>
                 <Input
@@ -531,7 +531,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
               </div>
 
               <div>
-                <Label htmlFor="component" className="text-base font-medium">
+                <Label htmlFor="component" className="text-base luckymart-font-medium">
                   组件名称
                 </Label>
                 <Input
@@ -550,11 +550,11 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
         return (
           <div className="space-y-6">
             <div>
-              <Label className="text-base font-medium">重现步骤</Label>
-              <div className="mt-2 space-y-2">
+              <Label className="text-base luckymart-font-medium">重现步骤</Label>
+              <div className="mt-2 luckymart-spacing-sm">
                 {formData.reproductionSteps?.map((step, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                    <span className="text-sm text-gray-600">{index + 1}.</span>
+                  <div key={index} className="luckymart-layout-flex luckymart-layout-center gap-2 luckymart-padding-sm bg-gray-50 luckymart-rounded">
+                    <span className="luckymart-text-sm text-gray-600">{index + 1}.</span>
                     <span className="flex-1">{step}</span>
                     <Button
                       variant="ghost"
@@ -566,7 +566,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
                   </div>
                 ))}
                 
-                <div className="flex gap-2">
+                <div className="luckymart-layout-flex gap-2">
                   <Input
                     placeholder="添加重现步骤"
                     value={reproductionStep}
@@ -585,11 +585,11 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
             </div>
 
             <div>
-              <Label className="text-base font-medium">标签</Label>
-              <div className="mt-2 space-y-2">
-                <div className="flex flex-wrap gap-2">
+              <Label className="text-base luckymart-font-medium">标签</Label>
+              <div className="mt-2 luckymart-spacing-sm">
+                <div className="luckymart-layout-flex flex-wrap gap-2">
                   {formData.tags?.map(tag => (
-                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                    <Badge key={tag} variant="secondary" className="luckymart-layout-flex luckymart-layout-center gap-1">
                       {tag}
                       <button onClick={() => handleRemoveTag(tag)}>
                         <XCircle className="h-3 w-3" />
@@ -598,7 +598,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
                   ))}
                 </div>
                 
-                <div className="flex gap-2">
+                <div className="luckymart-layout-flex gap-2">
                   <Input
                     placeholder="添加标签"
                     value={newTag}
@@ -626,9 +626,9 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
               </Button>
               
               {showAdvanced && (
-                <div className="mt-4 space-y-4 p-4 border border-gray-200 rounded-lg">
+                <div className="luckymart-spacing-md space-y-4 luckymart-padding-md luckymart-border luckymart-border-light luckymart-rounded-lg">
                   <div>
-                    <Label htmlFor="assignedTo" className="text-sm font-medium">
+                    <Label htmlFor="assignedTo" className="luckymart-text-sm luckymart-font-medium">
                       分配给
                     </Label>
                     <Input
@@ -641,7 +641,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
                   </div>
                   
                   <div>
-                    <Label htmlFor="estimatedFixTime" className="text-sm font-medium">
+                    <Label htmlFor="estimatedFixTime" className="luckymart-text-sm luckymart-font-medium">
                       预计修复时间（小时）
                     </Label>
                     <Input
@@ -662,11 +662,11 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
       case 4:
         return (
           <div className="space-y-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Flag className="w-8 h-8 text-blue-600" />
+            <div className="luckymart-text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full luckymart-layout-flex luckymart-layout-center justify-center mx-auto luckymart-spacing-md">
+                <Flag className="luckymart-size-lg luckymart-size-lg text-blue-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="luckymart-text-lg font-semibold text-gray-900 mb-2">
                 确认问题报告
               </h3>
               <p className="text-gray-600">
@@ -674,15 +674,15 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
               </p>
             </div>
 
-            <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+            <div className="space-y-4 luckymart-padding-md bg-gray-50 luckymart-rounded-lg">
               <div>
-                <Label className="text-sm font-medium text-gray-600">标题</Label>
+                <Label className="luckymart-text-sm luckymart-font-medium text-gray-600">标题</Label>
                 <p className="text-gray-900">{formData.title}</p>
               </div>
               
               <div>
-                <Label className="text-sm font-medium text-gray-600">分类</Label>
-                <div className="flex items-center gap-2 mt-1">
+                <Label className="luckymart-text-sm luckymart-font-medium text-gray-600">分类</Label>
+                <div className="luckymart-layout-flex luckymart-layout-center gap-2 mt-1">
                   <Badge>{categories.find(c => c.value === formData.category)?.label}</Badge>
                   <Badge variant="outline">{formData.severity}</Badge>
                   <Badge className={
@@ -694,14 +694,14 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
               </div>
               
               <div>
-                <Label className="text-sm font-medium text-gray-600">语言对</Label>
+                <Label className="luckymart-text-sm luckymart-font-medium text-gray-600">语言对</Label>
                 <p className="text-gray-900 mt-1">
                   {formData.sourceLanguage} → {formData.targetLanguage}
                 </p>
               </div>
               
               <div>
-                <Label className="text-sm font-medium text-gray-600">描述</Label>
+                <Label className="luckymart-text-sm luckymart-font-medium text-gray-600">描述</Label>
                 <p className="text-gray-900 mt-1">{formData.description}</p>
               </div>
             </div>
@@ -728,9 +728,9 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
     <div className={containerClass}>
       <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Flag className="w-5 h-5" />
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
+            <CardTitle className="luckymart-layout-flex luckymart-layout-center gap-2">
+              <Flag className="luckymart-size-sm luckymart-size-sm" />
               翻译问题报告
             </CardTitle>
             {isModal && onClose && (
@@ -746,7 +746,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
           {renderStepContent()}
 
           {/* 导航按钮 */}
-          <div className="flex justify-between pt-6 border-t">
+          <div className="luckymart-layout-flex justify-between pt-6 border-t">
             <div>
               {currentStep > 1 && (
                 <Button variant="outline" onClick={handlePrevious}>
@@ -755,7 +755,7 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
               )}
             </div>
             
-            <div className="flex gap-3">
+            <div className="luckymart-layout-flex gap-3">
               {currentStep < 4 ? (
                 <Button 
                   onClick={handleNext}
@@ -769,12 +769,12 @@ export const TranslationIssueReporter: React.FC<TranslationIssueReporterProps> =
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="luckymart-layout-flex luckymart-layout-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full luckymart-animation-spin" />
                       提交中...
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2">
+                    <div className="luckymart-layout-flex luckymart-layout-center gap-2">
                       <Send className="w-4 h-4" />
                       提交报告
                     </div>

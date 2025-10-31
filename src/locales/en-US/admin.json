@@ -1,4 +1,18 @@
 {
+  "login": {
+    "title": "LuckyMart TJ",
+    "subtitle": "Operations Management Backend",
+    "admin_login": "Admin Login",
+    "username": "Username",
+    "password": "Password",
+    "login_failed": "Login Failed",
+    "login_failed_retry": "Login failed, please try again",
+    "please_enter_username": "Please enter username",
+    "please_enter_password": "Please enter password",
+    "login": "Login",
+    "logging_in": "Logging in...",
+    "back_to_home": "Back to Home"
+  },
   "welcome": "Welcome",
   "logout": "Logout",
   "reward_config": {

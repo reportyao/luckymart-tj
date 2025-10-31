@@ -198,22 +198,22 @@ const OfflineFallback: React.FC<OfflineFallbackProps> = ({
       <div className={`bg-gray-50 border border-gray-200 rounded-lg p-6 text-center ${fallbackClassName}`}>
         <div className="space-y-4">
           {/* 图标和状态 */}
-          <div className="flex justify-center">
-            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+          <div className="luckymart-layout-flex justify-center">
+            <div className="w-16 h-16 bg-gray-200 rounded-full luckymart-layout-flex luckymart-layout-center justify-center">
               <span className="text-3xl">📱</span>
             </div>
           </div>
           
           {/* 状态信息 */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+            <h3 className="luckymart-text-lg font-semibold text-gray-800 mb-2">
               {t('offline.title', '网络连接异常')}
             </h3>
             <p className="text-gray-600 mb-1">
               {getNetworkStatusDescription()}
             </p>
             {!isOnline && offlineDetection.offlineDuration > 0 && (
-              <p className="text-sm text-gray-500">
+              <p className="luckymart-text-sm luckymart-text-secondary">
                 {t('offline.duration', '离线时长: {{duration}}', { 
                   duration: formatOfflineDuration(offlineDetection.offlineDuration) 
                 })}
@@ -222,12 +222,12 @@ const OfflineFallback: React.FC<OfflineFallbackProps> = ({
           </div>
 
           {/* 操作按钮 */}
-          <div className="space-y-2">
+          <div className="luckymart-spacing-sm">
             {showRetryButton && offlineDetection.canRetry && (
               <button
                 onClick={handleRetry}
                 disabled={retryState.isRetrying}
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full luckymart-bg-primary text-white py-2 px-4 luckymart-rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {retryState.isRetrying ? 
                   t('offline.retrying', '重试中...') : 
@@ -239,7 +239,7 @@ const OfflineFallback: React.FC<OfflineFallbackProps> = ({
             {showRefreshButton && (
               <button
                 onClick={handleRefresh}
-                className="w-full bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 transition-colors"
+                className="w-full bg-gray-500 text-white py-2 px-4 luckymart-rounded hover:bg-gray-600 transition-colors"
               >
                 {t('offline.refresh', '刷新页面')}
               </button>
@@ -248,7 +248,7 @@ const OfflineFallback: React.FC<OfflineFallbackProps> = ({
 
           {/* 错误信息 */}
           {retryState.error && (
-            <div className="text-red-600 text-sm">
+            <div className="text-red-600 luckymart-text-sm">
               {retryState.error}
             </div>
           )}
@@ -256,7 +256,7 @@ const OfflineFallback: React.FC<OfflineFallbackProps> = ({
           {/* 详情切换 */}
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-blue-500 text-sm hover:text-blue-700 underline"
+            className="luckymart-text-primary luckymart-text-sm hover:text-blue-700 underline"
           >
             {showDetails ? 
               t('offline.hideDetails', '隐藏详情') : 
@@ -266,7 +266,7 @@ const OfflineFallback: React.FC<OfflineFallbackProps> = ({
 
           {/* 详细信息 */}
           {showDetails && (
-            <div className="mt-4 p-4 bg-gray-100 rounded text-left text-sm">
+            <div className="luckymart-spacing-md luckymart-padding-md luckymart-bg-gray-light luckymart-rounded text-left luckymart-text-sm">
               <h4 className="font-semibold mb-2">{t('offline.diagnostics', '网络诊断')}</h4>
               <ul className="space-y-1 text-gray-600">
                 <li>{t('offline.status', '状态')}: {!isOnline ? t('offline.disconnected', '未连接') : t('offline.connected', '已连接')}</li>
@@ -302,7 +302,7 @@ const OfflineFallback: React.FC<OfflineFallbackProps> = ({
 
     return (
       <div className={`flex items-center justify-center p-8 ${loadingClassName}`}>
-        <div className="flex flex-col items-center space-y-3">
+        <div className="luckymart-layout-flex flex-col luckymart-layout-center luckymart-spacing-md">
           <div className={`w-8 h-8 border-4 border-blue-200 border-t-blue-500 rounded-full ${
             animation ? 'animate-spin' : ''
           }`}></div>

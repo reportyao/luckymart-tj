@@ -105,17 +105,17 @@ export function RewardProgress({ status }: RewardProgressProps) {
   const progress = getCurrentProgress();
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-6 mb-8">
-      <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
+    <div className="luckymart-bg-white luckymart-rounded-lg shadow-xl luckymart-padding-lg mb-8">
+      <h3 className="luckymart-text-xl luckymart-font-bold text-gray-800 mb-6 luckymart-layout-flex luckymart-layout-center">
         <span className="text-2xl mr-2">📊</span>
         奖励进度
       </h3>
 
       {/* 进度条 */}
       <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm text-gray-600">完成进度</span>
-          <span className="text-sm font-semibold text-purple-600">
+        <div className="luckymart-layout-flex justify-between luckymart-layout-center mb-2">
+          <span className="luckymart-text-sm text-gray-600">完成进度</span>
+          <span className="luckymart-text-sm font-semibold text-purple-600">
             {Math.round(progress.progress)}%
           </span>
         </div>
@@ -131,13 +131,13 @@ export function RewardProgress({ status }: RewardProgressProps) {
           />
         </div>
         
-        <div className="mt-2 text-sm text-gray-600 text-center">
+        <div className="mt-2 luckymart-text-sm text-gray-600 luckymart-text-center">
           {progress.message}
         </div>
       </div>
 
       {/* 档位列表 */}
-      <div className="space-y-3">
+      <div className="luckymart-spacing-md">
         {allTiers.map((tier, index) => {
           const isCompleted = progress.isCompleted && index <= progress.currentIndex;
           const isCurrent = !progress.isCompleted && index === progress.currentIndex + 1;
@@ -166,43 +166,43 @@ export function RewardProgress({ status }: RewardProgressProps) {
                   : 'bg-gray-300 text-gray-500'
               }`}>
                 {isCompleted ? (
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="luckymart-size-sm luckymart-size-sm" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 ) : isCurrent ? (
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                  <div className="w-2 h-2 luckymart-bg-white rounded-full luckymart-animation-pulse" />
                 ) : (
-                  <span className="text-xs font-bold">{index + 1}</span>
+                  <span className="text-xs luckymart-font-bold">{index + 1}</span>
                 )}
               </div>
 
               {/* 档位信息 */}
               <div className="flex-1">
-                <div className="flex items-center justify-between">
+                <div className="luckymart-layout-flex luckymart-layout-center justify-between">
                   <div>
                     <div className={`font-semibold ${
                       isCompleted || isCurrent ? 'text-gray-800' : 'text-gray-500'
                     }`}>
                       {tier.amount} Som 充值
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="luckymart-text-sm text-gray-600">
                       奖励 {tier.reward} 幸运币
                     </div>
                   </div>
                   
                   <div className="text-right">
                     {isCompleted && (
-                      <div className="text-green-600 font-semibold text-sm">
+                      <div className="text-green-600 font-semibold luckymart-text-sm">
                         ✓ 已完成
                       </div>
                     )}
                     {isCurrent && (
-                      <div className="text-purple-600 font-semibold text-sm">
+                      <div className="text-purple-600 font-semibold luckymart-text-sm">
                         进行中
                       </div>
                     )}
                     {isFuture && (
-                      <div className="text-gray-400 text-sm">
+                      <div className="text-gray-400 luckymart-text-sm">
                         待解锁
                       </div>
                     )}
@@ -215,40 +215,40 @@ export function RewardProgress({ status }: RewardProgressProps) {
       </div>
 
       {/* 统计信息 */}
-      <div className="mt-6 pt-6 border-t border-gray-200">
+      <div className="mt-6 pt-6 border-t luckymart-border-light">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">
+          <div className="luckymart-text-center">
+            <div className="text-2xl luckymart-font-bold text-purple-600">
               {status.rechargeInfo.totalRecharges || 0}
             </div>
-            <div className="text-sm text-gray-600">总充值次数</div>
+            <div className="luckymart-text-sm text-gray-600">总充值次数</div>
           </div>
           
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="luckymart-text-center">
+            <div className="text-2xl luckymart-font-bold text-green-600">
               {status.claimedReward?.reward || 0}
             </div>
-            <div className="text-sm text-gray-600">已获奖励</div>
+            <div className="luckymart-text-sm text-gray-600">已获奖励</div>
           </div>
           
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">
+          <div className="luckymart-text-center">
+            <div className="text-2xl luckymart-font-bold text-blue-600">
               {status.rechargeInfo.firstRechargeAmount || 0}
             </div>
-            <div className="text-sm text-gray-600">首充金额</div>
+            <div className="luckymart-text-sm text-gray-600">首充金额</div>
           </div>
           
-          <div className="text-center">
-            <div className="text-2xl font-bold text-orange-600">
+          <div className="luckymart-text-center">
+            <div className="text-2xl luckymart-font-bold text-orange-600">
               {allTiers.length}
             </div>
-            <div className="text-sm text-gray-600">奖励档位</div>
+            <div className="luckymart-text-sm text-gray-600">奖励档位</div>
           </div>
         </div>
       </div>
 
       {/* 更新时间 */}
-      <div className="mt-4 text-center text-xs text-gray-400">
+      <div className="luckymart-spacing-md luckymart-text-center text-xs text-gray-400">
         最后更新：{currentTime.toLocaleTimeString('zh-CN')}
       </div>
     </div>

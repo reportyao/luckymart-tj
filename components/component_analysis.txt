@@ -1,0 +1,32 @@
+=== 组件分析报告 ===
+
+1. 已有完整Props类型定义的组件:
+45
+
+2. 缺少Props类型定义的组件:
+  - LanguageSwitcherMobile.tsx
+  - ProductListExample.tsx
+  - TranslationCacheDemo.tsx
+  - TranslationCacheTest.tsx
+
+3. CSS类名使用情况分析:
+        return <Loader2 className="animate-spin h-5 w-5 text-blue-500" />;
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <AlertCircle className="h-5 w-5 text-red-500" />;
+    <div className={`max-w-md mx-auto p-6 rounded-lg border-2 ${getStatusColor()} transition-all duration-300`}>
+      <div className="flex items-center space-x-3 mb-4">
+        <div className="flex-1">
+          <h3 className="font-medium text-gray-900">{status.message}</h3>
+            <p className="text-sm text-gray-600 mt-1">{status.action}</p>
+      <div className="mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm font-medium text-gray-700">验证进度</span>
+          <span className="text-sm text-gray-500">{status.progress}%</span>
+        <div className="w-full bg-gray-200 rounded-full h-2">
+            className={`h-2 rounded-full transition-all duration-500 ${getProgressColor()}`}
+        <div className="space-y-3">
+          <div className="bg-red-100 border border-red-200 rounded-md p-3">
+            <p className="text-sm text-red-700">
+              className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+              <RefreshCw className="h-4 w-4" />
+          <p className="text-xs text-gray-500 text-center">

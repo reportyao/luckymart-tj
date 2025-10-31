@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 interface UserAddress {
   id: number;
@@ -15,6 +16,7 @@ interface UserAddress {
 }
 
 export default function AddressPage() {
+  const { t } = useTranslation('common');
   const router = useRouter();
   const [addresses, setAddresses] = useState<UserAddress[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +49,7 @@ export default function AddressPage() {
         setAddresses(data.data);
       }
     } catch (error) {
-      console.error('获取地址列表失败:', error);
+      console.error(t('common:address_management') + ' fetch failed:', error);
     } finally {
       setLoading(false);
     }
@@ -75,17 +77,17 @@ export default function AddressPage() {
 
       const data = await response.json();
       if (data.success) {
-        alert(data.message || '操作成功');
+        alert(data.message || t('common:operation_success'));
         setShowForm(false);
         setEditingId(null);
         resetForm();
         fetchAddresses();
       } else {
-        alert(data.error || '操作失败');
+        alert(data.error || t('common:operation_failed'));
       }
     } catch (error) {
-      console.error('保存地址失败:', error);
-      alert('保存地址失败');
+      console.error(t('common:save_failed') + ':', error);
+      alert(t('common:save_failed'));
     }
   };
 
@@ -104,7 +106,7 @@ export default function AddressPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('确认删除该地址？')) {return;}
+    if (!confirm(t('common:confirm_delete'))) {return;}
 
     try {
       const token = localStorage.getItem('token');
@@ -117,14 +119,14 @@ export default function AddressPage() {
 
       const data = await response.json();
       if (data.success) {
-        alert('地址删除成功');
+        alert(t('common:delete_success'));
         fetchAddresses();
       } else {
-        alert(data.error || '删除失败');
+        alert(data.error || t('common:delete_failed'));
       }
     } catch (error) {
-      console.error('删除地址失败:', error);
-      alert('删除地址失败');
+      console.error(t('common:delete_failed') + ':', error);
+      alert(t('common:delete_failed'));
     }
   };
 
@@ -145,7 +147,7 @@ export default function AddressPage() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">加载中...</p>
+          <p className="mt-4 text-gray-600">{t('common:loading')}</p>
         </div>
       </div>
     );

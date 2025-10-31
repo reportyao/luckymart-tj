@@ -109,7 +109,14 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
   className = ''
 }) => {
   const { t } = useTranslation();
-  const { isOnline, networkQuality, networkStatus } = useNetworkStatus();
+  const { 
+    isOnline, 
+    networkQuality, 
+    networkStatus,
+    refreshNetworkStatus,
+    testNetworkLatency,
+    getNetworkDiagnostics 
+  } = useNetworkStatus();
   const { getOfflineQueue, getStorageStats } = useIndexedDB();
   
   const [swState, setSwState] = useState<SWState>({
@@ -216,6 +223,64 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
     onNetworkChange?.(isOnline, networkQuality);
   }, [isOnline, networkQuality, swState.registration, updateCacheStats, onNetworkChange]);
 
+  // 增强的网络状态检测
+  const checkNetworkStatus = useCallback(async () => {
+    // 检测基础连接
+    const isOnline = navigator.onLine;
+    
+    if (!isOnline) {
+      return { isOnline: false, quality: 'offline', latency: null };
+    }
+
+    // 检测网络质量
+    try {
+      const startTime = performance.now();
+      const response = await fetch('/api/ping', {
+        method: 'HEAD',
+        cache: 'no-cache'
+      });
+      const endTime = performance.now();
+      
+      const latency = endTime - startTime;
+      
+      let quality: string;
+      if (latency < 100) quality = 'fast';
+      else if (latency < 500) quality = 'medium';
+      else quality = 'slow';
+      
+      return { isOnline: true, quality, latency };
+    } catch (error) {
+      return { isOnline: true, quality: 'unknown', latency: null };
+    }
+  }, []);
+
+  // 网络恢复后的同步处理
+  useEffect(() => {
+    if (isOnline) {
+      const handleNetworkRecovery = async () => {
+        try {
+          // 强制重新检查网络状态
+          await refreshNetworkStatus();
+          
+          // 等待一小段时间确保网络稳定
+          setTimeout(async () => {
+            const networkDiagnostics = getNetworkDiagnostics();
+            console.log('网络恢复检测结果:', networkDiagnostics);
+            
+            // 如果网络质量较好，触发后台同步
+            if (networkDiagnostics.currentStatus.networkQuality !== 'poor') {
+              await triggerBackgroundSync();
+            }
+          }, 1000);
+        } catch (error) {
+          console.error('网络恢复处理失败:', error);
+        }
+      };
+
+      handleNetworkRecovery();
+    }
+  }, [isOnline, refreshNetworkStatus, getNetworkDiagnostics]);
+
   // 获取缓存状态
   const getCacheStatus = useCallback(async () => {
     try {
@@ -320,14 +385,14 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
     <div className={`network-aware-sw ${className}`}>
       {/* 开发调试信息 */}
       {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-4 left-4 bg-gray-900 text-white p-4 rounded-lg text-xs max-w-sm z-50">
-          <div className="space-y-2">
+        <div className="fixed bottom-4 left-4 bg-gray-900 text-white luckymart-padding-md luckymart-rounded-lg text-xs max-w-sm z-50">
+          <div className="luckymart-spacing-sm">
             <div className="font-semibold text-yellow-400">🔧 弱网优化系统</div>
             
             {/* 网络状态 */}
             <div className="grid grid-cols-2 gap-2">
               <div>网络:</div>
-              <div className="flex items-center gap-1">
+              <div className="luckymart-layout-flex luckymart-layout-center gap-1">
                 {getNetworkIcon()}
                 <span>{isOnline ? '在线' : '离线'}</span>
               </div>
@@ -344,7 +409,7 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
 
             {/* 缓存统计 */}
             <div className="border-t border-gray-700 pt-2">
-              <div className="font-medium">缓存统计:</div>
+              <div className="luckymart-font-medium">缓存统计:</div>
               <div className="text-xs space-y-1">
                 <div>项数: {swState.cacheStats.itemCount}</div>
                 <div>大小: {formatFileSize(swState.cacheStats.totalSize)}</div>
@@ -353,11 +418,11 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
             </div>
 
             {/* 操作按钮 */}
-            <div className="flex flex-wrap gap-2 border-t border-gray-700 pt-2">
+            <div className="luckymart-layout-flex flex-wrap gap-2 border-t border-gray-700 pt-2">
               {swState.isUpdateAvailable && (
                 <button
                   onClick={applyUpdate}
-                  className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
+                  className="px-2 py-1 luckymart-bg-primary text-white luckymart-rounded text-xs hover:bg-blue-600"
                 >
                   更新SW
                 </button>
@@ -365,21 +430,21 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
               
               <button
                 onClick={() => triggerBackgroundSync()}
-                className="px-2 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600"
+                className="px-2 py-1 luckymart-bg-success text-white luckymart-rounded text-xs hover:bg-green-600"
               >
                 后台同步
               </button>
               
               <button
                 onClick={clearCache}
-                className="px-2 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
+                className="px-2 py-1 luckymart-bg-error text-white luckymart-rounded text-xs hover:bg-red-600"
               >
                 清空缓存
               </button>
               
               <button
                 onClick={updateCacheStats}
-                className="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600"
+                className="px-2 py-1 bg-gray-500 text-white luckymart-rounded text-xs hover:bg-gray-600"
               >
                 刷新统计
               </button>
@@ -397,24 +462,24 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
 
       {/* 更新提示 */}
       {swState.isUpdateAvailable && (
-        <div className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-lg shadow-lg max-w-sm z-40">
-          <div className="flex items-start space-x-3">
-            <span className="text-xl">🔄</span>
+        <div className="fixed bottom-4 right-4 luckymart-bg-primary text-white luckymart-padding-md luckymart-rounded-lg luckymart-shadow-lg max-w-sm z-40">
+          <div className="luckymart-layout-flex items-start luckymart-spacing-md">
+            <span className="luckymart-text-xl">🔄</span>
             <div className="flex-1">
               <h4 className="font-semibold">应用已更新</h4>
-              <p className="text-sm mt-1 opacity-90">
+              <p className="luckymart-text-sm mt-1 opacity-90">
                 新版本已准备就绪，请刷新页面以获取最新功能。
               </p>
-              <div className="flex gap-2 mt-3">
+              <div className="luckymart-layout-flex gap-2 mt-3">
                 <button
                   onClick={applyUpdate}
-                  className="px-3 py-1 bg-white text-blue-500 rounded text-sm font-medium hover:bg-gray-100"
+                  className="px-3 py-1 luckymart-bg-white luckymart-text-primary luckymart-rounded luckymart-text-sm luckymart-font-medium hover:bg-gray-100"
                 >
                   立即更新
                 </button>
                 <button
                   onClick={() => setSwState(prev => ({ ...prev, isUpdateAvailable: false }))}
-                  className="px-3 py-1 border border-white text-white rounded text-sm hover:bg-blue-600"
+                  className="px-3 py-1 luckymart-border border-white text-white luckymart-rounded luckymart-text-sm hover:bg-blue-600"
                 >
                   稍后
                 </button>
@@ -426,20 +491,20 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
 
       {/* 离线就绪提示 */}
       {swState.isOfflineReady && !swState.isUpdateAvailable && (
-        <div className="fixed bottom-4 right-4 bg-green-500 text-white p-3 rounded-lg shadow-lg z-30">
-          <div className="flex items-center space-x-2">
+        <div className="fixed bottom-4 right-4 luckymart-bg-success text-white p-3 luckymart-rounded-lg luckymart-shadow-lg z-30">
+          <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
             <span>✅</span>
-            <span className="text-sm">离线功能已就绪</span>
+            <span className="luckymart-text-sm">离线功能已就绪</span>
           </div>
         </div>
       )}
 
       {/* 网络状态变更提示 */}
       {!isOnline && (
-        <div className="fixed top-20 right-4 bg-red-500 text-white p-3 rounded-lg shadow-lg z-30 animate-pulse">
-          <div className="flex items-center space-x-2">
+        <div className="fixed top-20 right-4 luckymart-bg-error text-white p-3 luckymart-rounded-lg luckymart-shadow-lg z-30 luckymart-animation-pulse">
+          <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
             <span>📵</span>
-            <span className="text-sm">网络连接已断开</span>
+            <span className="luckymart-text-sm">网络连接已断开</span>
           </div>
         </div>
       )}

@@ -227,7 +227,7 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
       {/* 左侧操作按钮 */}
       {leftActions.length > 0 && (
         <motion.div
-          className="absolute inset-y-0 left-0 flex"
+          className="absolute inset-y-0 left-0 luckymart-layout-flex"
           animate={{ 
             x: offsetX > 0 ? offsetX - 100 : -100,
             opacity: offsetX > 20 ? 1 : 0.8
@@ -248,7 +248,7 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
                   {action.icon}
                 </div>
               )}
-              <span className="text-xs text-center leading-tight">
+              <span className="text-xs luckymart-text-center leading-tight">
                 {getActionButtonText(action, 'left')}
               </span>
             </div>
@@ -259,7 +259,7 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
       {/* 右侧操作按钮 */}
       {rightActions.length > 0 && (
         <motion.div
-          className="absolute inset-y-0 right-0 flex"
+          className="absolute inset-y-0 right-0 luckymart-layout-flex"
           animate={{ 
             x: offsetX < 0 ? offsetX + 100 : 100,
             opacity: Math.abs(offsetX) > 20 ? 1 : 0.8
@@ -280,7 +280,7 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
                   {action.icon}
                 </div>
               )}
-              <span className="text-xs text-center leading-tight">
+              <span className="text-xs luckymart-text-center leading-tight">
                 {getActionButtonText(action, 'right')}
               </span>
             </div>
@@ -313,8 +313,8 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
         
         {/* 手势提示覆盖层 */}
         {gestureHint && !isDragging && gestureState === 'idle' && offsetX === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-5 pointer-events-none">
-            <div className="flex items-center gap-2 text-gray-400 text-sm">
+          <div className="absolute inset-0 luckymart-layout-flex luckymart-layout-center justify-center bg-black bg-opacity-5 pointer-events-none">
+            <div className="luckymart-layout-flex luckymart-layout-center gap-2 text-gray-400 luckymart-text-sm">
               {leftActions.length > 0 && (
                 <>
                   <span>{getSwipeHintText('left')}</span>
@@ -342,13 +342,13 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
       {/* 手势状态指示器 */}
       <div className="absolute top-2 right-2 z-20">
         {gestureState === 'active' && (
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+          <div className="w-2 h-2 luckymart-bg-primary rounded-full luckymart-animation-pulse" />
         )}
         {gestureState === 'success' && (
-          <div className="w-2 h-2 bg-green-500 rounded-full" />
+          <div className="w-2 h-2 luckymart-bg-success rounded-full" />
         )}
         {gestureState === 'failed' && (
-          <div className="w-2 h-2 bg-red-500 rounded-full" />
+          <div className="w-2 h-2 luckymart-bg-error rounded-full" />
         )}
       </div>
 
@@ -357,7 +357,7 @@ const SwipeActions: React.FC<SwipeActionsProps> = ({
         <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
           <div className="w-20 h-1 bg-gray-200 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-blue-500"
+              className="h-full luckymart-bg-primary"
               animate={{ width: `${Math.min(100, (Math.abs(offsetX) / threshold) * 100)}%` }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
             />

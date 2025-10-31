@@ -1,4 +1,18 @@
 {
+  "login": {
+    "title": "LuckyMart TJ",
+    "subtitle": "Backend-и идоракунии амалиёт",
+    "admin_login": "Вуруд ҳисобдоркунанда",
+    "username": "Номи истифодабаранда",
+    "password": "Парол",
+    "login_failed": "Вуруд номуваффақият",
+    "login_failed_retry": "Вуруд номуваффақият, лутфан дигар бор кӯшиш кунед",
+    "please_enter_username": "Лутфан номи истифодабарандаро ворид кунед",
+    "please_enter_password": "Лутфан паролро ворид кунед",
+    "login": "Вуруд",
+    "logging_in": "Вуруд...",
+    "back_to_home": "Ба саҳифаи асосӣ"
+  },
   "welcome": "Хуш омадед",
   "logout": "Баромадан",
   "reward_config": {

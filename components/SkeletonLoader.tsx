@@ -18,14 +18,14 @@ interface SkeletonLoaderProps {
 }
 
 export const SkeletonCard: React.FC = () => (
-  <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+  <div className="luckymart-bg-white rounded-xl luckymart-shadow-lg overflow-hidden">
     <Skeleton className="aspect-square w-full" />
-    <div className="p-4">
-      <Skeleton className="h-6 w-3/4 mb-2" />
+    <div className="luckymart-padding-md">
+      <Skeleton className="luckymart-size-md w-3/4 mb-2" />
       <Skeleton className="h-4 w-full mb-1" />
       <Skeleton className="h-4 w-2/3 mb-3" />
-      <div className="flex justify-between items-center mb-3">
-        <Skeleton className="h-6 w-20" />
+      <div className="luckymart-layout-flex justify-between luckymart-layout-center mb-3">
+        <Skeleton className="luckymart-size-md w-20" />
         <Skeleton className="h-4 w-16" />
       </div>
       <Skeleton className="h-2 w-full" />
@@ -34,23 +34,23 @@ export const SkeletonCard: React.FC = () => (
 );
 
 export const SkeletonList: React.FC = () => (
-  <div className="bg-white rounded-lg shadow p-4">
-    <div className="flex items-center space-x-4">
+  <div className="luckymart-bg-white luckymart-rounded-lg luckymart-shadow luckymart-padding-md">
+    <div className="luckymart-layout-flex luckymart-layout-center space-x-4">
       <Skeleton className="h-12 w-12 rounded-full" />
       <div className="flex-1">
         <Skeleton className="h-4 w-3/4 mb-2" />
         <Skeleton className="h-3 w-1/2" />
       </div>
-      <Skeleton className="h-8 w-16" />
+      <Skeleton className="luckymart-size-lg w-16" />
     </div>
   </div>
 );
 
 export const SkeletonBanner: React.FC = () => (
   <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-12 px-4">
-    <div className="max-w-7xl mx-auto text-center">
-      <Skeleton className="h-8 w-64 mx-auto mb-4 bg-white/20" />
-      <Skeleton className="h-6 w-96 mx-auto bg-white/20" />
+    <div className="max-w-7xl mx-auto luckymart-text-center">
+      <Skeleton className="luckymart-size-lg w-64 mx-auto luckymart-spacing-md bg-white/20" />
+      <Skeleton className="luckymart-size-md w-96 mx-auto bg-white/20" />
     </div>
   </div>
 );

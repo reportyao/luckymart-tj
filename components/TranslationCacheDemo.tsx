@@ -5,8 +5,22 @@ import { ServiceWorkerRegistration } from './ServiceWorkerRegistration';
 import { translationCache, type CacheStatus, type PreloadResult } from '@/utils/translation-cache';
 import { useLanguage } from '@/src/i18n/useLanguageCompat';
 
+/**
+ * 翻译缓存演示组件属性
+ */
+interface TranslationCacheDemoProps {
+  /** 自定义CSS类名 */
+  className?: string;
+  /** 是否显示详细调试信息 */
+  debug?: boolean;
+  /** 自动预加载开关 */
+  autoPreload?: boolean;
+  /** 预加载完成的回调 */
+  onPreloadComplete?: (result: PreloadResult) => void;
+}
+
 // Hook用于管理翻译缓存
-function useTranslationCache() {
+function useTranslationCache(autoPreload: boolean = false) {
   const { language } = useLanguage();
   const [cacheStatus, setCacheStatus] = useState<CacheStatus | null>(null);
   const [isOnline, setIsOnline] = useState(true);
@@ -128,22 +142,22 @@ function CacheStats({ status }: { status: CacheStatus | null }) {
   const langStats = getLanguageStats();
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-      <div className="p-3 bg-blue-50 rounded-lg">
-        <div className="text-blue-600 font-medium">总文件数</div>
-        <div className="text-2xl font-bold text-blue-800">{status.totalFiles}</div>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 luckymart-text-sm">
+      <div className="p-3 bg-blue-50 luckymart-rounded-lg">
+        <div className="text-blue-600 luckymart-font-medium">总文件数</div>
+        <div className="text-2xl luckymart-font-bold text-blue-800">{status.totalFiles}</div>
       </div>
-      <div className="p-3 bg-green-50 rounded-lg">
-        <div className="text-green-600 font-medium">缓存大小</div>
-        <div className="text-2xl font-bold text-green-800">{formatBytes(status.size)}</div>
+      <div className="p-3 bg-green-50 luckymart-rounded-lg">
+        <div className="text-green-600 luckymart-font-medium">缓存大小</div>
+        <div className="text-2xl luckymart-font-bold text-green-800">{formatBytes(status.size)}</div>
       </div>
-      <div className="p-3 bg-purple-50 rounded-lg">
-        <div className="text-purple-600 font-medium">支持语言</div>
-        <div className="text-2xl font-bold text-purple-800">{Object.keys(langStats).length}</div>
+      <div className="p-3 bg-purple-50 luckymart-rounded-lg">
+        <div className="text-purple-600 luckymart-font-medium">支持语言</div>
+        <div className="text-2xl luckymart-font-bold text-purple-800">{Object.keys(langStats).length}</div>
       </div>
-      <div className="p-3 bg-orange-50 rounded-lg">
-        <div className="text-orange-600 font-medium">缓存版本</div>
-        <div className="text-2xl font-bold text-orange-800">{status.version}</div>
+      <div className="p-3 bg-orange-50 luckymart-rounded-lg">
+        <div className="text-orange-600 luckymart-font-medium">缓存版本</div>
+        <div className="text-2xl luckymart-font-bold text-orange-800">{status.version}</div>
       </div>
     </div>
   );
@@ -187,18 +201,18 @@ function CacheHealthStatus() {
 
   return (
     <div className={`p-4 rounded-lg border ${statusColors[health.status]}`}>
-      <div className="flex items-center gap-2 mb-2">
+      <div className="luckymart-layout-flex luckymart-layout-center gap-2 mb-2">
         <div className={`w-3 h-3 rounded-full ${
           health.status === 'healthy' ? 'bg-green-500' :
           health.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
         }`}></div>
-        <span className="font-medium">缓存健康状态: {health.status}</span>
+        <span className="luckymart-font-medium">缓存健康状态: {health.status}</span>
       </div>
-      <p className="text-sm">{health.message}</p>
+      <p className="luckymart-text-sm">{health.message}</p>
       {health.details && (
         <details className="mt-2">
-          <summary className="cursor-pointer text-sm underline">查看详情</summary>
-          <pre className="mt-2 text-xs bg-black bg-opacity-10 p-2 rounded overflow-auto">
+          <summary className="cursor-pointer luckymart-text-sm underline">查看详情</summary>
+          <pre className="mt-2 text-xs bg-black bg-opacity-10 luckymart-padding-sm luckymart-rounded overflow-auto">
             {JSON.stringify(health.details, null, 2)}
           </pre>
         </details>
@@ -208,7 +222,12 @@ function CacheHealthStatus() {
 }
 
 // 主要示例组件
-export default function TranslationCacheDemo() {
+const TranslationCacheDemo: React.FC<TranslationCacheDemoProps> = ({
+  className = '',
+  debug = false,
+  autoPreload = false,
+  onPreloadComplete
+}) => {
   const {
     cacheStatus,
     isOnline,
@@ -221,17 +240,17 @@ export default function TranslationCacheDemo() {
   const [activeTab, setActiveTab] = useState<'overview' | 'controls' | 'demo'>('overview');
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className={`translation-cache-demo max-w-4xl mx-auto p-6 space-y-6 ${className}`}>
       {/* 页面标题 */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">
+      <div className="luckymart-layout-flex luckymart-layout-center justify-between">
+        <h1 className="text-3xl luckymart-font-bold text-gray-900">
           离线翻译缓存演示
         </h1>
         <OfflineIndicator isOnline={isOnline} />
       </div>
 
       {/* 标签页导航 */}
-      <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+      <div className="luckymart-layout-flex space-x-1 luckymart-bg-gray-light p-1 luckymart-rounded-lg">
         {[
           { id: 'overview', label: '概览', icon: '📊' },
           { id: 'controls', label: '控制面板', icon: '⚙️' },
@@ -258,8 +277,8 @@ export default function TranslationCacheDemo() {
           <div className="grid gap-6">
             {/* 缓存统计 */}
             {cacheStatus && (
-              <div className="p-6 bg-white rounded-lg border">
-                <h2 className="text-xl font-semibold mb-4">缓存统计</h2>
+              <div className="luckymart-padding-lg luckymart-bg-white luckymart-rounded-lg luckymart-border">
+                <h2 className="luckymart-text-xl font-semibold luckymart-spacing-md">缓存统计</h2>
                 <CacheStats status={cacheStatus} />
               </div>
             )}
@@ -268,8 +287,8 @@ export default function TranslationCacheDemo() {
             <CacheHealthStatus />
 
             {/* Service Worker注册组件 */}
-            <div className="p-6 bg-white rounded-lg border">
-              <h2 className="text-xl font-semibold mb-4">Service Worker状态</h2>
+            <div className="luckymart-padding-lg luckymart-bg-white luckymart-rounded-lg luckymart-border">
+              <h2 className="luckymart-text-xl font-semibold luckymart-spacing-md">Service Worker状态</h2>
               <ServiceWorkerRegistration 
                 showControls={false}
                 showStatus={true}
@@ -283,8 +302,8 @@ export default function TranslationCacheDemo() {
       {/* 控制面板页面 */}
       {activeTab === 'controls' && (
         <div className="space-y-6">
-          <div className="p-6 bg-white rounded-lg border">
-            <h2 className="text-xl font-semibold mb-4">缓存控制面板</h2>
+          <div className="luckymart-padding-lg luckymart-bg-white luckymart-rounded-lg luckymart-border">
+            <h2 className="luckymart-text-xl font-semibold luckymart-spacing-md">缓存控制面板</h2>
             <ServiceWorkerRegistration 
               showControls={true}
               showStatus={true}
@@ -294,10 +313,10 @@ export default function TranslationCacheDemo() {
 
           {/* 预加载结果 */}
           {preloadProgress && (
-            <div className="p-6 bg-white rounded-lg border">
-              <h3 className="text-lg font-semibold mb-3">最新预加载结果</h3>
-              <div className="space-y-2">
-                <div className="text-sm text-gray-600">
+            <div className="luckymart-padding-lg luckymart-bg-white luckymart-rounded-lg luckymart-border">
+              <h3 className="luckymart-text-lg font-semibold mb-3">最新预加载结果</h3>
+              <div className="luckymart-spacing-sm">
+                <div className="luckymart-text-sm text-gray-600">
                   总计: {preloadProgress.total} 个文件 | 
                   成功: {preloadProgress.success.length} | 
                   失败: {preloadProgress.failed.length}
@@ -337,8 +356,8 @@ export default function TranslationCacheDemo() {
       {/* 功能演示页面 */}
       {activeTab === 'demo' && (
         <div className="space-y-6">
-          <div className="p-6 bg-white rounded-lg border">
-            <h2 className="text-xl font-semibold mb-4">功能演示</h2>
+          <div className="luckymart-padding-lg luckymart-bg-white luckymart-rounded-lg luckymart-border">
+            <h2 className="luckymart-text-xl font-semibold luckymart-spacing-md">功能演示</h2>
             <TranslationCacheDemoContent />
           </div>
         </div>
@@ -424,40 +443,40 @@ function TranslationCacheDemoContent() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-3">
+      <div className="luckymart-layout-flex gap-3">
         <button
           onClick={runDemo}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 bg-blue-600 text-white luckymart-rounded-lg hover:bg-blue-700"
         >
           运行演示
         </button>
         <button
           onClick={clearDemo}
-          className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+          className="px-4 py-2 bg-gray-600 text-white luckymart-rounded-lg hover:bg-gray-700"
         >
           清除结果
         </button>
       </div>
 
       {testResults.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="font-medium">测试结果</h3>
+        <div className="luckymart-spacing-md">
+          <h3 className="luckymart-font-medium">测试结果</h3>
           {testResults.map((result, index) => (
-            <div key={index} className="p-3 border rounded-lg">
-              <div className="flex items-center justify-between">
-                <span className="font-medium">{result.test}</span>
-                <div className="flex items-center gap-2">
+            <div key={index} className="p-3 luckymart-border luckymart-rounded-lg">
+              <div className="luckymart-layout-flex luckymart-layout-center justify-between">
+                <span className="luckymart-font-medium">{result.test}</span>
+                <div className="luckymart-layout-flex luckymart-layout-center gap-2">
                   <div className={`w-2 h-2 rounded-full ${
                     result.status === 'success' ? 'bg-green-500' :
                     result.status === 'warning' ? 'bg-yellow-500' :
                     result.status === 'error' ? 'bg-red-500' : 'bg-blue-500'
                   }`}></div>
-                  <span className="text-sm text-gray-500">
+                  <span className="luckymart-text-sm luckymart-text-secondary">
                     {new Date(result.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
               </div>
-              <div className="mt-2 text-sm text-gray-600">
+              <div className="mt-2 luckymart-text-sm text-gray-600">
                 {result.result}
               </div>
             </div>
@@ -465,7 +484,7 @@ function TranslationCacheDemoContent() {
         </div>
       )}
 
-      <div className="text-sm text-gray-500">
+      <div className="luckymart-text-sm luckymart-text-secondary">
         <p>• 点击"运行演示"来测试各项缓存功能</p>
         <p>• 演示会检查缓存状态、验证翻译文件并执行预加载</p>
         <p>• 结果会显示每个测试的详细状态和结果</p>

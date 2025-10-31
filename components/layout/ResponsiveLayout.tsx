@@ -147,7 +147,7 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
       
       {/* 调试信息 */}
       {showDebugInfo && debugInfo && (
-        <div className="debug-info fixed bottom-4 right-4 bg-black bg-opacity-80 text-white p-2 rounded text-xs font-mono z-50 max-w-xs">
+        <div className="debug-info fixed bottom-4 right-4 bg-black bg-opacity-80 text-white luckymart-padding-sm luckymart-rounded text-xs font-mono z-50 max-w-xs">
           <div className="space-y-1">
             <div><strong>Size:</strong> {debugInfo.width} × {debugInfo.height}</div>
             <div><strong>Breakpoint:</strong> {debugInfo.breakpoint}</div>

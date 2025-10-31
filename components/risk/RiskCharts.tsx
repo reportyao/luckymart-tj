@@ -33,11 +33,11 @@ export const SimpleBarChart: React.FC<ChartProps> = ({
   const chartWidth = data.length * (barWidth + 10);
   
   return (
-    <div className="bg-white rounded-xl p-6 shadow-md">
-      <h3 className="text-lg font-bold text-gray-900 mb-4">{title}</h3>
-      <div className="flex items-end gap-2" style={{ height }}>
+    <div className="luckymart-bg-white rounded-xl luckymart-padding-lg shadow-md">
+      <h3 className="luckymart-text-lg luckymart-font-bold text-gray-900 luckymart-spacing-md">{title}</h3>
+      <div className="luckymart-layout-flex items-end gap-2" style={{ height }}>
         {data.map((value, index) => (
-          <div key={index} className="flex flex-col items-center flex-1">
+          <div key={index} className="luckymart-layout-flex flex-col luckymart-layout-center flex-1">
             <div
               className="rounded-t transition-all hover:opacity-80"
               style={{ 
@@ -69,9 +69,9 @@ export const SimplePieChart: React.FC<PieChartProps> = ({
   const circumference = 2 * Math.PI * radius;
   
   return (
-    <div className="bg-white rounded-xl p-6 shadow-md">
-      <h3 className="text-lg font-bold text-gray-900 mb-4">{title}</h3>
-      <div className="flex items-center gap-6">
+    <div className="luckymart-bg-white rounded-xl luckymart-padding-lg shadow-md">
+      <h3 className="luckymart-text-lg luckymart-font-bold text-gray-900 luckymart-spacing-md">{title}</h3>
+      <div className="luckymart-layout-flex luckymart-layout-center gap-6">
         <div className="relative" style={{ width: size, height: size }}>
           <svg 
             viewBox={`0 0 ${size} ${size}`} 
@@ -110,12 +110,12 @@ export const SimplePieChart: React.FC<PieChartProps> = ({
         </div>
         <div className="flex-1">
           {data.map((item, index) => (
-            <div key={index} className="flex items-center gap-2 mb-2">
+            <div key={index} className="luckymart-layout-flex luckymart-layout-center gap-2 mb-2">
               <div 
-                className="w-4 h-4 rounded"
+                className="w-4 h-4 luckymart-rounded"
                 style={{ backgroundColor: item.color }}
               />
-              <span className="text-sm text-gray-700">
+              <span className="luckymart-text-sm text-gray-700">
                 {item.label}: {item.value}
               </span>
             </div>
@@ -165,7 +165,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         />
       </div>
       {showLabel && (
-        <span className="text-sm font-medium text-gray-900 min-w-[3rem]">
+        <span className="luckymart-text-sm luckymart-font-medium text-gray-900 min-w-[3rem]">
           {Math.round(percentage)}%
         </span>
       )}
@@ -198,14 +198,14 @@ export const StatCard: React.FC<StatCardProps> = ({
   };
   
   return (
-    <div className="bg-white rounded-xl p-6 shadow-md">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-medium text-gray-600">{title}</h3>
-        <div className="p-2 rounded-lg" style={{ backgroundColor: `${color}20` }}>
+    <div className="luckymart-bg-white rounded-xl luckymart-padding-lg shadow-md">
+      <div className="luckymart-layout-flex luckymart-layout-center justify-between mb-2">
+        <h3 className="luckymart-text-sm luckymart-font-medium text-gray-600">{title}</h3>
+        <div className="luckymart-padding-sm luckymart-rounded-lg" style={{ backgroundColor: `${color}20` }}>
           <div style={{ color }}>{icon}</div>
         </div>
       </div>
-      <p className="text-3xl font-bold text-gray-900">{value}</p>
+      <p className="text-3xl luckymart-font-bold text-gray-900">{value}</p>
       {change && (
         <p className={`text-sm mt-1 ${changeColorClasses[changeType]}`}>
           {change}

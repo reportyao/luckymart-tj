@@ -7,7 +7,23 @@ import SwipeActions from '../components/SwipeActions';
 import TouchFeedback from '../components/TouchFeedback';
 import { useGestureI18n } from '../hooks/use-gesture-i18n';
 
-const GestureDemo: React.FC = () => {
+/**
+ * 手势演示组件属性
+ */
+interface GestureDemoProps {
+  /** 自定义CSS类名 */
+  className?: string;
+  /** 是否显示手势状态指示器 */
+  showStatusIndicator?: boolean;
+  /** 手势操作完成的回调 */
+  onGestureAction?: (action: string, productId: string) => void;
+}
+
+const GestureDemo: React.FC<GestureDemoProps> = ({ 
+  className = '', 
+  showStatusIndicator = true,
+  onGestureAction 
+}) => {
   const { t } = useTranslation('common');
   const [toast, setToast] = useState<string>('');
   const [selectedProduct, setSelectedProduct] = useState<string>('');
@@ -22,6 +38,7 @@ const GestureDemo: React.FC = () => {
   const handleSwipeAction = (action: string, productId: string) => {
     setSelectedProduct(productId);
     showToast(`执行操作: ${action}`);
+    onGestureAction?.(action, productId);
   };
 
   // 产品列表演示数据
@@ -54,7 +71,7 @@ const GestureDemo: React.FC = () => {
         text: t('gesture.actions.favorite'),
         background: 'bg-yellow-500',
         icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="luckymart-size-sm luckymart-size-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
         ),
@@ -65,7 +82,7 @@ const GestureDemo: React.FC = () => {
         text: t('gesture.actions.share'),
         background: 'bg-blue-500',
         icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="luckymart-size-sm luckymart-size-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
           </svg>
         ),
@@ -78,7 +95,7 @@ const GestureDemo: React.FC = () => {
         text: t('gesture.actions.delete'),
         background: 'bg-red-500',
         icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="luckymart-size-sm luckymart-size-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
           </svg>
         ),
@@ -88,17 +105,17 @@ const GestureDemo: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className={`gesture-demo min-h-screen bg-gray-50 p-4 ${className}`}>
       <div className="max-w-md mx-auto">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        <h1 className="text-2xl luckymart-font-bold text-gray-800 mb-6 luckymart-text-center">
           {t('gesture.guidance.tutorial')}
         </h1>
 
         {/* 手势说明卡片 */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">{t('gesture.guidance.intro')}</h2>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
+        <div className="luckymart-bg-white luckymart-rounded-lg shadow-md luckymart-padding-lg mb-6">
+          <h2 className="luckymart-text-lg font-semibold luckymart-spacing-md">{t('gesture.guidance.intro')}</h2>
+          <div className="luckymart-spacing-md">
+            <div className="luckymart-layout-flex luckymart-layout-center gap-3">
               <TouchFeedback 
                 type="ripple"
                 hapticIntensity="light"
@@ -108,13 +125,13 @@ const GestureDemo: React.FC = () => {
                   success: t('gesture.success.completed')
                 }}
               >
-                <div className="flex-1 p-3 bg-blue-50 rounded text-center">
+                <div className="flex-1 p-3 bg-blue-50 luckymart-rounded luckymart-text-center">
                   {t('gesture.tap.short')}
                 </div>
               </TouchFeedback>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="luckymart-layout-flex luckymart-layout-center gap-3">
               <TouchFeedback 
                 type="scale"
                 hapticIntensity="medium"
@@ -124,13 +141,13 @@ const GestureDemo: React.FC = () => {
                   success: t('gesture.success.completed')
                 }}
               >
-                <div className="flex-1 p-3 bg-purple-50 rounded text-center">
+                <div className="flex-1 p-3 bg-purple-50 luckymart-rounded luckymart-text-center">
                   {t('gesture.press.long')}
                 </div>
               </TouchFeedback>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="luckymart-layout-flex luckymart-layout-center gap-3">
               <MultilingualGestureTooltip
                 gestureType="swipe"
                 direction="left"
@@ -138,7 +155,7 @@ const GestureDemo: React.FC = () => {
                 duration={2000}
                 autoShow={true}
               >
-                <div className="flex-1 p-3 bg-green-50 rounded text-center cursor-pointer">
+                <div className="flex-1 p-3 bg-green-50 luckymart-rounded luckymart-text-center cursor-pointer">
                   ← {t('gesture.swipe.left.start')}
                 </div>
               </MultilingualGestureTooltip>
@@ -148,7 +165,7 @@ const GestureDemo: React.FC = () => {
 
         {/* 产品列表演示 */}
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800">
+          <h3 className="luckymart-text-lg font-semibold text-gray-800">
             {t('home.hot_products')}
           </h3>
           
@@ -166,19 +183,19 @@ const GestureDemo: React.FC = () => {
                 console.log('滑动手势结束:', direction, actionId);
               }}
             >
-              <div className="bg-white rounded-lg shadow-sm p-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gray-200 rounded-lg"></div>
+              <div className="luckymart-bg-white luckymart-rounded-lg luckymart-shadow-sm luckymart-padding-md">
+                <div className="luckymart-layout-flex luckymart-layout-center gap-4">
+                  <div className="w-16 h-16 bg-gray-200 luckymart-rounded-lg"></div>
                   <div className="flex-1">
-                    <h4 className="font-medium text-gray-800">{product.name}</h4>
-                    <p className="text-lg font-bold text-red-600">{product.price}</p>
+                    <h4 className="luckymart-font-medium text-gray-800">{product.name}</h4>
+                    <p className="luckymart-text-lg luckymart-font-bold text-red-600">{product.price}</p>
                   </div>
                   <TouchFeedback 
                     type="glow"
                     hapticIntensity="light"
                     onSuccess={() => showToast('点击成功')}
                   >
-                    <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm">
+                    <button className="px-4 py-2 luckymart-bg-primary text-white luckymart-rounded-lg luckymart-text-sm">
                       {t('home.participate')}
                     </button>
                   </TouchFeedback>
@@ -189,14 +206,14 @@ const GestureDemo: React.FC = () => {
         </div>
 
         {/* 手势控制面板 */}
-        <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold mb-4">手势控制</h3>
+        <div className="mt-8 luckymart-bg-white luckymart-rounded-lg shadow-md luckymart-padding-lg">
+          <h3 className="luckymart-text-lg font-semibold luckymart-spacing-md">手势控制</h3>
           <div className="grid grid-cols-2 gap-4">
             <TouchFeedback 
               type="color"
               onSuccess={() => showToast('触觉反馈已启用')}
             >
-              <div className="p-3 bg-gray-100 rounded text-center text-sm">
+              <div className="p-3 luckymart-bg-gray-light luckymart-rounded luckymart-text-center luckymart-text-sm">
                 触觉反馈测试
               </div>
             </TouchFeedback>
@@ -206,7 +223,7 @@ const GestureDemo: React.FC = () => {
               position="bottom"
               customText="这是一个自定义提示"
             >
-              <div className="p-3 bg-gray-100 rounded text-center text-sm cursor-pointer">
+              <div className="p-3 luckymart-bg-gray-light luckymart-rounded luckymart-text-center luckymart-text-sm cursor-pointer">
                 自定义提示
               </div>
             </MultilingualGestureTooltip>
@@ -215,13 +232,13 @@ const GestureDemo: React.FC = () => {
 
         {/* Toast 消息 */}
         {toast && (
-          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-lg z-50">
+          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 luckymart-rounded-lg z-50">
             {toast}
           </div>
         )}
 
         {/* 手势状态指示器 */}
-        <GestureStatusIndicator />
+        {showStatusIndicator && <GestureStatusIndicator />}
       </div>
     </div>
   );
@@ -232,9 +249,9 @@ const GestureStatusIndicator: React.FC = () => {
   const { gestureState, metrics } = useGestureI18n();
   
   return (
-    <div className="fixed top-4 right-4 bg-white rounded-lg shadow-lg p-3 z-40">
+    <div className="fixed top-4 right-4 luckymart-bg-white luckymart-rounded-lg luckymart-shadow-lg p-3 z-40">
       <div className="text-xs text-gray-600 mb-2">手势状态</div>
-      <div className="flex items-center gap-2">
+      <div className="luckymart-layout-flex luckymart-layout-center gap-2">
         <div className={`
           w-2 h-2 rounded-full
           ${gestureState === 'success' ? 'bg-green-500' : ''}
@@ -258,3 +275,6 @@ const GestureStatusIndicator: React.FC = () => {
 };
 
 export default GestureDemo;
+
+// 导出的类型定义
+export type { GestureDemoProps };

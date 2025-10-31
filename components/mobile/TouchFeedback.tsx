@@ -38,18 +38,47 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const rippleIdRef = useRef(0);
 
-  // 触觉反馈
-  const triggerHaptic = useCallback(() => {
+  // 触觉反馈与错误处理
+  const triggerHaptic = useCallback(async () => {
     if (!hapticFeedback) return;
     
-    if ('vibrate' in navigator) {
-      // 轻触：10ms震动
-      // 中等触：20ms震动
-      // 重触：30ms震动
-      const intensity = type === 'glow' ? 30 : type === 'press' ? 20 : 10;
-      navigator.vibrate(intensity);
+    try {
+      if ('vibrate' in navigator && navigator.vibrate) {
+        // 根据反馈类型设置震动强度
+        const intensity = type === 'glow' ? 30 : type === 'press' ? 20 : 10;
+        const success = navigator.vibrate(intensity);
+        
+        if (!success) {
+          console.warn('振动被取消或阻止');
+          provideVisualFeedback();
+        }
+      } else {
+        // 设备不支持振动，提供视觉反馈
+        console.info('设备不支持振动功能，使用视觉反馈');
+        provideVisualFeedback();
+      }
+    } catch (error) {
+      console.error('振动反馈失败:', error);
+      // 提供视觉反馈作为降级方案，确保用户体验
+      provideVisualFeedback();
     }
   }, [hapticFeedback, type]);
+
+  // 视觉反馈降级方案
+  const provideVisualFeedback = useCallback(() => {
+    if (containerRef.current) {
+      const originalTransition = containerRef.current.style.transition;
+      containerRef.current.style.transition = 'background-color 0.1s ease';
+      containerRef.current.style.backgroundColor = `${color}20`;
+      
+      setTimeout(() => {
+        if (containerRef.current) {
+          containerRef.current.style.backgroundColor = '';
+          containerRef.current.style.transition = originalTransition;
+        }
+      }, 100);
+    }
+  }, [color]);
 
   // 创建波纹效果
   const createRipple = useCallback((event: React.MouseEvent | React.TouchEvent) => {
@@ -115,8 +144,17 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
     // 长按检测
     if (pressDuration > 500) {
       // 长按反馈
-      if ('vibrate' in navigator) {
-        navigator.vibrate([50, 50]);
+      try {
+        if ('vibrate' in navigator && navigator.vibrate) {
+          const success = navigator.vibrate([50, 50]);
+          if (!success) {
+            console.warn('长按振动反馈失败');
+          }
+        } else {
+          console.warn('设备不支持振动反馈');
+        }
+      } catch (error) {
+        console.error('长按振动反馈错误:', error);
       }
     }
 
@@ -327,7 +365,7 @@ export const MultiTouchFeedback: React.FC<{
           {touchPoints.map(point => (
             <motion.div
               key={point.id}
-              className="absolute w-6 h-6 bg-blue-500/30 rounded-full border-2 border-blue-500"
+              className="absolute luckymart-size-md luckymart-size-md bg-blue-500/30 rounded-full border-2 border-blue-500"
               style={{
                 left: point.x - 12,
                 top: point.y - 12,
@@ -343,7 +381,7 @@ export const MultiTouchFeedback: React.FC<{
       {/* 多点触摸提示 */}
       {touchCount > maxTouches && (
         <motion.div
-          className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full"
+          className="absolute top-2 left-1/2 transform -translate-x-1/2 luckymart-bg-error text-white text-xs px-2 py-1 rounded-full"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
@@ -420,7 +458,7 @@ export const AreaTouchFeedback: React.FC<{
               return (
                 <motion.div
                   key={area.id}
-                  className="absolute border-2 border-blue-500 bg-blue-500/10 rounded"
+                  className="absolute border-2 border-blue-500 bg-blue-500/10 luckymart-rounded"
                   style={{
                     left: `${area.x}%`,
                     top: `${area.y}%`,

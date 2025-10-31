@@ -175,7 +175,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
     >
       {/* 占位符 */}
       {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 luckymart-layout-flex luckymart-layout-center justify-center">
           {blurDataURL ? (
             <img
               src={blurDataURL}
@@ -184,7 +184,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
               aria-hidden="true"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 animate-pulse" />
+            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 luckymart-animation-pulse" />
           )}
         </div>
       )}
@@ -224,19 +224,19 @@ const LazyImage: React.FC<LazyImageProps> = ({
 
       {/* 加载状态指示器 */}
       {!isLoaded && !hasError && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        <div className="absolute inset-0 luckymart-layout-flex luckymart-layout-center justify-center">
+          <div className="luckymart-size-lg luckymart-size-lg border-2 border-blue-500 border-t-transparent rounded-full luckymart-animation-spin" />
         </div>
       )}
 
       {/* 错误状态 */}
       {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-          <div className="text-center text-gray-500 dark:text-gray-400">
-            <svg className="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+        <div className="absolute inset-0 luckymart-layout-flex luckymart-layout-center justify-center luckymart-bg-gray-light dark:bg-gray-800">
+          <div className="luckymart-text-center luckymart-text-secondary dark:text-gray-400">
+            <svg className="luckymart-size-lg luckymart-size-lg mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
             </svg>
-            <p className="text-sm">图片加载失败</p>
+            <p className="luckymart-text-sm">图片加载失败</p>
           </div>
         </div>
       )}

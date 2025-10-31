@@ -149,9 +149,9 @@ export default function EnhancedLotteryCard({ round, onUpdate }: EnhancedLottery
   }, [round.id]);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+    <div className="luckymart-bg-white rounded-xl luckymart-shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
       {/* 商品图片 */}
-      <div className="relative aspect-square bg-gray-100">
+      <div className="relative aspect-square luckymart-bg-gray-light">
         {round.product.images && round.product.images[0] ? (
           <Image
             src={round.product.images[0]}
@@ -161,7 +161,7 @@ export default function EnhancedLotteryCard({ round, onUpdate }: EnhancedLottery
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
+          <div className="w-full h-full luckymart-layout-flex luckymart-layout-center justify-center text-gray-400">
             <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
@@ -185,25 +185,25 @@ export default function EnhancedLotteryCard({ round, onUpdate }: EnhancedLottery
         )}
 
         {/* 期次号 */}
-        <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded text-sm font-bold">
+        <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 luckymart-rounded luckymart-text-sm luckymart-font-bold">
           第 {round.roundNumber} 期
         </div>
       </div>
 
       {/* 商品信息 */}
-      <div className="p-4">
-        <h3 className="font-bold text-lg mb-2 line-clamp-2">{round.product.name}</h3>
+      <div className="luckymart-padding-md">
+        <h3 className="luckymart-font-bold luckymart-text-lg mb-2 line-clamp-2">{round.product.name}</h3>
         
-        <div className="flex justify-between items-center mb-3">
+        <div className="luckymart-layout-flex justify-between luckymart-layout-center mb-3">
           <span className="text-gray-600">市场价格</span>
-          <span className="text-lg font-bold text-purple-600">
+          <span className="luckymart-text-lg luckymart-font-bold text-purple-600">
             {round.product.marketPrice} {t('common.tjs')}
           </span>
         </div>
 
         {/* 进度条 */}
-        <div className="mb-4">
-          <div className="flex justify-between text-sm text-gray-600 mb-1">
+        <div className="luckymart-spacing-md">
+          <div className="luckymart-layout-flex justify-between luckymart-text-sm text-gray-600 mb-1">
             <span>进度</span>
             <span>{round.soldShares}/{round.totalShares} 份</span>
           </div>
@@ -213,15 +213,15 @@ export default function EnhancedLotteryCard({ round, onUpdate }: EnhancedLottery
               style={{ width: `${progress}%` }}
             ></div>
           </div>
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs luckymart-text-secondary mt-1">
             剩余 {availableShares} 份
           </div>
         </div>
 
         {/* 参与历史 */}
         {participationShares > 0 && (
-          <div className="bg-purple-50 rounded-lg p-3 mb-4">
-            <div className="text-sm text-purple-800 font-medium mb-1">我的参与</div>
+          <div className="bg-purple-50 luckymart-rounded-lg p-3 luckymart-spacing-md">
+            <div className="luckymart-text-sm text-purple-800 luckymart-font-medium mb-1">我的参与</div>
             <div className="text-xs text-purple-600">
               已参与 {participationShares} 份，预计中奖概率 {round.winProbability || 0}%
             </div>
@@ -229,9 +229,9 @@ export default function EnhancedLotteryCard({ round, onUpdate }: EnhancedLottery
         )}
 
         {/* 价格信息 */}
-        <div className="flex justify-between items-center mb-4">
+        <div className="luckymart-layout-flex justify-between luckymart-layout-center luckymart-spacing-md">
           <span className="text-gray-600">每份价格</span>
-          <span className="text-lg font-bold text-purple-600">
+          <span className="luckymart-text-lg luckymart-font-bold text-purple-600">
             {round.pricePerShare} {t('common.coins')}
           </span>
         </div>
@@ -242,10 +242,10 @@ export default function EnhancedLotteryCard({ round, onUpdate }: EnhancedLottery
           <button
             onClick={handleQuickParticipate}
             disabled={loading || availableShares === 0 || userCoinBalance === 0}
-            className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
+            className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 text-white luckymart-font-bold py-2 px-4 luckymart-rounded-lg hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 luckymart-layout-flex luckymart-layout-center justify-center"
           >
             {loading ? (
-              <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+              <svg className="luckymart-animation-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
@@ -261,7 +261,7 @@ export default function EnhancedLotteryCard({ round, onUpdate }: EnhancedLottery
           <button
             onClick={() => setShowMultiPurchase(true)}
             disabled={loading || availableShares === 0}
-            className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center"
+            className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white luckymart-font-bold py-2 px-4 luckymart-rounded-lg hover:from-green-600 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 luckymart-layout-flex luckymart-layout-center justify-center"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -272,10 +272,10 @@ export default function EnhancedLotteryCard({ round, onUpdate }: EnhancedLottery
 
         {/* 余额不足提示 */}
         {userCoinBalance > 0 && userCoinBalance < round.pricePerShare && (
-          <div className="mt-2 text-center">
+          <div className="mt-2 luckymart-text-center">
             <button
               onClick={() => router.push('/wallet/recharge')}
-              className="text-orange-500 text-sm font-medium hover:text-orange-600 transition-colors"
+              className="text-orange-500 luckymart-text-sm luckymart-font-medium hover:text-orange-600 transition-colors"
             >
               幸运币不足，点击充值
             </button>
@@ -326,22 +326,22 @@ function MultiPurchaseModal({ round, onClose, onPurchase, loading }: MultiPurcha
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-sm w-full p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold">批量购买</h3>
+    <div className="fixed inset-0 bg-black bg-opacity-50 luckymart-layout-flex luckymart-layout-center justify-center z-50 luckymart-padding-md">
+      <div className="luckymart-bg-white rounded-xl max-w-sm w-full luckymart-padding-lg">
+        <div className="luckymart-layout-flex justify-between luckymart-layout-center luckymart-spacing-md">
+          <h3 className="luckymart-text-xl luckymart-font-bold">批量购买</h3>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="luckymart-text-secondary hover:text-gray-700"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="luckymart-size-md luckymart-size-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <div className="mb-4">
-          <div className="text-sm text-gray-600 mb-2">选择购买份数</div>
+        <div className="luckymart-spacing-md">
+          <div className="luckymart-text-sm text-gray-600 mb-2">选择购买份数</div>
           <div className="grid grid-cols-5 gap-2">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((shares) => (
               <button
@@ -359,38 +359,38 @@ function MultiPurchaseModal({ round, onClose, onPurchase, loading }: MultiPurcha
           </div>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-3 mb-4">
-          <div className="flex justify-between text-sm">
+        <div className="bg-gray-50 luckymart-rounded-lg p-3 luckymart-spacing-md">
+          <div className="luckymart-layout-flex justify-between luckymart-text-sm">
             <span>购买份数</span>
             <span>{selectedShares} 份</span>
           </div>
-          <div className="flex justify-between text-sm">
+          <div className="luckymart-layout-flex justify-between luckymart-text-sm">
             <span>单价</span>
             <span>{round.pricePerShare} {t('common.coins')}</span>
           </div>
           {getDiscount(selectedShares) < 1 && (
-            <div className="flex justify-between text-sm text-green-600">
+            <div className="luckymart-layout-flex justify-between luckymart-text-sm text-green-600">
               <span>折扣</span>
               <span>{Math.round((1 - getDiscount(selectedShares)) * 100)}% 优惠</span>
             </div>
           )}
-          <div className="flex justify-between text-lg font-bold border-t pt-2 mt-2">
+          <div className="luckymart-layout-flex justify-between luckymart-text-lg luckymart-font-bold border-t pt-2 mt-2">
             <span>总计</span>
             <span className="text-purple-600">{calculateTotal(selectedShares)} {t('common.coins')}</span>
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="luckymart-layout-flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex-1 py-2 px-4 luckymart-border border-gray-300 text-gray-700 luckymart-rounded-lg hover:bg-gray-50 transition-colors"
           >
             取消
           </button>
           <button
             onClick={handleConfirm}
             disabled={loading}
-            className="flex-1 py-2 px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
+            className="flex-1 py-2 px-4 bg-purple-600 text-white luckymart-rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
           >
             {loading ? '处理中...' : '确认购买'}
           </button>

@@ -130,5 +130,27 @@
       "action": "Действие успешно",
       "feedback": "Обратная связь успешна"
     }
-  }
+  },
+
+  "operation_success": "Операция успешна",
+  "operation_failed": "Операция не удалась",
+  "save_failed": "Сохранение не удалось",
+  "delete_success": "Удаление успешно",
+  "delete_failed": "Удаление не удалось",
+  "confirm_delete": "Подтвердить удаление этого адреса?",
+  "add_address": "Добавить адрес",
+  "edit_address": "Редактировать адрес",
+  "address_management": "Управление адресами",
+  "recipient_name": "Имя получателя",
+  "recipient_phone": "Телефон получателя",
+  "province": "Провинция",
+  "city": "Город",
+  "district": "Район",
+  "detail_address": "Подробный адрес",
+  "set_default": "Установить по умолчанию",
+  "edit": "Редактировать",
+  "delete": "Удалить",
+  "add_new_address": "Добавить новый адрес",
+  "no_addresses": "Пока нет адресов",
+  "please_add_address": "Пожалуйста, сначала добавьте адрес доставки"
 }

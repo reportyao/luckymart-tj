@@ -76,11 +76,11 @@ export default function CheckinCalendar({
   return (
     <div className="space-y-6">
       {/* 月份标题 */}
-      <div className="text-center">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+      <div className="luckymart-text-center">
+        <h3 className="luckymart-text-lg font-semibold text-gray-800 dark:text-gray-200">
           {monthYear}
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="luckymart-text-sm luckymart-text-secondary dark:text-gray-400">
           7天签到周期日历
         </p>
       </div>
@@ -90,7 +90,7 @@ export default function CheckinCalendar({
         {weekdays.map((day) => (
           <div
             key={day}
-            className="text-center text-sm font-medium text-gray-500 dark:text-gray-400 py-2"
+            className="luckymart-text-center luckymart-text-sm luckymart-font-medium luckymart-text-secondary dark:text-gray-400 py-2"
           >
             {day}
           </div>
@@ -112,7 +112,7 @@ export default function CheckinCalendar({
               title={`${format(date, 'yyyy年MM月dd日 EEEE', { locale })}`}
             >
               {/* 日期数字 */}
-              <div className="text-lg font-bold mb-1">
+              <div className="luckymart-text-lg luckymart-font-bold mb-1">
                 {dayNumber}
               </div>
 
@@ -136,9 +136,9 @@ export default function CheckinCalendar({
               )}
 
               {/* 奖励金额 */}
-              <div className="text-xs font-medium">
+              <div className="text-xs luckymart-font-medium">
                 {reward !== null ? (
-                  <div className="flex items-center gap-1">
+                  <div className="luckymart-layout-flex luckymart-layout-center gap-1">
                     <Coins className={`h-3 w-3 ${getRewardStyle(calendarDay)}`} />
                     <span className={getRewardStyle(calendarDay)}>
                       {reward}
@@ -170,30 +170,30 @@ export default function CheckinCalendar({
       </div>
 
       {/* 图例说明 */}
-      <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-600 dark:text-gray-400 pt-4 border-t">
-        <div className="flex items-center gap-1">
+      <div className="luckymart-layout-flex flex-wrap luckymart-layout-center justify-center gap-4 text-xs text-gray-600 dark:text-gray-400 pt-4 border-t">
+        <div className="luckymart-layout-flex luckymart-layout-center gap-1">
           <Check className="h-4 w-4 text-green-600" />
           <span>已签到</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="luckymart-layout-flex luckymart-layout-center gap-1">
           <Circle className="h-4 w-4 text-blue-600" />
           <span>今日</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="luckymart-layout-flex luckymart-layout-center gap-1">
           <Coins className="h-4 w-4 text-gray-400" />
           <span>奖励金额</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="luckymart-layout-flex luckymart-layout-center gap-1">
           <Calendar className="h-4 w-4 text-gray-400" />
           <span>未签到</span>
         </div>
       </div>
 
       {/* 统计信息 */}
-      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+      <div className="bg-gray-50 dark:bg-gray-800 luckymart-rounded-lg luckymart-padding-md">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 luckymart-text-center">
           <div>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+            <div className="text-2xl luckymart-font-bold text-green-600 dark:text-green-400">
               {calendar.filter(day => day.isCheckedIn).length}
             </div>
             <div className="text-xs text-gray-600 dark:text-gray-400">
@@ -201,7 +201,7 @@ export default function CheckinCalendar({
             </div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <div className="text-2xl luckymart-font-bold text-blue-600 dark:text-blue-400">
               {calendar.filter(day => day.isToday && !day.isCheckedIn).length > 0 ? 
                 (calendar.find(day => day.isToday)?.day || 0) : 
                 (calendar.filter(day => day.isCheckedIn).length > 0 ? 
@@ -212,7 +212,7 @@ export default function CheckinCalendar({
             </div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+            <div className="text-2xl luckymart-font-bold text-purple-600 dark:text-purple-400">
               {calendar
                 .filter(day => day.isCheckedIn && day.reward !== null)
                 .reduce((sum, day) => sum + (day.reward || 0), 0)
@@ -223,7 +223,7 @@ export default function CheckinCalendar({
             </div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+            <div className="text-2xl luckymart-font-bold text-orange-600 dark:text-orange-400">
               {rewardConfig
                 .slice(0, calendar.filter(day => day.isToday).length > 0 ? 
                   (calendar.find(day => day.isToday)?.day || 0) : 

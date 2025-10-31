@@ -56,10 +56,10 @@ const InfiniteScroll = <T extends any>({
 
   // 默认组件
   const defaultLoadingComponent = (
-    <div className="flex items-center justify-center py-8">
-      <div className="flex items-center gap-2">
+    <div className="luckymart-layout-flex luckymart-layout-center justify-center py-8">
+      <div className="luckymart-layout-flex luckymart-layout-center gap-2">
         <motion.div
-          className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full"
+          className="luckymart-size-md luckymart-size-md border-2 border-blue-500 border-t-transparent rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         />
@@ -69,9 +69,9 @@ const InfiniteScroll = <T extends any>({
   );
 
   const defaultEndComponent = (
-    <div className="flex items-center justify-center py-8 text-gray-500">
-      <div className="text-center">
-        <svg className="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="luckymart-layout-flex luckymart-layout-center justify-center py-8 luckymart-text-secondary">
+      <div className="luckymart-text-center">
+        <svg className="luckymart-size-lg luckymart-size-lg mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <p>没有更多数据了</p>
@@ -80,15 +80,15 @@ const InfiniteScroll = <T extends any>({
   );
 
   const defaultErrorComponent = (
-    <div className="flex items-center justify-center py-8 text-red-500">
-      <div className="text-center">
-        <svg className="w-8 h-8 mx-auto mb-2 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="luckymart-layout-flex luckymart-layout-center justify-center py-8 luckymart-text-error">
+      <div className="luckymart-text-center">
+        <svg className="luckymart-size-lg luckymart-size-lg mx-auto mb-2 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z" />
         </svg>
         <p>加载失败</p>
         <button
           onClick={() => handleRetry()}
-          className="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+          className="mt-2 px-4 py-2 luckymart-bg-error text-white luckymart-rounded-lg hover:bg-red-600 transition"
         >
           重试
         </button>
@@ -97,13 +97,13 @@ const InfiniteScroll = <T extends any>({
   );
 
   const defaultEmptyComponent = (
-    <div className="flex items-center justify-center py-16 text-gray-500">
-      <div className="text-center">
-        <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="luckymart-layout-flex luckymart-layout-center justify-center py-16 luckymart-text-secondary">
+      <div className="luckymart-text-center">
+        <svg className="w-16 h-16 mx-auto luckymart-spacing-md text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
         </svg>
-        <p className="text-lg font-medium">暂无数据</p>
-        <p className="text-sm text-gray-400">下拉刷新试试看</p>
+        <p className="luckymart-text-lg luckymart-font-medium">暂无数据</p>
+        <p className="luckymart-text-sm text-gray-400">下拉刷新试试看</p>
       </div>
     </div>
   );
@@ -155,6 +155,19 @@ const InfiniteScroll = <T extends any>({
       }, debounceMs);
     }
   }, [isLoading, hasMore, currentPage, loadData, debounceMs]);
+
+  // 清理防抖定时器和观察器
+  useEffect(() => {
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
+    };
+  }, []);
 
   // 设置观察器
   useEffect(() => {
@@ -278,7 +291,7 @@ const InfiniteScroll = <T extends any>({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="sticky bottom-0 bg-white border-t border-gray-200"
+            className="sticky bottom-0 luckymart-bg-white border-t luckymart-border-light"
           >
             {loadingComponent || defaultLoadingComponent}
           </motion.div>
@@ -288,7 +301,7 @@ const InfiniteScroll = <T extends any>({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="sticky bottom-0 bg-white border-t border-gray-100"
+            className="sticky bottom-0 luckymart-bg-white border-t border-gray-100"
           >
             {endComponent || defaultEndComponent}
           </motion.div>
@@ -298,7 +311,7 @@ const InfiniteScroll = <T extends any>({
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="sticky bottom-0 bg-white border-t border-red-200"
+            className="sticky bottom-0 luckymart-bg-white border-t border-red-200"
           >
             {errorComponent || defaultErrorComponent}
           </motion.div>

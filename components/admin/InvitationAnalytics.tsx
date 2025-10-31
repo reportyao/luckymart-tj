@@ -205,10 +205,10 @@ export default function InvitationAnalytics() {
       <div className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {[...Array(4)].map((_, i) => (
-            <Card key={i} className="p-6">
-              <div className="animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-                <div className="h-64 bg-gray-200 rounded"></div>
+            <Card key={i} className="luckymart-padding-lg">
+              <div className="luckymart-animation-pulse">
+                <div className="h-4 bg-gray-200 luckymart-rounded w-3/4 luckymart-spacing-md"></div>
+                <div className="h-64 bg-gray-200 luckymart-rounded"></div>
               </div>
             </Card>
           ))}
@@ -219,8 +219,8 @@ export default function InvitationAnalytics() {
 
   if (!analyticsData) {
     return (
-      <Card className="p-6 text-center">
-        <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-500" />
+      <Card className="luckymart-padding-lg luckymart-text-center">
+        <AlertCircle className="w-12 h-12 mx-auto luckymart-spacing-md luckymart-text-error" />
         <p className="text-gray-600">{t('data_load_failed', '数据加载失败')}</p>
       </Card>
     );
@@ -229,8 +229,8 @@ export default function InvitationAnalytics() {
   return (
     <div className="space-y-6">
       {/* 控制面板 */}
-      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-        <div className="flex space-x-2">
+      <div className="luckymart-layout-flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+        <div className="luckymart-layout-flex luckymart-spacing-sm">
           <Button
             variant={activeView === 'overview' ? 'default' : 'outline'}
             size="sm"
@@ -261,11 +261,11 @@ export default function InvitationAnalytics() {
           </Button>
         </div>
         
-        <div className="flex space-x-2">
+        <div className="luckymart-layout-flex luckymart-spacing-sm">
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+            className="px-3 py-2 luckymart-border border-gray-300 luckymart-rounded-md luckymart-text-sm"
           >
             <option value="7d">{t('last_7_days', '最近7天')}</option>
             <option value="30d">{t('last_30_days', '最近30天')}</option>
@@ -286,63 +286,63 @@ export default function InvitationAnalytics() {
 
       {/* 核心指标卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-md bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm text-blue-600">{t('total_referrals', '总邀请数')}</p>
-              <p className="text-2xl font-bold text-blue-700">
+              <p className="luckymart-text-sm text-blue-600">{t('total_referrals', '总邀请数')}</p>
+              <p className="text-2xl luckymart-font-bold text-blue-700">
                 {analyticsData.referralTrend[analyticsData.referralTrend.length - 1]?.totalReferrals.toLocaleString()}
               </p>
-              <p className="text-xs text-blue-500 mt-1">
+              <p className="text-xs luckymart-text-primary mt-1">
                 +{analyticsData.referralTrend[analyticsData.referralTrend.length - 1]?.newReferrals} {t('today', '今天')}
               </p>
             </div>
-            <TrendingUp className="w-8 h-8 text-blue-500" />
+            <TrendingUp className="luckymart-size-lg luckymart-size-lg luckymart-text-primary" />
           </div>
         </Card>
 
-        <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-md bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm text-green-600">{t('conversion_rate', '转化率')}</p>
-              <p className="text-2xl font-bold text-green-700">
+              <p className="luckymart-text-sm text-green-600">{t('conversion_rate', '转化率')}</p>
+              <p className="text-2xl luckymart-font-bold text-green-700">
                 {analyticsData.referralTrend[analyticsData.referralTrend.length - 1]?.conversionRate}%
               </p>
-              <p className="text-xs text-green-500 mt-1">
+              <p className="text-xs luckymart-text-success mt-1">
                 +2.3% {t('vs_last_week', '相比上周')}
               </p>
             </div>
-            <Target className="w-8 h-8 text-green-500" />
+            <Target className="luckymart-size-lg luckymart-size-lg luckymart-text-success" />
           </div>
         </Card>
 
-        <Card className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-md bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm text-purple-600">{t('total_commission', '总佣金')}</p>
-              <p className="text-2xl font-bold text-purple-700">
+              <p className="luckymart-text-sm text-purple-600">{t('total_commission', '总佣金')}</p>
+              <p className="text-2xl luckymart-font-bold text-purple-700">
                 ${analyticsData.commissionStats[analyticsData.commissionStats.length - 1]?.totalCommission.toLocaleString()}
               </p>
               <p className="text-xs text-purple-500 mt-1">
                 {t('this_month', '本月')}
               </p>
             </div>
-            <DollarSign className="w-8 h-8 text-purple-500" />
+            <DollarSign className="luckymart-size-lg luckymart-size-lg text-purple-500" />
           </div>
         </Card>
 
-        <Card className="p-4 bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-md bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm text-orange-600">{t('active_referrers', '活跃邀请人')}</p>
-              <p className="text-2xl font-bold text-orange-700">
+              <p className="luckymart-text-sm text-orange-600">{t('active_referrers', '活跃邀请人')}</p>
+              <p className="text-2xl luckymart-font-bold text-orange-700">
                 {analyticsData.referralTrend[analyticsData.referralTrend.length - 1]?.activeReferrers.toLocaleString()}
               </p>
               <p className="text-xs text-orange-500 mt-1">
                 {t('current_month', '本月')}
               </p>
             </div>
-            <Users className="w-8 h-8 text-orange-500" />
+            <Users className="luckymart-size-lg luckymart-size-lg text-orange-500" />
           </div>
         </Card>
       </div>
@@ -351,8 +351,8 @@ export default function InvitationAnalytics() {
       {activeView === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* 邀请趋势图 */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <Card className="luckymart-padding-lg">
+            <h3 className="luckymart-text-lg font-semibold text-gray-800 luckymart-spacing-md">
               {t('referral_trend', '邀请趋势')}
             </h3>
             <div className="h-64">
@@ -375,8 +375,8 @@ export default function InvitationAnalytics() {
           </Card>
 
           {/* 级别分布饼图 */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <Card className="luckymart-padding-lg">
+            <h3 className="luckymart-text-lg font-semibold text-gray-800 luckymart-spacing-md">
               {t('level_distribution', '级别分布')}
             </h3>
             <div className="h-64">
@@ -399,17 +399,17 @@ export default function InvitationAnalytics() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="mt-4 space-y-2">
+            <div className="luckymart-spacing-md luckymart-spacing-sm">
               {analyticsData.levelDistribution.map((item, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
+                <div key={index} className="luckymart-layout-flex luckymart-layout-center justify-between">
+                  <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
                     <div 
                       className="w-3 h-3 rounded-full" 
                       style={{ backgroundColor: item.color }}
                     ></div>
-                    <span className="text-sm">{item.name}</span>
+                    <span className="luckymart-text-sm">{item.name}</span>
                   </div>
-                  <span className="text-sm text-gray-600">{item.percentage}%</span>
+                  <span className="luckymart-text-sm text-gray-600">{item.percentage}%</span>
                 </div>
               ))}
             </div>
@@ -420,8 +420,8 @@ export default function InvitationAnalytics() {
       {activeView === 'performance' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* 佣金趋势 */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <Card className="luckymart-padding-lg">
+            <h3 className="luckymart-text-lg font-semibold text-gray-800 luckymart-spacing-md">
               {t('commission_trend', '佣金趋势')}
             </h3>
             <div className="h-64">
@@ -443,14 +443,14 @@ export default function InvitationAnalytics() {
           </Card>
 
           {/* 顶级邀请者排行榜 */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <Card className="luckymart-padding-lg">
+            <h3 className="luckymart-text-lg font-semibold text-gray-800 luckymart-spacing-md">
               {t('top_performers', '顶级表现者')}
             </h3>
-            <div className="space-y-3">
+            <div className="luckymart-spacing-md">
               {analyticsData.topPerformers.slice(0, 5).map((performer) => (
-                <div key={performer.rank} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-3">
+                <div key={performer.rank} className="luckymart-layout-flex luckymart-layout-center justify-between p-3 bg-gray-50 luckymart-rounded-lg">
+                  <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
                       performer.rank === 1 ? 'bg-yellow-500' :
                       performer.rank === 2 ? 'bg-gray-400' :
@@ -459,15 +459,15 @@ export default function InvitationAnalytics() {
                       {performer.rank}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-800">{performer.username}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="luckymart-font-medium text-gray-800">{performer.username}</p>
+                      <p className="luckymart-text-sm luckymart-text-secondary">
                         {performer.totalReferrals} {t('referrals', '邀请')} | {performer.activeReferrals} {t('active', '活跃')}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-green-600">${performer.totalEarnings}</p>
-                    <p className="text-sm text-gray-500">{performer.conversionRate}% {t('conversion', '转化')}</p>
+                    <p className="luckymart-text-sm luckymart-text-secondary">{performer.conversionRate}% {t('conversion', '转化')}</p>
                   </div>
                 </div>
               ))}
@@ -479,20 +479,20 @@ export default function InvitationAnalytics() {
       {activeView === 'geography' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* 地理分布 */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <Card className="luckymart-padding-lg">
+            <h3 className="luckymart-text-lg font-semibold text-gray-800 luckymart-spacing-md">
               {t('geographic_distribution', '地理分布')}
             </h3>
             <div className="space-y-4">
               {analyticsData.geographicData.map((region, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm font-medium">{region.region}</span>
+                <div key={index} className="luckymart-layout-flex luckymart-layout-center justify-between">
+                  <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
+                    <div className="w-3 h-3 luckymart-bg-primary rounded-full"></div>
+                    <span className="luckymart-text-sm luckymart-font-medium">{region.region}</span>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold">{region.referrals.toLocaleString()}</p>
-                    <p className="text-xs text-gray-500">{region.percentage}% | ${region.avgEarnings}</p>
+                    <p className="luckymart-text-sm font-semibold">{region.referrals.toLocaleString()}</p>
+                    <p className="text-xs luckymart-text-secondary">{region.percentage}% | ${region.avgEarnings}</p>
                   </div>
                 </div>
               ))}
@@ -500,8 +500,8 @@ export default function InvitationAnalytics() {
           </Card>
 
           {/* 设备统计 */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <Card className="luckymart-padding-lg">
+            <h3 className="luckymart-text-lg font-semibold text-gray-800 luckymart-spacing-md">
               {t('device_statistics', '设备统计')}
             </h3>
             <div className="h-64">
@@ -522,12 +522,12 @@ export default function InvitationAnalytics() {
       {activeView === 'channels' && (
         <div className="space-y-6">
           {/* 获客渠道分析 */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <Card className="luckymart-padding-lg">
+            <h3 className="luckymart-text-lg font-semibold text-gray-800 luckymart-spacing-md">
               {t('acquisition_channels', '获客渠道分析')}
             </h3>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full luckymart-text-sm">
                 <thead>
                   <tr className="border-b">
                     <th className="text-left py-3">{t('channel', '渠道')}</th>
@@ -541,7 +541,7 @@ export default function InvitationAnalytics() {
                 <tbody>
                   {analyticsData.acquisitionMetrics.map((channel, index) => (
                     <tr key={index} className="border-b hover:bg-gray-50">
-                      <td className="py-3 font-medium">{channel.channel}</td>
+                      <td className="py-3 luckymart-font-medium">{channel.channel}</td>
                       <td className="py-3 text-right">{channel.referrals.toLocaleString()}</td>
                       <td className="py-3 text-right">${channel.cost.toFixed(2)}</td>
                       <td className="py-3 text-right">${channel.costPerReferral.toFixed(2)}</td>
@@ -557,12 +557,12 @@ export default function InvitationAnalytics() {
       )}
 
       {/* 实时数据提示 */}
-      <Card className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <Clock className="w-5 h-5 text-blue-600" />
+      <Card className="luckymart-padding-md bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-between">
+          <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
+            <Clock className="luckymart-size-sm luckymart-size-sm text-blue-600" />
             <div>
-              <p className="text-sm font-medium text-blue-800">
+              <p className="luckymart-text-sm luckymart-font-medium text-blue-800">
                 {t('real_time_data', '实时数据')}
               </p>
               <p className="text-xs text-blue-600">

@@ -26,18 +26,18 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
   );
 
   const ProductSkeleton = () => (
-    <div className="p-4 space-y-3">
+    <div className="luckymart-padding-md luckymart-spacing-md">
       {showImage && (
         <div 
           className={cn(skeletonClass, 'w-full')}
           style={{ height: imageHeight }}
         />
       )}
-      <div className="space-y-2">
+      <div className="luckymart-spacing-sm">
         <div className={cn(skeletonClass, 'h-4 w-3/4')} />
         <div className={cn(skeletonClass, 'h-4 w-1/2')} />
       </div>
-      <div className="flex justify-between items-center">
+      <div className="luckymart-layout-flex justify-between luckymart-layout-center">
         <div className={cn(skeletonClass, 'h-6 w-20')} />
         <div className={cn(skeletonClass, 'h-8 w-16 rounded-full')} />
       </div>
@@ -45,11 +45,11 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
   );
 
   const ListSkeleton = () => (
-    <div className="flex items-center space-x-3 p-3">
+    <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md p-3">
       {showImage && (
         <div className={cn(skeletonClass, 'w-16 h-16 flex-shrink-0')} />
       )}
-      <div className="flex-1 space-y-2">
+      <div className="flex-1 luckymart-spacing-sm">
         <div className={cn(skeletonClass, 'h-4 w-full')} />
         {lines > 1 && <div className={cn(skeletonClass, 'h-4 w-2/3')} />}
         {lines > 2 && <div className={cn(skeletonClass, 'h-4 w-1/2')} />}
@@ -58,7 +58,7 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
   );
 
   const DetailSkeleton = () => (
-    <div className="p-6 space-y-6">
+    <div className="luckymart-padding-lg space-y-6">
       {showImage && (
         <div className={cn(skeletonClass, 'w-full h-80')} />
       )}
@@ -67,7 +67,7 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
         <div className={cn(skeletonClass, 'h-6 w-1/2')} />
         <div className={cn(skeletonClass, 'h-10 w-1/3')} />
       </div>
-      <div className="space-y-3">
+      <div className="luckymart-spacing-md">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className={cn(skeletonClass, 'h-4 w-full')} />
         ))}
@@ -76,19 +76,19 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
   );
 
   const ProfileSkeleton = () => (
-    <div className="p-4 space-y-4">
-      <div className="flex items-center space-x-4">
+    <div className="luckymart-padding-md space-y-4">
+      <div className="luckymart-layout-flex luckymart-layout-center space-x-4">
         {showAvatar && (
           <div className={cn(skeletonClass, 'w-16 h-16 rounded-full')} />
         )}
-        <div className="space-y-2 flex-1">
+        <div className="luckymart-spacing-sm flex-1">
           <div className={cn(skeletonClass, 'h-5 w-1/2')} />
           <div className={cn(skeletonClass, 'h-4 w-1/3')} />
         </div>
       </div>
       <div className="grid grid-cols-3 gap-4">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="text-center space-y-1">
+          <div key={i} className="luckymart-text-center space-y-1">
             <div className={cn(skeletonClass, 'h-6 w-12 mx-auto')} />
             <div className={cn(skeletonClass, 'h-3 w-16 mx-auto')} />
           </div>
@@ -98,8 +98,8 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
   );
 
   const CommentSkeleton = () => (
-    <div className="p-4 space-y-3">
-      <div className="flex items-center space-x-3">
+    <div className="luckymart-padding-md luckymart-spacing-md">
+      <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
         {showAvatar && (
           <div className={cn(skeletonClass, 'w-8 h-8 rounded-full')} />
         )}
@@ -108,7 +108,7 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
           <div className={cn(skeletonClass, 'h-3 w-1/6')} />
         </div>
       </div>
-      <div className="pl-11 space-y-2">
+      <div className="pl-11 luckymart-spacing-sm">
         {Array.from({ length: lines }).map((_, i) => (
           <div 
             key={i} 
@@ -124,14 +124,14 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
   );
 
   const ChartSkeleton = () => (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="luckymart-padding-lg space-y-6">
+      <div className="luckymart-layout-flex justify-between luckymart-layout-center">
         <div className={cn(skeletonClass, 'h-6 w-1/3')} />
         <div className={cn(skeletonClass, 'h-4 w-1/4')} />
       </div>
-      <div className="space-y-3">
+      <div className="luckymart-spacing-md">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="flex items-center space-x-3">
+          <div key={i} className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
             <div className={cn(skeletonClass, 'h-4 w-20')} />
             <div className={cn(skeletonClass, 'h-6 flex-1')} />
             <div className={cn(skeletonClass, 'h-4 w-16')} />
@@ -189,7 +189,7 @@ export const SkeletonContainer: React.FC<{
       style={{ minHeight }}
     >
       {isLoading ? (
-        fallback || <div className="p-4">
+        fallback || <div className="luckymart-padding-md">
           <SkeletonCard variant="list" />
         </div>
       ) : (

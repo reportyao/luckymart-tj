@@ -12,6 +12,19 @@ interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
+interface PWAInstallerProps {
+  className?: string;
+  autoPrompt?: boolean;
+  promptDelay?: number;
+  showInstructions?: boolean;
+  appName?: string;
+  appDescription?: string;
+  onInstall?: (outcome: 'accepted' | 'dismissed') => void;
+  onPromptShown?: () => void;
+  onPromptDismissed?: () => void;
+  customInstructions?: string[];
+}
+
 export default function PWAInstaller() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
@@ -116,7 +129,7 @@ export default function PWAInstaller() {
     
     if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
       return {
-        icon: <Smartphone className="w-6 h-6" />,
+        icon: <Smartphone className="luckymart-size-md luckymart-size-md" />,
         title: '添加到主屏幕',
         steps: [
           '点击Safari底部的分享按钮',
@@ -128,7 +141,7 @@ export default function PWAInstaller() {
     
     if (userAgent.includes('android')) {
       return {
-        icon: <Smartphone className="w-6 h-6" />,
+        icon: <Smartphone className="luckymart-size-md luckymart-size-md" />,
         title: '安装应用',
         steps: [
           '点击浏览器菜单中的"安装应用"',
@@ -139,7 +152,7 @@ export default function PWAInstaller() {
     }
     
     return {
-      icon: <Monitor className="w-6 h-6" />,
+      icon: <Monitor className="luckymart-size-md luckymart-size-md" />,
       title: '安装应用',
       steps: [
         '点击浏览器地址栏右侧的安装图标',
@@ -161,43 +174,43 @@ export default function PWAInstaller() {
       <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
       
       {/* 安装提示卡片 */}
-      <div className="fixed bottom-4 left-4 right-4 bg-white rounded-lg shadow-2xl border border-gray-200 z-50 max-w-sm mx-auto">
-        <div className="p-4">
+      <div className="fixed bottom-4 left-4 right-4 luckymart-bg-white luckymart-rounded-lg shadow-2xl luckymart-border luckymart-border-light z-50 max-w-sm mx-auto">
+        <div className="luckymart-padding-md">
           {/* 关闭按钮 */}
           <button
             onClick={handleDismiss}
             className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="luckymart-size-sm luckymart-size-sm" />
           </button>
           
           {/* 图标和标题 */}
-          <div className="flex items-center mb-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white">
+          <div className="luckymart-layout-flex luckymart-layout-center mb-3">
+            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 luckymart-rounded-lg luckymart-layout-flex luckymart-layout-center justify-center text-white">
               {instructions.icon}
             </div>
             <div className="ml-3">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="luckymart-text-lg font-semibold text-gray-900">
                 {instructions.title}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="luckymart-text-sm text-gray-600">
                 LuckyMart-TJ 乐享商城
               </p>
             </div>
           </div>
           
           {/* 描述 */}
-          <p className="text-sm text-gray-700 mb-4">
+          <p className="luckymart-text-sm text-gray-700 luckymart-spacing-md">
             获得更好的购物体验，享受原生应用般的流畅操作
           </p>
           
           {/* 安装步骤 */}
-          <div className="mb-4">
-            <h4 className="text-sm font-medium text-gray-900 mb-2">安装步骤：</h4>
+          <div className="luckymart-spacing-md">
+            <h4 className="luckymart-text-sm luckymart-font-medium text-gray-900 mb-2">安装步骤：</h4>
             <ol className="text-xs text-gray-600 space-y-1">
               {instructions.steps.map((step, index) => (
-                <li key={index} className="flex items-start">
-                  <span className="inline-block w-4 h-4 bg-indigo-100 text-indigo-600 rounded-full text-center text-xs leading-4 mr-2 flex-shrink-0 mt-0.5">
+                <li key={index} className="luckymart-layout-flex items-start">
+                  <span className="inline-block w-4 h-4 bg-indigo-100 text-indigo-600 rounded-full luckymart-text-center text-xs leading-4 mr-2 flex-shrink-0 mt-0.5">
                     {index + 1}
                   </span>
                   {step}
@@ -207,17 +220,17 @@ export default function PWAInstaller() {
           </div>
           
           {/* 操作按钮 */}
-          <div className="flex space-x-2">
+          <div className="luckymart-layout-flex luckymart-spacing-sm">
             <button
               onClick={handleInstallClick}
-              className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 flex items-center justify-center"
+              className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 luckymart-rounded-lg luckymart-text-sm luckymart-font-medium hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 luckymart-layout-flex luckymart-layout-center justify-center"
             >
               <Download className="w-4 h-4 mr-1" />
               安装应用
             </button>
             <button
               onClick={handleDismiss}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 luckymart-border border-gray-300 text-gray-700 luckymart-rounded-lg luckymart-text-sm luckymart-font-medium hover:bg-gray-50 transition-colors"
             >
               稍后再说
             </button>

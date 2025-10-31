@@ -293,7 +293,7 @@ const RetryButton: React.FC<RetryButtonProps> = ({
     
     if (!isOnline) {
       return (
-        <span className="text-red-500 text-xs">
+        <span className="luckymart-text-error text-xs">
           📵 {t('retry.network.offline', '离线')}
         </span>
       );
@@ -351,7 +351,7 @@ const RetryButton: React.FC<RetryButtonProps> = ({
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <div className="flex items-center gap-2">
+      <div className="luckymart-layout-flex luckymart-layout-center gap-2">
         {/* 重试按钮 */}
         <button
           onClick={handleRetry}
@@ -372,13 +372,13 @@ const RetryButton: React.FC<RetryButtonProps> = ({
         >
           {/* 重试图标 */}
           {retryState.isRetrying ? (
-            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full luckymart-animation-spin" />
           ) : retryState.success ? (
-            <span className="text-sm">✅</span>
+            <span className="luckymart-text-sm">✅</span>
           ) : retryState.retryCount >= maxRetries ? (
-            <span className="text-sm">⛔</span>
+            <span className="luckymart-text-sm">⛔</span>
           ) : (
-            <span className="text-sm">🔄</span>
+            <span className="luckymart-text-sm">🔄</span>
           )}
           
           {/* 重试文本 */}
@@ -398,22 +398,22 @@ const RetryButton: React.FC<RetryButtonProps> = ({
 
       {/* 倒计时显示 */}
       {showCountdown && countdown > 0 && (
-        <div className="text-sm text-gray-600 flex items-center gap-1">
-          <span className="animate-pulse">⏱️</span>
+        <div className="luckymart-text-sm text-gray-600 luckymart-layout-flex luckymart-layout-center gap-1">
+          <span className="luckymart-animation-pulse">⏱️</span>
           {formatCountdown(countdown)}
         </div>
       )}
 
       {/* 错误信息 */}
       {retryState.error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded p-2">
-          <div className="flex items-start gap-2">
-            <span className="text-red-500">⚠️</span>
+        <div className="luckymart-text-sm text-red-600 bg-red-50 luckymart-border border-red-200 luckymart-rounded luckymart-padding-sm">
+          <div className="luckymart-layout-flex items-start gap-2">
+            <span className="luckymart-text-error">⚠️</span>
             <div>
-              <div className="font-medium">{t('retry.error', '重试失败')}</div>
+              <div className="luckymart-font-medium">{t('retry.error', '重试失败')}</div>
               <div className="text-red-600">{retryState.error}</div>
               {!checkRetryConditions().canRetry && (
-                <div className="text-xs text-red-500 mt-1">
+                <div className="text-xs luckymart-text-error mt-1">
                   {checkRetryConditions().reason}
                 </div>
               )}
@@ -424,8 +424,8 @@ const RetryButton: React.FC<RetryButtonProps> = ({
 
       {/* 重试成功提示 */}
       {retryState.success && (
-        <div className="text-sm text-green-600 bg-green-50 border border-green-200 rounded p-2">
-          <div className="flex items-center gap-2">
+        <div className="luckymart-text-sm text-green-600 bg-green-50 luckymart-border border-green-200 luckymart-rounded luckymart-padding-sm">
+          <div className="luckymart-layout-flex luckymart-layout-center gap-2">
             <span>✅</span>
             {t('retry.successMessage', '操作已成功完成')}
           </div>
@@ -434,8 +434,8 @@ const RetryButton: React.FC<RetryButtonProps> = ({
 
       {/* 重试统计 */}
       {retryState.retryCount > 0 && (
-        <div className="text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded p-2">
-          <div className="flex justify-between">
+        <div className="text-xs luckymart-text-secondary bg-gray-50 luckymart-border luckymart-border-light luckymart-rounded luckymart-padding-sm">
+          <div className="luckymart-layout-flex justify-between">
             <span>{t('retry.stats.attempts', '重试次数')}: {retryState.retryCount}</span>
             <span>{t('retry.stats.lastAttempt', '上次重试')}: {
               retryState.lastRetryTime ? 

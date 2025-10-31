@@ -1,20 +1,17 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 
 // 页面切换动画组件
-export const PageTransition: React.FC<{
-  children: React.ReactNode;
-  type?: 'slide' | 'fade' | 'scale' | 'flip';
-  direction?: 'left' | 'right' | 'up' | 'down';
-  duration?: number;
-  className?: string;
-}> = ({ 
+import { MOBILE_CONSTANTS } from '@/constants/mobile';
+import type { PageTransitionProps, AnimationConfig } from '@/types/mobile';
+
+export const PageTransition: React.FC<PageTransitionProps> = ({ 
   children, 
   type = 'slide', 
   direction = 'right',
-  duration = 0.5,
+  duration = MOBILE_CONSTANTS.ANIMATION.NORMAL,
   className = ''
 }) => {
   const [displayChildren, setDisplayChildren] = useState(children);
@@ -26,7 +23,8 @@ export const PageTransition: React.FC<{
     }
   }, [children, displayChildren]);
 
-  const getAnimationVariants = () => {
+  // 使用useMemo缓存动画配置，减少重渲染
+  const variants = useMemo(() => {
     switch (type) {
       case 'slide':
         const slideDirections = {
@@ -93,9 +91,13 @@ export const PageTransition: React.FC<{
           exit: { opacity: 0 }
         };
     }
-  };
+  }, [type, direction]);
 
-  const variants = getAnimationVariants();
+  // 缓存动画配置
+  const animationConfig = useMemo((): AnimationConfig => ({
+    duration,
+    ease: 'easeInOut'
+  }), [duration]);
 
   return (
     <motion.div
@@ -130,7 +132,7 @@ export const ComponentEntrance: React.FC<{
   className = '',
   staggerChildren = false
 }) => {
-  const getAnimation = () => {
+  const animationProps = useMemo(() => {
     switch (animation) {
       case 'fadeUp':
         return {
@@ -168,9 +170,7 @@ export const ComponentEntrance: React.FC<{
           animate: { opacity: 1 },
         };
     }
-  };
-
-  const animationProps = getAnimation();
+  }, [animation]);
 
   if (staggerChildren && Array.isArray(children)) {
     return (
@@ -336,7 +336,7 @@ export const LoadingAnimation: React.FC<{
   );
 
   const Dots = () => (
-    <div className="flex gap-1">
+    <div className="luckymart-layout-flex gap-1">
       {[0, 1, 2].map((index) => (
         <motion.div
           key={index}
@@ -399,13 +399,13 @@ export const AchievementUnlock: React.FC<{
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+          className="fixed inset-0 z-50 luckymart-layout-flex luckymart-layout-center justify-center pointer-events-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-2xl shadow-2xl max-w-sm mx-4"
+            className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white luckymart-padding-lg rounded-2xl shadow-2xl max-w-sm mx-4"
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             exit={{ scale: 0, rotate: 180 }}
@@ -415,22 +415,22 @@ export const AchievementUnlock: React.FC<{
               damping: 15
             }}
           >
-            <div className="text-center">
+            <div className="luckymart-text-center">
               <motion.div
-                className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center"
+                className="w-16 h-16 mx-auto luckymart-spacing-md bg-white/20 rounded-full luckymart-layout-flex luckymart-layout-center justify-center"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring" }}
               >
                 {icon || (
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="luckymart-size-lg luckymart-size-lg" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                 )}
               </motion.div>
               
               <motion.h3
-                className="text-lg font-bold mb-2"
+                className="luckymart-text-lg luckymart-font-bold mb-2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
@@ -449,7 +449,7 @@ export const AchievementUnlock: React.FC<{
               
               {description && (
                 <motion.p
-                  className="text-sm opacity-90"
+                  className="luckymart-text-sm opacity-90"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}

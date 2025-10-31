@@ -2,25 +2,108 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-// 缓存系统设置以提高性能
-let settingsCache: { data: any; timestamp: number } | null = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+// 缓存系统设置以提高性能（修复内存泄漏）
+class SettingsCache {
+  private cache: Map<string, { data: any; timestamp: number; accessCount: number }>;
+  private maxSize: number;
+  private maxAge: number;
+  private maxAccessCount: number;
+
+  constructor(maxSize: number = 100, maxAge: number = 5 * 60 * 1000, maxAccessCount: number = 1000) {
+    this.cache = new Map();
+    this.maxSize = maxSize;
+    this.maxAge = maxAge;
+    this.maxAccessCount = maxAccessCount;
+  }
+
+  get(key: string): any | null {
+    const item = this.cache.get(key);
+    if (!item) return null;
+
+    const now = Date.now();
+    
+    // 检查是否过期
+    if (now - item.timestamp > this.maxAge) {
+      this.cache.delete(key);
+      return null;
+    }
+    
+    // 检查访问次数
+    if (item.accessCount >= this.maxAccessCount) {
+      this.cache.delete(key);
+      return null;
+    }
+    
+    // 增加访问计数
+    item.accessCount++;
+    
+    return item.data;
+  }
+
+  set(key: string, data: any): void {
+    const now = Date.now();
+    
+    // 如果缓存已满，删除最旧的条目
+    if (this.cache.size >= this.maxSize) {
+      this.removeOldest();
+    }
+    
+    this.cache.set(key, {
+      data,
+      timestamp: now,
+      accessCount: 0
+    });
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+
+  private removeOldest(): void {
+    let oldestKey: string | null = null;
+    let oldestTime = Date.now();
+    
+    for (const [key, item] of this.cache.entries()) {
+      if (item.timestamp < oldestTime || oldestKey === null) {
+        oldestTime = item.timestamp;
+        oldestKey = key;
+      }
+    }
+    
+    if (oldestKey) {
+      this.cache.delete(oldestKey);
+    }
+  }
+
+  // 获取缓存统计信息
+  getStats(): { size: number; maxSize: number; hitRate: number } {
+    const size = this.cache.size;
+    let totalAccess = 0;
+    let hits = 0;
+    
+    for (const item of this.cache.values()) {
+      totalAccess += item.accessCount;
+      hits += Math.min(item.accessCount, 1); // 假设所有访问都是命中
+    }
+    
+    return {
+      size,
+      maxSize: this.maxSize,
+      hitRate: totalAccess > 0 ? hits / totalAccess : 0
+    };
+  }
+}
+
+const settingsCache = new SettingsCache(50, 5 * 60 * 1000, 1000); // 最大50个条目，5分钟过期，最多1000次访问
 
 // 获取缓存的系统设置
 async function getCachedSettings() {
-  const now = Date.now();
-  if (settingsCache && (now - settingsCache.timestamp) < CACHE_DURATION) {
-    return settingsCache.data;
-  }
-  return null;
+  return settingsCache.get('system_settings');
 }
 
 // 更新缓存
 function updateCache(settings: any) {
-  settingsCache = {
-    data: settings,
-    timestamp: Date.now()
-  };
+  settingsCache.set('system_settings', settings);
 }
 
 // 从数据库获取所有设置
@@ -88,7 +171,7 @@ async function updateSetting(key: string, value: any, type: string = 'string') {
   });
   
   // 清除缓存
-  settingsCache = null;
+  settingsCache.clear();
 }
 
 export async function GET(request: NextRequest) {

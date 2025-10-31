@@ -168,13 +168,21 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
       }
     };
 
+    const handleResize = () => {
+      if (isOpen) {
+        onClose();
+      }
+    };
+
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('resize', handleResize);
       document.body.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('resize', handleResize);
       document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
@@ -222,10 +230,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
 
             {/* Badge */}
             {item.badge && (
-              <span className="
-                min-w-[18px] h-[18px] bg-red-500 text-white text-xs 
-                rounded-full flex items-center justify-center px-1
-              ">
+              <span className="min-w-[18px] h-[18px] luckymart-bg-error text-white text-xs rounded-full luckymart-layout-flex luckymart-layout-center justify-center px-1">
                 {typeof item.badge === 'number' && item.badge > 99 ? '99+' : item.badge}
               </span>
             )}
@@ -305,14 +310,14 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
           >
             {/* 头部 */}
             {(header || showUserSection) && (
-              <div className="p-4 border-b border-gray-200">
+              <div className="luckymart-padding-md border-b luckymart-border-light">
                 {header && (
-                  <div className="mb-4">
-                    <h2 className="text-lg font-bold text-gray-900">
+                  <div className="luckymart-spacing-md">
+                    <h2 className="luckymart-text-lg luckymart-font-bold text-gray-900">
                       {header.title}
                     </h2>
                     {header.subtitle && (
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="luckymart-text-sm text-gray-600 mt-1">
                         {header.subtitle}
                       </p>
                     )}
@@ -331,16 +336,16 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
 
                 {/* 用户信息区域 */}
                 {showUserSection && userSection && (
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="luckymart-layout-flex luckymart-layout-center gap-3 p-3 bg-gray-50 luckymart-rounded-lg">
                     {userSection.avatar || (
-                      <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
-                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-10 h-10 bg-purple-500 rounded-full luckymart-layout-flex luckymart-layout-center justify-center">
+                        <svg className="luckymart-size-md luckymart-size-md text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
+                      <p className="luckymart-text-sm luckymart-font-medium text-gray-900 truncate">
                         {userSection.name}
                       </p>
                       <p className="text-xs text-gray-600 truncate">
@@ -352,13 +357,13 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
 
                 {/* 搜索框 */}
                 {filteredItems !== items && (
-                  <div className="mt-4 relative">
+                  <div className="luckymart-spacing-md relative">
                     <input
                       type="text"
                       placeholder="搜索菜单..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full px-4 py-2 pl-10 pr-4 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-4 py-2 pl-10 pr-4 luckymart-text-sm luckymart-border border-gray-300 luckymart-rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     />
                     <svg className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -374,7 +379,7 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
                 {filteredItems.length > 0 ? (
                   filteredItems.map(item => renderMenuItem(item))
                 ) : (
-                  <div className="px-4 py-8 text-center text-gray-500">
+                  <div className="px-4 py-8 luckymart-text-center luckymart-text-secondary">
                     <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -385,37 +390,37 @@ const MobileDrawer: React.FC<MobileDrawerProps> = ({
             </div>
 
             {/* 底部操作区 */}
-            <div className="p-4 border-t border-gray-200">
-              <div className="space-y-2">
+            <div className="luckymart-padding-md border-t luckymart-border-light">
+              <div className="luckymart-spacing-sm">
                 {/* 语言切换 */}
                 <TouchFeedback type="ripple">
-                  <div className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors">
-                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="luckymart-layout-flex luckymart-layout-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 luckymart-rounded-lg cursor-pointer transition-colors">
+                    <svg className="luckymart-size-sm luckymart-size-sm luckymart-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
                     </svg>
-                    <span className="text-sm font-medium">语言 / Забон / Language</span>
+                    <span className="luckymart-text-sm luckymart-font-medium">语言 / Забон / Language</span>
                   </div>
                 </TouchFeedback>
 
                 {/* 设置 */}
                 <Link href="/settings">
                   <TouchFeedback type="ripple">
-                    <div className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors">
-                      <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="luckymart-layout-flex luckymart-layout-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 luckymart-rounded-lg cursor-pointer transition-colors">
+                      <svg className="luckymart-size-sm luckymart-size-sm luckymart-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
-                      <span className="text-sm font-medium">设置</span>
+                      <span className="luckymart-text-sm luckymart-font-medium">设置</span>
                     </div>
                   </TouchFeedback>
                 </Link>
 
                 {/* 退出登录 */}
                 <TouchFeedback type="ripple">
-                  <div className="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg cursor-pointer transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="luckymart-layout-flex luckymart-layout-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 luckymart-rounded-lg cursor-pointer transition-colors">
+                    <svg className="luckymart-size-sm luckymart-size-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
-                    <span className="text-sm font-medium">退出登录</span>
+                    <span className="luckymart-text-sm luckymart-font-medium">退出登录</span>
                   </div>
                 </TouchFeedback>
               </div>

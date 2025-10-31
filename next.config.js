@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
-    // 临时禁用构建时的ESLint检查，用于i18n演示
-    ignoreDuringBuilds: true,
+    // 生产环境启用ESLint检查
+    ignoreDuringBuilds: process.env.NODE_ENV !== 'production',
   },
   typescript: {
-    // 临时禁用构建时的TypeScript检查，用于i18n演示
-    ignoreBuildErrors: true,
+    // 生产环境启用TypeScript检查
+    ignoreBuildErrors: process.env.NODE_ENV !== 'production',
   },
   
   // 性能优化配置
@@ -23,7 +23,19 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: '*.supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.dicebear.com',
       },
     ],
   },
@@ -178,7 +190,7 @@ const nextConfig = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
+            value: 'strict-origin-when-cross-origin',
           },
           {
             key: 'Permissions-Policy',

@@ -7,6 +7,18 @@ import React, { useEffect, useState } from 'react';
 import { translationCache } from '@/utils/translation-cache';
 import { type CacheStatus, type PreloadResult } from '@/utils/translation-cache';
 
+// Props类型定义
+interface TranslationCacheTestProps {
+  /** 自定义CSS类名 */
+  className?: string;
+  /** 是否显示详细调试信息 */
+  debug?: boolean;
+  /** 自动运行所有测试 */
+  autoRun?: boolean;
+  /** 测试完成回调 */
+  onTestComplete?: (results: any[]) => void;
+}
+
 // 测试结果类型
 interface TestResult {
   name: string;
@@ -222,22 +234,22 @@ function TestResultCard({ result }: { result: TestResult }) {
 
   return (
     <div className={`p-4 rounded-lg border ${getStatusColor(result.status)}`}>
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
+      <div className="luckymart-layout-flex luckymart-layout-center justify-between mb-2">
+        <div className="luckymart-layout-flex luckymart-layout-center gap-2">
           <span>{getStatusIcon(result.status)}</span>
-          <span className="font-medium">{result.name}</span>
+          <span className="luckymart-font-medium">{result.name}</span>
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="luckymart-text-sm luckymart-text-secondary">
           {result.duration && `${result.duration}ms`}
         </div>
       </div>
-      <div className="text-sm mb-2">{result.message}</div>
+      <div className="luckymart-text-sm mb-2">{result.message}</div>
       {result.details && (
         <details className="text-xs">
           <summary className="cursor-pointer text-gray-600 hover:text-gray-800">
             查看详情
           </summary>
-          <pre className="mt-2 p-2 bg-black bg-opacity-10 rounded overflow-auto">
+          <pre className="mt-2 luckymart-padding-sm bg-black bg-opacity-10 luckymart-rounded overflow-auto">
             {JSON.stringify(result.details, null, 2)}
           </pre>
         </details>
@@ -265,31 +277,31 @@ function TestSuite({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <div className="flex items-center gap-4">
+      <div className="luckymart-layout-flex luckymart-layout-center justify-between">
+        <h3 className="luckymart-text-lg font-semibold">{title}</h3>
+        <div className="luckymart-layout-flex luckymart-layout-center gap-4">
           {hasRun && (
-            <div className="text-sm text-gray-600">
+            <div className="luckymart-text-sm text-gray-600">
               {successCount}/{totalTests} 通过
               {hasErrors && <span className="text-red-600 ml-2">有错误</span>}
             </div>
           )}
           <button
             onClick={onRunSuite}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 bg-blue-600 text-white luckymart-rounded-lg hover:bg-blue-700"
           >
             运行测试
           </button>
         </div>
       </div>
       
-      <div className="space-y-3">
+      <div className="luckymart-spacing-md">
         {results.map((result, index) => (
           <TestResultCard key={index} result={result} />
         ))}
         
         {results.length === 0 && (
-          <div className="text-center text-gray-500 py-8">
+          <div className="luckymart-text-center luckymart-text-secondary py-8">
             点击"运行测试"开始执行 {title} 测试套件
           </div>
         )}
@@ -378,10 +390,10 @@ export default function TranslationCacheTest() {
   const stats = getOverallStats();
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="max-w-4xl mx-auto luckymart-padding-lg space-y-6">
       {/* 页面标题 */}
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="luckymart-text-center">
+        <h1 className="text-3xl luckymart-font-bold text-gray-900 mb-2">
           翻译缓存功能测试
         </h1>
         <p className="text-gray-600">
@@ -390,33 +402,33 @@ export default function TranslationCacheTest() {
       </div>
 
       {/* 总体状态 */}
-      <div className="p-6 bg-white rounded-lg border">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">测试概览</h2>
+      <div className="luckymart-padding-lg luckymart-bg-white luckymart-rounded-lg luckymart-border">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-spacing-md">
+          <h2 className="luckymart-text-xl font-semibold">测试概览</h2>
           {overallStatus === 'running' && (
-            <div className="flex items-center gap-2 text-blue-600">
-              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <div className="luckymart-layout-flex luckymart-layout-center gap-2 text-blue-600">
+              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full luckymart-animation-spin"></div>
               <span>正在运行测试...</span>
             </div>
           )}
         </div>
         
         <div className="grid grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
-            <div className="text-sm text-gray-600">总测试数</div>
+          <div className="luckymart-text-center">
+            <div className="text-2xl luckymart-font-bold text-blue-600">{stats.total}</div>
+            <div className="luckymart-text-sm text-gray-600">总测试数</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">{stats.success}</div>
-            <div className="text-sm text-gray-600">成功</div>
+          <div className="luckymart-text-center">
+            <div className="text-2xl luckymart-font-bold text-green-600">{stats.success}</div>
+            <div className="luckymart-text-sm text-gray-600">成功</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-red-600">{stats.errors}</div>
-            <div className="text-sm text-gray-600">失败</div>
+          <div className="luckymart-text-center">
+            <div className="text-2xl luckymart-font-bold text-red-600">{stats.errors}</div>
+            <div className="luckymart-text-sm text-gray-600">失败</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-yellow-600">{stats.warnings}</div>
-            <div className="text-sm text-gray-600">警告</div>
+          <div className="luckymart-text-center">
+            <div className="text-2xl luckymart-font-bold text-yellow-600">{stats.warnings}</div>
+            <div className="luckymart-text-sm text-gray-600">警告</div>
           </div>
         </div>
 
@@ -424,7 +436,7 @@ export default function TranslationCacheTest() {
           <button
             onClick={runAllTests}
             disabled={isRunning}
-            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white luckymart-rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed luckymart-font-medium"
           >
             {isRunning ? '正在运行测试...' : '运行所有测试'}
           </button>
@@ -461,9 +473,9 @@ export default function TranslationCacheTest() {
       />
 
       {/* 测试说明 */}
-      <div className="p-6 bg-gray-50 rounded-lg border">
-        <h3 className="text-lg font-semibold mb-3">测试说明</h3>
-        <div className="space-y-2 text-sm text-gray-600">
+      <div className="luckymart-padding-lg bg-gray-50 luckymart-rounded-lg luckymart-border">
+        <h3 className="luckymart-text-lg font-semibold mb-3">测试说明</h3>
+        <div className="luckymart-spacing-sm luckymart-text-sm text-gray-600">
           <p>• <strong>基础功能测试</strong>：验证Service Worker支持和初始化</p>
           <p>• <strong>缓存检查测试</strong>：验证翻译文件的缓存状态</p>
           <p>• <strong>预加载功能测试</strong>：测试缓存的预加载和清除功能</p>

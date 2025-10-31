@@ -130,5 +130,27 @@
       "action": "Амали муваффақият",
       "feedback": "Бозгашти муваффақият"
     }
-  }
+  },
+
+  "operation_success": "Амали муваффақият",
+  "operation_failed": "Амали номуваффақият",
+  "save_failed": "Сабт нашудааст",
+  "delete_success": "Несткунӣ муваффақият",
+  "delete_failed": "Несткунӣ номуваффақият",
+  "confirm_delete": "Ин сутунро нест карданро тасдиқ мекунед?",
+  "add_address": "Сутун илова кунед",
+  "edit_address": "Сутунро таҳрир кунед",
+  "address_management": "Идоракунии сутунҳо",
+  "recipient_name": "Номи гиранда",
+  "recipient_phone": "Телефони гиранда",
+  "province": "Вилоят",
+  "city": "Шаҳр",
+  "district": "Ноҳия",
+  "detail_address": "Сутуни муфассал",
+  "set_default": "Бо ном гузоштан",
+  "edit": "Таҳрир",
+  "delete": "Нест",
+  "add_new_address": "Сутуни нав илова кунед",
+  "no_addresses": "Ҳоло сутун нест",
+  "please_add_address": "Лутфан аввал сутуни интиқол илова кунед"
 }

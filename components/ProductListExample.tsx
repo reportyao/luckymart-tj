@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/src/i18n/useLanguageCompat';
 import { useTranslation } from 'react-i18next';
 
@@ -23,9 +23,32 @@ interface Product {
   status: string;
 }
 
-export default function ProductListExample() {
-  const { language, changeLanguage } = useLanguage();
+/**
+ * 产品列表组件属性
+ */
+interface ProductListExampleProps {
+  /** 自定义CSS类名 */
+  className?: string;
+  /** 产品数量限制 */
+  limit?: number;
+  /** 语言参数覆盖 */
+  language?: string;
+  /** 产品加载完成的回调 */
+  onProductsLoaded?: (products: Product[]) => void;
+  /** 产品点击回调 */
+  onProductClick?: (product: Product) => void;
+}
+
+const ProductListExample: React.FC<ProductListExampleProps> = ({
+  className = '',
+  limit = 10,
+  language: languageProp,
+  onProductsLoaded,
+  onProductClick
+}) => {
+  const { language: currentLanguage, changeLanguage } = useLanguage();
   const { t } = useTranslation('lottery');
+  const language = languageProp || currentLanguage;
   
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +61,7 @@ export default function ProductListExample() {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(`/api/products?language=${language}&limit=10`);
+        const response = await fetch(`/api/products?language=${language || currentLanguage}&limit=${limit}`);
         const data = await response.json();
         
         if (data.success) {
@@ -54,14 +77,21 @@ export default function ProductListExample() {
     };
 
     fetchProducts();
-  }, [language]); // 当语言改变时重新获取数据
+  }, [language, limit]); // 当语言或限制数量改变时重新获取数据
+
+  // 当产品数据加载完成时调用回调
+  useEffect(() => {
+    if (products.length > 0 && onProductsLoaded) {
+      onProductsLoaded(products);
+    }
+  }, [products, onProductsLoaded]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">{t('loading')}</p>
+      <div className="luckymart-layout-flex luckymart-layout-center justify-center min-h-screen">
+        <div className="luckymart-text-center">
+          <div className="luckymart-animation-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="luckymart-spacing-md text-gray-600">{t('loading')}</p>
         </div>
       </div>
     );
@@ -69,25 +99,25 @@ export default function ProductListExample() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
+      <div className="luckymart-layout-flex luckymart-layout-center justify-center min-h-screen">
+        <div className="luckymart-text-center">
           <p className="text-red-600">{t('error.load_failed')}</p>
-          <p className="text-sm text-gray-500 mt-2">{error}</p>
+          <p className="luckymart-text-sm luckymart-text-secondary mt-2">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={`product-list-example container mx-auto px-4 py-8 ${className}`}>
       {/* 页面标题 */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
+        <h1 className="text-3xl luckymart-font-bold mb-2">{t('title')}</h1>
         <p className="text-gray-600">{t('subtitle')}</p>
       </div>
 
       {/* 语言切换器（演示） */}
-      <div className="mb-6 flex gap-2">
+      <div className="mb-6 luckymart-layout-flex gap-2">
         <button
           onClick={() => changeLanguage('zh-CN')}
           className={`px-4 py-2 rounded ${language === 'zh-CN' ? 'bg-purple-600 text-white' : 'bg-gray-200'}`}
@@ -117,7 +147,11 @@ export default function ProductListExample() {
       {/* 产品网格 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
-          <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div 
+            key={product.id} 
+            className="product-list-example__item luckymart-bg-white luckymart-rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => onProductClick?.(product)}
+          >
             {/* 产品图片 */}
             {product.images && product.images.length > 0 && (
               <img 
@@ -128,27 +162,27 @@ export default function ProductListExample() {
             )}
             
             {/* 产品信息 */}
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-              <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.description}</p>
+            <div className="luckymart-padding-md">
+              <h3 className="luckymart-text-lg font-semibold mb-2">{product.name}</h3>
+              <p className="luckymart-text-sm text-gray-600 mb-3 line-clamp-2">{product.description}</p>
               
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-gray-500">{t('category')}: {product.category}</span>
-                <span className="text-sm text-purple-600">{t('total_shares')}: {product.totalShares}</span>
+              <div className="luckymart-layout-flex luckymart-layout-center justify-between mb-3">
+                <span className="luckymart-text-sm luckymart-text-secondary">{t('category')}: {product.category}</span>
+                <span className="luckymart-text-sm text-purple-600">{t('total_shares')}: {product.totalShares}</span>
               </div>
               
-              <div className="flex items-center justify-between">
+              <div className="luckymart-layout-flex luckymart-layout-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">{t('market_price')}</p>
-                  <p className="text-lg font-bold text-purple-600">{product.marketPrice} TJS</p>
+                  <p className="luckymart-text-sm luckymart-text-secondary">{t('market_price')}</p>
+                  <p className="luckymart-text-lg luckymart-font-bold text-purple-600">{product.marketPrice} TJS</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-500">{t('per_share')}</p>
+                  <p className="luckymart-text-sm luckymart-text-secondary">{t('per_share')}</p>
                   <p className="text-md font-semibold">{product.pricePerShare} TJS</p>
                 </div>
               </div>
               
-              <button className="w-full mt-4 bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition-colors">
+              <button className="w-full luckymart-spacing-md bg-purple-600 text-white py-2 luckymart-rounded hover:bg-purple-700 transition-colors">
                 {t('join_now')}
               </button>
             </div>
@@ -158,20 +192,22 @@ export default function ProductListExample() {
 
       {/* 无数据提示 */}
       {products.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">{t('no_products')}</p>
+        <div className="luckymart-text-center py-12">
+          <p className="luckymart-text-secondary">{t('no_products')}</p>
         </div>
       )}
 
       {/* 当前语言信息（调试用） */}
-      <div className="mt-8 p-4 bg-gray-100 rounded">
-        <p className="text-sm text-gray-600">
+      <div className="mt-8 luckymart-padding-md luckymart-bg-gray-light luckymart-rounded">
+        <p className="luckymart-text-sm text-gray-600">
           当前语言: <span className="font-semibold">{language}</span>
         </p>
-        <p className="text-sm text-gray-600">
+        <p className="luckymart-text-sm text-gray-600">
           产品数量: <span className="font-semibold">{products.length}</span>
         </p>
       </div>
     </div>
   );
-}
+};
+
+export default ProductListExample;

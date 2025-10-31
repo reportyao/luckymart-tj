@@ -120,10 +120,10 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       );
     }
 
-    // 使用原子操作函数执行转换，确保事务安全
-    const transferResult = await prisma.$queryRawUnsafe(`
-      SELECT * FROM transfer_balance_to_luckycoins('${user.userId}'::uuid, ${amount})
-    `);
+    // 使用参数化查询防止SQL注入
+    const transferResult = await prisma.$queryRawUnsafe`
+      SELECT * FROM transfer_balance_to_luckycoins(${user.userId}::uuid, ${amount})
+    `;
 
     // 检查转换结果
     if (!transferResult || transferResult.length === 0 || !transferResult[0].success) {

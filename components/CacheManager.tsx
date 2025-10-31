@@ -197,12 +197,12 @@ const CacheManager: React.FC<CacheManagerProps> = ({
     if (!cacheStats || !showDetails) return null;
 
     return (
-      <div className="mt-4 p-4 bg-gray-50 rounded-lg border">
+      <div className="luckymart-spacing-md luckymart-padding-md bg-gray-50 luckymart-rounded-lg luckymart-border">
         <h4 className="font-semibold text-gray-800 mb-3">
           {t('cacheManager.details', '缓存详情')}
         </h4>
         
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-2 gap-4 luckymart-text-sm">
           <div>
             <span className="text-gray-600">{t('cacheManager.totalItems', '总项数')}:</span>
             <span className="ml-2 font-mono">{cacheStats.totalItems}</span>
@@ -237,13 +237,13 @@ const CacheManager: React.FC<CacheManagerProps> = ({
         </div>
 
         {/* 存储详情 */}
-        <div className="mt-4">
-          <h5 className="font-medium text-gray-700 mb-2">
+        <div className="luckymart-spacing-md">
+          <h5 className="luckymart-font-medium text-gray-700 mb-2">
             {t('cacheManager.storageDetails', '存储详情')}
           </h5>
-          <div className="space-y-2">
+          <div className="luckymart-spacing-sm">
             {Object.entries(cacheStats.stores).map(([storeName, storeStats]) => (
-              <div key={storeName} className="flex justify-between text-xs bg-white p-2 rounded border">
+              <div key={storeName} className="luckymart-layout-flex justify-between text-xs luckymart-bg-white luckymart-padding-sm luckymart-rounded luckymart-border">
                 <span className="font-mono text-gray-600">{storeName}</span>
                 <span className="font-mono">{storeStats.count} 项</span>
               </div>
@@ -277,7 +277,7 @@ const CacheManager: React.FC<CacheManagerProps> = ({
     };
 
     return (
-      <div className="flex items-center gap-2 text-sm">
+      <div className="luckymart-layout-flex luckymart-layout-center gap-2 luckymart-text-sm">
         <span>{getNetworkIcon()}</span>
         <span className={
           !cacheStats.isOnline ? 'text-red-600' :
@@ -321,8 +321,8 @@ const CacheManager: React.FC<CacheManagerProps> = ({
   if (!isReady) {
     return (
       <div className={`p-4 border rounded-lg ${className}`}>
-        <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+        <div className="luckymart-layout-flex luckymart-layout-center justify-center">
+          <div className="luckymart-animation-spin rounded-full luckymart-size-md luckymart-size-md border-b-2 border-blue-500"></div>
           <span className="ml-2 text-gray-600">{t('cacheManager.initializing', '初始化缓存管理器...')}</span>
         </div>
       </div>
@@ -332,9 +332,9 @@ const CacheManager: React.FC<CacheManagerProps> = ({
   return (
     <div className={`space-y-4 ${className}`}>
       {/* 缓存概览 */}
-      <div className="p-4 border rounded-lg bg-white shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-800">
+      <div className="luckymart-padding-md luckymart-border luckymart-rounded-lg luckymart-bg-white luckymart-shadow-sm">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-spacing-md">
+          <h3 className="luckymart-text-lg font-semibold text-gray-800">
             {t('cacheManager.title', '缓存管理')}
           </h3>
           
@@ -343,42 +343,42 @@ const CacheManager: React.FC<CacheManagerProps> = ({
         </div>
 
         {/* 缓存统计卡片 */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <div className="bg-blue-50 p-3 rounded-lg">
-            <div className="text-sm text-blue-600">{t('cacheManager.totalItems', '总项数')}</div>
-            <div className="text-xl font-bold text-blue-800">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 luckymart-spacing-md">
+          <div className="bg-blue-50 p-3 luckymart-rounded-lg">
+            <div className="luckymart-text-sm text-blue-600">{t('cacheManager.totalItems', '总项数')}</div>
+            <div className="luckymart-text-xl luckymart-font-bold text-blue-800">
               {cacheStats?.totalItems || 0}
             </div>
           </div>
           
-          <div className="bg-green-50 p-3 rounded-lg">
-            <div className="text-sm text-green-600">{t('cacheManager.totalSize', '总大小')}</div>
-            <div className="text-xl font-bold text-green-800">
+          <div className="bg-green-50 p-3 luckymart-rounded-lg">
+            <div className="luckymart-text-sm text-green-600">{t('cacheManager.totalSize', '总大小')}</div>
+            <div className="luckymart-text-xl luckymart-font-bold text-green-800">
               {formatFileSize(cacheStats?.totalSize || 0)}
             </div>
           </div>
           
-          <div className="bg-yellow-50 p-3 rounded-lg">
-            <div className="text-sm text-yellow-600">{t('cacheManager.expiredItems', '过期项')}</div>
-            <div className="text-xl font-bold text-yellow-800">
+          <div className="bg-yellow-50 p-3 luckymart-rounded-lg">
+            <div className="luckymart-text-sm text-yellow-600">{t('cacheManager.expiredItems', '过期项')}</div>
+            <div className="luckymart-text-xl luckymart-font-bold text-yellow-800">
               {cacheStats?.expiredItems || 0}
             </div>
           </div>
           
-          <div className="bg-purple-50 p-3 rounded-lg">
-            <div className="text-sm text-purple-600">{t('cacheManager.offlineQueue', '离线队列')}</div>
-            <div className="text-xl font-bold text-purple-800">
+          <div className="bg-purple-50 p-3 luckymart-rounded-lg">
+            <div className="luckymart-text-sm text-purple-600">{t('cacheManager.offlineQueue', '离线队列')}</div>
+            <div className="luckymart-text-xl luckymart-font-bold text-purple-800">
               {cacheStats?.offlineQueueSize || 0}
             </div>
           </div>
         </div>
 
         {/* 操作按钮 */}
-        <div className="flex flex-wrap gap-2">
+        <div className="luckymart-layout-flex flex-wrap gap-2">
           <button
             onClick={() => executeCleanup({ expiredOnly: true })}
             disabled={isCleaning}
-            className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 bg-yellow-500 text-white luckymart-rounded-lg hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isCleaning ? 
               t('cacheManager.cleaning', '清理中...') : 
@@ -389,7 +389,7 @@ const CacheManager: React.FC<CacheManagerProps> = ({
           <button
             onClick={() => executeCleanup({ force: true })}
             disabled={isCleaning}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 luckymart-bg-error text-white luckymart-rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {t('cacheManager.clearAll', '清空缓存')}
           </button>
@@ -397,7 +397,7 @@ const CacheManager: React.FC<CacheManagerProps> = ({
           <button
             onClick={updateCacheStats}
             disabled={isLoading}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 luckymart-bg-primary text-white luckymart-rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? 
               t('cacheManager.refreshing', '刷新中...') : 
@@ -408,7 +408,7 @@ const CacheManager: React.FC<CacheManagerProps> = ({
 
         {/* 清理状态 */}
         {lastCleanup && (
-          <div className="mt-3 text-xs text-gray-500">
+          <div className="mt-3 text-xs luckymart-text-secondary">
             {t('cacheManager.lastCleanupTime', '上次清理时间')}: {lastCleanup.toLocaleString()}
           </div>
         )}

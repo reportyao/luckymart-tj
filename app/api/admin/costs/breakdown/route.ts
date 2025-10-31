@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { getLogger } from '@/lib/logger';
+import { ErrorHandler } from '@/lib/errors';
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
+const logger = getLogger();
 
 /**
  * GET /api/admin/costs/breakdown
@@ -61,11 +64,14 @@ export async function GET(request: NextRequest) {
     const { data: breakdownData, error } = await query;
 
     if (error) {
-      console.error('查询成本细分数据失败:', error);
-      return NextResponse.json(
-        { error: '查询成本细分数据失败' },
-        { status: 500 }
-      );
+      logger.error('查询成本细分数据失败', error, {
+        endpoint: '/api/admin/costs/breakdown',
+        method: 'GET',
+        userType,
+        timeDimension,
+        dateRange: { startDate, endDate }
+      });
+      return ErrorHandler.createErrorResponse('查询成本细分数据失败');
     }
 
     // 计算汇总统计
@@ -150,11 +156,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(response);
 
   } catch (error) {
-    console.error('获取成本细分API错误:', error);
-    return NextResponse.json(
-      { error: '服务器内部错误' },
-      { status: 500 }
-    );
+    return ErrorHandler.handleApiError(error, '获取成本细分统计数据');
   }
 }
 
@@ -266,24 +268,25 @@ export async function POST(request: NextRequest) {
           .single();
 
         if (error) {
-          console.error(`插入${type}成本细分数据失败:`, error);
+          logger.error(`插入${type}成本细分数据失败`, error, {
+            userType: type,
+            date,
+            breakdownType
+          });
         } else {
           results.push(data);
         }
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      message: '成本细分数据计算完成',
-      data: results
-    });
+    return NextResponse.json(
+      ErrorHandler.createSuccessResponse({
+        data: results,
+        message: '成本细分数据计算完成'
+      })
+    );
 
   } catch (error) {
-    console.error('计算成本细分API错误:', error);
-    return NextResponse.json(
-      { error: '服务器内部错误' },
-      { status: 500 }
-    );
+    return ErrorHandler.handleApiError(error, '计算成本细分统计数据');
   }
 }

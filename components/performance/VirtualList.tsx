@@ -35,9 +35,9 @@ export function VirtualList<T extends VirtualScrollerItem>({
     <div className={cn('w-full', className)}>
       {loading ? (
         // 加载状态显示骨架屏
-        <div className="space-y-3">
+        <div className="luckymart-spacing-md">
           {Array.from({ length: 5 }).map((_, index) => (
-            <div key={index} className="h-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            <div key={index} className="h-24 bg-gray-200 dark:bg-gray-700 luckymart-rounded luckymart-animation-pulse" />
           ))}
         </div>
       ) : (
@@ -131,7 +131,7 @@ const VirtualProductCard: React.FC<{
 
   return (
     <div 
-      className="flex p-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+      className="luckymart-layout-flex luckymart-padding-md border-b luckymart-border-light dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
       onClick={onClick}
     >
       {/* 产品图片 */}
@@ -140,15 +140,15 @@ const VirtualProductCard: React.FC<{
           src={product.image}
           alt={product.name}
           placeholder="/images/placeholder.png"
-          className="w-full h-full rounded object-cover"
+          className="w-full h-full luckymart-rounded object-cover"
           aspectRatio={1}
         />
       </div>
 
       {/* 产品信息 */}
       <div className="flex-1 min-w-0">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate pr-2">
+        <div className="luckymart-layout-flex justify-between items-start mb-2">
+          <h3 className="luckymart-text-sm luckymart-font-medium text-gray-900 dark:text-gray-100 truncate pr-2">
             {product.name}
           </h3>
           {product.status && (
@@ -162,37 +162,37 @@ const VirtualProductCard: React.FC<{
         </div>
 
         {/* 价格信息 */}
-        <div className="flex items-center mb-2">
-          <span className="text-lg font-bold text-red-600">
+        <div className="luckymart-layout-flex luckymart-layout-center mb-2">
+          <span className="luckymart-text-lg luckymart-font-bold text-red-600">
             ¥{product.price.toFixed(2)}
           </span>
           {product.originalPrice && product.originalPrice > product.price && (
-            <span className="text-sm text-gray-500 line-through ml-2">
+            <span className="luckymart-text-sm luckymart-text-secondary line-through ml-2">
               ¥{product.originalPrice.toFixed(2)}
             </span>
           )}
           {product.discount && product.discount > 0 && (
-            <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded ml-2">
+            <span className="text-xs bg-red-100 text-red-600 px-2 py-1 luckymart-rounded ml-2">
               -{product.discount}%
             </span>
           )}
         </div>
 
         {/* 评分和标签 */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-between">
+          <div className="luckymart-layout-flex luckymart-layout-center">
             {product.rating && (
-              <div className="flex items-center mr-3">
+              <div className="luckymart-layout-flex luckymart-layout-center mr-3">
                 <span className="text-yellow-400 mr-1">★</span>
-                <span className="text-sm text-gray-600">{product.rating}</span>
+                <span className="luckymart-text-sm text-gray-600">{product.rating}</span>
               </div>
             )}
             {product.tags && product.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1">
+              <div className="luckymart-layout-flex flex-wrap gap-1">
                 {product.tags.slice(0, 2).map((tag, index) => (
                   <span 
                     key={index}
-                    className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded"
+                    className="text-xs bg-blue-100 text-blue-600 px-2 py-1 luckymart-rounded"
                   >
                     {tag}
                   </span>
@@ -204,7 +204,7 @@ const VirtualProductCard: React.FC<{
       </div>
 
       {/* 操作按钮 */}
-      <div className="flex flex-col justify-center ml-4">
+      <div className="luckymart-layout-flex flex-col justify-center ml-4">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -291,7 +291,7 @@ const VirtualUserCard: React.FC<{
 
   return (
     <div 
-      className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+      className="luckymart-layout-flex luckymart-layout-center luckymart-padding-md border-b luckymart-border-light dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
       onClick={onClick}
     >
       {/* 头像 */}
@@ -311,8 +311,8 @@ const VirtualUserCard: React.FC<{
 
       {/* 用户信息 */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-between mb-1">
+          <h3 className="luckymart-text-sm luckymart-font-medium text-gray-900 dark:text-gray-100 truncate">
             {user.name}
           </h3>
           <span className={cn(
@@ -325,14 +325,14 @@ const VirtualUserCard: React.FC<{
           </span>
         </div>
 
-        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-          <div className="flex items-center">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-text-sm text-gray-600 dark:text-gray-400">
+          <div className="luckymart-layout-flex luckymart-layout-center">
             {user.email && <span className="truncate max-w-32">{user.email}</span>}
-            {user.role && <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-600 rounded text-xs">{user.role}</span>}
+            {user.role && <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-600 luckymart-rounded text-xs">{user.role}</span>}
           </div>
           
           {user.level && user.points && (
-            <div className="flex items-center">
+            <div className="luckymart-layout-flex luckymart-layout-center">
               <span className="text-purple-600">Lv.{user.level}</span>
               <span className="ml-2 text-yellow-600">{user.points}积分</span>
             </div>
@@ -340,7 +340,7 @@ const VirtualUserCard: React.FC<{
         </div>
 
         {user.lastActive && (
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs luckymart-text-secondary mt-1">
             最后活跃: {user.lastActive.toLocaleString()}
           </div>
         )}

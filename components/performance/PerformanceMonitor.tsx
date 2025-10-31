@@ -46,8 +46,8 @@ const PerformanceCard: React.FC<PerformanceCardProps> = ({
       'p-4 rounded-lg border',
       statusColors[status]
     )}>
-      <div className="flex justify-between items-start mb-2">
-        <h4 className="font-medium text-gray-900">{title}</h4>
+      <div className="luckymart-layout-flex justify-between items-start mb-2">
+        <h4 className="luckymart-font-medium text-gray-900">{title}</h4>
         {score !== undefined && (
           <div className={cn(
             'px-2 py-1 rounded text-xs font-medium',
@@ -60,12 +60,12 @@ const PerformanceCard: React.FC<PerformanceCardProps> = ({
         )}
       </div>
       
-      <div className="text-2xl font-bold mb-1">
+      <div className="text-2xl luckymart-font-bold mb-1">
         {typeof value === 'number' ? value.toFixed(0) : value}
-        {unit && <span className="text-sm font-normal ml-1">{unit}</span>}
+        {unit && <span className="luckymart-text-sm font-normal ml-1">{unit}</span>}
       </div>
       
-      <div className="text-sm opacity-75 mb-1">
+      <div className="luckymart-text-sm opacity-75 mb-1">
         状态: {statusText[status]}
       </div>
       
@@ -82,12 +82,12 @@ const DeviceInfo: React.FC<{ deviceInfo?: any }> = ({ deviceInfo }) => {
   if (!deviceInfo) return null;
 
   return (
-    <div className="bg-gray-50 p-4 rounded-lg">
-      <h4 className="font-medium mb-3">设备信息</h4>
-      <div className="grid grid-cols-2 gap-2 text-sm">
+    <div className="bg-gray-50 luckymart-padding-md luckymart-rounded-lg">
+      <h4 className="luckymart-font-medium mb-3">设备信息</h4>
+      <div className="grid grid-cols-2 gap-2 luckymart-text-sm">
         <div>
           <span className="text-gray-600">设备类型:</span>
-          <span className="ml-2 font-medium">
+          <span className="ml-2 luckymart-font-medium">
             {deviceInfo.isMobile ? '移动设备' : '桌面设备'}
           </span>
         </div>
@@ -103,19 +103,19 @@ const DeviceInfo: React.FC<{ deviceInfo?: any }> = ({ deviceInfo }) => {
         {deviceInfo.deviceMemory && (
           <div>
             <span className="text-gray-600">内存:</span>
-            <span className="ml-2 font-medium">{deviceInfo.deviceMemory}GB</span>
+            <span className="ml-2 luckymart-font-medium">{deviceInfo.deviceMemory}GB</span>
           </div>
         )}
         {deviceInfo.hardwareConcurrency && (
           <div>
             <span className="text-gray-600">CPU核心:</span>
-            <span className="ml-2 font-medium">{deviceInfo.hardwareConcurrency}</span>
+            <span className="ml-2 luckymart-font-medium">{deviceInfo.hardwareConcurrency}</span>
           </div>
         )}
         {deviceInfo.connectionType && (
           <div className="col-span-2">
             <span className="text-gray-600">网络:</span>
-            <span className="ml-2 font-medium">{deviceInfo.connectionType}</span>
+            <span className="ml-2 luckymart-font-medium">{deviceInfo.connectionType}</span>
           </div>
         )}
       </div>
@@ -127,14 +127,14 @@ const ErrorList: React.FC<{ errors?: any[] }> = ({ errors }) => {
   if (!errors || errors.length === 0) return null;
 
   return (
-    <div className="bg-red-50 p-4 rounded-lg">
-      <h4 className="font-medium text-red-800 mb-3">
+    <div className="bg-red-50 luckymart-padding-md luckymart-rounded-lg">
+      <h4 className="luckymart-font-medium text-red-800 mb-3">
         错误信息 ({errors.length})
       </h4>
-      <div className="space-y-2 max-h-40 overflow-y-auto">
+      <div className="luckymart-spacing-sm max-h-40 overflow-y-auto">
         {errors.map((error, index) => (
-          <div key={index} className="text-sm">
-            <div className="font-medium text-red-700">
+          <div key={index} className="luckymart-text-sm">
+            <div className="luckymart-font-medium text-red-700">
               {error.type}: {error.message}
             </div>
             {error.filename && (
@@ -142,7 +142,7 @@ const ErrorList: React.FC<{ errors?: any[] }> = ({ errors }) => {
                 {error.filename}:{error.lineno}:{error.colno}
               </div>
             )}
-            <div className="text-red-500 text-xs">
+            <div className="luckymart-text-error text-xs">
               {new Date(error.timestamp).toLocaleTimeString()}
             </div>
           </div>
@@ -173,27 +173,27 @@ const ResourceAnalysis: React.FC<{ resourceTimings?: any[] }> = ({ resourceTimin
   }, 0) / resourceTimings.length;
 
   return (
-    <div className="bg-blue-50 p-4 rounded-lg">
-      <h4 className="font-medium text-blue-800 mb-3">
+    <div className="bg-blue-50 luckymart-padding-md luckymart-rounded-lg">
+      <h4 className="luckymart-font-medium text-blue-800 mb-3">
         资源分析 ({resourceTimings.length} 个资源)
       </h4>
       
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-2 gap-4 luckymart-spacing-md">
         <div>
-          <div className="text-sm text-blue-600">总加载时间</div>
-          <div className="font-medium">{totalLoadTime.toFixed(0)}ms</div>
+          <div className="luckymart-text-sm text-blue-600">总加载时间</div>
+          <div className="luckymart-font-medium">{totalLoadTime.toFixed(0)}ms</div>
         </div>
         <div>
-          <div className="text-sm text-blue-600">平均加载时间</div>
-          <div className="font-medium">{avgLoadTime.toFixed(0)}ms</div>
+          <div className="luckymart-text-sm text-blue-600">平均加载时间</div>
+          <div className="luckymart-font-medium">{avgLoadTime.toFixed(0)}ms</div>
         </div>
       </div>
 
       <div>
-        <div className="text-sm text-blue-600 mb-2">资源类型分布:</div>
-        <div className="flex flex-wrap gap-2">
+        <div className="luckymart-text-sm text-blue-600 mb-2">资源类型分布:</div>
+        <div className="luckymart-layout-flex flex-wrap gap-2">
           {Object.entries(resourcesByType).map(([type, count]) => (
-            <span key={type} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+            <span key={type} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs luckymart-rounded">
               {type}: {count}
             </span>
           ))}
@@ -253,28 +253,28 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       {/* 切换按钮 */}
       <button
         onClick={() => setIsVisible(!isVisible)}
-        className="mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg shadow-lg hover:bg-gray-700 transition-colors"
+        className="mb-2 px-3 py-2 bg-gray-800 text-white luckymart-text-sm luckymart-rounded-lg luckymart-shadow-lg hover:bg-gray-700 transition-colors"
       >
         {isVisible ? '隐藏性能监控' : '性能监控'}
       </button>
 
       {/* 监控面板 */}
       {isVisible && (
-        <div className="bg-white rounded-lg shadow-2xl border max-w-sm max-h-96 overflow-y-auto">
-          <div className="p-4 border-b">
-            <div className="flex justify-between items-center">
-              <h3 className="font-bold text-lg">性能监控</h3>
-              <div className="flex gap-2">
+        <div className="luckymart-bg-white luckymart-rounded-lg shadow-2xl luckymart-border max-w-sm max-h-96 overflow-y-auto">
+          <div className="luckymart-padding-md border-b">
+            <div className="luckymart-layout-flex justify-between luckymart-layout-center">
+              <h3 className="luckymart-font-bold luckymart-text-lg">性能监控</h3>
+              <div className="luckymart-layout-flex gap-2">
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-sm text-blue-600 hover:text-blue-800"
+                  className="luckymart-text-sm text-blue-600 hover:text-blue-800"
                 >
                   {isExpanded ? '收起' : '展开'}
                 </button>
                 <button
                   onClick={collectMetrics}
                   disabled={isCollecting}
-                  className="text-sm text-green-600 hover:text-green-800 disabled:text-gray-400"
+                  className="luckymart-text-sm text-green-600 hover:text-green-800 disabled:text-gray-400"
                 >
                   {isCollecting ? '收集中...' : '刷新'}
                 </button>
@@ -283,7 +283,7 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
             
             {/* 总体评分 */}
             <div className="mt-3">
-              <div className="text-sm text-gray-600">总体评分</div>
+              <div className="luckymart-text-sm text-gray-600">总体评分</div>
               <div className={cn(
                 'text-2xl font-bold',
                 score.overall >= 90 ? 'text-green-600' :
@@ -295,10 +295,10 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
           </div>
 
           {isExpanded && (
-            <div className="p-4 space-y-4">
+            <div className="luckymart-padding-md space-y-4">
               {/* Core Web Vitals */}
               <div>
-                <h4 className="font-medium mb-3">Core Web Vitals</h4>
+                <h4 className="luckymart-font-medium mb-3">Core Web Vitals</h4>
                 <div className="grid grid-cols-1 gap-3">
                   <PerformanceCard
                     title="首次内容绘制 (FCP)"
@@ -339,7 +339,7 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
 
               {/* 其他性能指标 */}
               <div>
-                <h4 className="font-medium mb-3">其他指标</h4>
+                <h4 className="luckymart-font-medium mb-3">其他指标</h4>
                 <div className="grid grid-cols-1 gap-3">
                   <PerformanceCard
                     title="首字节时间 (TTFB)"

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/src/i18n/useLanguageCompat';
 import { Card } from '@/components/ui/card';
@@ -34,6 +34,30 @@ import {
   Area
 } from 'recharts';
 
+// Props接口定义
+export interface CommissionHistoryProps {
+  /** 自定义CSS类名 */
+  className?: string;
+  /** 每页显示数量 */
+  pageSize?: number;
+  /** 是否显示导出功能 */
+  showExport?: boolean;
+  /** 是否显示图表视图 */
+  showCharts?: boolean;
+  /** 默认激活的视图类型 */
+  defaultView?: 'list' | 'chart';
+  /** 自定义数据获取函数 */
+  fetchData?: (params: any) => Promise<any>;
+  /** 导出回调函数 */
+  onExport?: (data: any[]) => void;
+  /** 分页回调函数 */
+  onPageChange?: (page: number) => void;
+  /** 筛选回调函数 */
+  onFilter?: (filters: any) => void;
+  /** 错误回调函数 */
+  onError?: (error: Error) => void;
+}
+
 interface CommissionRecord {
   id: string;
   userId: string;
@@ -66,14 +90,25 @@ interface PaginationInfo {
   totalPages: number;
 }
 
-export default function CommissionHistory() {
+const CommissionHistory: React.FC<CommissionHistoryProps> = ({
+  className = '',
+  pageSize = 10,
+  showExport = true,
+  showCharts = true,
+  defaultView = 'list',
+  fetchData,
+  onExport,
+  onPageChange,
+  onFilter,
+  onError
+}) => {
   const { t } = useTranslation('referral');
   const { currentLanguage } = useLanguage();
   const [records, setRecords] = useState<CommissionRecord[]>([]);
   const [monthlyStats, setMonthlyStats] = useState<MonthlyStats[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo>({
     page: 1,
-    limit: 10,
+    limit: pageSize,
     total: 0,
     totalPages: 0
   });
@@ -81,7 +116,7 @@ export default function CommissionHistory() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date' | 'amount'>('date');
-  const [activeView, setActiveView] = useState<'list' | 'chart'>('list');
+  const [activeView, setActiveView] = useState<'list' | 'chart'>(defaultView);
 
   // 模拟获取返利历史数据
   useEffect(() => {
@@ -285,14 +320,19 @@ export default function CommissionHistory() {
     }).format(amount);
   };
 
-  const handleExport = () => {
-    // 实现导出功能
-    console.log('导出返利历史');
-  };
+  const handleExport = useCallback(() => {
+    if (onExport) {
+      onExport(filteredAndSortedRecords);
+    } else {
+      // 实现导出功能
+      console.log('导出返利历史');
+    }
+  }, [onExport, filteredAndSortedRecords]);
 
-  const handlePageChange = (newPage: number) => {
+  const handlePageChange = useCallback((newPage: number) => {
     setPagination(prev => ({ ...prev, page: newPage }));
-  };
+    onPageChange?.(newPage);
+  }, [onPageChange]);
 
   // 计算统计数据
   const totalCommission = records.reduce((sum, r) => sum + r.commissionAmount, 0);
@@ -320,44 +360,44 @@ export default function CommissionHistory() {
     });
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${className}`}>
       {/* 统计概览 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-lg bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm font-medium text-green-600">{t('total_earnings', '总收益')}</p>
-              <p className="text-2xl font-bold text-green-700">{formatCurrency(totalCommission)}</p>
+              <p className="luckymart-text-sm luckymart-font-medium text-green-600">{t('total_earnings', '总收益')}</p>
+              <p className="text-2xl luckymart-font-bold text-green-700">{formatCurrency(totalCommission)}</p>
             </div>
-            <DollarSign className="w-10 h-10 text-green-500" />
+            <DollarSign className="w-10 h-10 luckymart-text-success" />
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-lg bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm font-medium text-blue-600">{t('confirmed_rewards', '已确认奖励')}</p>
-              <p className="text-2xl font-bold text-blue-700">{formatCurrency(confirmedCommission)}</p>
+              <p className="luckymart-text-sm luckymart-font-medium text-blue-600">{t('confirmed_rewards', '已确认奖励')}</p>
+              <p className="text-2xl luckymart-font-bold text-blue-700">{formatCurrency(confirmedCommission)}</p>
             </div>
-            <CheckCircle className="w-10 h-10 text-blue-500" />
+            <CheckCircle className="w-10 h-10 luckymart-text-primary" />
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-lg bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm font-medium text-yellow-600">{t('pending_rewards', '待确认奖励')}</p>
-              <p className="text-2xl font-bold text-yellow-700">{formatCurrency(pendingCommission)}</p>
+              <p className="luckymart-text-sm luckymart-font-medium text-yellow-600">{t('pending_rewards', '待确认奖励')}</p>
+              <p className="text-2xl luckymart-font-bold text-yellow-700">{formatCurrency(pendingCommission)}</p>
             </div>
-            <Clock className="w-10 h-10 text-yellow-500" />
+            <Clock className="w-10 h-10 luckymart-text-warning" />
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-          <div className="flex items-center justify-between">
+        <Card className="luckymart-padding-lg bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-between">
             <div>
-              <p className="text-sm font-medium text-purple-600">{t('monthly_earnings', '月度收益')}</p>
-              <p className="text-2xl font-bold text-purple-700">
+              <p className="luckymart-text-sm luckymart-font-medium text-purple-600">{t('monthly_earnings', '月度收益')}</p>
+              <p className="text-2xl luckymart-font-bold text-purple-700">
                 {formatCurrency(monthlyStats[monthlyStats.length - 1]?.totalCommission || 0)}
               </p>
             </div>
@@ -367,29 +407,33 @@ export default function CommissionHistory() {
       </div>
 
       {/* 视图切换 */}
-      <div className="flex justify-between items-center">
-        <div className="flex space-x-2">
-          <Button
-            variant={activeView === 'list' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveView('list')}
-          >
-            {t('list', '列表')}
-          </Button>
-          <Button
-            variant={activeView === 'chart' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveView('chart')}
-          >
-            {t('chart', '图表')}
-          </Button>
+      <div className="luckymart-layout-flex justify-between luckymart-layout-center">
+        <div className="luckymart-layout-flex luckymart-spacing-sm">
+          {showCharts && (
+            <Button
+              variant={activeView === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setActiveView('list')}
+            >
+              {t('list', '列表')}
+            </Button>
+          )}
+          {showCharts && (
+            <Button
+              variant={activeView === 'chart' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setActiveView('chart')}
+            >
+              {t('chart', '图表')}
+            </Button>
+          )}
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'date' | 'amount')}
-            className="px-3 py-1 border border-gray-300 rounded text-sm"
+            className="px-3 py-1 luckymart-border border-gray-300 luckymart-rounded luckymart-text-sm"
           >
             <option value="date">{t('sort_by_date', '按日期排序')}</option>
             <option value="amount">{t('sort_by_amount', '按金额排序')}</option>
@@ -399,8 +443,8 @@ export default function CommissionHistory() {
 
       {/* 内容区域 */}
       {activeView === 'chart' ? (
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <Card className="luckymart-padding-lg">
+          <h3 className="luckymart-text-lg font-semibold text-gray-800 luckymart-spacing-md">
             {t('monthly_trend', '月度趋势')}
           </h3>
           <div className="h-80">
@@ -452,8 +496,8 @@ export default function CommissionHistory() {
       ) : (
         <>
           {/* 筛选和搜索 */}
-          <Card className="p-4">
-            <div className="flex flex-col lg:flex-row gap-4">
+          <Card className="luckymart-padding-md">
+            <div className="luckymart-layout-flex flex-col lg:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -466,11 +510,11 @@ export default function CommissionHistory() {
                 </div>
               </div>
               
-              <div className="flex gap-3">
+              <div className="luckymart-layout-flex gap-3">
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 luckymart-border border-gray-300 luckymart-rounded-md luckymart-text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">{t('all_status', '所有状态')}</option>
                   <option value="pending">{t('pending_rewards', '待确认')}</option>
@@ -478,10 +522,12 @@ export default function CommissionHistory() {
                   <option value="cancelled">{t('cancelled', '已取消')}</option>
                 </select>
 
-                <Button onClick={handleExport} variant="outline" size="sm">
-                  <Download className="w-4 h-4 mr-2" />
-                  {t('export', '导出')}
-                </Button>
+                {showExport && (
+                  <Button onClick={handleExport} variant="outline" size="sm">
+                    <Download className="w-4 h-4 mr-2" />
+                    {t('export', '导出')}
+                  </Button>
+                )}
               </div>
             </div>
           </Card>
@@ -492,42 +538,42 @@ export default function CommissionHistory() {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                       {t('user_info', '用户信息')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                       {t('order_info', '订单信息')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                       {t('commission_rate', '佣金率')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                       {t('commission_amount', '佣金金额')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                       {t('status', '状态')}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                       {t('date', '日期')}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="luckymart-bg-white divide-y divide-gray-200">
                   {loading ? (
                     // 加载骨架屏
                     [...Array(5)].map((_, i) => (
                       <tr key={i}>
                         {[...Array(6)].map((_, j) => (
                           <td key={j} className="px-4 py-4">
-                            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-4 bg-gray-200 luckymart-rounded luckymart-animation-pulse"></div>
                           </td>
                         ))}
                       </tr>
                     ))
                   ) : filteredAndSortedRecords.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
-                        <DollarSign className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <td colSpan={6} className="px-4 py-8 luckymart-text-center luckymart-text-secondary">
+                        <DollarSign className="w-12 h-12 mx-auto luckymart-spacing-md text-gray-300" />
                         <p>{t('no_data', '暂无返利记录')}</p>
                       </td>
                     </tr>
@@ -535,33 +581,33 @@ export default function CommissionHistory() {
                     filteredAndSortedRecords.map((record) => (
                       <tr key={record.id} className="hover:bg-gray-50">
                         <td className="px-4 py-4">
-                          <div className="flex items-center">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                          <div className="luckymart-layout-flex luckymart-layout-center">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full luckymart-layout-flex luckymart-layout-center justify-center text-white luckymart-font-medium">
                               {record.username.charAt(0).toUpperCase()}
                             </div>
                             <div className="ml-3">
-                              <p className="text-sm font-medium text-gray-900">{record.username}</p>
-                              <p className="text-sm text-gray-500">{t('user_id', '用户ID')}: {record.userId}</p>
+                              <p className="luckymart-text-sm luckymart-font-medium text-gray-900">{record.username}</p>
+                              <p className="luckymart-text-sm luckymart-text-secondary">{t('user_id', '用户ID')}: {record.userId}</p>
                             </div>
                           </div>
                         </td>
                         <td className="px-4 py-4">
-                          <div className="text-sm font-medium text-gray-900">{record.orderId}</div>
-                          <div className="text-sm text-gray-500">{record.description}</div>
+                          <div className="luckymart-text-sm luckymart-font-medium text-gray-900">{record.orderId}</div>
+                          <div className="luckymart-text-sm luckymart-text-secondary">{record.description}</div>
                           <div className="text-xs text-gray-400">
                             {formatCurrency(record.orderAmount)}
                           </div>
                         </td>
                         <td className="px-4 py-4">
-                          <div className="flex items-center space-x-2">
+                          <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-sm">
                             {getLevelBadge(record.referralLevel)}
-                            <span className="text-sm text-gray-600">
+                            <span className="luckymart-text-sm text-gray-600">
                               {(record.commissionRate * 100).toFixed(1)}%
                             </span>
                           </div>
                         </td>
                         <td className="px-4 py-4">
-                          <div className="text-lg font-semibold text-green-600">
+                          <div className="luckymart-text-lg font-semibold text-green-600">
                             {formatCurrency(record.commissionAmount)}
                           </div>
                         </td>
@@ -569,11 +615,11 @@ export default function CommissionHistory() {
                           {getStatusBadge(record.status)}
                         </td>
                         <td className="px-4 py-4">
-                          <div className="text-sm text-gray-900">
+                          <div className="luckymart-text-sm text-gray-900">
                             {formatDate(record.createDate)}
                           </div>
                           {record.confirmDate && (
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs luckymart-text-secondary">
                               {t('confirmed_at', '确认于')}: {formatDate(record.confirmDate)}
                             </div>
                           )}
@@ -587,15 +633,15 @@ export default function CommissionHistory() {
 
             {/* 分页 */}
             {!loading && filteredAndSortedRecords.length > 0 && (
-              <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
-                <div className="text-sm text-gray-700">
+              <div className="px-4 py-3 border-t luckymart-border-light luckymart-layout-flex luckymart-layout-center justify-between">
+                <div className="luckymart-text-sm text-gray-700">
                   {t('page_info', '显示 {{start}} - {{end}} 条，共 {{total}} 条', {
                     start: (pagination.page - 1) * pagination.limit + 1,
                     end: Math.min(pagination.page * pagination.limit, pagination.total),
                     total: pagination.total
                   })}
                 </div>
-                <div className="flex space-x-2">
+                <div className="luckymart-layout-flex luckymart-spacing-sm">
                   <Button
                     variant="outline"
                     size="sm"
@@ -604,7 +650,7 @@ export default function CommissionHistory() {
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </Button>
-                  <span className="px-3 py-2 text-sm text-gray-700">
+                  <span className="px-3 py-2 luckymart-text-sm text-gray-700">
                     {pagination.page} / {pagination.totalPages}
                   </span>
                   <Button
@@ -623,4 +669,4 @@ export default function CommissionHistory() {
       )}
     </div>
   );
-}
+};\n\nexport default CommissionHistory;

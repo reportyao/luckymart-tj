@@ -338,7 +338,7 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
       <div className="absolute top-1 right-1 z-10">
         {gestureState === 'active' && (
           <motion.div
-            className="w-2 h-2 bg-blue-500 rounded-full"
+            className="w-2 h-2 luckymart-bg-primary rounded-full"
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 1 }}
           />
@@ -351,10 +351,10 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
           />
         )}
         {gestureState === 'success' && (
-          <div className="w-2 h-2 bg-green-500 rounded-full" />
+          <div className="w-2 h-2 luckymart-bg-success rounded-full" />
         )}
         {gestureState === 'failed' && (
-          <div className="w-2 h-2 bg-red-500 rounded-full" />
+          <div className="w-2 h-2 luckymart-bg-error rounded-full" />
         )}
       </div>
 
@@ -362,7 +362,7 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
       <AnimatePresence>
         {showFeedbackText && feedbackText && (
           <motion.div
-            className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-sm rounded"
+            className="absolute inset-0 luckymart-layout-flex luckymart-layout-center justify-center bg-black bg-opacity-50 text-white luckymart-text-sm luckymart-rounded"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -377,7 +377,7 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
       <AnimatePresence>
         {isPressed && (
           <motion.div
-            className="absolute inset-0 bg-blue-500 bg-opacity-10 pointer-events-none"
+            className="absolute inset-0 luckymart-bg-primary bg-opacity-10 pointer-events-none"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

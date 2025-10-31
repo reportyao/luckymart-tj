@@ -97,18 +97,18 @@ export default function CheckinButton({
   // 如果周期已完成，显示完成状态
   if (cycleCompleted) {
     return (
-      <div className="text-center space-y-3">
-        <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white p-6 rounded-lg">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Sparkles className="h-6 w-6" />
-            <h3 className="text-lg font-bold">{t.cycleCompleted}</h3>
+      <div className="luckymart-text-center luckymart-spacing-md">
+        <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white luckymart-padding-lg luckymart-rounded-lg">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-center gap-2 mb-2">
+            <Sparkles className="luckymart-size-md luckymart-size-md" />
+            <h3 className="luckymart-text-lg luckymart-font-bold">{t.cycleCompleted}</h3>
           </div>
-          <p className="text-sm opacity-90">
+          <p className="luckymart-text-sm opacity-90">
             恭喜您完成7天签到周期！
           </p>
         </div>
-        <div className="text-center">
-          <Badge variant="secondary" className="text-sm">
+        <div className="luckymart-text-center">
+          <Badge variant="secondary" className="luckymart-text-sm">
             新的周期将在明天开始
           </Badge>
         </div>
@@ -119,20 +119,20 @@ export default function CheckinButton({
   // 如果今日已签到，显示已签到状态
   if (isCheckedIn) {
     return (
-      <div className="text-center space-y-3">
-        <div className="bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-700 p-6 rounded-lg">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Calendar className="h-6 w-6 text-green-600 dark:text-green-400" />
-            <h3 className="text-lg font-bold text-green-800 dark:text-green-200">
+      <div className="luckymart-text-center luckymart-spacing-md">
+        <div className="bg-green-100 dark:bg-green-900 luckymart-border border-green-300 dark:border-green-700 luckymart-padding-lg luckymart-rounded-lg">
+          <div className="luckymart-layout-flex luckymart-layout-center justify-center gap-2 mb-2">
+            <Calendar className="luckymart-size-md luckymart-size-md text-green-600 dark:text-green-400" />
+            <h3 className="luckymart-text-lg luckymart-font-bold text-green-800 dark:text-green-200">
               {t.checkedIn}
             </h3>
           </div>
-          <p className="text-sm text-green-700 dark:text-green-300">
+          <p className="luckymart-text-sm text-green-700 dark:text-green-300">
             {t.day.replace('{days}', nextRewardDay.toString())} 已完成签到
           </p>
         </div>
-        <div className="text-center">
-          <Badge variant="outline" className="text-sm">
+        <div className="luckymart-text-center">
+          <Badge variant="outline" className="luckymart-text-sm">
             明天再来签到吧！
           </Badge>
         </div>
@@ -142,29 +142,29 @@ export default function CheckinButton({
 
   // 可以签到的状态
   return (
-    <div className="text-center space-y-4">
-      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-6 rounded-lg">
-        <div className="flex items-center justify-center gap-2 mb-3">
-          <Coins className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-          <h3 className="text-lg font-bold text-blue-800 dark:text-blue-200">
+    <div className="luckymart-text-center space-y-4">
+      <div className="bg-blue-50 dark:bg-blue-950 luckymart-border border-blue-200 dark:border-blue-800 luckymart-padding-lg luckymart-rounded-lg">
+        <div className="luckymart-layout-flex luckymart-layout-center justify-center gap-2 mb-3">
+          <Coins className="luckymart-size-md luckymart-size-md text-blue-600 dark:text-blue-400" />
+          <h3 className="luckymart-text-lg luckymart-font-bold text-blue-800 dark:text-blue-200">
             {t.nextReward}
           </h3>
         </div>
         
-        <div className="text-center mb-4">
-          <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">
+        <div className="luckymart-text-center luckymart-spacing-md">
+          <div className="text-3xl luckymart-font-bold text-blue-600 dark:text-blue-400 mb-1">
             {rewardAmount}
           </div>
-          <div className="text-sm text-blue-700 dark:text-blue-300">
+          <div className="luckymart-text-sm text-blue-700 dark:text-blue-300">
             Som
           </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <div className="luckymart-text-sm text-gray-600 dark:text-gray-400 mt-1">
             {t.day.replace('{days}', nextRewardDay.toString())}
           </div>
         </div>
 
         {error && (
-          <div className="text-red-600 dark:text-red-400 text-sm mb-3">
+          <div className="text-red-600 dark:text-red-400 luckymart-text-sm mb-3">
             {t.error}: {error}
           </div>
         )}
@@ -172,23 +172,23 @@ export default function CheckinButton({
         <Button
           onClick={handleCheckin}
           disabled={loading || !canCheckIn}
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 disabled:transform-none disabled:opacity-50"
+          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 luckymart-rounded-lg transition-all duration-200 transform hover:scale-105 disabled:transform-none disabled:opacity-50"
         >
           {loading ? (
-            <div className="flex items-center gap-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            <div className="luckymart-layout-flex luckymart-layout-center gap-2">
+              <div className="luckymart-animation-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
               {t.checkingIn}
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5" />
+            <div className="luckymart-layout-flex luckymart-layout-center gap-2">
+              <Sparkles className="luckymart-size-sm luckymart-size-sm" />
               {t.checkIn}
             </div>
           )}
         </Button>
 
         {loading && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+          <p className="text-xs luckymart-text-secondary dark:text-gray-400 mt-2">
             {t.loading}
           </p>
         )}

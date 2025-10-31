@@ -291,15 +291,61 @@ export async function POST(request: Request) {
     if (updateError) {
       console.error('扣除余额失败:', updateError);
       
-      // 回滚提现申请
-      await supabaseAdmin
-        .from('withdraw_requests')
-        .update({ status: 'failed' })
-        .eq('id', withdrawRequest.id);
+      // 增强的回滚机制
+      try {
+        // 1. 回滚提现申请状态
+        await supabaseAdmin
+          .from('withdraw_requests')
+          .update({ 
+            status: 'failed',
+            error_message: '余额操作失败',
+            processed_at: new Date().toISOString()
+          })
+          .eq('id', withdrawRequest.id);
+        
+        // 2. 记录回滚操作日志
+        await logSecurityEvent({
+          type: 'WITHDRAW_ROLLBACK',
+          userId: user.userId,
+          ip: clientIP,
+          details: { 
+            withdrawId: withdrawRequest.id,
+            amount,
+            error: updateError.message,
+            rollbackTime: new Date().toISOString()
+          }
+        });
+        
+        // 3. 记录用户活动
+        await logUserActivity({
+          userId: user.userId,
+          action: 'WITHDRAW_ROLLBACK',
+          details: {
+            withdrawId: withdrawRequest.id,
+            amount,
+            error: updateError.message,
+            rollbackReason: '余额扣除失败'
+          },
+          ip: clientIP,
+          userAgent
+        });
+      } catch (rollbackError) {
+        console.error('回滚操作失败:', rollbackError);
+        // 如果回滚也失败，需要人工干预标记
+        await supabaseAdmin
+          .from('withdraw_requests')
+          .update({ 
+            requires_manual_review: true,
+            risk_score: 100,
+            error_message: '系统异常：需要人工干预'
+          })
+          .eq('id', withdrawRequest.id);
+      }
       
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '余额操作失败'
+        error: '余额操作失败，正在尝试回滚',
+        code: 'BALANCE_DEDUCTION_FAILED'
       }, {
         status: 500,
         headers: setSecurityResponseHeaders(new Headers())

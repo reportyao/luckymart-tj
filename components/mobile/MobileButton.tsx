@@ -60,9 +60,8 @@ const MobileButton: React.FC<MobileButtonProps> = ({
 
   // 防抖处理
   const lastClickRef = useRef(0);
-  const timeoutRef = useRef<NodeJS.Timeout>();
 
-  // 样式变体
+  // 样式变体 - 直接定义，无需useMemo
   const variants = {
     primary: 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg hover:shadow-xl',
     secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300',
@@ -72,7 +71,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
     ghost: 'text-purple-600 hover:bg-purple-50',
   };
 
-  // 尺寸样式
+  // 尺寸样式 - 直接定义
   const sizes = {
     sm: 'px-3 py-2 text-sm min-h-[36px]',
     md: 'px-4 py-3 text-base min-h-[44px]',
@@ -80,7 +79,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
     xl: 'px-8 py-5 text-xl min-h-[60px]',
   };
 
-  // 触摸区域样式
+  // 触摸区域样式 - 直接定义
   const touchAreas = {
     normal: '',
     large: 'min-h-[44px] min-w-[44px]',
@@ -207,15 +206,6 @@ const MobileButton: React.FC<MobileButtonProps> = ({
     }
   };
 
-  // 清理定时器
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
   // 键盘支持
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -227,7 +217,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
   // 加载状态动画
   const LoadingSpinner = () => (
     <motion.div
-      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+      className="luckymart-size-sm luckymart-size-sm border-2 border-white border-t-transparent rounded-full"
       animate={{ rotate: 360 }}
       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
     />
@@ -239,7 +229,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
 
     return (
       <motion.span
-        className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center px-1"
+        className="absolute -top-1 -right-1 min-w-[20px] luckymart-size-sm luckymart-bg-error text-white text-xs rounded-full luckymart-layout-flex luckymart-layout-center justify-center px-1"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 500 }}
@@ -302,7 +292,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
         {loading ? (
           <motion.div
             key="loading"
-            className="flex items-center gap-2"
+            className="luckymart-layout-flex luckymart-layout-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -313,7 +303,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
         ) : (
           <motion.div
             key="content"
-            className="flex items-center gap-2"
+            className="luckymart-layout-flex luckymart-layout-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -415,7 +405,7 @@ export const FloatingActionButton: React.FC<{
       {children}
       
       {badge && (
-        <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center px-1">
+        <span className="absolute -top-1 -right-1 min-w-[20px] luckymart-size-sm luckymart-bg-error text-white text-xs rounded-full luckymart-layout-flex luckymart-layout-center justify-center px-1">
           {typeof badge === 'number' && badge > 99 ? '99+' : badge}
         </span>
       )}

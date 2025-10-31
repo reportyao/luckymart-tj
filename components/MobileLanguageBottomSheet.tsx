@@ -123,16 +123,16 @@ export default function MobileLanguageBottomSheet({
         onTouchEnd={handleTouchEnd}
       >
         {/* 拖拽手柄 */}
-        <div className="flex justify-center py-3">
+        <div className="luckymart-layout-flex justify-center py-3">
           <div className="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full" />
         </div>
 
         {/* 标题栏 */}
         <div className="px-6 pb-4">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white text-center">
+          <h3 className="luckymart-text-xl font-semibold text-gray-900 dark:text-white luckymart-text-center">
             选择语言
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-1">
+          <p className="luckymart-text-sm luckymart-text-secondary dark:text-gray-400 luckymart-text-center mt-1">
             Select Language
           </p>
         </div>
@@ -157,10 +157,10 @@ export default function MobileLanguageBottomSheet({
               
               {/* 语言信息 */}
               <div className="flex-1 text-left">
-                <div className="font-medium text-gray-900 dark:text-white text-base">
+                <div className="luckymart-font-medium text-gray-900 dark:text-white text-base">
                   {info.nativeName}
                 </div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="luckymart-text-sm luckymart-text-secondary dark:text-gray-400">
                   {info.name}
                 </div>
               </div>
@@ -168,16 +168,16 @@ export default function MobileLanguageBottomSheet({
               {/* 选中指示器和加载状态 */}
               <div className="flex-shrink-0">
                 {isChanging ? (
-                  <svg className="w-6 h-6 animate-spin text-purple-600" fill="none" viewBox="0 0 24 24">
+                  <svg className="luckymart-size-md luckymart-size-md luckymart-animation-spin text-purple-600" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
                 ) : currentLanguage === code ? (
-                  <svg className="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="luckymart-size-md luckymart-size-md text-purple-600" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 ) : (
-                  <div className="w-6 h-6 rounded-full border-2 border-gray-300 dark:border-gray-600" />
+                  <div className="luckymart-size-md luckymart-size-md rounded-full border-2 border-gray-300 dark:border-gray-600" />
                 )}
               </div>
             </button>
@@ -185,7 +185,7 @@ export default function MobileLanguageBottomSheet({
         </div>
 
         {/* 底部间距 */}
-        <div className="h-6" />
+        <div className="luckymart-size-md" />
       </div>
     </>
   );

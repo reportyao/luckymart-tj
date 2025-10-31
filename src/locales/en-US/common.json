@@ -130,5 +130,27 @@
       "action": "Action Success",
       "feedback": "Feedback Success"
     }
-  }
+  },
+
+  "operation_success": "Operation Successful",
+  "operation_failed": "Operation Failed",
+  "save_failed": "Save Failed",
+  "delete_success": "Deleted Successfully",
+  "delete_failed": "Delete Failed",
+  "confirm_delete": "Confirm to delete this address?",
+  "add_address": "Add Address",
+  "edit_address": "Edit Address",
+  "address_management": "Address Management",
+  "recipient_name": "Recipient Name",
+  "recipient_phone": "Recipient Phone",
+  "province": "Province",
+  "city": "City",
+  "district": "District",
+  "detail_address": "Detailed Address",
+  "set_default": "Set as Default",
+  "edit": "Edit",
+  "delete": "Delete",
+  "add_new_address": "Add New Address",
+  "no_addresses": "No addresses yet",
+  "please_add_address": "Please add a delivery address first"
 }

@@ -92,13 +92,13 @@ const CustomDialog: React.FC<DialogState> = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-50 luckymart-layout-flex luckymart-layout-center justify-center bg-black bg-opacity-50"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden">
+      <div className="luckymart-bg-white luckymart-rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex items-center">
+        <div className="px-6 py-4 border-b luckymart-border-light">
+          <div className="luckymart-layout-flex luckymart-layout-center">
             <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${styles.border} bg-gray-50`}>
               {type === 'danger' && (
                 <svg className={`w-5 h-5 ${styles.icon}`} fill="currentColor" viewBox="0 0 20 20">
@@ -116,7 +116,7 @@ const CustomDialog: React.FC<DialogState> = ({
                 </svg>
               )}
             </div>
-            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+            <h3 className="luckymart-text-lg font-semibold text-gray-900">{title}</h3>
           </div>
         </div>
 
@@ -126,11 +126,11 @@ const CustomDialog: React.FC<DialogState> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-gray-50 flex justify-end space-x-3">
+        <div className="px-6 py-4 bg-gray-50 luckymart-layout-flex justify-end luckymart-spacing-md">
           <button
             onClick={handleCancel}
             disabled={isConfirming}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
+            className="px-4 py-2 luckymart-text-sm luckymart-font-medium text-gray-700 luckymart-bg-white luckymart-border border-gray-300 luckymart-rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
           >
             {cancelText}
           </button>
@@ -140,8 +140,8 @@ const CustomDialog: React.FC<DialogState> = ({
             className={`px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 ${styles.button}`}
           >
             {(isConfirming || loading) ? (
-              <div className="flex items-center">
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+              <div className="luckymart-layout-flex luckymart-layout-center">
+                <svg className="luckymart-animation-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>

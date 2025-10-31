@@ -44,6 +44,7 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
   const startY = useRef(0);
   const currentY = useRef(0);
   const isRefreshing = useRef(false);
+  const refreshToken = useRef<Symbol | null>(null);
 
   // 运动值
   const y = useMotionValue(0);
@@ -96,6 +97,10 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
   const handleTouchEnd = useCallback(async () => {
     if (disabled || isRefreshing.current || isAnimating) return;
 
+    // 生成唯一的刷新令牌，防止竞态条件
+    const currentToken = Symbol('refresh');
+    refreshToken.current = currentToken;
+
     if (pullDistance >= threshold && !isRefreshing.current) {
       isRefreshing.current = true;
       setRefreshState('refreshing');
@@ -103,19 +108,30 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
       
       try {
         await onRefresh();
-        setRefreshState('completed');
         
-        // 2秒后恢复
-        setTimeout(() => {
+        // 检查是否是最后一次刷新操作
+        if (refreshToken.current === currentToken) {
+          setRefreshState('completed');
+          
+          // 2秒后恢复
+          setTimeout(() => {
+            if (refreshToken.current === currentToken) {
+              setRefreshState('idle');
+              setIsAnimating(false);
+              isRefreshing.current = false;
+              refreshToken.current = null;
+            }
+          }, 2000);
+        }
+      } catch (error) {
+        console.error('刷新失败:', error);
+        
+        if (refreshToken.current === currentToken) {
           setRefreshState('idle');
           setIsAnimating(false);
           isRefreshing.current = false;
-        }, 2000);
-      } catch (error) {
-        console.error('刷新失败:', error);
-        setRefreshState('idle');
-        setIsAnimating(false);
-        isRefreshing.current = false;
+          refreshToken.current = null;
+        }
       }
     } else {
       // 回弹动画
@@ -149,7 +165,7 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
           text: pullingText,
           icon: pullIcon || (
             <motion.svg
-              className="w-6 h-6 text-blue-500"
+              className="luckymart-size-md luckymart-size-md luckymart-text-primary"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -164,11 +180,11 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
           text: refreshingText,
           icon: refreshIcon || (
             <motion.div
-              className="w-6 h-6"
+              className="luckymart-size-md luckymart-size-md"
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             >
-              <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="luckymart-size-md luckymart-size-md luckymart-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </motion.div>
@@ -179,7 +195,7 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
           text: completedText,
           icon: completedIcon || (
             <motion.svg
-              className="w-6 h-6 text-green-500"
+              className="luckymart-size-md luckymart-size-md luckymart-text-success"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -212,7 +228,7 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
     >
       {/* 刷新指示器 */}
       <motion.div
-        className="absolute top-0 left-0 right-0 flex items-center justify-center"
+        className="absolute top-0 left-0 right-0 luckymart-layout-flex luckymart-layout-center justify-center"
         style={{ height: refreshIndicatorHeight }}
         initial={{ opacity: 0, y: -refreshIndicatorHeight }}
         animate={{
@@ -221,9 +237,9 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
         }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
-        <div className="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
+        <div className="luckymart-layout-flex luckymart-layout-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full luckymart-shadow-lg">
           {indicator.icon}
-          <span className="text-sm font-medium text-gray-700">
+          <span className="luckymart-text-sm luckymart-font-medium text-gray-700">
             {indicator.text}
           </span>
         </div>
@@ -242,7 +258,7 @@ const PullToRefresh: React.FC<PullToRefreshProps> = ({
       {/* 拉动提示 */}
       {pullDistance > 0 && pullDistance < threshold && (
         <motion.div
-          className="absolute top-2 left-1/2 transform -translate-x-1/2 text-xs text-gray-500"
+          className="absolute top-2 left-1/2 transform -translate-x-1/2 text-xs luckymart-text-secondary"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

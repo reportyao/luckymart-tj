@@ -43,6 +43,7 @@ const GestureHandler: React.FC<GestureHandlerProps> = ({
   swipeThreshold = 50,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
   const [isLongPress, setIsLongPress] = useState(false);
   const [lastTap, setLastTap] = useState<TouchPoint | null>(null);
   const longPressTimer = useRef<NodeJS.Timeout>();
@@ -141,6 +142,38 @@ const GestureHandler: React.FC<GestureHandlerProps> = ({
     }
   }, []);
 
+  // IntersectionObserver for visibility detection
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (!entry.isIntersecting) {
+          // 组件不可见时清理状态
+          if (longPressTimer.current) {
+            clearTimeout(longPressTimer.current);
+          }
+          setIsLongPress(false);
+          setLastTap(null);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observerRef.current.observe(containerRef.current);
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+        observerRef.current = null;
+      }
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current);
+      }
+    };
+  }, []);
+
   // 组件卸载时清理定时器
   useEffect(() => {
     return () => {
@@ -180,7 +213,7 @@ const GestureHandler: React.FC<GestureHandlerProps> = ({
       {/* 视觉反馈 */}
       {isLongPress && (
         <motion.div
-          className="absolute inset-0 bg-blue-500/20 rounded-lg pointer-events-none"
+          className="absolute inset-0 bg-blue-500/20 luckymart-rounded-lg pointer-events-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

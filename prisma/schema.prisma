@@ -454,6 +454,99 @@ model InvitationRewards {
 }
 
 // ================================
+// 晒单系统相关模型 (Show-off System)
+// ================================
+
+// 晒单帖子表
+model ShowOffPosts {
+  id                    String    @id @default(uuid()) @db.Uuid
+  userId                String    @map("user_id") @db.Uuid
+  roundId               String    @map("round_id") @db.Uuid              // 关联抽奖轮次
+  participationId       String    @map("participation_id") @db.Uuid       // 关联参与记录
+  
+  // 晒单内容
+  content               String?   @db.Text
+  images                Json?     @db.JsonB                          // 图片URL数组
+  
+  // 统计数据
+  likeCount             Int       @default(0) @map("like_count")
+  commentCount          Int       @default(0) @map("comment_count")
+  shareCount            Int       @default(0) @map("share_count")
+  viewCount             Int       @default(0) @map("view_count")
+  
+  // 奖励相关
+  coinRewarded          Boolean   @default(false) @map("coin_rewarded")
+  coinRewardAmount      Decimal   @default(3.0) @map("coin_reward_amount") @db.Decimal(10, 2)
+  coinRewardedAt        DateTime? @map("coin_rewarded_at")
+  
+  // 审核状态
+  status                String    @default("pending") @db.VarChar(20)    // pending, approved, rejected
+  reviewedBy            String?   @map("reviewed_by") @db.Uuid
+  reviewedAt            DateTime? @map("reviewed_at")
+  rejectReason          String?   @map("reject_reason") @db.Text
+  autoReviewPassed      Boolean?  @map("auto_review_passed")
+  autoReviewReason      String?   @map("auto_review_reason") @db.Text
+  
+  // 热度算法
+  hotScore              Decimal   @default(0) @map("hot_score") @db.Decimal(10, 2)
+  
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([roundId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([hotScore])
+  @@unique([participationId]) // 每个中奖参与记录只能晒单一次
+  @@map("show_off_posts")
+}
+
+// 晒单点赞表
+model ShowOffLikes {
+  id            String    @id @default(uuid()) @db.Uuid
+  postId        String    @map("post_id") @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@index([postId])
+  @@index([userId])
+  @@unique([postId, userId])
+  @@map("show_off_likes")
+}
+
+// 晒单评论表
+model ShowOffComments {
+  id                String    @id @default(uuid()) @db.Uuid
+  postId            String    @map("post_id") @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+  content           String    @db.Text
+  parentCommentId   String?   @map("parent_comment_id") @db.Uuid
+  likeCount         Int       @default(0) @map("like_count")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([postId])
+  @@index([userId])
+  @@index([parentCommentId])
+  @@index([createdAt])
+  @@map("show_off_comments")
+}
+
+// 晒单评论点赞表
+model ShowOffCommentLikes {
+  id            String    @id @default(uuid()) @db.Uuid
+  commentId     String    @map("comment_id") @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@index([commentId])
+  @@index([userId])
+  @@unique([commentId, userId])
+  @@map("show_off_comment_likes")
+}
+
+// ================================
 // 财务数据统计系统相关模型 (Financial Statistics System)
 // ================================
 

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import MobileNavigation from '@/components/MobileNavigation';
 import MarketingBadgeDisplay from '@/components/MarketingBadgeDisplay';
 import EnhancedLotteryCard from '@/components/EnhancedLotteryCard';
+import ShowOffCarousel from '@/components/ShowOffCarousel';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useApi } from '@/hooks/useApi';
 import { useLanguageChange } from '@/hooks/useEventManager';
@@ -315,15 +316,21 @@ function HomePage() {
                 <p className="text-gray-500 text-lg">暂无进行中的抽奖</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {lotteryRounds.map((round, index) => (
-                  <EnhancedLotteryCard
-                    key={round.id}
-                    round={round}
-                    onUpdate={refetch}
-                  />
-                ))}
-              </div>
+              <>
+                {/* 晒单轮播区域 */}
+                <ShowOffCarousel className="mb-6" />
+                
+                {/* 抽奖列表 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  {lotteryRounds.map((round, index) => (
+                    <EnhancedLotteryCard
+                      key={round.id}
+                      round={round}
+                      onUpdate={refetch}
+                    />
+                  ))}
+                </div>
+              </>
             )
           ) : (
             /* 商品视图 */

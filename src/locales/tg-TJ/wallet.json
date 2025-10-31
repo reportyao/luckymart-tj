@@ -1,17 +1,1 @@
-{
-  "title": "钱包",
-  "balance": "余额",
-  "coins": "幸运币",
-  "recharge": "充值",
-  "withdraw": "提现",
-  "transactions": "交易记录",
-  "recharge_amount": "充值金额",
-  "withdraw_amount": "提现金额",
-  "confirm_recharge": "确认充值",
-  "confirm_withdraw": "确认提现",
-  "transaction_history": "交易历史",
-  "transaction_type": "交易类型",
-  "transaction_amount": "交易金额",
-  "transaction_time": "交易时间",
-  "transaction_status": "交易状态"
-}
+{"title": "Ҳисобгоҳи молиявӣ", "balance": "Баланс", "coins": "Сӯзишвории шодмон", "recharge": "Пулгузорӣ", "withdraw": "Пардохт", "transactions": "Сабти муомилот", "recharge_amount": "Маблағи пулгузорӣ", "withdraw_amount": "Маблағи пардохт", "confirm_recharge": "Тасдиқи пулгузорӣ", "confirm_withdraw": "Тасдиқи пардохт", "transaction_history": "Таърихи муомилот", "transaction_type": "Навъи муомилот", "transaction_amount": "Маблағи муомилот", "transaction_time": "Вақти муомилот", "transaction_status": "Вазъи муомилот"}

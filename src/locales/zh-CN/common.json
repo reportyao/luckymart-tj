@@ -39,5 +39,21 @@
     "total_shares": "总份数",
     "progress": "进度",
     "participate": "立即参与"
+  },
+
+  "settings": {
+    "title": "设置",
+    "language_settings": "语言设置",
+    "select_language": "选择语言",
+    "notification_settings": "通知设置",
+    "lottery_notifications": "夺宝通知",
+    "lottery_notifications_desc": "开奖、中奖通知",
+    "order_notifications": "订单通知", 
+    "order_notifications_desc": "发货、物流通知",
+    "promotional_notifications": "营销通知",
+    "promotional_notifications_desc": "活动、优惠通知",
+    "about_us": "关于我们",
+    "version": "LuckyMart TJ v1.0.0",
+    "copyright": "© 2025 LuckyMart. All rights reserved."
   }
 }

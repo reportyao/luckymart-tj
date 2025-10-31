@@ -39,5 +39,21 @@
     "total_shares": "Ҳиссаҳои умумӣ",
     "progress": "Пешрафт",
     "participate": "Иштирок кунед"
+  },
+
+  "settings": {
+    "title": "Танзимот",
+    "language_settings": "Танзимоти забон",
+    "select_language": "Забонро интихоб кунед",
+    "notification_settings": "Танзимоти огоҳинома",
+    "lottery_notifications": "Огоҳиномаҳои қисмат",
+    "lottery_notifications_desc": "Огоҳиномаҳои натиҷаи қисмат ва ғолибият",
+    "order_notifications": "Огоҳиномаҳои фармоиш",
+    "order_notifications_desc": "Огоҳиномаҳои интиқол ва логистика",
+    "promotional_notifications": "Огоҳиномаҳои таблиғот",
+    "promotional_notifications_desc": "Огоҳиномаҳои тадбирҳо ва интихобҳо",
+    "about_us": "Дар бораи мо",
+    "version": "LuckyMart TJ v1.0.0",
+    "copyright": "© 2025 LuckyMart. Ҳама ҳуқуқҳо муҳофизат карда шудаанд."
   }
 }

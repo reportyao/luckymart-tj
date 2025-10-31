@@ -2,6 +2,7 @@ import React, { memo, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
 interface Product {
   id: string;
@@ -33,6 +34,7 @@ interface ProductCardProps {
 
 const ProductCard = memo<ProductCardProps>(({ product, index = 0, onParticipate }) => {
   const router = useRouter();
+  const { t, i18n } = useTranslation(['lottery', 'common']);
 
   // 使用useMemo优化计算，避免重复计算
   const progress = useMemo(() => {
@@ -83,13 +85,13 @@ const ProductCard = memo<ProductCardProps>(({ product, index = 0, onParticipate 
         {/* 状态标签 */}
         {product.status === 'active' && (
           <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-            在售
+            {t('lottery:product_card.in_sale')}
           </div>
         )}
         
         {product.status === 'sold_out' && (
           <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-            售罄
+            {t('lottery:product_card.sold_out')}
           </div>
         )}
       </div>
@@ -101,8 +103,8 @@ const ProductCard = memo<ProductCardProps>(({ product, index = 0, onParticipate 
         </h3>
         
         <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
-          <span>类别: {product.category}</span>
-          <span>库存: {product.stock}</span>
+          <span>{t('lottery:product_card.category')}: {product.category}</span>
+          <span>{t('lottery:product_card.stock')}: {product.stock}</span>
         </div>
 
         <div className="flex items-center justify-between mb-3">
@@ -111,12 +113,12 @@ const ProductCard = memo<ProductCardProps>(({ product, index = 0, onParticipate 
               ¥{product.marketPrice.toLocaleString()}
             </div>
             <div className="text-sm text-gray-500">
-              单价: ¥{product.pricePerShare}/份额
+              {t('lottery:product_card.unit_price')}: ¥{product.pricePerShare}/{t('lottery:product_card.share_unit')}
             </div>
           </div>
           <div className="text-right">
             <div className="text-sm text-gray-600">
-              总份额: {product.totalShares}
+              {t('lottery:product_card.total_shares_label')}: {product.totalShares}
             </div>
           </div>
         </div>
@@ -126,10 +128,10 @@ const ProductCard = memo<ProductCardProps>(({ product, index = 0, onParticipate 
           <div className="mb-4">
             <div className="flex items-center justify-between text-sm mb-2">
               <span className="text-gray-600">
-                第{product.currentRound.roundNumber}期
+                {t('lottery:product_card.round_label', { 0: product.currentRound.roundNumber })}
               </span>
               <span className="font-medium">
-                {product.currentRound.soldShares}/{product.currentRound.totalShares}份额
+                {product.currentRound.soldShares}/{product.currentRound.totalShares}{t('lottery:product_card.share_unit')}
               </span>
             </div>
             
@@ -142,15 +144,15 @@ const ProductCard = memo<ProductCardProps>(({ product, index = 0, onParticipate 
             </div>
             
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">进度: {progress}%</span>
+              <span className="text-gray-600">{t('lottery:progress')}: {progress}%</span>
               <span className="text-green-600 font-medium">
-                剩余: {remainingShares}份额
+                {t('lottery:remaining')}: {remainingShares}{t('lottery:product_card.share_unit')}
               </span>
             </div>
           </div>
         ) : (
           <div className="mb-4 text-center text-gray-500 text-sm">
-            暂无进行中的夺宝
+            {t('lottery:product_card.no_round')}
           </div>
         )}
 
@@ -161,7 +163,7 @@ const ProductCard = memo<ProductCardProps>(({ product, index = 0, onParticipate 
             disabled={!product.currentRound || product.currentRound.status !== 'active'}
             className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:cursor-not-allowed"
           >
-            {product.currentRound?.status === 'active' ? '立即参与' : '暂不可参与'}
+            {product.currentRound?.status === 'active' ? t('lottery:product_card.participate') : t('lottery:product_card.participate_disabled')}
           </button>
           
           <Link
@@ -169,7 +171,7 @@ const ProductCard = memo<ProductCardProps>(({ product, index = 0, onParticipate 
             className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            查看详情
+            {t('lottery:product_card.view_details')}
           </Link>
         </div>
       </div>

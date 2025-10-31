@@ -18,9 +18,11 @@ export default function CreateProductPage() {
     nameZh: '',
     nameEn: '',
     nameRu: '',
+    nameTj: '', // 新增塔吉克语名称
     descriptionZh: '',
     descriptionEn: '',
     descriptionRu: '',
+    descriptionTj: '', // 新增塔吉克语描述
     images: [] as string[],
     marketPrice: '',
     totalShares: '',
@@ -33,6 +35,7 @@ export default function CreateProductPage() {
       textZh: '',
       textEn: '',
       textRu: '',
+      textTj: '', // 新增塔吉克语角标
       color: '#FFFFFF',
       bgColor: '#FF0000',
       position: 'top-right' as 'top-left' | 'top-right' | 'center',
@@ -97,7 +100,7 @@ export default function CreateProductPage() {
     e.preventDefault();
 
     // 验证必填字段
-    if (!formData.nameZh || !formData.nameEn || !formData.nameRu) {
+    if (!formData.nameZh || !formData.nameEn || !formData.nameRu || !formData.nameTj) {
       alert('请填写所有语言的商品名称');
       return;
     }
@@ -155,7 +158,7 @@ export default function CreateProductPage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto px-4 py-4 md:py-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* 多语言名称 */}
           <div className="bg-white rounded-xl shadow-md p-6">
@@ -200,6 +203,19 @@ export default function CreateProductPage() {
                   placeholder="например iPhone 15 Pro Max 256GB"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Номи Тоҷикӣ <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.nameTj}
+                  onChange={(e) => setFormData(prev => ({ ...prev, nameTj: e.target.value }))}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="масалан: iPhone 15 Pro Max 256GB"
+                />
+              </div>
             </div>
           </div>
 
@@ -235,6 +251,16 @@ export default function CreateProductPage() {
                   onChange={(e) => setFormData(prev => ({ ...prev, descriptionRu: e.target.value }))}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Подробное описание продукта"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Тавсифи Тоҷикӣ</label>
+                <textarea
+                  rows={3}
+                  value={formData.descriptionTj}
+                  onChange={(e) => setFormData(prev => ({ ...prev, descriptionTj: e.target.value }))}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="Тавсифи муфассали маҳсулот"
                 />
               </div>
             </div>
@@ -293,7 +319,7 @@ export default function CreateProductPage() {
           {/* 商品参数 */}
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-4">商品参数</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   市场价格（TJS）<span className="text-red-500">*</span>
@@ -425,10 +451,23 @@ export default function CreateProductPage() {
                         placeholder="Скоро закончится"
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Матни Тоҷикӣ</label>
+                      <input
+                        type="text"
+                        value={formData.marketingBadge.textTj}
+                        onChange={(e) => setFormData(prev => ({
+                          ...prev,
+                          marketingBadge: { ...prev.marketingBadge, textTj: e.target.value }
+                        }))}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Зуд ба анҷом мерасад"
+                      />
+                    </div>
                   </div>
 
                   {/* 样式设置 */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">文字颜色</label>
                       <input
@@ -503,7 +542,7 @@ export default function CreateProductPage() {
                           color: formData.marketingBadge.color
                         }}
                       >
-                        {formData.marketingBadge.textZh || '示例文案'}
+                        {formData.marketingBadge.textZh || formData.marketingBadge.textEn || formData.marketingBadge.textRu || formData.marketingBadge.textTj || '示例文案'}
                       </div>
                     </div>
                   </div>

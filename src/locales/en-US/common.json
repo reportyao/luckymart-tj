@@ -39,5 +39,21 @@
     "total_shares": "Total Shares",
     "progress": "Progress",
     "participate": "Join Now"
+  },
+
+  "settings": {
+    "title": "Settings",
+    "language_settings": "Language Settings",
+    "select_language": "Select Language",
+    "notification_settings": "Notification Settings",
+    "lottery_notifications": "Lottery Notifications",
+    "lottery_notifications_desc": "Draw results and winning notifications",
+    "order_notifications": "Order Notifications",
+    "order_notifications_desc": "Shipping and logistics notifications",
+    "promotional_notifications": "Promotional Notifications",
+    "promotional_notifications_desc": "Activity and promotional notifications",
+    "about_us": "About Us",
+    "version": "LuckyMart TJ v1.0.0",
+    "copyright": "© 2025 LuckyMart. All rights reserved."
   }
 }

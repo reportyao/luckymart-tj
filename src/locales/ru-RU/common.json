@@ -39,5 +39,21 @@
     "total_shares": "Всего долей",
     "progress": "Прогресс",
     "participate": "Участвовать"
+  },
+
+  "settings": {
+    "title": "Настройки",
+    "language_settings": "Настройки языка",
+    "select_language": "Выберите язык",
+    "notification_settings": "Настройки уведомлений",
+    "lottery_notifications": "Уведомления о лотерее",
+    "lottery_notifications_desc": "Уведомления о розыгрыше и выигрыше",
+    "order_notifications": "Уведомления о заказах",
+    "order_notifications_desc": "Уведомления о доставке и логистике",
+    "promotional_notifications": "Промо-уведомления",
+    "promotional_notifications_desc": "Уведомления о мероприятиях и акциях",
+    "about_us": "О нас",
+    "version": "LuckyMart TJ v1.0.0",
+    "copyright": "© 2025 LuckyMart. Все права защищены."
   }
 }

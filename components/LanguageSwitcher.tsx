@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES, SupportedLanguage } from '@/src/i18n/config';
 
 export default function LanguageSwitcher() {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation(['common', 'settings']);
   const [isOpen, setIsOpen] = useState(false);
   const [isChanging, setIsChanging] = useState(false);
 
@@ -43,7 +43,7 @@ export default function LanguageSwitcher() {
         onClick={() => setIsOpen(!isOpen)}
         disabled={isChanging}
         className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
-        aria-label="选择语言"
+        aria-label={t('common:settings.select_language')}
       >
         <span className="text-xl" aria-hidden="true">{currentLangInfo.flag}</span>
         <span className="text-sm font-medium">{currentLangInfo.nativeName}</span>
@@ -79,7 +79,7 @@ export default function LanguageSwitcher() {
                 className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-50 ${
                   currentLang === code ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' : ''
                 }`}
-                aria-label={`切换到${info.nativeName}`}
+                aria-label={`${t('common:settings.select_language')}: ${info.nativeName}`}
               >
                 <span className="text-xl" aria-hidden="true">{info.flag}</span>
                 <span className="font-medium">{info.nativeName}</span>

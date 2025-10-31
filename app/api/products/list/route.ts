@@ -2,13 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { PerformanceMonitor } from '@/lib/performance';
 import { MemoryCache } from '@/lib/memory-cache';
+import { withI18n, validateLanguageParameter } from '@/lib/i18n-middleware';
+import { MultilingualHelper } from '@/lib/services/multilingual-query';
 
 // 内存缓存实例
 const cache = new MemoryCache(100);
 const CACHE_TTL = 180000; // 3分钟
 
-export async function GET(request: NextRequest) {
+@validateLanguageParameter('language')
+export async function GET(request: NextRequest & { languageContext: any; formatter: any }) {
   const startTime = Date.now();
+  const { languageContext, formatter } = request;
   
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -16,23 +20,21 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status') || 'active';
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
-    const language = searchParams.get('language') || 'zh';
 
     const skip = (page - 1) * limit;
 
-    // 构建缓存键
-    const cacheKey = `products:list:${category}:${status}:${page}:${limit}:${language}`;
+    // 构建缓存键，包含语言信息
+    const cacheKey = `products:list:${category}:${status}:${page}:${limit}:${languageContext.detectedLanguage}`;
     
     // 尝试从缓存获取数据
     const cached = cache.get(cacheKey);
     if (cached) {
       console.log('Cache hit for products list');
-      return NextResponse.json({
-        success: true,
-        data: cached,
+      const response = formatter.formatSuccess(cached, undefined, {
         cached: true,
         responseTime: Date.now() - startTime
-      }, {
+      });
+      return NextResponse.json(response, {
         headers: {
           'Cache-Control': 'public, max-age=180, stale-while-revalidate=300',
           'X-Response-Time': `${Date.now() - startTime}ms`,
@@ -55,7 +57,7 @@ export async function GET(request: NextRequest) {
 
       // 使用Prisma关联查询解决N+1问题
       const [products, total] = await Promise.all([
-        prisma.products.findMany({
+        prisma.product.findMany({
           where,
           skip,
           take: limit,
@@ -68,19 +70,17 @@ export async function GET(request: NextRequest) {
             }
           }
         }),
-        prisma.products.count({ where })
+        prisma.product.count({ where })
       ]);
 
-      // 数据转换，避免N+1查询
+      // 数据转换，应用多语言处理
       const productsWithRounds = products.map(product => {
-        // 多语言处理
-        const langSuffix = language === 'zh' ? 'Zh' : language === 'en' ? 'En' : 'Ru';
         const currentRound = product.lotteryRounds[0] || null;
         
         return {
           id: product.id,
-          name: product[`name${langSuffix}` as keyof typeof product],
-          description: product[`description${langSuffix}` as keyof typeof product],
+          name: MultilingualHelper.extractText(product.nameMultilingual, languageContext.detectedLanguage),
+          description: MultilingualHelper.extractText(product.descriptionMultilingual, languageContext.detectedLanguage),
           images: product.images,
           marketPrice: parseFloat(product.marketPrice.toString()),
           totalShares: product.totalShares,
@@ -116,36 +116,54 @@ export async function GET(request: NextRequest) {
 
       const responseTime = Date.now() - startTime;
 
-      return NextResponse.json({
-        success: true,
-        data: responseData,
+      const response = formatter.formatPaginated(
+        responseData.products,
+        responseData.pagination,
+        'success'
+      );
+
+      // 添加额外元数据
+      response.meta = {
+        ...response.meta,
         cached: false,
         responseTime,
-        timestamp: Date.now()
-      }, {
+        detectedLanguage: languageContext.detectedLanguage,
+        fallbackUsed: languageContext.fallbackUsed
+      };
+
+      return NextResponse.json(response, {
         headers: {
           'Cache-Control': 'public, max-age=180, stale-while-revalidate=300',
           'X-Response-Time': `${responseTime}ms`,
-          'X-Cache-Status': 'MISS',
-          'X-Timestamp': Date.now().toString()
+          'X-Cache-Status': 'MISS'
         }
       });
     });
 
   } catch (error: any) {
     console.error('Get products error:', error);
-    return NextResponse.json(
+    
+    // 使用i18n中间件的错误处理
+    const errorResponse = formatter.formatError(
+      'internal_error',
+      'error',
       { 
-        error: '获取商品列表失败', 
-        message: error.message,
+        originalError: error.message,
         responseTime: Date.now() - startTime 
-      },
-      { 
-        status: 500,
-        headers: {
-          'X-Response-Time': `${Date.now() - startTime}ms`
-        }
       }
     );
+    
+    return NextResponse.json(errorResponse, { 
+      status: 500,
+      headers: {
+        'X-Response-Time': `${Date.now() - startTime}ms`
+      }
+    });
   }
 }
+
+// 使用i18n中间件包装处理程序
+const GETWithI18n = withI18n(GET);
+
+// 导出包装后的处理程序
+export { GETWithI18n as GET };

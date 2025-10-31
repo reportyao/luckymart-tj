@@ -13,5 +13,19 @@
   "participate_now": "立即参与",
   "participating": "参与中...",
   "recent_participations": "最近参与",
-  "agree_rules": "参与即表示同意平台规则，祝您好运！"
+  "agree_rules": "参与即表示同意平台规则，祝您好运！",
+  "product_card": {
+    "in_sale": "在售",
+    "sold_out": "售罄",
+    "category": "类别",
+    "stock": "库存",
+    "unit_price": "单价",
+    "total_shares_label": "总份额",
+    "round_label": "第{0}期",
+    "share_unit": "份额",
+    "participate": "立即参与",
+    "participate_disabled": "暂不可参与",
+    "view_details": "查看详情",
+    "no_round": "暂无进行中的夺宝"
+  }
 }

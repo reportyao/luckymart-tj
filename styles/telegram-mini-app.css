@@ -1,0 +1,555 @@
+/**
+ * Telegram Mini App 样式文件
+ * 为LuckyMart TJ平台提供完整的Telegram主题样式
+ */
+
+/* ============================== */
+/* 基础主题变量 */
+/* ============================== */
+
+:root {
+  /* Telegram主题颜色 */
+  --tg-bg-color: #ffffff;
+  --tg-text-color: #171717;
+  --tg-hint-color: #999999;
+  --tg-link-color: #3390ec;
+  --tg-button-color: #3390ec;
+  --tg-button-text-color: #ffffff;
+  --tg-secondary-bg-color: #f1f1f1;
+  
+  /* 深色模式变量 */
+  .dark {
+    --tg-bg-color: #1a1a1a;
+    --tg-text-color: #ffffff;
+    --tg-hint-color: #666666;
+    --tg-link-color: #4da3ff;
+    --tg-button-color: #4da3ff;
+    --tg-button-text-color: #000000;
+    --tg-secondary-bg-color: #2d2d2d;
+  }
+
+  /* 通用颜色 */
+  --primary: var(--tg-button-color);
+  --primary-foreground: var(--tg-button-text-color);
+  --secondary: var(--tg-secondary-bg-color);
+  --secondary-foreground: var(--tg-text-color);
+  --background: var(--tg-bg-color);
+  --foreground: var(--tg-text-color);
+  --muted: var(--tg-secondary-bg-color);
+  --muted-foreground: var(--tg-hint-color);
+  --border: var(--tg-secondary-bg-color);
+  --success: #28a745;
+  --warning: #ffc107;
+  --error: #dc3545;
+  --info: #17a2b8;
+}
+
+/* ============================== */
+/* 响应式布局样式 */
+/* ============================== */
+
+.responsive-layout {
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+.responsive-content {
+  padding: env(safe-area-inset-top, 0) 
+           env(safe-area-inset-right, 0) 
+           env(safe-area-inset-bottom, 0) 
+           env(safe-area-inset-left, 0);
+}
+
+/* 断点样式 */
+.breakpoint-xs {
+  font-size: 14px;
+}
+
+.breakpoint-sm {
+  font-size: 15px;
+}
+
+.breakpoint-md {
+  font-size: 16px;
+}
+
+.breakpoint-lg {
+  font-size: 17px;
+}
+
+.breakpoint-xl {
+  font-size: 18px;
+}
+
+/* 方向样式 */
+.orientation-portrait {
+  flex-direction: column;
+}
+
+.orientation-landscape {
+  flex-direction: row;
+}
+
+/* 设备类型样式 */
+.device-mobile {
+  /* 移动端特殊样式 */
+}
+
+.device-tablet {
+  /* 平板端特殊样式 */
+}
+
+.device-desktop {
+  /* 桌面端特殊样式 */
+}
+
+/* 环境样式 */
+.telegram-environment {
+  /* Telegram环境特殊样式 */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.wechat-environment {
+  /* 微信环境特殊样式 */
+}
+
+/* ============================== */
+/* Telegram键盘样式 */
+/* ============================== */
+
+.telegram-keyboard-container {
+  position: relative;
+  transition: padding-bottom 0.3s ease;
+}
+
+.telegram-keyboard-container.keyboard-visible {
+  /* 键盘可见时的样式 */
+}
+
+.telegram-keyboard-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.telegram-keyboard-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(51, 144, 236, 0.2);
+}
+
+/* 虚拟键盘样式 */
+.virtual-keyboard {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--background);
+  border-top: 1px solid var(--border);
+  padding: 8px;
+  z-index: 1000;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.virtual-keyboard-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+  gap: 4px;
+}
+
+.virtual-keyboard-button {
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--secondary);
+  color: var(--foreground);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.virtual-keyboard-button:active {
+  transform: scale(0.95);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* 键盘操作按钮 */
+.keyboard-action-button {
+  padding: 12px 24px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.keyboard-action-button:active {
+  transform: scale(0.95);
+}
+
+/* ============================== */
+/* 移动端键盘适配样式 */
+/* ============================== */
+
+.mobile-keyboard-adapter {
+  position: relative;
+}
+
+.input-container {
+  position: relative;
+}
+
+.keyboard-trigger-button {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--muted-foreground);
+  text-align: left;
+  cursor: pointer;
+}
+
+.mobile-virtual-keyboard {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--background);
+  border-top: 1px solid var(--border);
+  z-index: 1001;
+  animation: slideUp 0.3s ease;
+}
+
+.keyboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.current-input {
+  flex: 1;
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.keyboard-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+.keyboard-rows {
+  padding: 12px 8px;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+  gap: 4px;
+}
+
+.mobile-keyboard-button {
+  min-width: 32px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--secondary);
+  color: var(--foreground);
+  font-size: 16px;
+  cursor: pointer;
+  flex: 1;
+  transition: all 0.2s ease;
+}
+
+.mobile-keyboard-button.regular-key {
+  flex: 1;
+}
+
+.mobile-keyboard-button.special-key {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 600;
+}
+
+.mobile-keyboard-button:active {
+  transform: scale(0.95);
+}
+
+.keyboard-actions {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.action-button.submit {
+  width: 100%;
+  height: 44px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ============================== */
+/* 屏幕方向样式 */
+/* ============================== */
+
+.auto-orientation-layout {
+  transition: all 0.3s ease;
+}
+
+.orientation-changing {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.orientation-indicator {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.orientation-icon {
+  font-size: 16px;
+}
+
+.orientation-text {
+  white-space: nowrap;
+}
+
+.orientation-angle {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.landscape-optimized {
+  /* 横屏优化样式 */
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.portrait-optimized {
+  /* 竖屏优化样式 */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ============================== */
+/* Telegram特色功能样式 */
+/* ============================== */
+
+.telegram-share,
+.telegram-save,
+.telegram-payment,
+.telegram-bot-notification,
+.telegram-theme-button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.telegram-share {
+  background: var(--tg-link-color);
+  color: white;
+}
+
+.telegram-save {
+  background: var(--success);
+  color: white;
+}
+
+.telegram-save.saving {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.telegram-payment {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.telegram-payment.processing {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.telegram-bot-notification {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+
+.telegram-bot-notification.sent {
+  background: var(--success);
+  color: white;
+}
+
+/* Telegram主题按钮变体 */
+.telegram-theme-button.variant-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.telegram-theme-button.variant-secondary {
+  background: var(--secondary);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.telegram-theme-button.variant-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+.telegram-theme-button.full-width {
+  width: 100%;
+}
+
+/* 通知样式 */
+.telegram-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  z-index: 1002;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translate(-50%, -100%);
+  }
+  to {
+    transform: translate(-50%, 0);
+  }
+}
+
+.telegram-notification.success {
+  background: var(--success);
+}
+
+.telegram-notification.warning {
+  background: var(--warning);
+  color: var(--foreground);
+}
+
+.telegram-notification.info {
+  background: var(--info);
+}
+
+.notification-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notification-icon {
+  font-size: 16px;
+}
+
+/* ============================== */
+/* 调试信息样式 */
+/* ============================== */
+
+.debug-info {
+  font-family: monospace;
+  line-height: 1.4;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ============================== */
+/* 动画效果 */
+/* ============================== */
+
+.orientation-animated {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* 触控反馈 */
+@media (hover: none) and (pointer: coarse) {
+  .telegram-share:active,
+  .telegram-save:active,
+  .telegram-payment:active,
+  .telegram-bot-notification:active,
+  .telegram-theme-button:active {
+    transform: scale(0.95);
+  }
+}
+
+/* ============================== */
+/* 无障碍支持 */
+/* ============================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .virtual-keyboard,
+  .mobile-virtual-keyboard,
+  .telegram-notification,
+  .orientation-indicator,
+  .responsive-layout {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ============================== */
+/* 打印样式 */
+/* ============================== */
+
+@media print {
+  .telegram-keyboard-container,
+  .virtual-keyboard,
+  .mobile-virtual-keyboard,
+  .telegram-notification,
+  .orientation-indicator,
+  .debug-info {
+    display: none !important;
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "timestamp": "2025-10-31T09:17:22.904Z",
+  "summary": {
+    "total": 15,
+    "passed": 15,
+    "failed": 0,
+    "successRate": "100.0"
+  },
+  "results": [
+    {
+      "test": "数据库连接 - product_performance",
+      "success": true,
+      "message": "表存在，记录数: 150",
+      "timestamp": "2025-10-31T09:17:19.176Z"
+    },
+    {
+      "test": "数据库连接 - conversion_funnel",
+      "success": true,
+      "message": "表存在，记录数: 120",
+      "timestamp": "2025-10-31T09:17:19.176Z"
+    },
+    {
+      "test": "数据库连接 - profit_analysis",
+      "success": true,
+      "message": "表存在，记录数: 100",
+      "timestamp": "2025-10-31T09:17:19.176Z"
+    },
+    {
+      "test": "数据库连接 - product_trending",
+      "success": true,
+      "message": "表存在，记录数: 80",
+      "timestamp": "2025-10-31T09:17:19.176Z"
+    },
+    {
+      "test": "性能API - GET请求",
+      "success": true,
+      "message": "成功获取商品表现数据",
+      "timestamp": "2025-10-31T09:17:20.112Z"
+    },
+    {
+      "test": "性能API - POST请求",
+      "success": true,
+      "message": "成功保存商品表现数据",
+      "timestamp": "2025-10-31T09:17:20.459Z"
+    },
+    {
+      "test": "转化漏斗API - 数据完整性",
+      "success": true,
+      "message": "转化数据字段完整",
+      "timestamp": "2025-10-31T09:17:20.883Z"
+    },
+    {
+      "test": "转化漏斗API - GET请求",
+      "success": true,
+      "message": "成功获取转化漏斗数据",
+      "timestamp": "2025-10-31T09:17:20.883Z"
+    },
+    {
+      "test": "利润API - 利润计算",
+      "success": true,
+      "message": "利润计算公式正确",
+      "timestamp": "2025-10-31T09:17:21.809Z"
+    },
+    {
+      "test": "利润API - GET请求",
+      "success": true,
+      "message": "成功获取利润分析数据",
+      "timestamp": "2025-10-31T09:17:21.809Z"
+    },
+    {
+      "test": "利润API - PUT批量更新",
+      "success": true,
+      "message": "批量更新成功",
+      "timestamp": "2025-10-31T09:17:22.494Z"
+    },
+    {
+      "test": "趋势API - 排行数据",
+      "success": true,
+      "message": "排行和热度数据完整",
+      "timestamp": "2025-10-31T09:17:22.899Z"
+    },
+    {
+      "test": "趋势API - GET请求",
+      "success": true,
+      "message": "成功获取趋势分析数据",
+      "timestamp": "2025-10-31T09:17:22.899Z"
+    },
+    {
+      "test": "前端页面 - 功能模块",
+      "success": true,
+      "message": "所有功能模块完整",
+      "timestamp": "2025-10-31T09:17:22.904Z"
+    },
+    {
+      "test": "前端页面 - 文件存在",
+      "success": true,
+      "message": "页面文件存在",
+      "timestamp": "2025-10-31T09:17:22.904Z"
+    }
+  ]
+}

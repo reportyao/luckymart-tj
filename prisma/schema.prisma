@@ -452,3 +452,121 @@ model InvitationRewards {
   @@index([expiresAt])
   @@map("invitation_rewards")
 }
+
+// ================================
+// 财务数据统计系统相关模型 (Financial Statistics System)
+// ================================
+
+// 收入统计表
+model RevenueStatistics {
+  id                String    @id @default(uuid()) @db.Uuid
+  periodType        String    @map("period_type") @db.VarChar(20) // 'daily', 'weekly', 'monthly', 'quarterly'
+  periodStart       DateTime  @map("period_start") @db.Date
+  periodEnd         DateTime  @map("period_end") @db.Date
+  totalRevenue      Decimal   @default(0) @map("total_revenue") @db.Decimal(12, 2) // 总收入
+  actualReceived    Decimal   @default(0) @map("actual_received") @db.Decimal(12, 2) // 实际到账
+  orderCount        Int       @default(0) @map("order_count") // 订单数量
+  averageOrderValue Decimal   @default(0) @map("average_order_value") @db.Decimal(10, 2) // 平均客单价
+  growthRate        Decimal?  @map("growth_rate") @db.Decimal(5, 2) // 环比增长率
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([periodType, periodStart])
+  @@index([periodType, periodEnd])
+  @@unique([periodType, periodStart])
+  @@map("revenue_statistics")
+}
+
+// 成本细分表
+model CostBreakdown {
+  id              String    @id @default(uuid()) @db.Uuid
+  costType        String    @map("cost_type") @db.VarChar(50) // 'incentive', 'prize', 'operation', 'platform'
+  costCategory    String    @map("cost_category") @db.VarChar(100) // 成本类别
+  periodType      String    @map("period_type") @db.VarChar(20) // 'daily', 'weekly', 'monthly', 'quarterly'
+  periodStart     DateTime  @map("period_start") @db.Date
+  periodEnd       DateTime  @map("period_end") @db.Date
+  amount          Decimal   @db.Decimal(12, 2) // 成本金额
+  description     String?   @db.Text // 成本描述
+  relatedBusiness String?   @map("related_business") @db.VarChar(255) // 相关业务
+  orderCount      Int       @default(0) @map("order_count") // 涉及订单数量
+  userCount       Int       @default(0) @map("user_count") // 涉及用户数量
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([costType, periodType, periodStart])
+  @@index([periodType, periodEnd])
+  @@unique([costType, costCategory, periodType, periodStart])
+  @@map("cost_breakdown")
+}
+
+// 利润分析表
+model ProfitAnalysis {
+  id                String    @id @default(uuid()) @db.Uuid
+  periodType        String    @map("period_type") @db.VarChar(20) // 'daily', 'weekly', 'monthly', 'quarterly'
+  periodStart       DateTime  @map("period_start") @db.Date
+  periodEnd         DateTime  @map("period_end") @db.Date
+  grossRevenue      Decimal   @default(0) @map("gross_revenue") @db.Decimal(12, 2) // 毛收入
+  totalCosts        Decimal   @default(0) @map("total_costs") @db.Decimal(12, 2) // 总成本
+  grossProfit       Decimal   @default(0) @map("gross_profit") @db.Decimal(12, 2) // 毛利润
+  netProfit         Decimal   @default(0) @map("net_profit") @db.Decimal(12, 2) // 净利润
+  grossProfitMargin Decimal   @default(0) @map("gross_profit_margin") @db.Decimal(5, 2) // 毛利率
+  netProfitMargin   Decimal   @default(0) @map("net_profit_margin") @db.Decimal(5, 2) // 净利率
+  costRatio         Decimal   @default(0) @map("cost_ratio") @db.Decimal(5, 2) // 成本占比
+  profitGrowthRate  Decimal?  @map("profit_growth_rate") @db.Decimal(5, 2) // 利润增长率
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([periodType, periodStart])
+  @@index([periodType, periodEnd])
+  @@unique([periodType, periodStart])
+  @@map("profit_analysis")
+}
+
+// 提现统计表
+model WithdrawalRecords {
+  id              String    @id @default(uuid()) @db.Uuid
+  periodType      String    @map("period_type") @db.VarChar(20) // 'daily', 'weekly', 'monthly', 'quarterly'
+  periodStart     DateTime  @map("period_start") @db.Date
+  periodEnd       DateTime  @map("period_end") @db.Date
+  totalAmount     Decimal   @default(0) @map("total_amount") @db.Decimal(12, 2) // 提现总额
+  totalUsers      Int       @default(0) @map("total_users") // 提现人数
+  averageAmount   Decimal   @default(0) @map("average_amount") @db.Decimal(10, 2) // 平均提现金额
+  platformFee     Decimal   @default(0) @map("platform_fee") @db.Decimal(10, 2) // 平台手续费收入
+  withdrawalCount Int       @default(0) @map("withdrawal_count") // 提现笔数
+  successCount    Int       @default(0) @map("success_count") // 成功笔数
+  failureCount    Int       @default(0) @map("failure_count") // 失败笔数
+  successRate     Decimal   @default(0) @map("success_rate") @db.Decimal(5, 2) // 成功率
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([periodType, periodStart])
+  @@index([periodType, periodEnd])
+  @@unique([periodType, periodStart])
+  @@map("withdrawal_records")
+}
+
+// 财务报表表
+model FinancialReports {
+  id              String    @id @default(uuid()) @db.Uuid
+  reportType      String    @map("report_type") @db.VarChar(20) // 'monthly', 'quarterly', 'yearly'
+  reportPeriod    String    @map("report_period") @db.VarChar(20) // '2024-10', '2024-Q4', '2024'
+  title           String    @db.VarChar(255) // 报告标题
+  summary         String?   @db.Text // 报告摘要
+  revenueData     Json?     @map("revenue_data") @db.JsonB // 收入数据
+  costData        Json?     @map("cost_data") @db.JsonB // 成本数据
+  profitData      Json?     @map("profit_data") @db.JsonB // 利润数据
+  withdrawalData  Json?     @map("withdrawal_data") @db.JsonB // 提现数据
+  keyMetrics      Json?     @map("key_metrics") @db.JsonB // 关键指标
+  trends          Json?     @db.JsonB // 趋势分析
+  recommendations String?   @db.Text // 建议
+  status          String    @default("draft") @db.VarChar(20) // 'draft', 'published', 'archived'
+  generatedBy     String?   @map("generated_by") @db.VarChar(255) // 生成人
+  publishedAt     DateTime? @map("published_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([reportType, reportPeriod])
+  @@index([status])
+  @@unique([reportType, reportPeriod])
+  @@map("financial_reports")
+}

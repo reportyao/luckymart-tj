@@ -47,7 +47,7 @@ export class NetworkRetryManager {
   private retryConfigs: Map<string, RetryConfig> = new Map();
   private retryCounts: Map<string, number> = new Map();
   private networkQuality: NetworkQuality = NetworkQuality.EXCELLENT;
-  private isOnline: boolean = navigator.onLine;
+  private isOnline: boolean = typeof window !== 'undefined' ? navigator.onLine : true;
 
   private constructor() {
     this.setupNetworkMonitoring();

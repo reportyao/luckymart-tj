@@ -443,3 +443,298 @@ export const useMobilePerformance = (config: Partial<PerformanceMonitorConfig> =
 };
 
 export default useMobilePerformance;
+
+// 触觉反馈钩子
+export const useHaptics = () => {
+  const isSupported = typeof navigator !== 'undefined' && 'vibrate' in navigator;
+
+  const light = useCallback(() => {
+    if (isSupported) {
+      navigator.vibrate(10);
+    }
+  }, [isSupported]);
+
+  const medium = useCallback(() => {
+    if (isSupported) {
+      navigator.vibrate(20);
+    }
+  }, [isSupported]);
+
+  const heavy = useCallback(() => {
+    if (isSupported) {
+      navigator.vibrate(30);
+    }
+  }, [isSupported]);
+
+  const pattern = useCallback((pattern: number[]) => {
+    if (isSupported) {
+      navigator.vibrate(pattern);
+    }
+  }, [isSupported]);
+
+  return {
+    isSupported,
+    light,
+    medium,
+    heavy,
+    pattern,
+  };
+};
+
+// 设备检测钩子
+export const useDeviceDetection = () => {
+  const [device, setDevice] = useState({
+    isMobile: false,
+    isTablet: false,
+    isDesktop: false,
+    isIOS: false,
+    isAndroid: false,
+    isTouchDevice: false,
+    isLandscape: false,
+    screenSize: 'md',
+  });
+
+  useEffect(() => {
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const userAgent = navigator.userAgent;
+      const touchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+      const isMobile = width < 768;
+      const isTablet = width >= 768 && width < 1024;
+      const isDesktop = width >= 1024;
+      const isIOS = /iPad|iPhone|iPod/.test(userAgent);
+      const isAndroid = /Android/.test(userAgent);
+      const isLandscape = width > height;
+
+      let screenSize = 'md';
+      if (width < 640) screenSize = 'sm';
+      else if (width < 768) screenSize = 'md';
+      else if (width < 1024) screenSize = 'lg';
+      else if (width < 1280) screenSize = 'xl';
+      else screenSize = '2xl';
+
+      setDevice({
+        isMobile,
+        isTablet,
+        isDesktop,
+        isIOS,
+        isAndroid,
+        isTouchDevice: touchDevice,
+        isLandscape,
+        screenSize,
+      });
+    };
+
+    checkDevice();
+
+    const handleResize = () => {
+      // 防抖
+      clearTimeout((window as any).resizeTimeout);
+      (window as any).resizeTimeout = setTimeout(checkDevice, 150);
+    };
+
+    const handleOrientationChange = () => {
+      setTimeout(checkDevice, 500); // 等待方向改变完成
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleOrientationChange);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleOrientationChange);
+    };
+  }, []);
+
+  return device;
+};
+
+// 屏幕方向钩子
+export const useScreenOrientation = () => {
+  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
+
+  useEffect(() => {
+    const checkOrientation = () => {
+      const isLandscape = window.innerWidth > window.innerHeight;
+      setOrientation(isLandscape ? 'landscape' : 'portrait');
+    };
+
+    checkOrientation();
+
+    const handleResize = () => {
+      checkOrientation();
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return orientation;
+};
+
+// 虚拟键盘检测钩子
+export const useVirtualKeyboard = () => {
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const initialViewportHeight = useRef(0);
+
+  useEffect(() => {
+    initialViewportHeight.current = window.visualViewport?.height || window.innerHeight;
+
+    const handleViewportChange = () => {
+      if (!window.visualViewport) return;
+
+      const currentHeight = window.visualViewport.height;
+      const heightDiff = initialViewportHeight.current - currentHeight;
+
+      if (heightDiff > 150) {
+        setIsKeyboardVisible(true);
+        setKeyboardHeight(heightDiff);
+      } else {
+        setIsKeyboardVisible(false);
+        setKeyboardHeight(0);
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportChange);
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleViewportChange);
+      }
+    };
+  }, []);
+
+  return { isKeyboardVisible, keyboardHeight };
+};
+
+// 防误触钩子
+export const useTouchGuard = (duration = 300) => {
+  const [isGuarded, setIsGuarded] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout>();
+
+  const guard = useCallback(() => {
+    if (isGuarded) return false;
+
+    setIsGuarded(true);
+    timeoutRef.current = setTimeout(() => {
+      setIsGuarded(false);
+    }, duration);
+
+    return true;
+  }, [duration, isGuarded]);
+
+  const reset = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setIsGuarded(false);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  return { isGuarded, guard, reset };
+};
+
+// 触摸区域优化钩子
+export const useTouchAreaOptimization = (minTouchSize = 44) => {
+  const [touchAreas, setTouchAreas] = useState<Map<string, DOMRect>>(new Map());
+
+  const registerTouchArea = useCallback((id: string, element: HTMLElement) => {
+    const rect = element.getBoundingClientRect();
+    
+    // 检查是否符合最小触摸区域要求
+    const meetsRequirement = rect.width >= minTouchSize && rect.height >= minTouchSize;
+    
+    if (!meetsRequirement) {
+      console.warn(`触摸区域 ${id} 太小: ${rect.width}x${rect.height}px，建议至少 ${minTouchSize}x${minTouchSize}px`);
+    }
+
+    setTouchAreas(prev => new Map(prev).set(id, rect));
+    
+    return meetsRequirement;
+  }, [minTouchSize]);
+
+  const unregisterTouchArea = useCallback((id: string) => {
+    setTouchAreas(prev => {
+      const newMap = new Map(prev);
+      newMap.delete(id);
+      return newMap;
+    });
+  }, []);
+
+  const checkTouchArea = useCallback((id: string) => {
+    const rect = touchAreas.get(id);
+    return rect ? {
+      width: rect.width,
+      height: rect.height,
+      meetsRequirement: rect.width >= minTouchSize && rect.height >= minTouchSize,
+    } : null;
+  }, [touchAreas, minTouchSize]);
+
+  return {
+    registerTouchArea,
+    unregisterTouchArea,
+    checkTouchArea,
+    touchAreas,
+  };
+};
+
+// 手势识别钩子
+export const useGestureRecognition = () => {
+  const [gestures, setGestures] = useState<Record<string, boolean>>({});
+  const gestureStartTime = useRef<Map<string, number>>(new Map());
+  const gestureStartPos = useRef<Map<string, { x: number; y: number }>>(new Map());
+
+  const startGesture = useCallback((gestureType: string, x: number, y: number) => {
+    gestureStartTime.current.set(gestureType, Date.now());
+    gestureStartPos.current.set(gestureType, { x, y });
+  }, []);
+
+  const endGesture = useCallback((gestureType: string, endX: number, endY: number) => {
+    const startTime = gestureStartTime.current.get(gestureType);
+    const startPos = gestureStartPos.current.get(gestureType);
+    
+    if (!startTime || !startPos) return null;
+
+    const duration = Date.now() - startTime;
+    const deltaX = endX - startPos.x;
+    const deltaY = endY - startPos.y;
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    gestureStartTime.current.delete(gestureType);
+    gestureStartPos.current.delete(gestureType);
+
+    return {
+      duration,
+      deltaX,
+      deltaY,
+      distance,
+      velocity: distance / duration,
+    };
+  }, []);
+
+  const setGestureState = useCallback((gestureType: string, isActive: boolean) => {
+    setGestures(prev => ({ ...prev, [gestureType]: isActive }));
+  }, []);
+
+  return {
+    gestures,
+    startGesture,
+    endGesture,
+    setGestureState,
+  };
+};

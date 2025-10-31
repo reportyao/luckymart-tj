@@ -1,0 +1,33 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
+
+export async function GET(request: NextRequest) {
+  const withPermission = AdminPermissionManager.createPermissionMiddleware({
+    customPermissions: AdminPermissions.stats.read()
+  });
+
+  return withPermission(async (request, admin) => {
+
+    // 模拟实时数据
+    const realtimeData = {
+      onlineUsers: Math.floor(Math.random() * 2000) + 800,
+      todayOrders: Math.floor(Math.random() * 600) + 300,
+      todayRevenue: Math.floor(Math.random() * 20000) + 10000,
+      conversionRate: (Math.random() * 5 + 1).toFixed(2),
+      trends: {
+        onlineUsers: (Math.random() * 30 - 10).toFixed(1),
+        todayOrders: (Math.random() * 20 - 5).toFixed(1),
+        todayRevenue: (Math.random() * 25 - 5).toFixed(1),
+        conversionRate: (Math.random() * 10 - 5).toFixed(1),
+      },
+      hourlyData: Array.from({ length: 24 }, (_, i) => ({
+        hour: i,
+        orders: Math.floor(Math.random() * 50) + 10,
+        revenue: Math.floor(Math.random() * 2000) + 500,
+        users: Math.floor(Math.random() * 100) + 50,
+      })),
+    };
+
+    return NextResponse.json(realtimeData);
+  })(request);
+}

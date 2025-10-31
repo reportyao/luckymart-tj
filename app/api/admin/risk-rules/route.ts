@@ -1,4 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware([
+  AdminPermissions.stats.read
+]);
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware([
+  AdminPermissions.stats.read // 风控规则暂用stats:read
+]);
 
 // 模拟风控规则数据
 const mockRiskRules = [
@@ -50,6 +60,7 @@ const mockRiskRules = [
 ];
 
 export async function GET(request: NextRequest) {
+  return withReadPermission(async (request, admin) => {
   try {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -99,9 +110,11 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+  })(request);
 }
 
 export async function POST(request: NextRequest) {
+  return withWritePermission(async (request, admin) => {
   try {
     const body = await request.json();
     const { name, description, category, riskType, condition, threshold, action, isActive } = body;
@@ -144,9 +157,11 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+  })(request);
 }
 
 export async function PATCH(request: NextRequest) {
+  return withWritePermission(async (request, admin) => {
   try {
     const body = await request.json();
     const { ruleId, updates } = body;
@@ -186,9 +201,11 @@ export async function PATCH(request: NextRequest) {
       { status: 500 }
     );
   }
+  })(request);
 }
 
 export async function DELETE(request: NextRequest) {
+  return withWritePermission(async (request, admin) => {
   try {
     const { searchParams } = new URL(request.url);
     const ruleId = searchParams.get('ruleId');
@@ -221,4 +238,5 @@ export async function DELETE(request: NextRequest) {
       { status: 500 }
     );
   }
+  })(request);
 }

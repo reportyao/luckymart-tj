@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// 创建权限中间件
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
+  AdminPermissions.stats.read
+]);
 
 /**
  * GET /api/admin/costs/trends
@@ -18,6 +26,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
  * - endDate: 自定义结束日期
  */
 export async function GET(request: NextRequest) {
+  return withStatsPermission(async (request, admin) => {
   try {
     const { searchParams } = new URL(request.url);
     const period = searchParams.get('period') || '30d';
@@ -131,6 +140,7 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+  })(request);
 }
 
 // 数据分组函数

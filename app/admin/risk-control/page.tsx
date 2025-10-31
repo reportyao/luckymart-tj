@@ -8,6 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, Shield, Activity, Bell, Settings, TrendingUp, Users, Clock } from 'lucide-react';
+import PagePermission from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 
 // 风险事件类型定义
 interface RiskIncident {
@@ -619,4 +621,10 @@ const RiskControlPage: React.FC = () => {
   );
 };
 
-export default RiskControlPage;
+export default function WrappedRiskControlPage() {
+  return (
+    <PagePermission permissions={AdminPermissions.system.manage()}>
+      <RiskControlPage />
+    </PagePermission>
+  );
+}

@@ -2,26 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.products.read()
+});
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.products.write()
+});
+
 // GET - 获取利润分析数据
 export async function GET(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查商品分析权限
-    const hasPermission = admin.permissions.includes('products:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法查看利润数据'
-      }, { status: 403 });
-    }
+  return withReadPermission(async (request, admin) => {
+    try {
 
     const { searchParams } = new URL(request.url);
     const productId = searchParams.get('productId');
@@ -193,35 +189,20 @@ export async function GET(request: NextRequest) {
         }
       }
     });
-  } catch (error: any) {
-    console.error('获取利润分析数据失败:', error);
-    return NextResponse.json({
-      success: false,
-      error: '获取利润分析数据失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('获取利润分析数据失败:', error);
+      return NextResponse.json({
+        success: false,
+        error: '获取利润分析数据失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // POST - 创建或更新利润分析数据
 export async function POST(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查商品管理权限
-    const hasPermission = admin.permissions.includes('products:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法更新利润数据'
-      }, { status: 403 });
-    }
+  return withWritePermission(async (request, admin) => {
+    try {
 
     const body = await request.json();
     const {
@@ -320,35 +301,20 @@ export async function POST(request: NextRequest) {
         message: '利润分析数据保存成功'
       }
     });
-  } catch (error: any) {
-    console.error('保存利润分析数据失败:', error);
-    return NextResponse.json({
-      success: false,
-      error: '保存利润分析数据失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('保存利润分析数据失败:', error);
+      return NextResponse.json({
+        success: false,
+        error: '保存利润分析数据失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // PUT - 批量更新利润数据
 export async function PUT(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查商品管理权限
-    const hasPermission = admin.permissions.includes('products:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法批量更新利润数据'
-      }, { status: 403 });
-    }
+  return withWritePermission(async (request, admin) => {
+    try {
 
     const body = await request.json();
     const { updates } = body;
@@ -472,11 +438,13 @@ export async function PUT(request: NextRequest) {
         message: `批量更新完成，成功 ${successCount} 条，失败 ${results.length - successCount} 条`
       }
     });
-  } catch (error: any) {
-    console.error('批量更新利润数据失败:', error);
-    return NextResponse.json({
-      success: false,
-      error: '批量更新利润数据失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('批量更新利润数据失败:', error);
+      return NextResponse.json({
+        success: false,
+        error: '批量更新利润数据失败'
+      }, { status: 500 });
+    }
+  })(request);
+}
 }

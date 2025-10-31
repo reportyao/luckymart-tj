@@ -1,47 +1,20 @@
-/**
- * 速率限制管理API
- * 提供动态配置、监控和告警管理功能
- */
-
 import { NextRequest, NextResponse } from 'next/server';
+import { AdminPermissionManager } from '@/lib/admin-permission-manager';
+import { AdminPermissions } from '@/lib/admin-permissions';
 import { rateLimitConfigManager, initializeRateLimitConfigs } from '@/lib/rate-limit-config';
 import { rateLimitMonitor, DEFAULT_ALERT_RULES } from '@/lib/rate-limit-monitor';
 import { getRateLimitStats, resetRateLimitStats, cleanupRateLimits } from '@/lib/rate-limit-middleware';
 import { getSystemConfiguration, getRateLimitSystemStatus, restartRateLimitSystem } from '@/lib/rate-limit-system';
 import { getLogger } from '@/lib/logger';
-import jwt from 'jsonwebtoken';
 
-// 管理员权限检查
-function requireAdmin(request: NextRequest): { isAdmin: boolean; userId?: string } {
-  const authHeader = request.headers.get('authorization');
-  
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return { isAdmin: false };
-  }
-
-  try {
-    const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string; role?: string };
-    
-    // 检查是否为管理员角色
-    const isAdmin = decoded.role === 'admin' || decoded.userId === 'admin';
-    
-    return { isAdmin, userId: decoded.userId };
-  } catch (error) {
-    return { isAdmin: false };
-  }
-}
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.SETTINGS_READ);
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.SETTINGS_WRITE);
 
 // 获取系统概览
 export async function GET(request: NextRequest) {
-  const logger = getLogger();
-  const { isAdmin } = requireAdmin(request);
-  
-  if (!isAdmin) {
-    return NextResponse.json({ error: '权限不足' }, { status: 403 });
-  }
+  return withReadPermission(async (request, admin) => {
+    const logger = getLogger();
 
-  try {
     const url = new URL(request.url);
     const action = url.searchParams.get('action') || 'overview';
 
@@ -67,11 +40,7 @@ export async function GET(request: NextRequest) {
       default:
         return NextResponse.json({ error: '未知操作' }, { status: 400 });
     }
-
-  } catch (error) {
-    logger.error('速率限制管理API错误', error as Error);
-    return NextResponse.json({ error: '内部服务器错误' }, { status: 500 });
-  }
+  })(request);
 }
 
 // 系统概览
@@ -243,14 +212,8 @@ async function handleHealthCheck() {
 
 // 更新配置
 export async function POST(request: NextRequest) {
-  const logger = getLogger();
-  const { isAdmin } = requireAdmin(request);
-  
-  if (!isAdmin) {
-    return NextResponse.json({ error: '权限不足' }, { status: 403 });
-  }
-
-  try {
+  return withWritePermission(async (request, admin) => {
+    const logger = getLogger();
     const body = await request.json();
     const { action } = body;
 
@@ -282,11 +245,7 @@ export async function POST(request: NextRequest) {
       default:
         return NextResponse.json({ error: '未知操作' }, { status: 400 });
     }
-
-  } catch (error) {
-    logger.error('速率限制管理操作失败', error as Error);
-    return NextResponse.json({ error: '操作失败' }, { status: 500 });
-  }
+  })(request);
 }
 
 // 更新配置

@@ -1,30 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { AdminPermissionManager } from '@/lib/admin-permission-manager';
+import { AdminPermissions } from '@/lib/admin-permissions';
 import { PrismaClient } from '@prisma/client';
-import { auth } from '@/lib/auth';
 
 const prisma = new PrismaClient();
 
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.USERS_READ);
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.USERS_WRITE);
+
 // 获取待审核晒单列表
 export async function GET(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: '请先登录' },
-        { status: 401 }
-      );
-    }
-
-    // 这里应该检查管理员权限，暂时简化
-    // const isAdmin = await checkAdminPermission(session.user.id);
-    // if (!isAdmin) {
-    //   return NextResponse.json(
-    //     { success: false, error: '没有管理员权限' },
-    //     { status: 403 }
-    //   );
-    // }
-
+  return withReadPermission(async (request, admin) => {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
@@ -126,36 +112,12 @@ export async function GET(request: NextRequest) {
         }
       }
     });
-
-  } catch (error) {
-    console.error('获取审核列表失败:', error);
-    return NextResponse.json(
-      { success: false, error: '获取审核列表失败' },
-      { status: 500 }
-    );
-  }
+  })(request);
 }
 
 // 审核晒单
 export async function POST(request: NextRequest) {
-  try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: '请先登录' },
-        { status: 401 }
-      );
-    }
-
-    // 验证管理员权限
-    // const isAdmin = await checkAdminPermission(session.user.id);
-    // if (!isAdmin) {
-    //   return NextResponse.json(
-    //     { success: false, error: '没有管理员权限' },
-    //     { status: 403 }
-    //   );
-    // }
-
+  return withWritePermission(async (request, admin) => {
     const body = await request.json();
     const { postId, action, reason } = body;
 
@@ -211,9 +173,9 @@ export async function POST(request: NextRequest) {
 
     let result;
     if (action === 'approve') {
-      result = await processApproval(postId, session.user.id);
+      result = await processApproval(postId, admin.id);
     } else {
-      result = await processRejection(postId, session.user.id, reason);
+      result = await processRejection(postId, admin.id, reason);
     }
 
     return NextResponse.json({
@@ -221,14 +183,7 @@ export async function POST(request: NextRequest) {
       data: result,
       message: action === 'approve' ? '审核通过' : '审核拒绝'
     });
-
-  } catch (error) {
-    console.error('审核晒单失败:', error);
-    return NextResponse.json(
-      { success: false, error: '审核晒单失败' },
-      { status: 500 }
-    );
-  }
+  })(request);
 }
 
 // 处理审核通过

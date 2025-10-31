@@ -3,28 +3,24 @@ import { prisma } from '@/lib/prisma';
 import { getAdminFromRequest } from '@/lib/auth';
 import { getLogger } from '@/lib/logger';
 
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.users.read()
+});
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.users.write()
+});
+
 // GET - 获取用户行为统计
 export async function GET(request: NextRequest) {
-  const logger = getLogger();
+  return withReadPermission(async (request, admin) => {
+    const logger = getLogger();
 
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查是否有用户分析权限
-    const hasPermission = admin.permissions.includes('users:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法查看用户行为统计'
-      }, { status: 403 });
-    }
+    try {
 
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
@@ -108,20 +104,22 @@ export async function GET(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
-    logger.error('获取用户行为统计失败', error as Error);
-    return NextResponse.json({
-      success: false,
-      error: error.message || '获取用户行为统计失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      logger.error('获取用户行为统计失败', error as Error);
+      return NextResponse.json({
+        success: false,
+        error: error.message || '获取用户行为统计失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // POST - 记录用户行为
 export async function POST(request: NextRequest) {
-  const logger = getLogger();
+  return withWritePermission(async (request, admin) => {
+    const logger = getLogger();
 
-  try {
+    try {
     const body = await request.json();
     const {
       userId,
@@ -192,13 +190,14 @@ export async function POST(request: NextRequest) {
       message: '行为记录成功'
     });
 
-  } catch (error: any) {
-    logger.error('记录用户行为失败', error as Error);
-    return NextResponse.json({
-      success: false,
-      error: error.message || '记录用户行为失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      logger.error('记录用户行为失败', error as Error);
+      return NextResponse.json({
+        success: false,
+        error: error.message || '记录用户行为失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 /**

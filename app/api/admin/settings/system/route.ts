@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminFromRequest } from '@/lib/auth';
+import { AdminPermissionManager } from '@/lib/admin-permission-manager';
+import { AdminPermissions } from '@/lib/admin-permissions';
 import { prisma } from '@/lib/prisma';
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.SETTINGS_READ);
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.SETTINGS_WRITE);
 
 // 缓存系统设置以提高性能
 let settingsCache: { data: any; timestamp: number } | null = null;
@@ -180,25 +184,7 @@ async function updateSystemSetting(
 }
 
 export async function GET(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false,
-        error: '管理员权限验证失败' 
-      }, { status: 403 });
-    }
-
-    // 检查设置查看权限
-    const hasPermission = admin.permissions.includes('settings:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false,
-        error: '权限不足：无法查看系统参数' 
-      }, { status: 403 });
-    }
-
+  return withReadPermission(async (request, admin) => {
     const url = new URL(request.url);
     const category = url.searchParams.get('category');
     const subCategory = url.searchParams.get('sub_category');
@@ -253,36 +239,11 @@ export async function GET(request: NextRequest) {
         pages: Math.ceil(total / limit)
       }
     });
-
-  } catch (error: any) {
-    console.error('获取系统参数失败:', error);
-    return NextResponse.json(
-      { success: false, error: '获取系统参数失败' }, 
-      { status: 500 }
-    );
-  }
+  })(request);
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false,
-        error: '管理员权限验证失败' 
-      }, { status: 403 });
-    }
-
-    // 检查设置管理权限
-    const hasPermission = admin.permissions.includes('settings:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false,
-        error: '权限不足：无法修改系统参数' 
-      }, { status: 403 });
-    }
-
+  return withWritePermission(async (request, admin) => {
     const data = await request.json();
     const { settings, operator_id, operator_name, change_reason } = data;
 
@@ -317,36 +278,11 @@ export async function POST(request: NextRequest) {
       message: '系统参数更新成功',
       data: updatedSettings
     });
-
-  } catch (error: any) {
-    console.error('更新系统参数失败:', error);
-    return NextResponse.json(
-      { success: false, error: '更新系统参数失败' }, 
-      { status: 500 }
-    );
-  }
+  })(request);
 }
 
 export async function PUT(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false,
-        error: '管理员权限验证失败' 
-      }, { status: 403 });
-    }
-
-    // 检查设置管理权限
-    const hasPermission = admin.permissions.includes('settings:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false,
-        error: '权限不足：无法修改系统参数' 
-      }, { status: 403 });
-    }
-
+  return withWritePermission(async (request, admin) => {
     const data = await request.json();
     const { key, value, type, category, sub_category, change_reason } = data;
 
@@ -373,36 +309,11 @@ export async function PUT(request: NextRequest) {
       success: true,
       message: '系统参数更新成功'
     });
-
-  } catch (error: any) {
-    console.error('更新系统参数失败:', error);
-    return NextResponse.json(
-      { success: false, error: '更新系统参数失败' }, 
-      { status: 500 }
-    );
-  }
+  })(request);
 }
 
 export async function DELETE(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false,
-        error: '管理员权限验证失败' 
-      }, { status: 403 });
-    }
-
-    // 检查设置管理权限
-    const hasPermission = admin.permissions.includes('settings:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false,
-        error: '权限不足：无法删除系统参数' 
-      }, { status: 403 });
-    }
-
+  return withWritePermission(async (request, admin) => {
     const url = new URL(request.url);
     const key = url.searchParams.get('key');
 
@@ -447,12 +358,5 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: '系统参数删除成功'
     });
-
-  } catch (error: any) {
-    console.error('删除系统参数失败:', error);
-    return NextResponse.json(
-      { success: false, error: '删除系统参数失败' }, 
-      { status: 500 }
-    );
-  }
+  })(request);
 }

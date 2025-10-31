@@ -2,32 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { triggerImmediateDraw } from '@/lib/lottery';
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.lottery.write()
+});
 
 // 数据一致性修复工具 - 边界情况处理和数据一致性检查
 export async function POST(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
-
-    const token = authHeader.substring(7);
-    let decoded: any;
+  return withWritePermission(async (request, admin) => {
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-    } catch {
-      return NextResponse.json({ error: '无效token' }, { status: 401 });
-    }
-
-    // 验证管理员权限
-    const admin = await prisma.admins.findUnique({
-      where: { username: decoded.username || 'admin' }
-    });
-
-    if (!admin) {
-      return NextResponse.json({ error: '无管理员权限' }, { status: 403 });
-    }
 
     const body = await request.json();
     const { action, roundId, dryRun = true } = body;
@@ -69,13 +54,15 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     });
 
-  } catch (error: any) {
-    console.error('DataFix error:', error);
-    return NextResponse.json(
-      { error: '数据修复失败', message: error.message },
-      { status: 500 }
-    );
-  }
+    } catch (error: any) {
+      console.error('DataFix error:', error);
+      return NextResponse.json(
+        { error: '数据修复失败', message: error.message },
+        { status: 500 }
+      );
+    }
+  })(request);
+}
 }
 
 // 修复售出份额不匹配问题

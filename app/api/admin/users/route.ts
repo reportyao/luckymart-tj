@@ -6,27 +6,22 @@ import { validateReferralCodeFormat } from '@/lib/auth';
 import { rewardTrigger } from '@/lib/reward-trigger-manager';
 import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+// 创建权限中间件
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.users.read()
+});
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.users.write()
+});
 
 // GET - 获取用户列表
 export async function GET(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查是否有用户查看权限
-    const hasPermission = admin.permissions.includes('users:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法查看用户列表'
-      }, { status: 403 });
-    }
+  return withReadPermission(async (request, admin) => {
+    try {
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -40,46 +35,30 @@ export async function GET(request: NextRequest) {
       search
     });
 
-    return NextResponse.json({
-      success: true,
-      data: result
-    });
-  } catch (error: any) {
-    console.error('Get users error:', error);
-    return NextResponse.json({
-      success: false,
-      error: error.message || '获取用户列表失败'
-    }, { status: 500 });
-  }
+      return NextResponse.json({
+        success: true,
+        data: result
+      });
+    } catch (error: any) {
+      console.error('Get users error:', error);
+      return NextResponse.json({
+        success: false,
+        error: error.message || '获取用户列表失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // POST - 创建用户（支持邀请奖励触发）
 export async function POST(request: NextRequest) {
-  const logger = getLogger();
-  const monitor = getMonitor();
-  const operationSpan = monitor.startSpan('user_create');
+  return withWritePermission(async (request, admin) => {
+    const logger = getLogger();
+    const monitor = getMonitor();
+    const operationSpan = monitor.startSpan('user_create');
 
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查是否有用户创建权限
-    const hasPermission = admin.permissions.includes('users:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法创建用户'
-      }, { status: 403 });
-    }
-
-    const body = await request.json();
-    const { 
+    try {
+      const body = await request.json();
+      const { 
       telegramId, 
       firstName, 
       lastName, 
@@ -255,11 +234,12 @@ export async function POST(request: NextRequest) {
       }, { error: 404 });
     }
 
-    return NextResponse.json({
-      success: false,
-      error: error.message || '用户创建失败'
-    }, { status: 500 });
-  }
+      return NextResponse.json({
+        success: false,
+        error: error.message || '用户创建失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 /**

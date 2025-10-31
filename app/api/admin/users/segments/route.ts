@@ -3,28 +3,24 @@ import { prisma } from '@/lib/prisma';
 import { getAdminFromRequest } from '@/lib/auth';
 import { getLogger } from '@/lib/logger';
 
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.users.read()
+});
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.users.write()
+});
+
 // GET - 获取用户分群数据
 export async function GET(request: NextRequest) {
-  const logger = getLogger();
+  return withReadPermission(async (request, admin) => {
+    const logger = getLogger();
 
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查是否有用户分析权限
-    const hasPermission = admin.permissions.includes('users:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法查看用户分群数据'
-      }, { status: 403 });
-    }
+    try {
 
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
@@ -113,28 +109,22 @@ export async function GET(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
-    logger.error('获取用户分群数据失败', error as Error);
-    return NextResponse.json({
-      success: false,
-      error: error.message || '获取用户分群数据失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      logger.error('获取用户分群数据失败', error as Error);
+      return NextResponse.json({
+        success: false,
+        error: error.message || '获取用户分群数据失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // POST - 自动更新用户分群
 export async function POST(request: NextRequest) {
-  const logger = getLogger();
+  return withWritePermission(async (request, admin) => {
+    const logger = getLogger();
 
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
+    try {
 
     const body = await request.json();
     const { userId, segmentType = 'behavior_segment' } = body;
@@ -168,28 +158,22 @@ export async function POST(request: NextRequest) {
       });
     }
 
-  } catch (error: any) {
-    logger.error('更新用户分群失败', error as Error);
-    return NextResponse.json({
-      success: false,
-      error: error.message || '更新用户分群失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      logger.error('更新用户分群失败', error as Error);
+      return NextResponse.json({
+        success: false,
+        error: error.message || '更新用户分群失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // PUT - 手动设置用户分群
 export async function PUT(request: NextRequest) {
-  const logger = getLogger();
+  return withWritePermission(async (request, admin) => {
+    const logger = getLogger();
 
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
+    try {
 
     const body = await request.json();
     const {
@@ -269,13 +253,14 @@ export async function PUT(request: NextRequest) {
       message: '用户分群设置成功'
     });
 
-  } catch (error: any) {
-    logger.error('设置用户分群失败', error as Error);
-    return NextResponse.json({
-      success: false,
-      error: error.message || '设置用户分群失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      logger.error('设置用户分群失败', error as Error);
+      return NextResponse.json({
+        success: false,
+        error: error.message || '设置用户分群失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 /**

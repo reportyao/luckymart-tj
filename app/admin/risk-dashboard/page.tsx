@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import PagePermission from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 
 // 简化的SVG图表组件
 const SimpleChart = ({ data, title }: { data: number[], title: string }) => {
@@ -90,7 +92,7 @@ const PieChart = ({ data, title }: { data: { label: string, value: number, color
   );
 };
 
-export default function RiskDashboard() {
+function RiskDashboard() {
   const router = useRouter();
   const [adminInfo, setAdminInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -263,5 +265,13 @@ export default function RiskDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function WrappedRiskDashboard() {
+  return (
+    <PagePermission permissions={AdminPermissions.system.manage()}>
+      <RiskDashboard />
+    </PagePermission>
   );
 }

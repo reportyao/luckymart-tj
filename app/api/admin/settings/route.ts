@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminFromRequest } from '@/lib/auth';
+import { AdminPermissionManager } from '@/lib/admin-permission-manager';
+import { AdminPermissions } from '@/lib/admin-permissions';
 import { prisma } from '@/lib/prisma';
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.SETTINGS_READ);
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.SETTINGS_WRITE);
 
 // 缓存系统设置以提高性能（修复内存泄漏）
 class SettingsCache {
@@ -175,61 +179,18 @@ async function updateSetting(key: string, value: any, type: string = 'string') {
 }
 
 export async function GET(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false,
-        error: '管理员权限验证失败' 
-      }, { status: 403 });
-    }
-
-    // 检查设置查看权限
-    const hasPermission = admin.permissions.includes('settings:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false,
-        error: '权限不足：无法查看系统设置' 
-      }, { status: 403 });
-    }
-
+  return withReadPermission(async (request, admin) => {
     const settings = await getAllSettings();
 
     return NextResponse.json({ 
       success: true,
       settings 
     });
-
-  } catch (error: any) {
-    console.error('获取系统设置失败:', error);
-    return NextResponse.json(
-      { error: '获取系统设置失败' }, 
-      { status: 500 }
-    );
-  }
+  })(request);
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false,
-        error: '管理员权限验证失败' 
-      }, { status: 403 });
-    }
-
-    // 检查设置管理权限（超级管理员或设置权限）
-    const hasPermission = admin.permissions.includes('settings:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false,
-        error: '权限不足：无法修改系统设置' 
-      }, { status: 403 });
-    }
-
+  return withWritePermission(async (request, admin) => {
     const data = await request.json();
 
     // 批量更新设置
@@ -337,12 +298,5 @@ export async function POST(request: NextRequest) {
       message: '系统设置更新成功',
       settings: updatedSettings
     });
-
-  } catch (error: any) {
-    console.error('更新系统设置失败:', error);
-    return NextResponse.json(
-      { error: '更新系统设置失败' }, 
-      { status: 500 }
-    );
-  }
+  })(request);
 }

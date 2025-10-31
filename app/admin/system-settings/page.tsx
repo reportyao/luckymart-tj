@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import PagePermission from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 
 interface SystemSetting {
   id: number;
@@ -107,7 +109,7 @@ interface OperationConfig {
   updated_at: string;
 }
 
-export default function SystemSettingsPage() {
+function SystemSettingsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('system');
   const [loading, setLoading] = useState(false);
@@ -581,5 +583,13 @@ export default function SystemSettingsPage() {
         </Button>
       </div>
     </div>
+  );
+}
+
+export default function WrappedSystemSettingsPage() {
+  return (
+    <PagePermission permissions={AdminPermissions.settings.write()}>
+      <SystemSettingsPage />
+    </PagePermission>
   );
 }

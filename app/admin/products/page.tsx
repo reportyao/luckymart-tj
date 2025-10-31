@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { PagePermission } from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 import Link from 'next/link';
 import type { Product } from '@/types';
 
@@ -234,3 +236,18 @@ export default function AdminProductsPage() {
     </div>
   );
 }
+
+
+// 导出带权限控制的页面
+function ProtectedProductsPage() {
+  return (
+    <PagePermission 
+      permissions={AdminPermissions.products.read()}
+      showFallback={true}
+    >
+      <AdminProductsPage />
+    </PagePermission>
+  );
+}
+
+export default ProtectedProductsPage;

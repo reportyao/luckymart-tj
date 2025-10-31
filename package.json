@@ -79,14 +79,14 @@
     "static-analysis": "tsx scripts/check-types.ts static",
     "complexity-check": "eslint . --ext .ts,.tsx --no-eslintrc --rule 'complexity: [error, 10]' --format json",
     "quality-report": "npm run type-check && npm run lint && npm run security-check && npm run complexity-check > quality-report.json",
-    "pre-commit": "bash scripts/pre-commit-check.sh && npm run lint && npm run type-check && npm run format:check",
+    "pre-commit": "bash scripts/pre-commit-check.sh && npm run lint && npm run type-check && npm run format:check && npm run env:security-check",
     "check:all": "npm run type-check && npm run lint && npm run static-analysis",
     "quality:full": "npm run lint && npm run type-check && npm run format:check && npm run security-check && npm run complexity-check",
     "security:scan": "npm run security-audit && npm run security-check",
-    "env:security-check": "grep -r 'password\\|secret\\|token\\|key' .env* 2>/dev/null || echo 'No hardcoded credentials found'",
-    "pre-commit": "bash scripts/pre-commit-check.sh && npm run lint && npm run type-check && npm run format:check && npm run env:security-check"
+    "env:security-check": "grep -r 'password\\|secret\\|token\\|key' .env* 2>/dev/null || echo 'No hardcoded credentials found'"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@prisma/client": "^6.18.0",
     "@supabase/supabase-js": "^2.46.1",
     "@use-gesture/react": "^10.3.1",
@@ -109,7 +109,7 @@
     "react-use": "^17.6.0",
     "recharts": "^2.15.4",
     "telegraf": "^4.16.3",
-    "xlsx": "^0.20.0"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

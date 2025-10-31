@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import PagePermission from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -48,7 +50,7 @@ interface TrendData {
   withdrawals?: number;
 }
 
-export default function FinancialDashboard() {
+function FinancialDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(false);
   const [timeRange, setTimeRange] = useState('30d');
@@ -475,5 +477,13 @@ export default function FinancialDashboard() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+export default function WrappedFinancialDashboard() {
+  return (
+    <PagePermission permissions={AdminPermissions.stats.read()}>
+      <FinancialDashboard />
+    </PagePermission>
   );
 }

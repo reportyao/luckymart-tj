@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import PagePermission from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -94,7 +96,7 @@ interface TrendData {
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
-export default function CostMonitoringPage() {
+function CostMonitoringPage() {
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(false);
   const [dateRange, setDateRange] = useState({
@@ -565,5 +567,13 @@ export default function CostMonitoringPage() {
         </Alert>
       )}
     </div>
+  );
+}
+
+export default function WrappedCostMonitoringPage() {
+  return (
+    <PagePermission permissions={AdminPermissions.stats.read()}>
+      <CostMonitoringPage />
+    </PagePermission>
   );
 }

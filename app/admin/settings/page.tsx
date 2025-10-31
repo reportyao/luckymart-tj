@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { PagePermission } from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 import Link from 'next/link';
 
 interface SystemSettings {
@@ -599,3 +601,18 @@ export default function AdminSettings() {
     </div>
   );
 }
+
+
+// 导出带权限控制的页面
+function ProtectedSettingsPage() {
+  return (
+    <PagePermission 
+      permissions={AdminPermissions.settings.read()}
+      showFallback={true}
+    >
+      <AdminSettingsPage />
+    </PagePermission>
+  );
+}
+
+export default ProtectedSettingsPage;

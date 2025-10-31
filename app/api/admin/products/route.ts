@@ -3,26 +3,26 @@ import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { requireAdminPermission } from '@/lib/admin-auth-middleware';
 
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.products.read()
+});
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.products.write()
+});
+
+const withDeletePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.products.delete()
+});
+
 // GET - 获取所有商品
 export async function GET(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查商品查看权限
-    const hasPermission = admin.permissions.includes('products:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法查看商品列表'
-      }, { status: 403 });
-    }
+  return withReadPermission(async (request, admin) => {
+    try {
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
@@ -61,35 +61,20 @@ export async function GET(request: NextRequest) {
         }
       }
     });
-  } catch (error: any) {
-    console.error('获取商品列表失败:', error);
-    return NextResponse.json({
-      success: false,
-      error: '获取商品列表失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('获取商品列表失败:', error);
+      return NextResponse.json({
+        success: false,
+        error: '获取商品列表失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // POST - 创建商品
 export async function POST(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查商品管理权限
-    const hasPermission = admin.permissions.includes('products:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法创建商品'
-      }, { status: 403 });
-    }
+  return withWritePermission(async (request, admin) => {
+    try {
 
     const body = await request.json();
     const {
@@ -159,35 +144,20 @@ export async function POST(request: NextRequest) {
         message: '商品创建成功'
       }
     });
-  } catch (error: any) {
-    console.error('Create product error:', error);
-    return NextResponse.json({
-      success: false,
-      error: '创建商品失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('Create product error:', error);
+      return NextResponse.json({
+        success: false,
+        error: '创建商品失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // PUT - 更新商品
 export async function PUT(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查商品管理权限
-    const hasPermission = admin.permissions.includes('products:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法更新商品'
-      }, { status: 403 });
-    }
+  return withWritePermission(async (request, admin) => {
+    try {
 
     const body = await request.json();
     const { productId, ...updateData } = body;
@@ -225,35 +195,20 @@ export async function PUT(request: NextRequest) {
       success: true,
       data: { message: '更新成功' }
     });
-  } catch (error: any) {
-    console.error('Update product error:', error);
-    return NextResponse.json({
-      success: false,
-      error: '更新商品失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('Update product error:', error);
+      return NextResponse.json({
+        success: false,
+        error: '更新商品失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // DELETE - 删除商品
 export async function DELETE(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查商品删除权限
-    const hasPermission = admin.permissions.includes('products:delete') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法删除商品'
-      }, { status: 403 });
-    }
+  return withDeletePermission(async (request, admin) => {
+    try {
 
     const { searchParams } = new URL(request.url);
     const productId = searchParams.get('productId');
@@ -289,11 +244,12 @@ export async function DELETE(request: NextRequest) {
       success: true,
       data: { message: '删除成功' }
     });
-  } catch (error: any) {
-    console.error('Delete product error:', error);
-    return NextResponse.json({
-      success: false,
-      error: '删除商品失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('Delete product error:', error);
+      return NextResponse.json({
+        success: false,
+        error: '删除商品失败'
+      }, { status: 500 });
+    }
+  })(request);
 }

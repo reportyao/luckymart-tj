@@ -266,3 +266,18 @@ export default function AdminOrdersPage() {
     </div>
   );
 }
+
+
+// 导出带权限控制的页面
+function ProtectedOrdersPage() {
+  return (
+    <PagePermission 
+      permissions={AdminPermissions.orders.read()}
+      showFallback={true}
+    >
+      <AdminOrdersPage />
+    </PagePermission>
+  );
+}
+
+export default ProtectedOrdersPage;

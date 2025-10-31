@@ -2,26 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAdminFromRequest } from '@/lib/auth';
 
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.lottery.read()
+});
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.lottery.write()
+});
+
 // GET - 获取开奖轮次列表
 export async function GET(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查抽奖查看权限
-    const hasPermission = admin.permissions.includes('lottery:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({
-        success: false,
-        error: '权限不足：无法查看抽奖轮次'
-      }, { status: 403 });
-    }
+  return withReadPermission(async (request, admin) => {
+    try {
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || 'active';
@@ -93,11 +89,12 @@ export async function GET(request: NextRequest) {
         }
       }
     });
-  } catch (error: any) {
-    console.error('Get rounds error:', error);
-    return NextResponse.json({
-      success: false,
-      error: error.message || '获取轮次失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('Get rounds error:', error);
+      return NextResponse.json({
+        success: false,
+        error: error.message || '获取轮次失败'
+      }, { status: 500 });
+    }
+  })(request);
 }

@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
+
+// 创建权限中间件
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
+  AdminPermissions.stats.read
+]);
 
 /**
  * GET /api/admin/financial/profits
@@ -17,6 +25,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
  * - limit: 限制返回记录数
  */
 export async function GET(request: NextRequest) {
+  return withStatsPermission(async (request, admin) => {
   try {
     const { searchParams } = new URL(request.url);
     const periodType = searchParams.get('periodType') || 'daily';
@@ -143,6 +152,7 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+  })(request);
 }
 
 /**
@@ -155,6 +165,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
+  return withStatsPermission(async (request, admin) => {
   try {
     const body = await request.json();
     const {
@@ -276,6 +287,7 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+  })(request);
 }
 
 // 辅助函数：计算波动性

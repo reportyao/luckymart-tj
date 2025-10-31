@@ -277,3 +277,18 @@ export default function LotteryManagementPage() {
     </div>
   );
 }
+
+
+// 导出带权限控制的页面
+function ProtectedLotteryPage() {
+  return (
+    <PagePermission 
+      permissions={AdminPermissions.lottery.read()}
+      showFallback={true}
+    >
+      <AdminLotteryPage />
+    </PagePermission>
+  );
+}
+
+export default ProtectedLotteryPage;

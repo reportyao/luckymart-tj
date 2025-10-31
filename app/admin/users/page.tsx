@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { PagePermission } from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 import Link from 'next/link';
 import type { User } from '@/types';
 
@@ -472,3 +474,18 @@ export default function AdminUsersPage() {
     </div>
   );
 }
+
+
+// 导出带权限控制的页面
+function ProtectedAdminUsersPage() {
+  return (
+    <PagePermission 
+      permissions={AdminPermissions.users.read()}
+      showFallback={true}
+    >
+      <AdminUsersPage />
+    </PagePermission>
+  );
+}
+
+export default ProtectedAdminUsersPage;

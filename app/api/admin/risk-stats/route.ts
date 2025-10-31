@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
+  AdminPermissions.stats.read
+]);
 
 // 模拟风控统计数据
 const mockDashboardData = {
@@ -67,6 +73,7 @@ const mockDashboardData = {
 };
 
 export async function GET(request: NextRequest) {
+  return withStatsPermission(async (request, admin) => {
   try {
     const { searchParams } = new URL(request.url);
     const period = searchParams.get('period') || 'today'; // today, week, month
@@ -102,10 +109,12 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+  })(request);
 }
 
 // 获取实时统计数据（用于WebSocket或轮询）
 export async function POST(request: NextRequest) {
+  return withStatsPermission(async (request, admin) => {
   try {
     const body = await request.json();
     const { metric, action } = body;
@@ -147,4 +156,5 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+  })(request);
 }

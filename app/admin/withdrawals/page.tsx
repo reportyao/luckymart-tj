@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { PagePermission } from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 import type { WithdrawRequest } from '@/types';
 
 interface AdminWithdrawRequest extends WithdrawRequest {
@@ -274,3 +276,18 @@ export default function AdminWithdrawalsPage() {
     </div>
   );
 }
+
+
+// 导出带权限控制的页面
+function ProtectedWithdrawalsPage() {
+  return (
+    <PagePermission 
+      permissions={AdminPermissions.withdrawals.read()}
+      showFallback={true}
+    >
+      <AdminWithdrawalsPage />
+    </PagePermission>
+  );
+}
+
+export default ProtectedWithdrawalsPage;

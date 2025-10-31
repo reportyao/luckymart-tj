@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.products.read()
+});
 
 // GET - 获取单个商品详情
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  try {
+  return withReadPermission(async (request, admin) => {
+    try {
     const productId = params.id;
 
     const product = await prisma.products.findUnique({
@@ -43,11 +50,12 @@ export async function GET(
         }
       }
     });
-  } catch (error: any) {
-    console.error('获取商品详情失败:', error);
-    return NextResponse.json({
-      success: false,
-      error: '获取商品详情失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('获取商品详情失败:', error);
+      return NextResponse.json({
+        success: false,
+        error: '获取商品详情失败'
+      }, { status: 500 });
+    }
+  })(request);
 }

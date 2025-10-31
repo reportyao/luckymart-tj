@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import PagePermission from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 
 interface RiskEvent {
   id: string;
@@ -148,7 +150,7 @@ const RiskEventDetail = ({
   );
 };
 
-export default function RiskEventsPage() {
+function RiskEventsPage() {
   const router = useRouter();
   const [adminInfo, setAdminInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -542,5 +544,13 @@ export default function RiskEventsPage() {
         onManualReview={handleManualReview}
       />
     </div>
+  );
+}
+
+export default function WrappedRiskEventsPage() {
+  return (
+    <PagePermission permissions={AdminPermissions.system.manage()}>
+      <RiskEventsPage />
+    </PagePermission>
   );
 }

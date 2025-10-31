@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/src/i18n/useLanguageCompat';
 import InvitationAnalytics from '@/components/admin/InvitationAnalytics';
+import PagePermission from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,7 +40,7 @@ interface AdminStats {
   };
 }
 
-export default function AdminInvitationsPage() {
+function AdminInvitationsPage() {
   const { t } = useTranslation('referral');
   const { currentLanguage } = useLanguage();
   const [adminStats, setAdminStats] = useState<AdminStats | null>(null);
@@ -370,5 +372,13 @@ export default function AdminInvitationsPage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+export default function WrappedAdminInvitationsPage() {
+  return (
+    <PagePermission permissions={AdminPermissions.users.read()}>
+      <AdminInvitationsPage />
+    </PagePermission>
   );
 }

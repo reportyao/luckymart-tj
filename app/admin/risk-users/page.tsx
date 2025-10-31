@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import PagePermission from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 
 interface RiskUser {
   id: string;
@@ -171,7 +173,7 @@ const UserRiskDetail = ({
   );
 };
 
-export default function RiskUsersPage() {
+function RiskUsersPage() {
   const router = useRouter();
   const [adminInfo, setAdminInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -651,5 +653,13 @@ export default function RiskUsersPage() {
         onClose={() => setSelectedUser(null)}
       />
     </div>
+  );
+}
+
+export default function WrappedRiskUsersPage() {
+  return (
+    <PagePermission permissions={AdminPermissions.system.manage()}>
+      <RiskUsersPage />
+    </PagePermission>
   );
 }

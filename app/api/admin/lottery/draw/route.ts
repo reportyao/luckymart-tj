@@ -1,21 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { calculateSecureWinningNumber, generateSecureDrawProof, findWinner } from '@/lib/lottery-algorithm';
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.lottery.write()
+});
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.lottery.read()
+});
 
 /**
  * 手动触发开奖API
  * 管理员可以手动触发某个已售罄的抽奖轮次的开奖
  */
 export async function POST(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return NextResponse.json({
-        success: false,
-        error: '未授权'
-      }, { status: 401 });
-    }
+  return withWritePermission(async (request, admin) => {
+    try {
 
     const body = await request.json();
     const { roundId } = body;
@@ -191,28 +194,22 @@ export async function POST(request: NextRequest) {
         proof: generateSecureDrawProof(drawResult)
       }
     });
-  } catch (error: any) {
-    console.error('Manual draw error:', error);
-    return NextResponse.json({
-      success: false,
-      error: error.message || '开奖失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('Manual draw error:', error);
+      return NextResponse.json({
+        success: false,
+        error: error.message || '开奖失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 /**
  * GET - 获取待开奖列表
  */
 export async function GET(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) {
-      return NextResponse.json({
-        success: false,
-        error: '未授权'
-      }, { status: 401 });
-    }
+  return withReadPermission(async (request, admin) => {
+    try {
 
     // 查询已售罄但未开奖的轮次（soldShares >= totalShares）
     const allActiveRounds = await prisma.lotteryRounds.findMany({
@@ -262,11 +259,12 @@ export async function GET(request: NextRequest) {
         rounds: roundsWithDetails
       }
     });
-  } catch (error: any) {
-    console.error('Get ready rounds error:', error);
-    return NextResponse.json({
-      success: false,
-      error: error.message || '获取待开奖列表失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('Get ready rounds error:', error);
+      return NextResponse.json({
+        success: false,
+        error: error.message || '获取待开奖列表失败'
+      }, { status: 500 });
+    }
+  })(request);
 }

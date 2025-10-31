@@ -4,26 +4,22 @@ import { prisma } from '@/lib/prisma';
 import { getAdminFromRequest } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
 
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.withdrawals.read()
+});
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.withdrawals.write()
+});
+
 // 获取提现申请列表
 export async function GET(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查提现查看权限
-    const hasPermission = admin.permissions.includes('withdrawals:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '权限不足：无法查看提现列表'
-      }, { status: 403 });
-    }
+  return withReadPermission(async (request, admin) => {
+    try {
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
@@ -69,35 +65,20 @@ export async function GET(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
-    console.error('获取提现列表失败:', error);
-    return NextResponse.json<ApiResponse>({
-      success: false,
-      error: error.message || '获取提现列表失败'
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('获取提现列表失败:', error);
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: error.message || '获取提现列表失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // 审核提现申请
 export async function POST(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查提现管理权限
-    const hasPermission = admin.permissions.includes('withdrawals:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '权限不足：无法处理提现申请'
-      }, { status: 403 });
-    }
+  return withWritePermission(async (request, admin) => {
+    try {
 
     const body = await request.json();
     const { withdrawId, action, adminNote } = body;
@@ -291,15 +272,17 @@ export async function POST(request: NextRequest) {
       data: result.data || null
     });
 
-  } catch (error: any) {
-    console.error('审核提现失败:', error);
-    
-    // 处理具体的错误信息
-    const errorMessage = error.message || '审核提现失败';
-    
-    return NextResponse.json<ApiResponse>({
-      success: false,
-      error: errorMessage
-    }, { status: 500 });
-  }
+    } catch (error: any) {
+      console.error('审核提现失败:', error);
+      
+      // 处理具体的错误信息
+      const errorMessage = error.message || '审核提现失败';
+      
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: errorMessage
+      }, { status: 500 });
+    }
+  })(request);
+}
 }

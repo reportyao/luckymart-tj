@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminFromRequest } from '@/lib/auth';
+import { AdminPermissionManager } from '@/lib/admin-permission-manager';
+import { AdminPermissions } from '@/lib/admin-permissions';
 import { prisma } from '@/lib/prisma';
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.RISK_READ);
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.RISK_WRITE);
 
 // 缓存风控配置以提高性能
 let riskCache: { data: any; timestamp: number } | null = null;
@@ -133,25 +137,7 @@ async function deleteRiskConfig(id: string, operatorId: string) {
 }
 
 export async function GET(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false,
-        error: '管理员权限验证失败' 
-      }, { status: 403 });
-    }
-
-    // 检查风控管理权限
-    const hasPermission = admin.permissions.includes('risk:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false,
-        error: '权限不足：无法查看风控参数' 
-      }, { status: 403 });
-    }
-
+  return withReadPermission(async (request, admin) => {
     const url = new URL(request.url);
     const category = url.searchParams.get('category');
     const riskType = url.searchParams.get('risk_type');
@@ -226,36 +212,11 @@ export async function GET(request: NextRequest) {
         pages: Math.ceil(total / limit)
       }
     });
-
-  } catch (error: any) {
-    console.error('获取风控参数失败:', error);
-    return NextResponse.json(
-      { success: false, error: '获取风控参数失败' }, 
-      { status: 500 }
-    );
-  }
+  })(request);
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false,
-        error: '管理员权限验证失败' 
-      }, { status: 403 });
-    }
-
-    // 检查风控管理权限
-    const hasPermission = admin.permissions.includes('risk:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false,
-        error: '权限不足：无法创建风控参数' 
-      }, { status: 403 });
-    }
-
+  return withWritePermission(async (request, admin) => {
     const data = await request.json();
 
     // 验证必填字段
@@ -307,36 +268,11 @@ export async function POST(request: NextRequest) {
       message: '风控参数创建成功',
       data: config
     }, { status: 201 });
-
-  } catch (error: any) {
-    console.error('创建风控参数失败:', error);
-    return NextResponse.json(
-      { success: false, error: '创建风控参数失败' }, 
-      { status: 500 }
-    );
-  }
+  })(request);
 }
 
 export async function PUT(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false,
-        error: '管理员权限验证失败' 
-      }, { status: 403 });
-    }
-
-    // 检查风控管理权限
-    const hasPermission = admin.permissions.includes('risk:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false,
-        error: '权限不足：无法更新风控参数' 
-      }, { status: 403 });
-    }
-
+  return withWritePermission(async (request, admin) => {
     const data = await request.json();
     const { id } = data;
 
@@ -354,36 +290,11 @@ export async function PUT(request: NextRequest) {
       message: '风控参数更新成功',
       data: config
     });
-
-  } catch (error: any) {
-    console.error('更新风控参数失败:', error);
-    return NextResponse.json(
-      { success: false, error: '更新风控参数失败' }, 
-      { status: 500 }
-    );
-  }
+  })(request);
 }
 
 export async function DELETE(request: NextRequest) {
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json({ 
-        success: false,
-        error: '管理员权限验证失败' 
-      }, { status: 403 });
-    }
-
-    // 检查风控管理权限
-    const hasPermission = admin.permissions.includes('risk:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json({ 
-        success: false,
-        error: '权限不足：无法删除风控参数' 
-      }, { status: 403 });
-    }
-
+  return withWritePermission(async (request, admin) => {
     const url = new URL(request.url);
     const id = url.searchParams.get('id');
 
@@ -400,12 +311,5 @@ export async function DELETE(request: NextRequest) {
       success: true,
       message: '风控参数删除成功'
     });
-
-  } catch (error: any) {
-    console.error('删除风控参数失败:', error);
-    return NextResponse.json(
-      { success: false, error: '删除风控参数失败' }, 
-      { status: 500 }
-    );
-  }
+  })(request);
 }

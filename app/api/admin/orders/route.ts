@@ -9,6 +9,9 @@ import { getMonitor } from '@/lib/monitoring';
 import { createOrderValidationMiddleware, ORDER_VALIDATION_MIDDLEWARES } from '@/lib/order-validation-middleware';
 import { ErrorFactory } from '@/lib/errors';
 
+import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 // 订单状态更新请求体
 interface OrderUpdateRequest {
   orderId: string;
@@ -16,28 +19,21 @@ interface OrderUpdateRequest {
   updateType?: 'ship' | 'complete';
 }
 
+
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.orders.read()
+});
+
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.orders.write()
+});
+
 // 获取订单列表
 export async function GET(request: NextRequest) {
-  const logger = getLogger();
-  
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查订单查看权限
-    const hasPermission = admin.permissions.includes('orders:read') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '权限不足：无法查看订单列表'
-      }, { status: 403 });
-    }
+  return withReadPermission(async (request, admin) => {
+    const logger = getLogger();
+    
+    try {
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
@@ -88,39 +84,24 @@ export async function GET(request: NextRequest) {
       }
     });
 
-  } catch (error) {
-    logger.error('获取订单列表失败', error as Error);
-    return NextResponse.json<ApiResponse>({
-      success: false,
-      error: '获取订单列表失败'
-    }, { status: 500 });
-  }
+    } catch (error) {
+      logger.error('获取订单列表失败', error as Error);
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: '获取订单列表失败'
+      }, { status: 500 });
+    }
+  })(request);
 }
 
 // 更新订单状态
 export async function POST(request: NextRequest) {
-  const logger = getLogger();
-  const monitor = getMonitor();
-  const operationSpan = monitor.startSpan('order_ship');
+  return withWritePermission(async (request, admin) => {
+    const logger = getLogger();
+    const monitor = getMonitor();
+    const operationSpan = monitor.startSpan('order_ship');
 
-  try {
-    // 验证管理员权限
-    const admin = getAdminFromRequest(request);
-    if (!admin) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '管理员权限验证失败'
-      }, { status: 403 });
-    }
-
-    // 检查订单管理权限
-    const hasPermission = admin.permissions.includes('orders:write') || admin.role === 'super_admin';
-    if (!hasPermission) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '权限不足：无法更新订单状态'
-      }, { status: 403 });
-    }
+    try {
 
     // 验证请求体
     const body: OrderUpdateRequest = await request.json();
@@ -359,18 +340,19 @@ export async function POST(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
-    operationSpan.finish(false, {
-      error: error.message
-    });
+    } catch (error: any) {
+      operationSpan.finish(false, {
+        error: error.message
+      });
 
-    monitor.increment('order_update_error_total', 1);
+      monitor.increment('order_update_error_total', 1);
 
-    logger.error('订单状态更新失败', error as Error);
+      logger.error('订单状态更新失败', error as Error);
 
-    return NextResponse.json<ApiResponse>({
-      success: false,
-      error: error.message || '订单状态更新失败'
-    }, { status: 500 });
-  }
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: error.message || '订单状态更新失败'
+      }, { status: 500 });
+    }
+  })(request);
 }

@@ -663,3 +663,209 @@ model FinancialReports {
   @@unique([reportType, reportPeriod])
   @@map("financial_reports")
 }
+
+
+// ================================
+// 管理员权限管理系统 (Admin Permission Management System)
+// ================================
+
+// 管理员权限表
+model adminPermissions {
+  id             String    @id @default(uuid()) @db.Uuid
+  adminId        String    @map("admin_id") @db.Uuid
+  resource       String    @db.VarChar(50) // 'users', 'products', 'orders', 'withdrawals', 'reports', 'settings'
+  action         String    @db.VarChar(20) // 'read', 'write', 'delete', 'manage', 'approve'
+  permissionName String?   @map("permission_name") @db.VarChar(100)
+  grantedBy      String    @map("granted_by") @db.Uuid
+  createdAt      DateTime  @default(now()) @map("created_at")
+  expiresAt      DateTime? @map("expires_at")
+
+  @@unique([adminId, resource, action])
+  @@index([adminId])
+  @@index([resource, action])
+  @@index([expiresAt])
+  @@map("admin_permissions")
+}
+
+// ================================
+// 组织架构管理系统 (Organization Structure Management System)
+// ================================
+
+// 部门表
+model orgDepartments {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique @db.VarChar(50)
+  description String?  @db.VarChar(255)
+  parentId    String?  @map("parent_id") @db.Uuid
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([parentId])
+  @@index([isActive])
+  @@index([sortOrder])
+  @@map("org_departments")
+}
+
+// 角色表
+model orgRoles {
+  id           String   @id @default(uuid()) @db.Uuid
+  departmentId String?  @map("department_id") @db.Uuid
+  name         String   @unique @db.VarChar(50)
+  description  String?  @db.VarChar(255)
+  permissions  Json?    @db.JsonB // 角色权限配置JSON
+  sortOrder    Int      @default(0) @map("sort_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([departmentId])
+  @@index([isActive])
+  @@index([sortOrder])
+  @@map("org_roles")
+}
+
+// 角色权限关联表
+model rolePermissions {
+  id             String   @id @default(uuid()) @db.Uuid
+  roleId         String   @map("role_id") @db.Uuid
+  resource       String   @db.VarChar(50) // 'users', 'products', 'orders', 'withdrawals'
+  action         String   @db.VarChar(20) // 'read', 'write', 'delete', 'manage', 'approve'
+  permissionCode String   @map("permission_code") @db.VarChar(100)
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@unique([roleId, resource, action])
+  @@index([roleId])
+  @@index([resource, action])
+  @@map("role_permissions")
+}
+
+// ================================
+// Telegram Bot管理系统 (Telegram Bot Management System)
+// ================================
+
+// Bot推送模板表
+model botPushTemplates {
+  id          String   @id @default(uuid()) @db.Uuid
+  messageType String   @map("message_type") @db.VarChar(50) // 'order_confirm', 'payment_success', 'lottery_win', 'withdrawal_process'
+  language    String   @default("zh") @db.VarChar(10) // 'zh', 'en', 'ru', 'tg'
+  template    String   @db.Text // 消息模板，支持变量如 {username}, {amount}
+  variables   Json?    @db.JsonB // 模板变量配置和说明
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([messageType, language])
+  @@index([messageType, language])
+  @@index([isActive])
+  @@map("bot_push_templates")
+}
+
+// Bot推送历史表
+model botPushHistory {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String?  @map("user_id") @db.Uuid
+  messageType  String   @map("message_type") @db.VarChar(50)
+  targetChat   String   @map("target_chat") @db.VarChar(100) // Telegram Chat ID
+  sendStatus   String   @map("send_status") @db.VarChar(20) // 'pending', 'sent', 'failed', 'retry'
+  sendTime     DateTime @default(now()) @map("send_time")
+  content      String?  @db.Text // 实际发送的消息内容
+  pushId       String?  @map("push_id") @db.VarChar(40) // Telegram消息ID
+  errorMessage String?  @map("error_message") @db.Text
+  retryCount   Int      @default(0) @map("retry_count")
+
+  @@index([userId])
+  @@index([messageType])
+  @@index([sendStatus])
+  @@index([sendTime])
+  @@index([targetChat])
+  @@map("bot_push_history")
+}
+
+// Bot状态监控表
+model botStatus {
+  id               String    @id @default(uuid()) @db.Uuid
+  botUsername      String    @unique @map("bot_username") @db.VarChar(50)
+  isOnline         Boolean   @default(false) @map("is_online")
+  lastHeartbeat    DateTime? @map("last_heartbeat")
+  lastError        String?   @map("last_error") @db.Text
+  restartCount     Int       @default(0) @map("restart_count")
+  apiCallsCount    Int       @default(0) @map("api_calls_count")
+  errorCount       Int       @default(0) @map("error_count")
+  pushSuccessCount Int       @default(0) @map("push_success_count")
+  pushFailureCount Int       @default(0) @map("push_failure_count")
+  uptime           Int       @default(0) @db.Integer // 运行时间(秒)
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@index([isOnline])
+  @@index([lastHeartbeat])
+  @@map("bot_status")
+}
+
+// ================================
+// 系统设置和运营管理 (System Settings & Operations Management)
+// ================================
+
+// 系统设置表
+model systemSettings {
+  id          String   @id @default(uuid()) @db.Uuid
+  category    String   @db.VarChar(50) // 'user_growth', 'business', 'content', 'security', 'payment'
+  key         String   @db.VarChar(100) // 配置项键名
+  value       String?  @db.Text // 配置值
+  valueType   String   @default("string") @map("value_type") @db.VarChar(20) // 'string', 'number', 'boolean', 'json'
+  description String?  @db.Text // 配置项说明
+  isActive    Boolean  @default(true) @map("is_active")
+  updatedBy   String?  @map("updated_by") @db.Uuid // 最后修改人admin_id
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([category, key])
+  @@index([category])
+  @@index([isActive])
+  @@map("system_settings")
+}
+
+// 操作日志表
+model operationLogs {
+  id          String   @id @default(uuid()) @db.Uuid
+  adminId     String   @map("admin_id") @db.Uuid
+  operation   String   @db.VarChar(50) // 'create', 'update', 'delete', 'approve', 'reject', 'export'
+  resource    String   @db.VarChar(50) // 'user', 'product', 'order', 'withdrawal', 'system_setting'
+  resourceId  String?  @map("resource_id") @db.Uuid
+  description String?  @db.Text // 操作描述
+  oldValues   Json?    @map("old_values") @db.JsonB // 修改前的值
+  newValues   Json?    @map("new_values") @db.JsonB // 修改后的值
+  ipAddress   String?  @map("ip_address") @db.VarChar(45)
+  userAgent   String?  @map("user_agent") @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([adminId])
+  @@index([operation])
+  @@index([resource])
+  @@index([resourceId])
+  @@index([createdAt])
+  @@map("operation_logs")
+}
+
+// 增长指标统计表
+model growthMetrics {
+  id             String   @id @default(uuid()) @db.Uuid
+  date           DateTime @db.Date // 统计日期
+  newUsers       Int      @default(0) @map("new_users") // 新增用户数
+  activeUsers    Int      @default(0) @map("active_users") // 活跃用户数
+  retainedUsers  Int      @default(0) @map("retained_users") // 留存用户数
+  conversionRate Decimal? @map("conversion_rate") @db.Decimal(5, 2) // 转化率(%)
+  referralCount  Int      @default(0) @map("referral_count") // 邀请数
+  checkInCount   Int      @default(0) @map("check_in_count") // 签到数
+  tasksCompleted Int      @default(0) @map("tasks_completed") // 完成任务数
+  totalRewards   Decimal? @map("total_rewards") @db.Decimal(10, 2) // 总奖励金额
+  kFactor        Decimal? @map("k_factor") @db.Decimal(5, 3) // K因子(病毒系数)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@unique([date])
+  @@index([date])
+  @@map("growth_metrics")
+}

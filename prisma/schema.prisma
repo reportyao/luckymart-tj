@@ -290,49 +290,101 @@ model walletTransactions {
   @@map("wallet_transactions")
 }
 
-// 新手激励系统相关模型
+// ================================
+// 新手激励系统相关模型 (Newbie Incentive System)
+// ================================
 
-model newUserTasks {
-  id           String   @id @default(uuid()) @db.Uuid
-  userId       String   @map("user_id") @db.Uuid
-  taskType     String   @map("task_type") @db.VarChar(50) // 'register', 'recharge', 'lottery'
-  status       String   @default("pending") @db.VarChar(20) // 'pending', 'completed', 'claimed'
-  rewardAmount Decimal  @default(0) @map("reward_amount") @db.Decimal(10, 2)
-  completedAt  DateTime? @map("completed_at")
-  claimedAt    DateTime? @map("claimed_at")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+// 新手任务定义表
+model NewbieTasks {
+  id                String   @id @default(uuid()) @db.Uuid
+  
+  // 多语言字段支持
+  taskName          Json     @map("task_name") @db.JsonB // {"zh": "任务名称", "en": "Task Name", "ru": "Название задачи"}
+  description       Json?    @map("description") @db.JsonB // {"zh": "任务描述", "en": "Task Description", "ru": "Описание задачи"}
+  
+  // 兼容原有字段（逐步淘汰）
+  taskNameZh        String?  @map("task_name_zh") @db.VarChar(255)
+  taskNameEn        String?  @map("task_name_en") @db.VarChar(255)
+  taskNameRu        String?  @map("task_name_ru") @db.VarChar(255)
+  descriptionZh     String?  @map("description_zh")
+  descriptionEn     String?  @map("description_en")
+  descriptionRu     String?  @map("description_ru")
+  
+  taskType          String   @map("task_type") @db.VarChar(50) // 'registration', 'first_recharge', 'lottery_participation', 'product_purchase'
+  rewardType        String   @map("reward_type") @db.VarChar(30) // 'coins', 'balance', 'vip_days'
+  rewardAmount      Decimal  @map("reward_amount") @db.Decimal(10, 2)
+  priority          Int      @default(0) // 任务优先级，用于排序显示
+  isActive          Boolean  @default(true) @map("is_active")
+  maxRewardsPerDay  Int?     @map("max_rewards_per_day") // 每日最大奖励次数
+  maxRewardsTotal   Int?     @map("max_rewards_total") // 总最大奖励次数
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at")
 
-  @@index([userId])
-  @@index([userId, taskType])
-  @@index([status])
-  @@unique([userId, taskType])
-  @@map("new_user_tasks")
+  @@index([taskType])
+  @@index([isActive])
+  @@index([priority])
+  @@map("newbie_tasks")
 }
 
-model dailyCheckIns {
-  id              String   @id @default(uuid()) @db.Uuid
-  userId          String   @map("user_id") @db.Uuid
-  checkInDate     DateTime @map("check_in_date") @db.Date
-  consecutiveDays Int      @default(1) @map("consecutive_days")
-  rewardAmount    Decimal  @default(0) @map("reward_amount") @db.Decimal(10, 2)
-  status          String   @default("claimed") @db.VarChar(20) // 'unclaimed', 'claimed'
-  claimedAt       DateTime @default(now()) @map("claimed_at")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+// 用户任务进度表
+model UserTaskProgress {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @map("user_id") @db.Uuid
+  taskId            String   @map("task_id") @db.Uuid
+  status            String   @default("pending") @db.VarChar(20) // 'pending', 'in_progress', 'completed', 'claimed'
+  currentProgress   Int      @default(0) @map("current_progress") // 当前进度
+  targetProgress    Int      @default(1) @map("target_progress") // 目标进度
+  completionRate    Decimal  @default(0) @map("completion_rate") @db.Decimal(5, 2) // 完成百分比
+  claimableAmount   Decimal  @default(0) @map("claimable_amount") @db.Decimal(10, 2) // 可领取金额
+  claimedAmount     Decimal  @default(0) @map("claimed_amount") @db.Decimal(10, 2) // 已领取金额
+  startedAt         DateTime? @map("started_at")
+  completedAt       DateTime? @map("completed_at")
+  claimedAt         DateTime? @map("claimed_at")
+  expiresAt         DateTime? @map("expires_at")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([taskId])
+  @@index([userId, taskId])
+  @@index([status])
+  @@index([completedAt])
+  @@unique([userId, taskId])
+  @@map("user_task_progress")
+}
+
+// 签到记录表
+model CheckInRecords {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @map("user_id") @db.Uuid
+  checkInDate       DateTime @map("check_in_date") @db.Date
+  consecutiveDays   Int      @default(1) @map("consecutive_days") // 连续签到天数
+  cycleDay          Int      @default(1) @map("cycle_day") // 当前7天周期中的第几天 (1-7)
+  isDoubleReward    Boolean  @default(false) @map("is_double_reward") // 是否为双倍奖励日
+  rewardAmount      Decimal  @default(0) @map("reward_amount") @db.Decimal(10, 2)
+  rewardType        String   @default("coins") @map("reward_type") @db.VarChar(30) // 'coins', 'balance', 'vip_days'
+  status            String   @default("claimed") @db.VarChar(20) // 'claimed', 'missed', 'expired'
+  claimedAt         DateTime @default(now()) @map("claimed_at")
+  notes             String?  @db.Text
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@index([userId])
   @@index([userId, checkInDate])
+  @@index([status])
+  @@index([consecutiveDays])
   @@unique([userId, checkInDate])
-  @@map("daily_check_ins")
+  @@map("check_in_records")
 }
 
-model firstRechargeRewards {
+// 首充奖励记录表
+model FirstRechargeRewards {
   id           String   @id @default(uuid()) @db.Uuid
   userId       String   @map("user_id") @db.Uuid
   rechargeAmount Decimal @default(0) @map("recharge_amount") @db.Decimal(10, 2)
-  rewardType   String   @map("reward_type") @db.VarChar(50) // 'bonus_coins', 'discount_coupon', 'vip_upgrade'
-  rewardAmount Decimal  @default(0) @map("reward_amount") @db.Decimal(10, 2)
+  orderId      String?  @map("order_id") @db.Uuid
+  rewardType   String   @map("reward_type") @db.VarChar(50) // 'lucky_coins'
+  rewardAmount Decimal  @default(0) @map("reward_amount") @db.Decimal(10, 2) // 幸运币数量
   status       String   @default("pending") @db.VarChar(20) // 'pending', 'claimed', 'expired'
   claimedAt    DateTime? @map("claimed_at")
   createdAt    DateTime @default(now()) @map("created_at")
@@ -340,6 +392,7 @@ model firstRechargeRewards {
 
   @@index([userId])
   @@index([userId, status])
-  @@unique([userId, rechargeAmount])
+  @@index([orderId])
+  @@unique([userId]) // 每个用户只能享受一次首充奖励
   @@map("first_recharge_rewards")
 }

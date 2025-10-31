@@ -1,0 +1,203 @@
+{
+  "bot": {
+    "welcome": {
+      "title": "🎉 Welcome to LuckyMart TJ Lucky Market!",
+      "message": "🌟 Dear {firstName}, welcome to Lucky Market!\n\nHere you can participate in lotteries for your favorite products:\n• 1 Lottery Coin = 1 share, ultra-low threshold\n• New users get 50 Lottery Coins as welcome gift 🎁\n• 3 free daily participations\n• Fair and transparent lottery algorithm\n\nYour account has been created. Current balance: {balance} Lottery Coins\n\nClick the button below to enter the Lucky Market and start your lucky journey!",
+      "buttons": {
+        "enter_market": "🎲 Enter Lucky Market",
+        "tutorial": "📚 Tutorial",
+        "language_settings": "🌐 Language Settings"
+      }
+    },
+    
+    "registration_reward": {
+      "title": "🎁 Registration Reward Received",
+      "message": "🎉 Congratulations! Registration reward has been credited\n\nReward amount: {rewardAmount} Lottery Coins\nCurrent balance: {balance} Lottery Coins\n\nThank you for choosing LuckyMart TJ! Start your lucky journey now ~",
+      "buttons": {
+        "start_lottery": "🎲 Start Lottery",
+        "browse_products": "🛒 Browse Products"
+      }
+    },
+    
+    "balance": {
+      "title": "💰 Account Balance",
+      "message": "💳 Your account balance:\n\nLottery Coins: {balance} coins\nPlatform Balance: {platformBalance} TJS\nVIP Level: {vipLevel}\nToday's Free Uses: {freeCount}/3\n\nClick the buttons below to recharge or view more",
+      "buttons": {
+        "recharge": "💳 Go to Recharge",
+        "orders": "📋 View Orders"
+      }
+    },
+    
+    "orders": {
+      "title": "📋 Order Inquiry",
+      "message": "📋 {firstName}, your order information:\n\n{orderList}\n\nClick the buttons below to view more details",
+      "empty": "You don't have any orders yet",
+      "buttons": {
+        "all_orders": "📋 View All Orders"
+      }
+    },
+    
+    "order_status": {
+      "title": "📦 Order Status Update",
+      "message": "📦 Order {orderNumber} status has been updated\n\nStatus: {status}\nAmount: {amount} TJS\n{trackingNumber}\n\n{status_message}",
+      "status_messages": {
+        "paid": "We are arranging shipment for you, please be patient ~",
+        "shipped": "Expected delivery in 2-3 business days",
+        "delivered": "Thank you for your purchase, welcome back!"
+      },
+      "buttons": {
+        "view_order": "📋 View Order"
+      }
+    },
+    
+    "payment_success": {
+      "title": "💳 Payment Successful",
+      "message": "💳 Payment Successful!\n\n📋 Order Number: {orderNumber}\n💰 Payment Amount: {amount} TJS\n🎁 Product: {productName}\n\n✅ Payment confirmed, arranging shipment\n📱 Please pay attention to order status changes",
+      "buttons": {
+        "view_order": "📋 View Order",
+        "continue_shopping": "🛒 Continue Shopping"
+      }
+    },
+    
+    "lottery_win": {
+      "title": "🎉 Congratulations on Winning!",
+      "message": "🎉 Congratulations on winning!\n\nProduct: {productName}\nRound: {roundId}\nPrize Value: {prizeValue} TJS\n\n🏆 Congratulations on winning this round's prize!\nWe will contact you to arrange delivery, please keep your contact information available\n\nThank you for your participation, continue supporting us ~",
+      "buttons": {
+        "view_prize": "🏆 View Prize",
+        "continue_lottery": "🎲 Continue Participating"
+      }
+    },
+    
+    "lottery_lose": {
+      "title": "📊 Lottery Results",
+      "message": "📊 Lottery Results Announced\n\nProduct: {productName}\nRound: {roundId}\nParticipants: {participants} people\n\nUnfortunately, you didn't win this time\nBut don't lose heart, keep participating, the next winner could be you!\n\nParticipate in more product lotteries immediately, luck is just ahead ~",
+      "buttons": {
+        "continue_lottery": "🎲 Continue Participating"
+      }
+    },
+    
+    "vip_level_up": {
+      "title": "👑 VIP Level Up!",
+      "message": "👑 VIP Level Up!\n\nUpgraded from {oldLevel} to {newLevel}\n\n🎉 Congratulations on your new VIP privileges:\n{benefits}\n\nThank you for your support and trust, we will provide you with better service!",
+      "buttons": {
+        "view_vip": "👑 View Benefits",
+        "continue_shopping": "🛒 Continue Shopping"
+      }
+    },
+    
+    "system_notification": {
+      "title": "ℹ️ System Notification",
+      "message": "ℹ️ {title}\n\n{content}",
+      "buttons": {
+        "view_details": "👀 View Details"
+      }
+    },
+    
+    "help": {
+      "title": "❓ Help Center",
+      "message": "📚 Command List:\n\n/start - Start using\n/balance - Check balance\n/orders - View orders\n/language - Switch language\n/profile - Personal profile\n/support - Contact support\n/help - View help\n\nNeed help? Click the buttons below:",
+      "buttons": {
+        "tutorial": "📚 Tutorial",
+        "contact_support": "💬 Contact Support"
+      }
+    },
+    
+    "language_selection": {
+      "title": "🌐 Language Settings",
+      "message": "Please select your preferred language:",
+      "buttons": {
+        "chinese": "🇨🇳 中文",
+        "english": "🇺🇸 English",
+        "russian": "🇷🇺 Русский",
+        "tajik": "🇹🇯 Тоҷикӣ"
+      }
+    },
+    
+    "language_changed": {
+      "title": "✅ Language Changed",
+      "message": "Your interface language has been successfully changed to {language}.\n\nIf you need to switch to another language, please use the /language command."
+    },
+    
+    "referral_reward": {
+      "title": "🎁 Referral Reward Received",
+      "message": "🎉 Congratulations! Your referred user has completed registration\n\nReferral reward: {rewardAmount} Lottery Coins\nCurrent balance: {balance} Lottery Coins\n\nContinue referring more friends to earn more rewards!",
+      "buttons": {
+        "invite_friends": "👥 Invite Friends",
+        "view_referrals": "📊 My Referrals"
+      }
+    },
+    
+    "support": {
+      "title": "💬 Customer Support",
+      "message": "💬 Contact Us\n\nSupport Hours: Monday - Sunday 9:00-22:00\n\nContact Information:\n- Telegram Support: @luckymart_support\n- Support Email: support@luckymart.tj\n\nCommon Issues:\n- Payment Issues: Reply within 24 hours\n- Lottery Disputes: Immediate handling\n- Account Issues: Real-time response\n\nWe promise to provide you with the best service!",
+      "buttons": {
+        "faq": "❓ FAQ",
+        "contact_support": "💬 Contact Support",
+        "back_to_help": "🔙 Back to Help"
+      }
+    },
+    
+    "tutorial": {
+      "title": "📚 Tutorial",
+      "message": "📚 Tutorial\n\n🎯 How to Participate in Lotteries:\n1. Choose your favorite product\n2. Buy lottery shares (1 share = 1 lottery coin)\n3. Wait for the draw time\n4. Wait for the lucky number announcement\n5. Winner receives the product\n\n💰 How to Get Lottery Coins:\n- New user registration: 50 lottery coins\n- Daily free participation: 3 times\n- Recharge to buy more shares\n\n🎁 Participation Rules:\n- Fair and transparent draws using blockchain technology\n- Fixed draw times for each round\n- Automatic delivery after winning\n\nFeel free to contact customer service with any questions!",
+      "buttons": {
+        "start_lottery": "🎲 Start Lottery",
+        "contact_support": "💬 Contact Support"
+      }
+    },
+    
+    "resale_status": {
+      "title": "📈 Resale Status Update",
+      "message": "📈 Resale Status Update\n\nResale ID: {resaleId}\nStatus: {status}\n{progress}\n\n{status_message}",
+      "status_messages": {
+        "created": "Resale application created\nLooking for buyers...",
+        "matching": "Looking for buyers for you\nEstimated matching time: 5-10 minutes",
+        "matched": "Buyer found!\nProcessing transaction...",
+        "sold": "Resale successful!\nFunds credited (5% fee deducted)",
+        "cancelled": "Resale cancelled"
+      },
+      "buttons": {
+        "view_resale": "📈 View Resale"
+      }
+    },
+    
+    "errors": {
+      "user_not_found": "You haven't registered yet, please click /start to begin",
+      "network_error": "Network error, please try again later",
+      "command_not_found": "Command not found, please input /help to see available commands",
+      "access_denied": "Access denied",
+      "service_unavailable": "Service temporarily unavailable, please try again later",
+      "invalid_parameters": "Invalid parameters",
+      "operation_failed": "Operation failed, please try again later"
+    },
+    
+    "status_messages": {
+      "loading": "Processing, please wait...",
+      "success": "Operation successful!",
+      "processing": "Processing...",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    },
+    
+    "common": {
+      "amount": "Amount",
+      "currency": "Currency",
+      "date": "Date",
+      "time": "Time",
+      "status": "Status",
+      "actions": "Actions",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "save": "Save",
+      "edit": "Edit",
+      "delete": "Delete",
+      "view": "View",
+      "back": "Back",
+      "next": "Next",
+      "previous": "Previous",
+      "close": "Close",
+      "refresh": "Refresh"
+    }
+  }
+}

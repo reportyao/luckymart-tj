@@ -5,6 +5,7 @@ import { faultToleranceManager } from './utils/fault-tolerance-manager';
 import { MessageQueue } from './utils/message-queue';
 import { UserInfoService } from './services/user-info-service';
 import { RewardNotifier } from './services/reward-notifier';
+import { NotificationService } from './services/notification-service';
 import { Language, NotificationType } from './utils/notification-templates';
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -23,6 +24,9 @@ let userInfoService: UserInfoService;
 
 // 全局奖励通知服务实例
 let rewardNotifier: RewardNotifier;
+
+// 全局多语言通知服务实例
+let notificationService: NotificationService;
 
 const bot = new Telegraf(BOT_TOKEN);
 
@@ -69,6 +73,18 @@ function initializeRewardNotifier() {
   logger.info('奖励通知服务已初始化');
 }
 
+// 初始化多语言通知服务
+function initializeNotificationService() {
+  notificationService = new NotificationService(bot, {
+    maxRetries: 3,
+    initialDelay: 500,
+    maxDelay: 10000,
+    backoffMultiplier: 2
+  });
+  
+  logger.info('多语言通知服务已初始化');
+}
+
 // /start命令 - 用户冷启动 + 用户注册
 bot.command('start', performanceLogger('start_command'), async (ctx) => {
   const telegramUser = ctx.from;
@@ -112,7 +128,12 @@ bot.command('start', performanceLogger('start_command'), async (ctx) => {
       }
     });
     
-    const welcomeMessage = `
+    // 使用多语言通知服务发送欢迎消息
+    if (notificationService) {
+      await notificationService.sendWelcomeMessage(user.id, telegramId, ctx.chat.id, telegramUser);
+    } else {
+      // 回退到原始消息发送逻辑
+      const welcomeMessage = `
 🎉 欢迎来到LuckyMart TJ幸运集市！
 
 这里有超多心仪商品等你来夺宝：
@@ -126,17 +147,17 @@ bot.command('start', performanceLogger('start_command'), async (ctx) => {
 点击下方按钮进入幸运集市，开始您的幸运之旅吧！
 `;
 
-    // 使用消息队列发送欢迎消息
-    await messageQueue.addMessage('telegram', {
-      type: 'send_message',
-      chatId: ctx.chat.id,
-      text: welcomeMessage,
-      keyboard: Markup.inlineKeyboard([
-        [Markup.button.webApp('进入幸运集市', MINI_APP_URL)],
-        [Markup.button.callback('新手教程', 'help_tutorial')],
-        [Markup.button.callback('语言设置', 'language_settings')]
-      ])
-    }, { priority: 'high' });
+      await messageQueue.addMessage('telegram', {
+        type: 'send_message',
+        chatId: ctx.chat.id,
+        text: welcomeMessage,
+        keyboard: Markup.inlineKeyboard([
+          [Markup.button.webApp('进入幸运集市', MINI_APP_URL)],
+          [Markup.button.callback('新手教程', 'help_tutorial')],
+          [Markup.button.callback('语言设置', 'language_settings')]
+        ])
+      }, { priority: 'high' });
+    }
 
     // 记录业务事件
     logger.business('user_registered', telegramId, {
@@ -198,15 +219,25 @@ bot.command('balance', performanceLogger('balance_command'), async (ctx) => {
     });
 
     if (!user) {
-      await messageQueue.addMessage('telegram', {
-        type: 'send_message',
-        chatId: ctx.chat.id,
-        text: '您还未注册，请点击 /start 开始使用'
-      });
+      // 使用多语言通知服务发送错误消息
+      if (notificationService) {
+        await notificationService.sendCustomNotification(telegramId, 'errors.user_not_found');
+      } else {
+        await messageQueue.addMessage('telegram', {
+          type: 'send_message',
+          chatId: ctx.chat.id,
+          text: '您还未注册，请点击 /start 开始使用'
+        });
+      }
       return;
     }
 
-    const message = `
+    // 使用多语言通知服务发送余额查询结果
+    if (notificationService) {
+      await notificationService.sendBalanceQuery(telegramId, ctx.chat.id);
+    } else {
+      // 回退到原始消息发送逻辑
+      const message = `
 您的账户余额：
 
 夺宝币：${user.balance.toString()} 币
@@ -217,16 +248,16 @@ VIP等级：${user.vipLevel}
 点击下方按钮充值或查看更多
 `;
 
-    // 使用消息队列发送余额信息
-    await messageQueue.addMessage('telegram', {
-      type: 'send_message',
-      chatId: ctx.chat.id,
-      text: message,
-      keyboard: Markup.inlineKeyboard([
-        [Markup.button.webApp('前往充值', `${MINI_APP_URL}/recharge`)],
-        [Markup.button.webApp('查看订单', `${MINI_APP_URL}/orders`)]
-      ])
-    });
+      await messageQueue.addMessage('telegram', {
+        type: 'send_message',
+        chatId: ctx.chat.id,
+        text: message,
+        keyboard: Markup.inlineKeyboard([
+          [Markup.button.webApp('前往充值', `${MINI_APP_URL}/recharge`)],
+          [Markup.button.webApp('查看订单', `${MINI_APP_URL}/orders`)]
+        ])
+      });
+    }
 
     logger.business('balance_checked', telegramId, {
       balance: user.balance,
@@ -267,11 +298,16 @@ bot.command('orders', performanceLogger('orders_command'), async (ctx) => {
     });
 
     if (!user) {
-      await messageQueue.addMessage('telegram', {
-        type: 'send_message',
-        chatId: ctx.chat.id,
-        text: '您还未注册，请点击 /start 开始使用'
-      });
+      // 使用多语言通知服务发送错误消息
+      if (notificationService) {
+        await notificationService.sendCustomNotification(telegramId, 'errors.user_not_found');
+      } else {
+        await messageQueue.addMessage('telegram', {
+          type: 'send_message',
+          chatId: ctx.chat.id,
+          text: '您还未注册，请点击 /start 开始使用'
+        });
+      }
       return;
     }
 
@@ -282,34 +318,39 @@ bot.command('orders', performanceLogger('orders_command'), async (ctx) => {
       take: 5
     });
 
-    if (orders.length === 0) {
+    // 使用多语言通知服务发送订单查询结果
+    if (notificationService) {
+      await notificationService.sendOrderQuery(telegramId, ctx.chat.id);
+    } else {
+      // 回退到原始消息发送逻辑
+      if (orders.length === 0) {
+        await messageQueue.addMessage('telegram', {
+          type: 'send_message',
+          chatId: ctx.chat.id,
+          text: '您还没有订单',
+          keyboard: Markup.inlineKeyboard([
+            [Markup.button.webApp('去夺宝', MINI_APP_URL)]
+          ])
+        });
+        return;
+      }
+
+      let message = '您的最近订单：\n\n';
+      orders.forEach((order, index) => {
+        message += `${index + 1}. 订单号：${order.orderNumber}\n`;
+        message += `   状态：${getOrderStatusText(order.paymentStatus)}\n`;
+        message += `   金额：${order.totalAmount} TJS\n\n`;
+      });
+
       await messageQueue.addMessage('telegram', {
         type: 'send_message',
         chatId: ctx.chat.id,
-        text: '您还没有订单',
+        text: message,
         keyboard: Markup.inlineKeyboard([
-          [Markup.button.webApp('去夺宝', MINI_APP_URL)]
+          [Markup.button.webApp('查看全部订单', `${MINI_APP_URL}/orders`)]
         ])
       });
-      return;
     }
-
-    let message = '您的最近订单：\n\n';
-    orders.forEach((order, index) => {
-      message += `${index + 1}. 订单号：${order.orderNumber}\n`;
-      message += `   状态：${getOrderStatusText(order.paymentStatus)}\n`;
-      message += `   金额：${order.totalAmount} TJS\n\n`;
-    });
-
-    // 使用消息队列发送订单信息
-    await messageQueue.addMessage('telegram', {
-      type: 'send_message',
-      chatId: ctx.chat.id,
-      text: message,
-      keyboard: Markup.inlineKeyboard([
-        [Markup.button.webApp('查看全部订单', `${MINI_APP_URL}/orders`)]
-      ])
-    });
 
     logger.business('orders_viewed', telegramId, {
       orderCount: orders.length,
@@ -340,7 +381,14 @@ bot.command('orders', performanceLogger('orders_command'), async (ctx) => {
 
 // /help命令 - 帮助信息
 bot.command('help', async (ctx) => {
-  const helpMessage = `
+  const telegramId = ctx.from.id.toString();
+  
+  // 使用多语言通知服务发送帮助信息
+  if (notificationService) {
+    await notificationService.sendHelpMessage(telegramId, ctx.chat.id);
+  } else {
+    // 回退到原始消息发送逻辑
+    const helpMessage = `
 命令列表：
 /start - 开始使用
 /balance - 查询余额
@@ -353,23 +401,32 @@ bot.command('help', async (ctx) => {
 需要帮助？点击下方按钮：
 `;
 
-  await ctx.reply(helpMessage,
-    Markup.inlineKeyboard([
-      [Markup.button.webApp('新手教程', `${MINI_APP_URL}/tutorial`)],
-      [Markup.button.callback('联系客服', 'contact_support')]
-    ])
-  );
+    await ctx.reply(helpMessage,
+      Markup.inlineKeyboard([
+        [Markup.button.webApp('新手教程', `${MINI_APP_URL}/tutorial`)],
+        [Markup.button.callback('联系客服', 'contact_support')]
+      ])
+    );
+  }
 });
 
 // /language命令 - 切换语言
 bot.command('language', async (ctx) => {
-  await ctx.reply('请选择语言 / Choose Language / Выберите язык:',
-    Markup.inlineKeyboard([
-      [Markup.button.callback('中文', 'lang_zh')],
-      [Markup.button.callback('English', 'lang_en')],
-      [Markup.button.callback('Русский', 'lang_ru')]
-    ])
-  );
+  const telegramId = ctx.from.id.toString();
+  
+  // 使用多语言通知服务发送语言选择菜单
+  if (notificationService) {
+    await notificationService.sendLanguageSelection(telegramId, ctx.chat.id);
+  } else {
+    // 回退到原始消息发送逻辑
+    await ctx.reply('请选择语言 / Choose Language / Выберите язык:',
+      Markup.inlineKeyboard([
+        [Markup.button.callback('中文', 'lang_zh')],
+        [Markup.button.callback('English', 'lang_en')],
+        [Markup.button.callback('Русский', 'lang_ru')]
+      ])
+    );
+  }
 });
 
 // /profile命令 - 个人资料
@@ -588,16 +645,24 @@ bot.command('notifications', async (ctx) => {
     });
 
     if (!user) {
-      await messageQueue?.addMessage('telegram', {
-        type: 'send_message',
-        chatId: ctx.chat.id,
-        text: '您还未注册，请点击 /start 开始使用'
-      });
+      // 使用多语言通知服务发送错误消息
+      if (notificationService) {
+        await notificationService.sendCustomNotification(telegramId, 'errors.user_not_found');
+      } else {
+        await messageQueue?.addMessage('telegram', {
+          type: 'send_message',
+          chatId: ctx.chat.id,
+          text: '您还未注册，请点击 /start 开始使用'
+        });
+      }
       return;
     }
 
     if (rewardNotifier) {
       await rewardNotifier.showNotificationSettings(user.id, ctx);
+    } else if (notificationService) {
+      // 使用多语言通知服务发送通知设置
+      await notificationService.sendCustomNotification(telegramId, 'notification_settings');
     } else {
       await ctx.reply('通知服务暂不可用，请稍后重试');
     }
@@ -615,6 +680,7 @@ bot.command('notifications', async (ctx) => {
 bot.action(/lang_(.+)/, async (ctx) => {
   const lang = ctx.match[1];
   const telegramId = ctx.from.id.toString();
+  const chatId = ctx.chat.id;
 
   try {
     await prisma.users.update({
@@ -622,14 +688,22 @@ bot.action(/lang_(.+)/, async (ctx) => {
       data: { language: lang }
     });
 
-    const messages: Record<string, string> = {
-      zh: '语言已切换为中文',
-      en: 'Language switched to English',
-      ru: 'Язык переключен на русский'
-    };
-
     await ctx.answerCbQuery();
-    await ctx.reply(messages[lang] || messages.zh);
+    
+    // 使用多语言通知服务发送语言变更确认
+    if (notificationService) {
+      await notificationService.sendLanguageChanged(telegramId, chatId, lang);
+    } else {
+      // 回退到原始消息发送逻辑
+      const messages: Record<string, string> = {
+        'zh-CN': '语言已切换为中文',
+        'en-US': 'Language switched to English',
+        'ru-RU': 'Язык переключен на русский',
+        'tg-TJ': 'Забон ба Тоҷикӣ иваз карда шуд'
+      };
+
+      await ctx.reply(messages[lang] || messages['zh-CN']);
+    }
   } catch (error) {
     logger.error('语言切换失败', { 
       telegramId, 
@@ -991,6 +1065,57 @@ async function checkPendingLotteries() {
     }
   } catch (error) {
     logger.error('检查待开奖彩票失败', error);
+  }
+}
+
+// Bot启动函数
+async function startBot() {
+  try {
+    logger.info('正在启动 LuckyMart TJ Telegram Bot...');
+    
+    // 初始化各个服务
+    initializeMessageQueue();
+    initializeUserInfoService();
+    initializeRewardNotifier();
+    initializeNotificationService();
+    
+    // 启动Bot
+    bot.launch();
+    
+    logger.info('✅ LuckyMart TJ Telegram Bot 启动成功！', {
+      botUsername: bot.botInfo?.username,
+      botId: bot.botInfo?.id,
+      timestamp: new Date().toISOString()
+    });
+    
+    // 优雅关闭处理
+    process.once('SIGINT', () => stopBot('SIGINT'));
+    process.once('SIGTERM', () => stopBot('SIGTERM'));
+    
+    return bot;
+  } catch (error) {
+    logger.error('Bot 启动失败', { error: (error as Error).message }, error as Error);
+    throw error;
+  }
+}
+
+// Bot停止函数
+function stopBot(signal: string) {
+  logger.info(`收到 ${signal} 信号，正在停止 Bot...`);
+  
+  try {
+    bot.stop(signal);
+    
+    // 停止各个服务
+    if (notificationService) {
+      notificationService.stop();
+    }
+    
+    logger.info('Bot 已安全停止');
+    process.exit(0);
+  } catch (error) {
+    logger.error('Bot 停止时发生错误', { error: (error as Error).message }, error as Error);
+    process.exit(1);
   }
 }
 

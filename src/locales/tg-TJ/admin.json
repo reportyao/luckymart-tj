@@ -1,0 +1,35 @@
+{
+  "welcome": "Хуш омадед",
+  "logout": "Баромадан",
+  
+  "reward_config": {
+    "title": "Идоракунии ҷойизҳо",
+    "subtitle": "Идоракунии параметрҳои ҷойиз ва сатҳҳои даъват",
+    "search_placeholder": "Ҷустуҷӯи калиди ё ном...",
+    "add_new": "Илова кардан",
+    "total_configs": "Конфигуратсияҳои умумӣ",
+    "active_configs": "Конфигуратсияҳои фаъол",
+    "inactive_configs": "Конфигуратсияҳои ғайрифаъол",
+    "config_key": "Калиди конфигуратсия",
+    "config_name": "Номи конфигуратсия",
+    "reward_amount": "Миқдори ҷойиз",
+    "referral_level": "Сатҳи даъват",
+    "status": "Ҳолат",
+    "updated_at": "Навсозӣ шуд",
+    "updated_by": "Навсозӣ кард",
+    "actions": "Амалҳо",
+    "active": "Фаъол",
+    "inactive": "Ғайрифаъол",
+    "level": "Сатҳ",
+    "edit": "Таҳрир",
+    "deactivate": "Ғайрифаъол кардан",
+    "activate": "Фаъол кардан",
+    "previous": "Қаблӣ",
+    "next": "Минбаъда",
+    "page_info": "Саҳифаи {{page}} аз {{totalPages}}",
+    "select_all": "Ҳамаро интихоб кунед",
+    "clear_selection": "Интихобро бекор кунед",
+    "batch_update": "Навсозии гурӯҳӣ",
+    "selected_count": "{{count}} интихоб шудааст"
+  }
+}

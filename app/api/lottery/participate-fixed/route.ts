@@ -3,21 +3,6 @@ import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { TajikistanTimeUtils } from '@/lib/timezone-utils';
 
-// 塔吉克斯坦时区工具
-class TajikistanTimeUtils {
-  static readonly TIMEZONE = 'Asia/Dushanbe';
-  
-  static getCurrentTime(): Date {
-    return new Date(new Date().toLocaleString('en-US', {
-      timeZone: this.TIMEZONE
-    }));
-  }
-  
-  static getCurrentDateString(): string {
-    return this.getCurrentTime().toISOString().split('T')[0];
-  }
-}
-
 export async function POST(request: NextRequest) {
   try {
     // 验证JWT Token

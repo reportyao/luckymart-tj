@@ -1,0 +1,43 @@
+{
+  "app_name": "LuckyMart TJ",
+  "welcome": "Хуш омадед",
+  "language": "Забон",
+  "loading": "Боркунӣ...",
+  "confirm": "Тасдиқ",
+  "cancel": "Бекоркунӣ",
+  "back": "Бозгашт",
+  "shares": "ҳисса",
+  "coins": "Тангаҳои Бахт",
+  "tjs": "TJS",
+  
+  "nav": {
+    "home": "Саҳифаи асосӣ",
+    "orders": "Фармоишҳои ман",
+    "profile": "Профил",
+    "resale": "Бозори моликиятдодашуда",
+    "settings": "Танзимот",
+    "transactions": "Амалиётҳо",
+    "withdraw": "Пулкашӣ",
+    "recharge": "Пардохт",
+    "referral": "Даъватҳои ман",
+    "team": "Омори гурӯҳ",
+    "menu": "Меню",
+    "language": "Забон"
+  },
+  
+  "home": {
+    "title": "LuckyMart TJ",
+    "subtitle": "Бо 1 сомонӣ ҷойгир шавед",
+    "banner": {
+      "title": "Лутфи қисмат, ғолибшавӣ осон",
+      "subtitle": "Маҳсулоти арзан, талаботи паст, адолатнок ва шаффоф",
+      "button": "Иштирок кунед"
+    },
+    "hot_products": "Маҳсулоти машҳур",
+    "market_price": "Нархи бозор",
+    "per_share": "Барои ҳисса",
+    "total_shares": "Ҳиссаҳои умумӣ",
+    "progress": "Пешрафт",
+    "participate": "Иштирок кунед"
+  }
+}

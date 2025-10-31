@@ -1,0 +1,43 @@
+{
+  "app_name": "LuckyMart TJ",
+  "welcome": "Welcome",
+  "language": "Language",
+  "loading": "Loading...",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "back": "Back",
+  "shares": "shares",
+  "coins": "Lucky Coins",
+  "tjs": "TJS",
+  
+  "nav": {
+    "home": "Home",
+    "orders": "My Orders",
+    "profile": "Profile",
+    "resale": "Resale Market",
+    "settings": "Settings",
+    "transactions": "Transactions",
+    "withdraw": "Withdraw",
+    "recharge": "Recharge",
+    "referral": "My Referrals",
+    "team": "Team Stats",
+    "menu": "Menu",
+    "language": "Language"
+  },
+  
+  "home": {
+    "title": "LuckyMart TJ",
+    "subtitle": "Win Big for Just $1",
+    "banner": {
+      "title": "Lucky Draw, Easy Win",
+      "subtitle": "Premium Products, Low Entry, Fair & Transparent",
+      "button": "Join Now"
+    },
+    "hot_products": "Hot Products",
+    "market_price": "Market Price",
+    "per_share": "Per Share",
+    "total_shares": "Total Shares",
+    "progress": "Progress",
+    "participate": "Join Now"
+  }
+}

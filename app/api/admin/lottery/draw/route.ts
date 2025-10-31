@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { calculateWinningNumber, generateDrawProof, findWinner } from '@/lib/lottery-algorithm';
+// import { calculateWinningNumber, generateDrawProof, findWinner } from '@/lib/lottery-algorithm';
 
 /**
  * 手动触发开奖API

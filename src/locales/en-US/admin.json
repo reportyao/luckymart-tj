@@ -1,0 +1,35 @@
+{
+  "welcome": "Welcome",
+  "logout": "Logout",
+  
+  "reward_config": {
+    "title": "Reward Config Management",
+    "subtitle": "Manage system reward parameters and referral levels",
+    "search_placeholder": "Search config key or name...",
+    "add_new": "Add New",
+    "total_configs": "Total Configs",
+    "active_configs": "Active Configs",
+    "inactive_configs": "Inactive Configs",
+    "config_key": "Config Key",
+    "config_name": "Config Name",
+    "reward_amount": "Reward Amount",
+    "referral_level": "Referral Level",
+    "status": "Status",
+    "updated_at": "Updated At",
+    "updated_by": "Updated By",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive",
+    "level": "Level",
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "previous": "Previous",
+    "next": "Next",
+    "page_info": "Page {{page}} of {{totalPages}}",
+    "select_all": "Select All",
+    "clear_selection": "Clear Selection",
+    "batch_update": "Batch Update",
+    "selected_count": "{{count}} selected"
+  }
+}

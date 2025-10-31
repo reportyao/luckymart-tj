@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { I18nProvider } from "@/src/i18n/I18nProvider";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
@@ -17,9 +18,11 @@ export default function RootLayout({
     <html lang="zh">
       <body className="antialiased">
         <ErrorBoundary>
-          <LanguageProvider>
-            {children}
-          </LanguageProvider>
+          <I18nProvider>
+            <LanguageProvider>
+              {children}
+            </LanguageProvider>
+          </I18nProvider>
         </ErrorBoundary>
       </body>
     </html>

@@ -1,0 +1,11 @@
+{
+  "network_error": "网络错误，请稍后重试",
+  "server_error": "服务器错误",
+  "not_found": "资源不存在",
+  "unauthorized": "未授权，请先登录",
+  "forbidden": "无权限访问",
+  "validation_error": "验证失败",
+  "insufficient_balance": "余额不足",
+  "operation_failed": "操作失败",
+  "unknown_error": "未知错误"
+}

@@ -1,0 +1,43 @@
+{
+  "app_name": "LuckyMart TJ 幸运集市",
+  "welcome": "欢迎",
+  "language": "语言设置",
+  "loading": "加载中...",
+  "confirm": "确认",
+  "cancel": "取消",
+  "back": "返回",
+  "shares": "份",
+  "coins": "夺宝币",
+  "tjs": "TJS",
+  
+  "nav": {
+    "home": "首页",
+    "orders": "我的订单",
+    "profile": "个人中心",
+    "resale": "转售市场",
+    "settings": "设置",
+    "transactions": "交易记录",
+    "withdraw": "提现",
+    "recharge": "充值",
+    "referral": "我的邀请",
+    "team": "团队统计",
+    "menu": "菜单",
+    "language": "语言设置"
+  },
+  
+  "home": {
+    "title": "LuckyMart TJ 幸运集市",
+    "subtitle": "1元夺宝，好运连连",
+    "banner": {
+      "title": "幸运夺宝，轻松中奖",
+      "subtitle": "超值商品，超低门槛，公平透明",
+      "button": "立即参与"
+    },
+    "hot_products": "热门商品",
+    "market_price": "市场价",
+    "per_share": "每份",
+    "total_shares": "总份数",
+    "progress": "进度",
+    "participate": "立即参与"
+  }
+}

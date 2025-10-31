@@ -1,0 +1,35 @@
+{
+  "welcome": "Добро пожаловать",
+  "logout": "Выйти",
+  
+  "reward_config": {
+    "title": "Управление наградами",
+    "subtitle": "Управление параметрами наград и уровнями рефералов",
+    "search_placeholder": "Поиск по ключу или имени...",
+    "add_new": "Добавить новый",
+    "total_configs": "Всего конфигураций",
+    "active_configs": "Активных конфигураций",
+    "inactive_configs": "Неактивных конфигураций",
+    "config_key": "Ключ конфигурации",
+    "config_name": "Имя конфигурации",
+    "reward_amount": "Сумма награды",
+    "referral_level": "Уровень реферала",
+    "status": "Статус",
+    "updated_at": "Обновлено",
+    "updated_by": "Обновил",
+    "actions": "Действия",
+    "active": "Активный",
+    "inactive": "Неактивный",
+    "level": "Уровень",
+    "edit": "Редактировать",
+    "deactivate": "Деактивировать",
+    "activate": "Активировать",
+    "previous": "Предыдущая",
+    "next": "Следующая",
+    "page_info": "Страница {{page}} из {{totalPages}}",
+    "select_all": "Выбрать все",
+    "clear_selection": "Снять выбор",
+    "batch_update": "Массовое обновление",
+    "selected_count": "{{count}} выбрано"
+  }
+}

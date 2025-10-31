@@ -1,0 +1,17 @@
+{
+  "title": "抽奖",
+  "participate": "立即参与",
+  "detail": "商品详情",
+  "description": "商品描述",
+  "market_price": "市场价",
+  "total_shares": "总份数",
+  "price_per_share": "每份价格",
+  "progress": "参与进度",
+  "remaining": "剩余",
+  "select_shares": "选择份数",
+  "need_coins": "需要",
+  "participate_now": "立即参与",
+  "participating": "参与中...",
+  "recent_participations": "最近参与",
+  "agree_rules": "参与即表示同意平台规则，祝您好运！"
+}

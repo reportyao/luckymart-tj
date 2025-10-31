@@ -3,6 +3,10 @@ import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { PerformanceMonitor } from '@/lib/performance';
 import { MemoryCache } from '@/lib/memory-cache';
+import {
+  ProductMultilingualService,
+  type SupportedLanguage,
+} from '@/lib/services/multilingual-query';
 
 // 内存缓存实例
 const cache = new MemoryCache(100);
@@ -17,7 +21,21 @@ export async function GET(
   try {
     const { id } = params;
     const searchParams = request.nextUrl.searchParams;
-    const language = searchParams.get('language') || 'zh';
+    const languageParam = searchParams.get('language') || 'tg-TJ';
+    
+    // 映射旧语言代码到新格式
+    const languageMap: Record<string, SupportedLanguage> = {
+      'zh': 'zh-CN',
+      'en': 'en-US',
+      'ru': 'ru-RU',
+      'tg': 'tg-TJ',
+      'zh-CN': 'zh-CN',
+      'en-US': 'en-US',
+      'ru-RU': 'ru-RU',
+      'tg-TJ': 'tg-TJ',
+    };
+    
+    const language = languageMap[languageParam] || 'tg-TJ';
 
     // 构建缓存键
     const cacheKey = `products:detail:${id}:${language}`;
@@ -41,66 +59,63 @@ export async function GET(
     }
 
     return PerformanceMonitor.measure('products/detail', async () => {
-      // 使用单一查询获取所有相关数据，解决多次查询问题
-      const [product, currentRound, recentParticipations] = await Promise.all([
-        // 获取商品信息
-        prisma.products.findUnique({
-          where: { id }
-        }),
-        // 获取当前进行中的夺宝期次
-        prisma.lotteryRounds.findFirst({
-          where: { 
-            productId: id,
-            status: 'active'
-          },
-          orderBy: { createdAt: 'desc' }
-        }),
-        // 获取最近的参与记录
-        prisma.participations.findMany({
-          where: { 
-            roundId: currentRound?.id 
-          },
-          orderBy: { createdAt: 'desc' },
-          take: 10,
-          include: {
-            user: {
-              select: { 
-                id: true, 
-                firstName: true, 
-                username: true,
-                telegramId: true 
-              }
-            }
-          }
-        }).catch(() => []) // 如果没有当前期次，返回空数组
-      ]);
+      // 使用多语言服务获取产品（包含翻译）
+      const product = await ProductMultilingualService.getProductById(id, language);
 
       if (!product) {
         return NextResponse.json({ error: '商品不存在' }, { status: 404 });
       }
 
-      // 处理参与记录的用户信息（已在上面的查询中通过include获取）
-      const formattedParticipations = recentParticipations.map(p => ({
-        id: p.id,
-        userId: p.userId,
-        userName: p.user.firstName || p.user.username || '匿名用户',
-        sharesCount: p.sharesCount,
-        numbers: p.numbers,
-        createdAt: p.createdAt
-      }));
+      // 获取当前进行中的夺宝期次和参与记录
+      const currentRound = await prisma.lotteryRounds.findFirst({
+        where: { 
+          productId: id,
+          status: 'active'
+        },
+        orderBy: { createdAt: 'desc' }
+      });
 
-      // 多语言处理
-      const langSuffix = language === 'zh' ? 'Zh' : language === 'en' ? 'En' : 'Ru';
+      const recentParticipations = currentRound ? await prisma.participations.findMany({
+        where: { roundId: currentRound.id },
+        orderBy: { createdAt: 'desc' },
+        take: 10
+      }) : [];
+
+      // 获取参与用户信息
+      const userIds = recentParticipations.map(p => p.userId);
+      const users = userIds.length > 0 ? await prisma.users.findMany({
+        where: { id: { in: userIds } },
+        select: { 
+          id: true, 
+          firstName: true, 
+          username: true,
+          telegramId: true 
+        }
+      }) : [];
+
+      const userMap = new Map(users.map(u => [u.id, u]));
+
+      const formattedParticipations = recentParticipations.map(p => {
+        const user = userMap.get(p.userId);
+        return {
+          id: p.id,
+          userId: p.userId,
+          userName: user?.firstName || user?.username || '匿名用户',
+          sharesCount: p.sharesCount,
+          numbers: p.numbers,
+          createdAt: p.createdAt
+        };
+      });
 
       const responseData = {
         id: product.id,
-        name: product[`name${langSuffix}` as keyof typeof product],
-        description: product[`description${langSuffix}` as keyof typeof product],
+        name: product.name,  // 已经是翻译后的文本
+        description: product.description,  // 已经是翻译后的文本
+        category: product.category,  // 已经是翻译后的文本
         images: product.images,
         marketPrice: parseFloat(product.marketPrice.toString()),
         totalShares: product.totalShares,
         pricePerShare: parseFloat(product.pricePerShare.toString()),
-        category: product.category,
         stock: product.stock,
         status: product.status,
         currentRound: currentRound ? {
@@ -113,7 +128,8 @@ export async function GET(
           progress: Math.round((currentRound.soldShares / currentRound.totalShares) * 100),
           remainingShares: currentRound.totalShares - currentRound.soldShares
         } : null,
-        recentParticipations: formattedParticipations
+        recentParticipations: formattedParticipations,
+        _multilingual: product._multilingual  // 保留原始多语言数据
       };
 
       // 存储到缓存

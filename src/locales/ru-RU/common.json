@@ -1,0 +1,43 @@
+{
+  "app_name": "LuckyMart TJ",
+  "welcome": "Добро пожаловать",
+  "language": "Язык",
+  "loading": "Загрузка...",
+  "confirm": "Подтвердить",
+  "cancel": "Отмена",
+  "back": "Назад",
+  "shares": "долей",
+  "coins": "Монеты Удачи",
+  "tjs": "TJS",
+  
+  "nav": {
+    "home": "Главная",
+    "orders": "Мои заказы",
+    "profile": "Профиль",
+    "resale": "Вторичный рынок",
+    "settings": "Настройки",
+    "transactions": "Транзакции",
+    "withdraw": "Вывод средств",
+    "recharge": "Пополнение",
+    "referral": "Мои приглашения",
+    "team": "Статистика команды",
+    "menu": "Меню",
+    "language": "Язык"
+  },
+  
+  "home": {
+    "title": "LuckyMart TJ",
+    "subtitle": "Выиграй по 1 сомони",
+    "banner": {
+      "title": "Лотерея удачи, легкий выигрыш",
+      "subtitle": "Ценные товары, низкий порог, честно и прозрачно",
+      "button": "Участвовать"
+    },
+    "hot_products": "Популярные товары",
+    "market_price": "Рыночная цена",
+    "per_share": "За долю",
+    "total_shares": "Всего долей",
+    "progress": "Прогресс",
+    "participate": "Участвовать"
+  }
+}

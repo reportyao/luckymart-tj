@@ -1,0 +1,17 @@
+{
+  "title": "钱包",
+  "balance": "余额",
+  "coins": "幸运币",
+  "recharge": "充值",
+  "withdraw": "提现",
+  "transactions": "交易记录",
+  "recharge_amount": "充值金额",
+  "withdraw_amount": "提现金额",
+  "confirm_recharge": "确认充值",
+  "confirm_withdraw": "确认提现",
+  "transaction_history": "交易历史",
+  "transaction_type": "交易类型",
+  "transaction_amount": "交易金额",
+  "transaction_time": "交易时间",
+  "transaction_status": "交易状态"
+}

@@ -17,7 +17,7 @@ model users {
   firstName               String              @map("first_name") @db.VarChar(255)
   lastName                String?             @map("last_name") @db.VarChar(255)
   avatarUrl               String?             @map("avatar_url")
-  language                String              @default("zh") @db.VarChar(5)
+  preferredLanguage       String              @default("tg-TJ") @map("preferred_language") @db.VarChar(10)
   balance                 Decimal             @default(0) @db.Decimal(10, 2)
   balanceVersion          Int                 @default(1) @map("balance_version")
   platformBalance         Decimal             @default(0) @map("platform_balance") @db.Decimal(10, 2)
@@ -28,6 +28,8 @@ model users {
   lastFreeResetDate       DateTime            @default(now()) @map("last_free_reset_date") @db.Date
   createdAt               DateTime            @default(now()) @map("created_at")
   updatedAt               DateTime            @default(now()) @updatedAt @map("updated_at")
+
+  @@index([preferredLanguage])
 }
 
 model userAddresses {
@@ -49,23 +51,31 @@ model userAddresses {
 }
 
 model products {
-  id              String   @id @default(uuid()) @db.Uuid
-  nameZh          String   @map("name_zh") @db.VarChar(255)
-  nameEn          String   @map("name_en") @db.VarChar(255)
-  nameRu          String   @map("name_ru") @db.VarChar(255)
-  descriptionZh   String?  @map("description_zh")
-  descriptionEn   String?  @map("description_en")
-  descriptionRu   String?  @map("description_ru")
-  images          String[]
-  marketPrice     Decimal  @map("market_price") @db.Decimal(10, 2)
-  totalShares     Int      @map("total_shares")
-  pricePerShare   Decimal  @default(1.00) @map("price_per_share") @db.Decimal(10, 2)
-  category        String?  @db.VarChar(100)
-  stock           Int      @default(0)
-  status          String   @default("active") @db.VarChar(20)
-  marketingBadge  Json?    @map("marketing_badge")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+  id                        String   @id @default(uuid()) @db.Uuid
+  
+  // 多语言JSONB字段（新架构）
+  nameMultilingual          Json?    @map("name_multilingual") @db.JsonB
+  descriptionMultilingual   Json?    @map("description_multilingual") @db.JsonB
+  categoryMultilingual      Json?    @map("category_multilingual") @db.JsonB
+  
+  // 兼容原有字段（逐步淘汰）
+  nameZh                    String?  @map("name_zh") @db.VarChar(255)
+  nameEn                    String?  @map("name_en") @db.VarChar(255)
+  nameRu                    String?  @map("name_ru") @db.VarChar(255)
+  descriptionZh             String?  @map("description_zh")
+  descriptionEn             String?  @map("description_en")
+  descriptionRu             String?  @map("description_ru")
+  category                  String?  @db.VarChar(100)
+  
+  images                    String[]
+  marketPrice               Decimal  @map("market_price") @db.Decimal(10, 2)
+  totalShares               Int      @map("total_shares")
+  pricePerShare             Decimal  @default(1.00) @map("price_per_share") @db.Decimal(10, 2)
+  stock                     Int      @default(0)
+  status                    String   @default("active") @db.VarChar(20)
+  marketingBadge            Json?    @map("marketing_badge")
+  createdAt                 DateTime @default(now()) @map("created_at")
+  updatedAt                 DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@index([status])
   @@index([category])
@@ -196,16 +206,22 @@ model withdrawRequests {
 }
 
 model rechargePackages {
-  id          String   @id @default(uuid()) @db.Uuid
-  nameZh      String   @map("name_zh") @db.VarChar(255)
-  nameEn      String   @map("name_en") @db.VarChar(255)
-  nameRu      String   @map("name_ru") @db.VarChar(255)
-  price       Decimal  @db.Decimal(10, 2)
-  coins       Int
-  bonusCoins  Int      @default(0) @map("bonus_coins")
-  isActive    Boolean  @default(true) @map("is_active")
-  sortOrder   Int      @default(0) @map("sort_order")
-  createdAt   DateTime @default(now()) @map("created_at")
+  id                String   @id @default(uuid()) @db.Uuid
+  
+  // 多语言JSONB字段（新架构）
+  nameMultilingual  Json?    @map("name_multilingual") @db.JsonB
+  
+  // 兼容原有字段（逐步淘汰）
+  nameZh            String?  @map("name_zh") @db.VarChar(255)
+  nameEn            String?  @map("name_en") @db.VarChar(255)
+  nameRu            String?  @map("name_ru") @db.VarChar(255)
+  
+  price             Decimal  @db.Decimal(10, 2)
+  coins             Int
+  bonusCoins        Int      @default(0) @map("bonus_coins")
+  isActive          Boolean  @default(true) @map("is_active")
+  sortOrder         Int      @default(0) @map("sort_order")
+  createdAt         DateTime @default(now()) @map("created_at")
 
   @@map("recharge_packages")
 }

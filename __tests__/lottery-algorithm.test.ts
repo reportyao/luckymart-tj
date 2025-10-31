@@ -254,7 +254,7 @@ describe('VRF开奖算法测试', () => {
         
         // 注意：这里我们不能直接控制时间戳，但在实际测试中可以通过mock实现
         results.push(i); // 占位符
-      });
+      }
       
       // 实际实现中应该验证结果的不可预测性
       expect(results.length).toBe(10);

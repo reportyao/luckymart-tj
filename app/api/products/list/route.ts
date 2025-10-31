@@ -1,169 +1,216 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { PerformanceMonitor } from '@/lib/performance';
-import { MemoryCache } from '@/lib/memory-cache';
-import { withI18n, validateLanguageParameter } from '@/lib/i18n-middleware';
-import { MultilingualHelper } from '@/lib/services/multilingual-query';
+import { withErrorHandling } from '../../../../lib/middleware';
+import { createRequestTracker } from '../../../../lib/request-tracker';
+import { getLogger } from '../../../../lib/logger';
+import { getMonitor } from '../../../../lib/monitoring';
+import { respond } from '../../../../lib/responses';
 
-// 内存缓存实例
-const cache = new MemoryCache(100);
-const CACHE_TTL = 180000; // 3分钟
-
-@validateLanguageParameter('language')
-export async function GET(request: NextRequest & { languageContext: any; formatter: any }) {
-  const startTime = Date.now();
-  const { languageContext, formatter } = request;
-  
-  try {
-    const searchParams = request.nextUrl.searchParams;
-    const category = searchParams.get('category');
-    const status = searchParams.get('status') || 'active';
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-
-    const skip = (page - 1) * limit;
-
-    // 构建缓存键，包含语言信息
-    const cacheKey = `products:list:${category}:${status}:${page}:${limit}:${languageContext.detectedLanguage}`;
-    
-    // 尝试从缓存获取数据
-    const cached = cache.get(cacheKey);
-    if (cached) {
-      console.log('Cache hit for products list');
-      const response = formatter.formatSuccess(cached, undefined, {
-        cached: true,
-        responseTime: Date.now() - startTime
-      });
-      return NextResponse.json(response, {
-        headers: {
-          'Cache-Control': 'public, max-age=180, stale-while-revalidate=300',
-          'X-Response-Time': `${Date.now() - startTime}ms`,
-          'X-Cache-Status': 'HIT'
-        }
-      });
+// 模拟商品数据
+const mockProducts = [
+  {
+    id: '1',
+    name: 'iPhone 15 Pro Max',
+    name_zh: 'iPhone 15 Pro Max',
+    name_en: 'iPhone 15 Pro Max', 
+    name_ru: 'iPhone 15 Pro Max',
+    name_tj: 'iPhone 15 Pro Max',
+    description: '最新款iPhone 15 Pro Max',
+    marketPrice: 8999,
+    originalPrice: 9999,
+    images: ['https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400'],
+    category: 'electronics',
+    tags: ['手机', '苹果', 'iPhone'],
+    marketingBadge: {
+      type: 'hot',
+      text: {
+        zh: '热销',
+        en: 'Hot',
+        ru: 'Горячий',
+        tj: 'Гарм'
+      }
+    },
+    currentRound: {
+      id: 'round-1',
+      soldShares: 150,
+      totalShares: 200,
+      progress: 75
     }
-
-    return PerformanceMonitor.measure('products/list', async () => {
-      // 构建查询条件
-      const where: any = {};
-      
-      if (status !== 'all') {
-        where.status = status;
+  },
+  {
+    id: '2', 
+    name: 'MacBook Air M3',
+    name_zh: 'MacBook Air M3',
+    name_en: 'MacBook Air M3',
+    name_ru: 'MacBook Air M3', 
+    name_tj: 'MacBook Air M3',
+    description: '轻薄高性能笔记本电脑',
+    marketPrice: 7999,
+    originalPrice: 8999,
+    images: ['https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400'],
+    category: 'electronics',
+    tags: ['笔记本', 'Mac', '苹果'],
+    marketingBadge: {
+      type: 'new',
+      text: {
+        zh: '新品',
+        en: 'New',
+        ru: 'Новый',
+        tj: 'Нав'
       }
-      
-      if (category && category !== 'all') {
-        where.category = category;
+    },
+    currentRound: {
+      id: 'round-2',
+      soldShares: 80,
+      totalShares: 100,
+      progress: 80
+    }
+  },
+  {
+    id: '3',
+    name: 'AirPods Pro 3',
+    name_zh: 'AirPods Pro 3',
+    name_en: 'AirPods Pro 3',
+    name_ru: 'AirPods Pro 3',
+    name_tj: 'AirPods Pro 3', 
+    description: '无线降噪耳机',
+    marketPrice: 1899,
+    originalPrice: 2199,
+    images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400'],
+    category: 'audio',
+    tags: ['耳机', '无线', '降噪'],
+    marketingBadge: {
+      type: 'sale',
+      text: {
+        zh: '特价',
+        en: 'Sale',
+        ru: 'Распродажа', 
+        tj: 'Фурӯш'
       }
-
-      // 使用Prisma关联查询解决N+1问题
-      const [products, total] = await Promise.all([
-        prisma.product.findMany({
-          where,
-          skip,
-          take: limit,
-          orderBy: { createdAt: 'desc' },
-          include: {
-            lotteryRounds: {
-              where: { status: 'active' },
-              orderBy: { createdAt: 'desc' },
-              take: 1
-            }
-          }
-        }),
-        prisma.product.count({ where })
-      ]);
-
-      // 数据转换，应用多语言处理
-      const productsWithRounds = products.map(product => {
-        const currentRound = product.lotteryRounds[0] || null;
-        
-        return {
-          id: product.id,
-          name: MultilingualHelper.extractText(product.nameMultilingual, languageContext.detectedLanguage),
-          description: MultilingualHelper.extractText(product.descriptionMultilingual, languageContext.detectedLanguage),
-          images: product.images,
-          marketPrice: parseFloat(product.marketPrice.toString()),
-          totalShares: product.totalShares,
-          pricePerShare: parseFloat(product.pricePerShare.toString()),
-          category: product.category,
-          stock: product.stock,
-          status: product.status,
-          createdAt: product.createdAt,
-          currentRound: currentRound ? {
-            id: currentRound.id,
-            roundNumber: currentRound.roundNumber,
-            totalShares: currentRound.totalShares,
-            soldShares: currentRound.soldShares,
-            status: currentRound.status,
-            participants: currentRound.participants,
-            progress: Math.round((currentRound.soldShares / currentRound.totalShares) * 100)
-          } : null
-        };
-      });
-
-      const responseData = {
-        products: productsWithRounds,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit)
-        }
-      };
-
-      // 存储到缓存
-      cache.set(cacheKey, responseData, CACHE_TTL);
-
-      const responseTime = Date.now() - startTime;
-
-      const response = formatter.formatPaginated(
-        responseData.products,
-        responseData.pagination,
-        'success'
-      );
-
-      // 添加额外元数据
-      response.meta = {
-        ...response.meta,
-        cached: false,
-        responseTime,
-        detectedLanguage: languageContext.detectedLanguage,
-        fallbackUsed: languageContext.fallbackUsed
-      };
-
-      return NextResponse.json(response, {
-        headers: {
-          'Cache-Control': 'public, max-age=180, stale-while-revalidate=300',
-          'X-Response-Time': `${responseTime}ms`,
-          'X-Cache-Status': 'MISS'
-        }
-      });
-    });
-
-  } catch (error: any) {
-    console.error('Get products error:', error);
-    
-    // 使用i18n中间件的错误处理
-    const errorResponse = formatter.formatError(
-      'internal_error',
-      'error',
-      { 
-        originalError: error.message,
-        responseTime: Date.now() - startTime 
+    },
+    currentRound: null
+  },
+  {
+    id: '4',
+    name: 'iPad Air 5',
+    name_zh: 'iPad Air 5',
+    name_en: 'iPad Air 5',
+    name_ru: 'iPad Air 5',
+    name_tj: 'iPad Air 5',
+    description: '轻薄平板电脑',
+    marketPrice: 4599,
+    originalPrice: 4999,
+    images: ['https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400'],
+    category: 'tablet',
+    tags: ['平板', 'iPad', '苹果'],
+    marketingBadge: null,
+    currentRound: {
+      id: 'round-4',
+      soldShares: 20,
+      totalShares: 50,
+      progress: 40
+    }
+  },
+  {
+    id: '5',
+    name: 'Apple Watch Series 9',
+    name_zh: 'Apple Watch Series 9',
+    name_en: 'Apple Watch Series 9',
+    name_ru: 'Apple Watch Series 9',
+    name_tj: 'Apple Watch Series 9',
+    description: '智能手表',
+    marketPrice: 2999,
+    originalPrice: 3199,
+    images: ['https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400'],
+    category: 'wearable',
+    tags: ['手表', '智能', '苹果'],
+    marketingBadge: {
+      type: 'exclusive',
+      text: {
+        zh: '独家',
+        en: 'Exclusive',
+        ru: 'Эксклюзив',
+        tj: 'Истисноӣ'
       }
-    );
-    
-    return NextResponse.json(errorResponse, { 
-      status: 500,
-      headers: {
-        'X-Response-Time': `${Date.now() - startTime}ms`
-      }
-    });
+    },
+    currentRound: {
+      id: 'round-5',
+      soldShares: 35,
+      totalShares: 60,
+      progress: 58
+    }
+  },
+  {
+    id: '6',
+    name: 'Mac Studio M3',
+    name_zh: 'Mac Studio M3',
+    name_en: 'Mac Studio M3',
+    name_ru: 'Mac Studio M3',
+    name_tj: 'Mac Studio M3',
+    description: '高性能台式机',
+    marketPrice: 12999,
+    originalPrice: 14999,
+    images: ['https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=400'],
+    category: 'desktop',
+    tags: ['台式机', 'Mac', '高性能'],
+    marketingBadge: null,
+    currentRound: {
+      id: 'round-6',
+      soldShares: 10,
+      totalShares: 30,
+      progress: 33
+    }
   }
-}
+];
 
-// 使用i18n中间件包装处理程序
-const GETWithI18n = withI18n(GET);
+export const GET = withErrorHandling(async (req: NextRequest) => {
+  const tracker = createRequestTracker(req);
+  const logger = getLogger();
+  const monitor = getMonitor();
+  const requestId = tracker.getRequestId();
 
-// 导出包装后的处理程序
-export { GETWithI18n as GET };
+  logger.logRequest(req, { requestId, traceId: tracker.getTraceId() });
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const language = searchParams.get('language') || 'zh';
+
+    // 根据语言返回商品数据
+    const products = mockProducts.map(product => {
+      const localizedProduct = { ...product };
+      
+      // 根据语言选择商品名称
+      const nameKey = `name_${language}` as keyof typeof product;
+      if (typeof product[nameKey] === 'string') {
+        localizedProduct.name = product[nameKey] as string;
+      }
+
+      return localizedProduct;
+    });
+
+    // 记录成功响应
+    tracker.finishSpan(tracker.getTraceId(), true, { 
+      result: 'success' 
+    });
+
+    logger.logResponse(req, 200, { 
+      requestId,
+      traceId: tracker.getTraceId(),
+    });
+
+    // 记录监控指标
+    monitor.recordRequest(req, 200);
+
+    return NextResponse.json(
+      respond.success({ products }, requestId).toJSON(),
+      { status: 200 }
+    );
+
+  } catch (error) {
+    logger.error('Products list failed', error as Error, { 
+      requestId, 
+      traceId: tracker.getTraceId() 
+    });
+    
+    throw error;
+  }
+});

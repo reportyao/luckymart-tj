@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyRefreshToken, generateTokenPair, setSecurityHeaders } from '@/lib/auth';
-import { withErrorHandling } from '@/lib/middleware';
+import { withErrorHandling } from '../../../lib/middleware';
 import { getLogger } from '@/lib/logger';
 import { respond } from '@/lib/responses';
 

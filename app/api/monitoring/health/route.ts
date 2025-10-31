@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withErrorHandling } from '@/lib/middleware';
+import { withErrorHandling } from '../../../lib/middleware';
 import { createRequestTracker } from '@/lib/request-tracker';
 import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';

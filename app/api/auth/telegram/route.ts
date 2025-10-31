@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { validateTelegramWebAppData, generateJWT } from '@/lib/utils';
+import { 
+  validateTelegramWebAppDataEnhanced, 
+  handleAuthError, 
+  buildUserContext,
+  detectNetworkQuality,
+  type UserContext,
+  type AuthError 
+} from '@/lib/enhanced-auth';
+import { generateJWT } from '@/lib/utils';
 import { withErrorHandling } from '@/lib/middleware';
 import { createRequestTracker, trackPerformance } from '@/lib/request-tracker';
 import { getLogger } from '@/lib/logger';
@@ -32,20 +40,43 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
       );
     }
 
-    // 验证Telegram WebApp数据
+    // 构建用户上下文
+    const userContext = buildUserContext(req);
+    
+    // 检测网络质量
+    try {
+      userContext.networkQuality = await detectNetworkQuality();
+    } catch (error) {
+      console.warn('Network quality detection failed:', error);
+      userContext.networkQuality = 'good'; // fallback
+    }
+
+    // 增强版验证Telegram WebApp数据（包含智能重试和友好错误提示）
     let telegramUser;
     try {
-      telegramUser = validateTelegramWebAppData(initData);
+      telegramUser = await validateTelegramWebAppDataEnhanced(initData, userContext);
+      logger.info('Enhanced Telegram auth successful', { 
+        userId: telegramUser.id,
+        username: telegramUser.username,
+        requestId, 
+        traceId,
+        networkQuality: userContext.networkQuality,
+        deviceType: userContext.deviceType
+      });
     } catch (error) {
-      logger.warn('Invalid Telegram auth data', { 
-        error: (error as Error).message, 
+      const authError = error as AuthError;
+      
+      logger.warn('Enhanced Telegram auth failed', { 
+        errorType: authError.type,
+        errorMessage: authError.message,
+        canRetry: authError.canRetry,
         requestId, 
         traceId 
       });
-      return NextResponse.json(
-        respond.validationError('Telegram认证数据无效').toJSON(),
-        { status: 400 }
-      );
+      
+      // 返回用户友好的错误信息
+      const friendlyError = handleAuthError(authError);
+      return NextResponse.json(friendlyError, { status: 400 });
     }
 
     // 开始数据库操作跟踪
@@ -112,7 +143,12 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     // 记录监控指标
     monitor.recordRequest(req, 200);
     monitor.recordResponseTime('/api/auth/telegram', Date.now() - tracker.getContext().startTime, 200);
-    monitor.increment('auth_success_total', 1, { method: 'telegram' });
+    monitor.increment('auth_success_total', 1, { 
+      method: 'telegram',
+      version: 'enhanced',
+      networkQuality: userContext.networkQuality,
+      deviceType: userContext.deviceType
+    });
 
     // 返回成功响应
     return NextResponse.json(

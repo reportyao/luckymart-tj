@@ -5,6 +5,8 @@ import { convertUserFromPrisma } from '@/types';
 import { ApiResponse } from '@/types';
 import { TajikistanTimeUtils } from '@/lib/timezone-utils';
 import { getLogger } from '@/lib/logger';
+import { NextResponseHelper, respond } from '@/lib/api-response';
+import { FREE_COUNT_RULES } from '@/lib/business-config';
 
 const logger = getLogger();
 
@@ -13,7 +15,7 @@ export async function GET(request: NextRequest) {
     // 验证JWT Token
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: '未授权' }, { status: 401 });
+      return NextResponseHelper.unauthorized('未授权访问');
     }
 
     const token = authHeader.substring(7);
@@ -30,10 +32,7 @@ export async function GET(request: NextRequest) {
     const user = await userService.getUserProfile(decoded.userId);
 
     if (!user) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '用户不存在'
-      }, { status: 404 });
+      return NextResponseHelper.notFound('用户不存在');
     }
 
     // 检查并重置每日免费次数（使用塔吉克斯坦时区）

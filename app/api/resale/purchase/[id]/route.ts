@@ -107,7 +107,16 @@ export async function POST(
     }
 
     // 解析事务结果
-    const transactionResult = typeof result === 'string' ? JSON.parse(result) : result;
+    let transactionResult;
+    try {
+      transactionResult = typeof result === 'string' ? JSON.parse(result) : result;
+    } catch (parseError) {
+      console.error(`[${requestId}] 事务结果解析失败:`, parseError);
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: '系统异常，响应数据格式错误'
+      }, { status: 500 });
+    }
 
     if (!transactionResult.success) {
       // 业务逻辑错误（如余额不足等）

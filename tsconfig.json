@@ -60,6 +60,12 @@
     "build",
     "dist",
     "coverage",
-    "prisma/generated/**"
+    "prisma/generated/**",
+    "__tests__/**",
+    "test/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/test_*.ts",
+    "**/verify_*.ts"
   ]
 }

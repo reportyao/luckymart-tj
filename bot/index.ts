@@ -928,25 +928,42 @@ export async function sendVipUpgradeNotification(
 // 定时任务：每日免费次数重置
 async function resetDailyFreeCount() {
   try {
+    // 使用塔吉克斯坦时区
+    const tajikistanNow = new Date(new Date().toLocaleString('en-US', {
+      timeZone: 'Asia/Dushanbe'
+    }));
+    const todayStart = new Date(tajikistanNow);
+    todayStart.setHours(0, 0, 0, 0);
+
+    // 查找需要重置的用户（使用塔吉克斯坦时区）
     const users = await prisma.users.findMany({
       where: {
-        lastFreeResetDate: {
-          lt: new Date(new Date().setHours(0, 0, 0, 0))
-        }
+        OR: [
+          { lastFreeResetDate: null },
+          {
+            lastFreeResetDate: {
+              lt: todayStart
+            }
+          }
+        ]
       }
     });
 
+    // 批量重置免费次数为3
     for (const user of users) {
       await prisma.users.update({
         where: { id: user.id },
         data: {
-          freeDailyCount: 0,
-          lastFreeResetDate: new Date()
+          freeDailyCount: 3,  // 统一重置为3次
+          lastFreeResetDate: todayStart
         }
       });
     }
 
-    logger.info(`重置了 ${users.length} 个用户的每日免费次数`);
+    logger.info(`重置了 ${users.length} 个用户的每日免费次数为3次`, {
+      resetTime: tajikistanNow.toISOString(),
+      timezone: 'Asia/Dushanbe'
+    });
   } catch (error) {
     logger.error('重置每日免费次数失败', error);
   }

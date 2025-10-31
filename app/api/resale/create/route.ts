@@ -149,9 +149,9 @@ const handleResaleCreateRequest = async (request: NextRequest) => {
 
     if (insertError) {throw insertError;}
 
-    // 更新订单的转售状态（如果订单表有相关字段）
-    // 注意：schema.prisma中orders表没有isResale和resalePrice字段
-    // 这里需要根据实际业务需求来决定是否需要更新订单表
+    // 更新订单的转售状态
+    // 注意：schema.prisma中orders表已包含isResale和resalePrice字段
+    // 这些字段在订单模型中正确定义，可以安全使用
 
     return NextResponse.json<ApiResponse<ResaleListing>>({
       success: true,

@@ -7,17 +7,8 @@ import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';
 import { respond } from '@/lib/responses';
 import { CommonErrors } from '@/lib/errors';
-
-// 塔吉克斯坦时区工具
-class TajikistanTimeUtils {
-  static readonly TIMEZONE = 'Asia/Dushanbe';
-  
-  static getCurrentTime(): Date {
-    return new Date(new Date().toLocaleString('en-US', {
-      timeZone: this.TIMEZONE
-    }));
-  }
-}
+import { UnifiedTimezoneUtils, FREE_COUNT_RULES } from '@/lib/timezone-config';
+import { NextResponseHelper } from '@/lib/api-response';
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
   const tracker = createRequestTracker(req);
@@ -73,7 +64,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
       isNewUser = true;
       
       // 获取塔吉克斯坦当前时间
-      const tajikistanNow = TajikistanTimeUtils.getCurrentTime();
+      const tajikistanNow = UnifiedTimezoneUtils.getCurrentTime();
       
       // 创建新用户，包含正确的免费次数初始化
       user = await prisma.users.create({
@@ -139,8 +130,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
       }, { requestId, traceId });
     } else {
       // 老用户检查是否需要重置免费次数
-      const tajikistanNow = TajikistanTimeUtils.getCurrentTime();
-      const isNewDay = TajikistanTimeUtils.getCurrentTime().toISOString().split('T')[0] !== 
+      const tajikistanNow = UnifiedTimezoneUtils.getCurrentTime();
+      const isNewDay = UnifiedTimezoneUtils.getCurrentTime().toISOString().split('T')[0] !== 
         user.lastFreeResetDate.toISOString().split('T')[0];
       
       if (isNewDay) {
@@ -160,7 +151,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
             type: 'free_count_reset',
             amount: 0,
             balanceType: 'system',
-            description: `免费次数重置 - ${TajikistanTimeUtils.getCurrentTime().toISOString().split('T')[0]}`
+            description: `免费次数重置 - ${UnifiedTimezoneUtils.getCurrentTime().toISOString().split('T')[0]}`
           }
         });
       }
@@ -204,9 +195,9 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
           vipLevel: user.vipLevel,
           freeDailyCount: user.freeDailyCount,
           // 添加时区信息
-          timezone: TajikistanTimeUtils.TIMEZONE,
-          lastResetDateLocal: TajikistanTimeUtils.getCurrentTime().toLocaleString('zh-CN', {
-            timeZone: TajikistanTimeUtils.TIMEZONE,
+          timezone: UnifiedTimezoneUtils.TIMEZONE_CONFIG.DEFAULT_TIMEZONE,
+          lastResetDateLocal: UnifiedTimezoneUtils.getCurrentTime().toLocaleString('zh-CN', {
+            timeZone: UnifiedTimezoneUtils.TIMEZONE_CONFIG.DEFAULT_TIMEZONE,
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',

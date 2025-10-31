@@ -1,288 +1,215 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
-import { triggerImmediateDraw } from '@/lib/lottery';
 import { getLogger } from '@/lib/logger';
-import { withRateLimit, lotteryRateLimit } from '@/lib/rate-limit-middleware';
+import { getUserFromRequest } from '@/lib/auth';
 import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
+import { withRateLimit, lotteryRateLimit } from '@/lib/rate-limit-middleware';
+import { triggerImmediateDraw } from '@/lib/lottery';
 
-// 应用速率限制的抽奖参与处理函数
-const handleLotteryParticipateRequest = async (request: NextRequest) => {
+const handleLotteryParticipation = async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `lottery_participate_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  (request as any).startTime = Date.now();
+  const startTime = Date.now();
+
+  // 在函数开始就声明decoded变量，避免未定义引用
+  let decoded: { userId: string } | null = null;
 
   try {
-    // 验证JWT Token
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
-
-    const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-
     logger.info('夺宝参与请求开始', {
       requestId,
-      userId: decoded.userId,
-      tokenPrefix: `${token.substring(0, 10)  }...`
+      ip: request.headers.get('x-forwarded-for') || 'unknown',
+      userAgent: request.headers.get('user-agent') || 'unknown'
     });
 
+    // 验证用户身份 - 使用更安全的方法
+    const user = getUserFromRequest(request);
+    if (!user?.userId) {
+      return NextResponse.json({ error: '未授权访问' }, { status: 401 });
+    }
+    decoded = { userId: user.userId };
+
+    // 验证请求体
     const body = await request.json();
-    const { roundId, sharesCount, useType = 'paid' } = body;
+    const { roundId, quantity } = body;
 
-    if (!roundId || !sharesCount || sharesCount < 1) {
-      return NextResponse.json({ error: '参数错误' }, { status: 400 });
+    // 参数验证
+    if (!roundId || !quantity) {
+      return NextResponse.json(
+        { error: '参数不完整：roundId和quantity都是必需的' }, 
+        { status: 400 }
+      );
     }
 
-    // 查找用户
-    const user = await prisma.users.findUnique({
-      where: { id: decoded.userId }
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: '用户不存在' }, { status: 404 });
+    // 验证数量范围
+    if (typeof quantity !== 'number' || quantity < 1 || quantity > 100) {
+      return NextResponse.json(
+        { error: '数量必须在1-100之间' }, 
+        { status: 400 }
+      );
     }
 
-    // 查找夺宝期次
-    const round = await prisma.lotteryRounds.findUnique({
-      where: { id: roundId }
-    });
-
-    if (!round || round.status !== 'ongoing') {
-      return NextResponse.json({ error: '夺宝期次不存在或已结束' }, { status: 404 });
-    }
-
-    // 检查份额是否充足
-    const availableShares = round.totalShares - round.soldShares;
-    if (sharesCount > availableShares) {
-      return NextResponse.json({ 
-        error: '份额不足', 
-        available: availableShares 
-      }, { status: 400 });
-    }
-
-    // 检查余额
-    const cost = sharesCount * 1; // 每份1夺宝币
-    if (useType === 'paid') {
-      if (parseFloat(user.balance.toString()) < cost) {
-        return NextResponse.json({ 
-          error: '夺宝币不足', 
-          required: cost,
-          current: parseFloat(user.balance.toString())
-        }, { status: 400 });
-      }
-    } else {
-      // 免费参与检查
-      if (user.freeDailyCount <= 0) {
-        return NextResponse.json({ error: '今日免费次数已用完' }, { status: 400 });
-      }
-      if (sharesCount > 3) {
-        return NextResponse.json({ error: '免费参与最多3份' }, { status: 400 });
-      }
-    }
-
-    // 生成夺宝号码
-    const startNumber = round.soldShares + 10000001;
-    const numbers = Array.from({ length: sharesCount }, (_, i) => startNumber + i);
-
-    // 检查是否售罄，用于触发立即开奖
-    const willBeSoldOut = round.soldShares + sharesCount >= round.totalShares;
-
-    // 执行事务
+    // 开始数据库事务
     const result = await prisma.$transaction(async (tx) => {
-      // 使用原子性更新防止超售
-      const updatedRound = await tx.lotteryRounds.updateMany({
-        where: {
-          id: roundId,
-          status: 'ongoing', // 确保期次仍在进行中
-          soldShares: { lt: round.totalShares } // 确保更新前未满期
-        },
-        data: {
-          soldShares: { increment: sharesCount },
-          participants: { increment: 1 },
-          status: willBeSoldOut ? 'full' : 'ongoing'
+      // 1. 验证夺宝期次
+      const round = await tx.lotteryRounds.findUnique({
+        where: { id: roundId },
+        select: {
+          id: true,
+          status: true,
+          maxShares: true,
+          soldShares: true,
+          pricePerShare: true,
+          endTime: true
         }
       });
 
-      if (updatedRound.count === 0) {
-        throw new Error('期次已结束或售罄，请选择其他期次');
+      if (!round) {
+        throw new Error('夺宝期次不存在');
       }
 
-      // 创建参与记录
-      const participation = await tx.participations.create({
+      // 验证期次状态
+      if (round.status !== 'active') {
+        throw new Error('夺宝期次未激活');
+      }
+
+      // 验证期次是否已结束
+      if (round.endTime && new Date() > new Date(round.endTime)) {
+        throw new Error('夺宝期次已结束');
+      }
+
+      // 验证剩余份额
+      const availableShares = round.maxShares - round.soldShares;
+      if (quantity > availableShares) {
+        throw new Error(`剩余份额不足，仅剩${availableShares}份`);
+      }
+
+      // 验证用户余额
+      const user = await tx.users.findUnique({
+        where: { id: decoded!.userId },
+        select: { balance: true }
+      });
+
+      if (!user) {
+        throw new Error('用户不存在');
+      }
+
+      const totalCost = round.pricePerShare * quantity;
+      if (user.balance < totalCost) {
+        throw new Error('余额不足');
+      }
+
+      // 创建夺宝参与记录
+      const participation = await tx.lotteryParticipations.create({
         data: {
-          userId: user.id,
           roundId: round.id,
-          productId: round.productId,
-          numbers,
-          sharesCount,
-          type: useType,
-          cost: useType === 'paid' ? cost : 0,
-          isWinner: false
+          userId: decoded!.userId,
+          shares: quantity,
+          costPerShare: round.pricePerShare,
+          totalCost: totalCost,
+          status: 'active'
         }
       });
 
-      // 扣除用户余额或免费次数
-      if (useType === 'paid') {
-        await tx.users.update({
-          where: { id: user.id },
-          data: {
-            balance: { decrement: cost },
-            totalSpent: { increment: cost }
-          }
-        });
-
-        // 记录交易
-        await tx.transactions.create({
-          data: {
-            userId: user.id,
-            type: 'lottery_participation',
-            amount: cost,
-            balanceType: 'lottery_coin',
-            description: `参与夺宝 - ${sharesCount}份`
-          }
-        });
-      } else {
-        await tx.users.update({
-          where: { id: user.id },
-          data: {
-            freeDailyCount: { decrement: 1 }
-          }
-        });
-      }
-
-      // 获取更新后的期次信息
-      const finalRound = await tx.lotteryRounds.findUnique({
-        where: { id: roundId }
+      // 更新用户余额
+      await tx.users.update({
+        where: { id: decoded!.userId },
+        data: {
+          balance: { decrement: totalCost },
+          totalSpent: { increment: totalCost },
+          balanceVersion: { increment: 1 }
+        }
       });
 
-      return { participation, finalRound, user };
+      // 更新期次已售份额
+      await tx.lotteryRounds.update({
+        where: { id: round.id },
+        data: {
+          soldShares: { increment: quantity }
+        }
+      });
+
+      // 记录交易
+      await tx.transactions.create({
+        data: {
+          userId: decoded!.userId,
+          type: 'lottery_participation',
+          amount: -totalCost,
+          balanceType: 'lottery_coin',
+          relatedOrderId: participation.id,
+          description: `夺宝参与 - 第${round.id}期 ${quantity}份`
+        }
+      });
+
+      // 创建通知
+      await tx.notifications.create({
+        data: {
+          userId: decoded!.userId,
+          type: 'lottery_participation',
+          content: `夺宝参与成功！您购买了第${round.id}期 ${quantity}份夺宝币`,
+          status: 'pending'
+        }
+      });
+
+      return {
+        participationId: participation.id,
+        roundId: round.id,
+        quantity: quantity,
+        totalCost: totalCost,
+        remainingShares: availableShares - quantity
+      };
     });
 
-    // 触发邀请奖励（独立事务，不影响夺宝逻辑）
-    try {
-      logger.info('开始检查用户首次参与夺宝触发奖励', {
+    // 检查是否触达开奖条件（异步调用）
+    triggerImmediateDraw(roundId).catch((error) => {
+      logger.error('异步开奖触发失败', error, {
         requestId,
-        userId: decoded.userId,
-        participationId: result.participation.id
+        roundId,
+        userId: decoded?.userId
       });
+    });
 
-      // 检查用户是否首次参与夺宝
-      const userForRewardCheck = await prisma.users.findUnique({
-        where: { id: decoded.userId },
-        select: { has_first_lottery: true }
-      });
+    // 记录速率限制监控数据
+    rateLimitMonitor.recordMetric({
+      timestamp: Date.now(),
+      endpoint: '/api/lottery/participate',
+      identifier: decoded!.userId,
+      hits: 1,
+      blocked: false,
+      strategy: 'sliding_window',
+      windowMs: 5 * 60 * 1000,
+      limit: 20,
+      remaining: 0,
+      resetTime: Date.now() + 5 * 60 * 1000,
+      responseTime: Date.now() - startTime
+    });
 
-      if (!userForRewardCheck?.has_first_lottery) {
-        logger.info('用户首次参与夺宝，触发邀请奖励', {
-          requestId,
-          userId: decoded.userId,
-          participationId: result.participation.id
-        });
-
-        // 调用触发邀请奖励API
-        try {
-          const rewardResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/referral/trigger-reward`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              user_id: decoded.userId,
-              event_type: 'first_lottery',
-              event_data: {
-                participation_id: result.participation.id,
-                round_id: roundId,
-                shares_count: sharesCount,
-                cost: cost,
-                use_type: useType
-              }
-            })
-          });
-
-          if (rewardResponse.ok) {
-            const rewardData = await rewardResponse.json();
-            logger.info('邀请奖励触发成功', {
-              requestId,
-              userId: decoded.userId,
-              rewardData
-            });
-          } else {
-            const errorData = await rewardResponse.text();
-            logger.warn('邀请奖励触发失败', {
-              requestId,
-              userId: decoded.userId,
-              status: rewardResponse.status,
-              error: errorData
-            });
-          }
-        } catch (rewardError) {
-          logger.error('触发邀请奖励时发生错误', rewardError, {
-            requestId,
-            userId: decoded.userId
-          });
-        }
-      }
-    } catch (rewardCheckError) {
-      logger.error('检查用户首次参与状态时发生错误', rewardCheckError, {
-        requestId,
-        userId: decoded.userId
-      });
-    }
-
-    // 如果期次已满，触发立即开奖
-    if (willBeSoldOut) {
-      try {
-        logger.info(`期次 ${roundId} 已售罄，触发立即开奖`, { requestId, roundId });
-        
-        // 异步执行开奖，不阻塞用户响应
-        triggerImmediateDraw(roundId).catch(error => {
-          logger.error('开奖失败', error, { requestId, roundId });
-        });
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            participationId: result.participation.id,
-            numbers: result.participation.numbers,
-            sharesCount: result.participation.sharesCount,
-            roundStatus: 'full', // 立即返回full状态
-            soldShares: result.finalRound.soldShares,
-            totalShares: result.finalRound.totalShares,
-            immediateDraw: true, // 标记已触发立即开奖
-            message: '参与成功！期次已售罄，正在开奖中...'
-          },
-          message: '参与成功！期次已售罄，正在开奖中...'
-        });
-      } catch (error) {
-        logger.error('立即开奖失败', error, { requestId, roundId });
-        // 即使开奖失败，也返回购买成功的结果
-      }
-    }
+    logger.info('夺宝参与成功', {
+      requestId,
+      userId: decoded!.userId,
+      roundId,
+      quantity,
+      totalCost: result.totalCost,
+      executionTime: Date.now() - startTime
+    });
 
     return NextResponse.json({
       success: true,
-      data: {
-        participationId: result.participation.id,
-        numbers: result.participation.numbers,
-        sharesCount: result.participation.sharesCount,
-        roundStatus: result.finalRound.status,
-        soldShares: result.finalRound.soldShares,
-        totalShares: result.finalRound.totalShares
-      },
-      message: '参与成功！祝您好运！'
+      data: result,
+      message: '夺宝参与成功！'
     });
 
   } catch (error: any) {
-    const logger = getLogger();
     logger.error('夺宝参与失败', error, {
       requestId,
-      userId: decoded?.userId,
+      userId: decoded?.userId, // 现在decoded确保不会为undefined
+      roundId: body?.roundId,
+      quantity: body?.quantity,
       error: error.message,
-      stack: error.stack
+      stack: error.stack,
+      executionTime: Date.now() - startTime
     });
-    
+
     // 记录速率限制监控数据
     rateLimitMonitor.recordMetric({
       timestamp: Date.now(),
@@ -290,28 +217,55 @@ const handleLotteryParticipateRequest = async (request: NextRequest) => {
       identifier: decoded?.userId || 'anonymous',
       hits: 1,
       blocked: false,
-      strategy: 'leaky_bucket',
-      windowMs: 60 * 1000,
-      limit: 10,
+      strategy: 'sliding_window',
+      windowMs: 5 * 60 * 1000,
+      limit: 20,
       remaining: 0,
-      resetTime: Date.now() + 60 * 1000,
-      responseTime: Date.now() - (request as any).startTime
+      resetTime: Date.now() + 5 * 60 * 1000,
+      responseTime: Date.now() - startTime
     });
-    
+
+    // 根据错误类型返回不同状态码
+    let statusCode = 500;
+    let errorMessage = '夺宝参与失败';
+
+    if (error.message.includes('余额不足')) {
+      statusCode = 400;
+      errorMessage = '余额不足';
+    } else if (error.message.includes('夺宝期次不存在')) {
+      statusCode = 404;
+      errorMessage = '夺宝期次不存在';
+    } else if (error.message.includes('份额不足')) {
+      statusCode = 400;
+      errorMessage = error.message;
+    } else if (error.message.includes('未授权')) {
+      statusCode = 401;
+      errorMessage = '未授权访问';
+    }
+
     return NextResponse.json(
-      { error: '参与失败', message: error.message },
-      { status: 500 }
+      { error: errorMessage },
+      { status: statusCode }
     );
   }
 };
 
 // 应用速率限制并导出处理函数
-const processRequest = withRateLimit(handleLotteryParticipateRequest, lotteryRateLimit({
+const processRequest = withRateLimit(handleLotteryParticipation, lotteryRateLimit({
   onLimitExceeded: async (result, request) => {
+    const logger = getLogger();
+    logger.warn('夺宝参与接口速率限制触发', {
+      identifier: 'unknown',
+      endpoint: '/api/lottery/participate',
+      limit: result.totalHits + result.remaining,
+      remaining: result.remaining,
+      resetTime: result.resetTime
+    });
+
     return NextResponse.json(
       {
         success: false,
-        error: '参与操作过于频繁，请稍后再试',
+        error: '参与夺宝过于频繁，请稍后再试',
         rateLimit: {
           limit: result.totalHits + result.remaining,
           remaining: result.remaining,
@@ -332,16 +286,3 @@ const processRequest = withRateLimit(handleLotteryParticipateRequest, lotteryRat
 
 // 导出主处理函数
 export { processRequest as POST };
-    logger.error('夺宝参与失败', error, {
-      requestId,
-      userId: decoded?.userId,
-      error: error.message,
-      stack: error.stack
-    });
-    
-    return NextResponse.json(
-      { error: '参与失败', message: error.message },
-      { status: 500 }
-    );
-  }
-}

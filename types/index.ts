@@ -1,5 +1,5 @@
 // Prisma Decimal 类型处理
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 export interface PrismaDecimal {
   toNumber(): number;

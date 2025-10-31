@@ -9,8 +9,17 @@ import { getMonitor } from '@/lib/monitoring';
 import { createOrderValidationMiddleware, ORDER_VALIDATION_MIDDLEWARES } from '@/lib/order-validation-middleware';
 import { ErrorFactory } from '@/lib/errors';
 
+// 订单状态更新请求体
+interface OrderUpdateRequest {
+  orderId: string;
+  trackingNumber?: string;
+  updateType?: 'ship' | 'complete';
+}
+
 // 获取订单列表
 export async function GET(request: NextRequest) {
+  const logger = getLogger();
+  
   try {
     // 验证管理员权限
     const admin = getAdminFromRequest(request);
@@ -49,22 +58,19 @@ export async function GET(request: NextRequest) {
         include: {
           users: {
             select: {
+              id: true,
               username: true,
-              firstName: true,
-              telegramId: true
-            }
-          },
-          products: {
-            select: {
-              nameZh: true,
-              nameEn: true,
-              images: true
+              email: true,
+              referred_by_user_id: true,
+              has_first_purchase: true
             }
           }
         },
-        orderBy: { createdAt: 'desc' },
         skip: offset,
-        take: limit
+        take: limit,
+        orderBy: {
+          createdAt: 'desc'
+        }
       }),
       prisma.orders.count({ where })
     ]);
@@ -72,24 +78,26 @@ export async function GET(request: NextRequest) {
     return NextResponse.json<ApiResponse>({
       success: true,
       data: {
-        orders: orders || [],
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit)
+        orders,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit)
+        }
       }
     });
 
-  } catch (error: any) {
-    console.error('获取订单列表失败:', error);
+  } catch (error) {
+    logger.error('获取订单列表失败', error as Error);
     return NextResponse.json<ApiResponse>({
       success: false,
-      error: error.message || '获取订单列表失败'
+      error: '获取订单列表失败'
     }, { status: 500 });
   }
 }
 
-// 更新订单状态（发货）
+// 更新订单状态
 export async function POST(request: NextRequest) {
   const logger = getLogger();
   const monitor = getMonitor();
@@ -114,18 +122,17 @@ export async function POST(request: NextRequest) {
       }, { status: 403 });
     }
 
-    // 使用订单验证中间件
-    return await ORDER_VALIDATION_MIDDLEWARES.admin(request, async (req, validatedData) => {
-      const body = validatedData;
-      const { orderId, trackingNumber, updateType = 'ship' } = body;
+    // 验证请求体
+    const body: OrderUpdateRequest = await request.json();
+    const { orderId, trackingNumber, updateType = 'ship' } = body;
 
-      // 额外验证更新操作特有参数
-      if (!orderId) {
-        return NextResponse.json<ApiResponse>({
-          success: false,
-          error: '缺少必填参数：orderId'
-        }, { status: 400 });
-      }
+    // 验证必填参数
+    if (!orderId) {
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: '缺少必填参数：orderId'
+      }, { status: 400 });
+    }
 
     // 生成幂等性请求ID
     const idempotencyKey = `order_update_${orderId}_${updateType}_${Date.now()}`;
@@ -259,84 +266,69 @@ export async function POST(request: NextRequest) {
       newStatus = 'completed';
       shouldTriggerReward = true;
       
-      // 标记用户已完成首次购买
-      await prisma.users.update({
-        where: { id: order.userId },
-        data: { has_first_purchase: true }
-      });
-      
     } else {
+      // 标记处理失败
       await prisma.processingLogs.update({
         where: { id: processingLog.id },
         data: { 
           status: 'failed',
-          errorMessage: `状态转换错误: ${order.status} -> ${updateType}`
+          errorMessage: `无效的状态转换: ${order.status} -> ${updateType}`
         }
       });
       
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: `无法从状态 ${order.status} 更新为 ${updateType}`
+        error: `无法执行此操作：当前订单状态为 ${order.status}，无法执行 ${updateType} 操作`
       }, { status: 400 });
     }
 
-    // 发送通知（在事务外处理，通知失败不影响主要业务）
-    try {
-      const notificationType = updateType === 'ship' ? 'order_shipped' : 'order_completed';
-      const notificationTitle = updateType === 'ship' ? '商品已发货' : '订单已完成';
-      const notificationContent = updateType === 'ship' 
-        ? `您的订单 ${order.orderNumber} 已发货，物流单号：${trackingNumber}`
-        : `您的订单 ${order.orderNumber} 已完成，感谢您的购买！`;
-
-      await prisma.notifications.create({
-        data: {
-          userId: order.userId,
-          type: notificationType,
-          title: notificationTitle,
-          content: notificationContent,
-          status: 'pending'
-        }
-      });
-    } catch (notificationError) {
-      logger.warn('发送通知失败', notificationError as Error, { orderId });
-      // 通知失败不影响主要业务逻辑
-    }
-
-    // 触发邀请奖励（如果需要）
-    let rewardResult = null;
-    if (shouldTriggerReward && order.users.referred_by_user_id) {
+    // 检查是否需要触发奖励（仅首次购买或被推荐用户完成订单时）
+    if (shouldTriggerReward) {
+      const hasReferral = !!order.users.referred_by_user_id;
+      const shouldTriggerReferralReward = hasReferral && !order.users.has_first_purchase;
+      
       try {
-        const rewardType = !order.users.has_first_purchase ? 'FIRST_PURCHASE' : 'ORDER_COMPLETION';
-        
-        rewardResult = await rewardTrigger.triggerReward({
-          type: rewardType,
-          userId: order.userId,
-          data: {
-            orderId: order.id,
-            orderAmount: order.totalAmount,
-            orderNumber: order.orderNumber
-          },
-          timestamp: new Date()
-        });
-
-        logger.info('订单奖励触发结果', {
+        const rewardResult = await rewardTrigger.triggerReward({
           orderId: order.id,
-          rewardType,
-          rewardSuccess: rewardResult.success,
-          totalRewards: rewardResult.result?.totalRewards || 0
+          userId: order.user_id,
+          triggerType: shouldTriggerReferralReward ? 'first_purchase' : 'order_completion',
+          referralCode: hasReferral ? order.users.referred_by_user_id : undefined
         });
 
-        monitor.increment(`order_reward_trigger_${rewardType.toLowerCase()}_success_total`, 1);
+        if (rewardResult.success) {
+          // 标记用户已完成首次购买
+          if (shouldTriggerReferralReward) {
+            await prisma.users.update({
+              where: { id: order.user_id },
+              data: { has_first_purchase: true }
+            });
+          }
+        }
 
+        monitor.increment(`order_reward_trigger_${shouldTriggerReferralReward ? 'first_purchase' : 'order_completion'}_success_total`, 1);
+        
       } catch (rewardError) {
         logger.warn('订单奖励触发失败', rewardError as Error, {
           orderId: order.id,
-          userId: order.userId,
-          rewardType: shouldTriggerReward ? 'FIRST_PURCHASE' : 'ORDER_COMPLETION'
+          userId: order.user_id,
+          rewardType: shouldTriggerReferralReward ? 'first_purchase' : 'order_completion'
         });
 
-        monitor.increment(`order_reward_trigger_${shouldTriggerReward ? 'first_purchase' : 'order_completion'}_error_total`, 1);
+        monitor.increment(`order_reward_trigger_${shouldTriggerReferralReward ? 'first_purchase' : 'order_completion'}_error_total`, 1);
       }
+    }
+
+    // 发送订单状态更新通知
+    try {
+      // 这里可以添加通知逻辑，比如发送邮件或推送通知
+      logger.info('订单状态更新成功', {
+        orderId: order.id,
+        oldStatus: order.status,
+        newStatus,
+        updateType
+      });
+    } catch (notificationError) {
+      logger.warn('发送通知失败', notificationError as Error, { orderId: order.id });
     }
 
     // 标记处理完成
@@ -353,20 +345,17 @@ export async function POST(request: NextRequest) {
       updateType,
       hasReferral: !!order.users.referred_by_user_id,
       shouldTriggerReward,
-      rewardTriggered: !!rewardResult?.success
+      rewardTriggered: !!shouldTriggerReward
     });
 
     const successMessage = updateType === 'ship' ? '发货成功' : '订单完成';
-    const rewardMessage = rewardResult?.success ? `，邀请奖励已发放（${rewardResult.result?.totalRewards || 0}币）` : '';
-
     return NextResponse.json<ApiResponse>({
       success: true,
-      message: `${successMessage}${rewardMessage}`,
+      message: successMessage,
       data: {
         orderId: order.id,
         newStatus,
-        rewardTriggered: !!rewardResult?.success,
-        totalRewards: rewardResult?.result?.totalRewards || 0
+        rewardTriggered: shouldTriggerReward
       }
     });
 
@@ -377,15 +366,11 @@ export async function POST(request: NextRequest) {
 
     monitor.increment('order_update_error_total', 1);
 
-    logger.error('订单状态更新失败', error as Error, { 
-      orderId: body?.orderId,
-      updateType: body?.updateType 
-    });
+    logger.error('订单状态更新失败', error as Error);
 
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: error.message || '订单状态更新失败'
-      }, { status: 500 });
-    }
-  });
+    return NextResponse.json<ApiResponse>({
+      success: false,
+      error: error.message || '订单状态更新失败'
+    }, { status: 500 });
+  }
 }

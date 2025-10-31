@@ -112,7 +112,7 @@
     "prettier": "^3.3.3",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
-    "eslint-plugin-complexity": "^0.4.2",
+    "eslint-plugin-complexity": "^1.0.2",
     "eslint-plugin-security": "^2.1.0",
     "eslint-plugin-unicorn": "^56.0.0"
   }

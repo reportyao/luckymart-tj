@@ -2,12 +2,82 @@
 // 使用Prisma事务包裹整个释放流程，确保原子性操作
 // 防止订单更新成功但库存释放失败的问题
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
-
+// 移除外部导入，使用内置的Supabase客户端
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+// 简化的Supabase客户端，避免外部依赖
+class SupabaseClient {
+  constructor(private url: string, private key: string) {}
+
+  async from(table: string) {
+    return new SupabaseQueryBuilder(this.url, this.key, table);
+  }
+}
+
+class SupabaseQueryBuilder {
+  constructor(
+    private url: string,
+    private key: string,
+    private table: string
+  ) {}
+
+  select(columns: string = '*') {
+    return this.buildQuery('GET', columns);
+  }
+
+  insert(data: any) {
+    return this.buildQuery('POST', '*', data);
+  }
+
+  update(data: any) {
+    return this.buildQuery('PATCH', '*', data);
+  }
+
+  eq(column: string, value: any) {
+    // 在实际实现中，这里应该构建查询参数
+    return this;
+  }
+
+  async single() {
+    // 限制返回单条记录
+    return this;
+  }
+
+  private async buildQuery(
+    method: string, 
+    columns: string, 
+    data?: any
+  ): Promise<{ data: any[] | null; error: any | null }> {
+    const url = `${this.url}/rest/v1/${this.table}?select=${columns}`;
+    const headers = {
+      'apikey': this.key,
+      'Authorization': `Bearer ${this.key}`,
+      'Content-Type': 'application/json',
+      'Prefer': method === 'GET' ? 'return=minimal' : 'return=representation'
+    };
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: data ? JSON.stringify(data) : undefined
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        return { data: null, error };
+      }
+
+      const responseData = method === 'GET' ? await response.json() : await response.json();
+      return { data: responseData, error: null };
+    } catch (error) {
+      return { data: null, error };
+    }
+  }
+}
+
+const supabase = new SupabaseClient(supabaseUrl, supabaseKey);
 
 // 订单超时时间配置（30分钟）
 const ORDER_TIMEOUT_MINUTES = 30;

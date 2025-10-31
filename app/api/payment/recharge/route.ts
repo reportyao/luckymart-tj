@@ -210,19 +210,6 @@ const processRequest = withRateLimit(handleRechargeRequest, rechargeRateLimit({
 
 // 导出主处理函数
 export { processRequest as POST };
-    logger.error('创建充值订单失败', error, {
-      requestId,
-      userId: decoded?.userId,
-      error: error.message,
-      stack: error.stack
-    });
-    // 统一错误处理，不暴露敏感信息
-    return NextResponse.json(
-      { error: '创建充值订单失败' },
-      { status: 500 }
-    );
-  }
-}
 
 // 处理支付成功（供支付回调使用）
 async function handlePaymentSuccess(orderId: string, transactionId: string) {

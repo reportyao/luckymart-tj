@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { API_BASE_URL } from '@/config/api-config';
 
 // 图片优化参数验证
 const ImageOptimizationSchema = z.object({
@@ -54,7 +55,8 @@ function generateOptimizedImageUrl(params: z.infer<typeof ImageOptimizationSchem
   const { src, width, height, quality, format, fit, position, background, dpr } = params;
   
   // 解析原始URL
-  const url = new URL(src, process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || API_BASE_URL;
+  const url = new URL(src, baseUrl);
   
   // 添加图片处理参数
   const searchParams = url.searchParams;

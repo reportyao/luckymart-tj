@@ -5,6 +5,7 @@
 
 import { EventEmitter } from 'events';
 import { logger, errorTracker } from './logger';
+import { getBotApiConfig } from '../../config/api-config';
 
 export interface ReconnectConfig {
   maxRetries: number;
@@ -370,8 +371,10 @@ export class ReconnectManager extends EventEmitter {
 
   private async reconnectAPI(): Promise<boolean> {
     try {
+      const { baseURL } = getBotApiConfig();
+      
       // 测试API连接
-      const response = await fetch(`${process.env.API_BASE_URL || 'http://localhost:3000'}/api/health`, {
+      const response = await fetch(`${baseURL}/api/health`, {
         method: 'GET',
         timeout: 5000
       } as any);

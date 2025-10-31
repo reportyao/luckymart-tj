@@ -15,7 +15,7 @@ const execPromise = util.promisify(exec);
 class ImageOptimizationTool {
   constructor(options = {}) {
     this.config = {
-      apiEndpoint: process.env.API_ENDPOINT || 'http://localhost:3000/api/image',
+      apiEndpoint: process.env.API_ENDPOINT || '${API_BASE_URL}/api/image',
       imageDir: process.env.IMAGE_DIR || './public/images',
       cacheDir: process.env.CACHE_DIR || './.image-cache',
       quality: options.quality || 85,

@@ -515,7 +515,7 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
 
       // 调用触发邀请奖励API
       try {
-        const rewardResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/referral/trigger-reward`, {
+        const rewardResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || '${API_BASE_URL}'}/api/referral/trigger-reward`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

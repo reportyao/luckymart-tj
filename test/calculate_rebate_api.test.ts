@@ -5,7 +5,7 @@
 import fetch from 'node-fetch';
 
 // 配置
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = '${API_BASE_URL}';
 const API_ENDPOINT = '/api/referral/calculate-rebate';
 
 // 测试数据

@@ -7,6 +7,7 @@ import { Telegraf, Context, Markup } from 'telegraf';
 import { prisma } from '../../lib/prisma';
 import { logger } from '../utils/logger';
 import { Language, NotificationType } from '../utils/notification-templates';
+import { apiConfig } from '../../lib/config/api-config';
 
 interface BotTranslation {
   bot: {
@@ -145,7 +146,7 @@ export class NotificationService {
       };
 
       const keyboard = Markup.inlineKeyboard([
-        [Markup.button.webApp(buttonTexts.enter_market, process.env.MINI_APP_URL || 'http://localhost:3000')],
+        [Markup.button.webApp(buttonTexts.enter_market, apiConfig.telegram.miniAppURL)],
         [Markup.button.callback(buttonTexts.tutorial, 'help_tutorial')],
         [Markup.button.callback(buttonTexts.language_settings, 'language_settings')]
       ]);
@@ -190,8 +191,8 @@ export class NotificationService {
       };
 
       const keyboard = Markup.inlineKeyboard([
-        [Markup.button.webApp(buttonTexts.start_lottery, `${process.env.MINI_APP_URL || 'http://localhost:3000'}`)],
-        [Markup.button.webApp(buttonTexts.browse_products, `${process.env.MINI_APP_URL || 'http://localhost:3000'}`)]
+        [Markup.button.webApp(buttonTexts.start_lottery, apiConfig.telegram.miniAppURL)],
+        [Markup.button.webApp(buttonTexts.browse_products, apiConfig.telegram.miniAppURL)]
       ]);
 
       await this.queueMessage(chatId, `${title}\n\n${processedMessage}`, keyboard);
@@ -234,7 +235,7 @@ export class NotificationService {
         orders: this.getTranslation(language, 'bot.balance.buttons.orders')
       };
 
-      const appUrl = process.env.MINI_APP_URL || 'http://localhost:3000';
+      const appUrl = apiConfig.telegram.miniAppURL;
       const keyboard = Markup.inlineKeyboard([
         [Markup.button.webApp(buttonTexts.recharge, `${appUrl}/recharge`)],
         [Markup.button.webApp(buttonTexts.orders, `${appUrl}/orders`)]
@@ -289,7 +290,7 @@ export class NotificationService {
       }
 
       const buttonText = this.getTranslation(language, 'bot.orders.buttons.all_orders');
-      const appUrl = process.env.MINI_APP_URL || 'http://localhost:3000';
+      const appUrl = apiConfig.telegram.miniAppURL;
       const keyboard = Markup.inlineKeyboard([
         [Markup.button.webApp(buttonText, `${appUrl}/orders`)]
       ]);
@@ -321,7 +322,7 @@ export class NotificationService {
         contact_support: this.getTranslation(language, 'bot.help.buttons.contact_support')
       };
 
-      const appUrl = process.env.MINI_APP_URL || 'http://localhost:3000';
+      const appUrl = apiConfig.telegram.miniAppURL;
       const keyboard = Markup.inlineKeyboard([
         [Markup.button.webApp(buttonTexts.tutorial, `${appUrl}/tutorial`)],
         [Markup.button.url(buttonTexts.contact_support, 'https://t.me/luckymart_support')]

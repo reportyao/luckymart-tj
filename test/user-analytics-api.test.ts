@@ -18,7 +18,7 @@ import axios, { AxiosResponse } from 'axios';
 import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
 
 // 测试配置
-const BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
+const BASE_URL = process.env.API_BASE_URL || '${API_BASE_URL}';
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'test_admin_token';
 const INVALID_TOKEN = 'invalid_token';
 

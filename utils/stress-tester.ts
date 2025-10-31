@@ -433,7 +433,7 @@ export class StressTester {
       maxConcurrentUsers: 50,
       testDuration: 60000,
       rampUpTime: 10000,
-      baseUrl: 'http://localhost:3000',
+      baseUrl: '${API_BASE_URL}',
       endpoints: ['/', '/api/health'],
       rampDownTime: 5000,
       thinkTime: 1000,
@@ -967,7 +967,7 @@ export const createStressTester = (config?: Partial<StressTestConfig>) => {
   return new StressTester(config);
 };
 
-export const runQuickLoadTest = async (baseUrl: string = 'http://localhost:3000') => {
+export const runQuickLoadTest = async (baseUrl: string = '${API_BASE_URL}') => {
   const tester = new StressTester({
     maxConcurrentUsers: 10,
     testDuration: 30000,
@@ -977,7 +977,7 @@ export const runQuickLoadTest = async (baseUrl: string = 'http://localhost:3000'
   return await tester.runLoadTest();
 };
 
-export const runQuickStabilityTest = async (baseUrl: string = 'http://localhost:3000', duration: number = 60000) => {
+export const runQuickStabilityTest = async (baseUrl: string = '${API_BASE_URL}', duration: number = 60000) => {
   const tester = new StressTester({
     baseUrl,
     testDuration: duration

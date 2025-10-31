@@ -2,6 +2,7 @@ import { describe, test, expect, beforeEach, jest } from '@jest/globals';
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin/permission-manager';
 import { prisma } from '@/lib/prisma';
+import { getTestApiConfig } from '@/config/api-config';
 
 // Mock Prisma
 jest.mock('@/lib/prisma', () => ({
@@ -22,6 +23,8 @@ jest.mock('jsonwebtoken', () => ({
 }));
 
 describe('AdminPermissionManager', () => {
+  const testConfig = getTestApiConfig();
+  
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -42,7 +45,7 @@ describe('AdminPermissionManager', () => {
       jwt.verify.mockReturnValue({ adminId: 'admin-1' });
       (prisma.adminUsers.findUnique as jest.Mock).mockResolvedValue(mockAdmin);
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin/users', {
+      const mockRequest = new NextRequest(`${testConfig.baseURL}/api/admin/users`, {
         headers: {
           authorization: 'Bearer valid-token',
         },
@@ -57,7 +60,7 @@ describe('AdminPermissionManager', () => {
     });
 
     test('should reject access without token', async () => {
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin/users');
+      const mockRequest = new NextRequest(`${testConfig.baseURL}/api/admin/users`);
 
       const result = await AdminPermissionManager.validateAdminAccess(mockRequest);
 
@@ -71,7 +74,7 @@ describe('AdminPermissionManager', () => {
         throw new Error('Invalid token');
       });
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin/users', {
+      const mockRequest = new NextRequest(`${testConfig.baseURL}/api/admin/users`, {
         headers: {
           authorization: 'Bearer invalid-token',
         },
@@ -98,7 +101,7 @@ describe('AdminPermissionManager', () => {
       jwt.verify.mockReturnValue({ adminId: 'admin-1' });
       (prisma.adminUsers.findUnique as jest.Mock).mockResolvedValue(mockAdmin);
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin/users', {
+      const mockRequest = new NextRequest(`${testConfig.baseURL}/api/admin/users`, {
         headers: {
           authorization: 'Bearer valid-token',
         },
@@ -195,7 +198,7 @@ describe('AdminPermissionManager', () => {
         AdminPermissions.USERS_READ
       );
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin/users', {
+      const mockRequest = new NextRequest(`${testConfig.baseURL}/api/admin/users`, {
         headers: {
           authorization: 'Bearer valid-token',
         },
@@ -216,7 +219,7 @@ describe('AdminPermissionManager', () => {
         AdminPermissions.USERS_READ
       );
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin/users');
+      const mockRequest = new NextRequest(`${testConfig.baseURL}/api/admin/users`);
       const mockHandler = jest.fn();
 
       const result = await middleware(mockRequest, mockHandler);
@@ -245,7 +248,7 @@ describe('AdminPermissionManager', () => {
         AdminPermissions.PRODUCTS_DELETE
       );
 
-      const mockRequest = new NextRequest('http://localhost:3000/api/admin/products', {
+      const mockRequest = new NextRequest(`${testConfig.baseURL}/api/admin/products`, {
         headers: {
           authorization: 'Bearer valid-token',
         },

@@ -514,4 +514,6 @@ const InvitationHistory: React.FC<InvitationHistoryProps> = ({
       )}
     </div>
   );
-};\n\nexport default InvitationHistory;
+};
+
+export default InvitationHistory;

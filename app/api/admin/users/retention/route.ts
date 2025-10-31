@@ -309,7 +309,7 @@ async function calculateRetentionData(
     SELECT COUNT(DISTINCT DATE(created_at)) as active_days
     FROM user_behavior_logs
     WHERE user_id = $1
-  `, userId);
+  `(userId);
 
   return {
     cohortDate,

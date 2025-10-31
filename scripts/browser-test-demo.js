@@ -630,7 +630,7 @@ npm run dev
 \`\`\`
 
 ### 2. 访问测试页面
-在浏览器中打开: http://localhost:3000/weak-network-test.html
+在浏览器中打开: ${API_BASE_URL}/weak-network-test.html
 
 ### 3. 测试功能
 点击测试按钮验证以下功能：

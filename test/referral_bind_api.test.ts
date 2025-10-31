@@ -370,7 +370,7 @@ describe('推荐绑定API完整流程测试', () => {
     };
 
     // 创建真实的测试请求
-    const request = new Request('http://localhost:3000/api/referral/bind', {
+    const request = new Request('${API_BASE_URL}/api/referral/bind', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

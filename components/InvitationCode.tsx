@@ -309,4 +309,6 @@ const InvitationCode: React.FC<InvitationCodeProps> = ({
       )}
     </div>
   );
-};\n\nexport default InvitationCode;
+};
+
+export default InvitationCode;

@@ -134,7 +134,7 @@ export default function UserAnalytics() {
             <p className="text-3xl font-bold text-gray-900">
               {engagement.summary?.activeUsers || 0}
             </p>
-            <p className="text-sm text-gray-500 mt-1">参与度评分 > 50</p>
+            <p className="text-sm text-gray-500 mt-1">参与度评分 &gt; 50</p>
           </div>
 
           <div className="bg-white rounded-xl p-6 shadow-md">

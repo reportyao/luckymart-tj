@@ -10,6 +10,7 @@
  */
 
 import { Markup } from 'telegraf';
+import { apiConfig } from '../../lib/config/api-config';
 
 export enum Language {
   ZH = 'zh-CN',
@@ -310,30 +311,30 @@ Click the buttons below to recharge or view more`,
     message: {
       [Language.ZH]: `📋 {firstName}，您的订单信息：
 
-{hasOrders ? `您最近有 {orderCount} 个订单：
+{hasOrders ? \`您最近有 \${orderCount} 个订单：
 
-{orderList}` : '您还没有任何订单'}
+\${orderList}\` : '您还没有任何订单'}
 
 点击下方按钮查看更多详情`,
       [Language.EN]: `📋 {firstName}, your order information:
 
-{hasOrders ? `You have {orderCount} recent orders:
+{hasOrders ? \`You have \${orderCount} recent orders:
 
-{orderList}` : 'You don\'t have any orders yet'}
+\${orderList}\` : 'You don\'t have any orders yet'}
 
 Click the buttons below to view more details`,
       [Language.RU]: `📋 {firstName}, информация о ваших заказах:
 
-{hasOrders ? `У вас есть {orderCount} недавних заказов:
+{hasOrders ? \`У вас есть \${orderCount} недавних заказов:
 
-{orderList}` : 'У вас пока нет заказов'}
+\${orderList}\` : 'У вас пока нет заказов'}
 
 Нажмите кнопки ниже, чтобы просмотреть более подробную информацию`,
       [Language.TJ]: `📋 {firstName}, маълумоти фармоишҳои шумо:
 
-{hasOrders ? `Шумо {orderCount} фармоиши охирин доред:
+{hasOrders ? \`Шумо \${orderCount} фармоиши охирин доред:
 
-{orderList}` : 'Шумо ҳоло ягон фармоиш надоред'}
+\${orderList}\` : 'Шумо ҳоло ягон фармоиш надоред'}
 
 Тугмаҳои поёнро пахш кунед барои дидани тафсилоти бештар`
     },
@@ -366,7 +367,7 @@ Click the buttons below to view more details`,
 
 状态：{status}
 金额：{amount} TJS
-{hasTracking ? `运单号：${trackingNumber}` : ''}
+{hasTracking ? \`运单号：\${trackingNumber}\` : ''}
 
 {status === 'paid' ? '正在为您安排发货，请耐心等待～' : 
  status === 'shipped' ? '预计 2-3 个工作日送达' :
@@ -376,7 +377,7 @@ Click the buttons below to view more details`,
 
 Status: {status}
 Amount: {amount} TJS
-{hasTracking ? `Tracking Number: ${trackingNumber}` : ''}
+{hasTracking ? \`Tracking Number: \${trackingNumber}\` : ''}
 
 {status === 'paid' ? 'We are arranging shipment for you, please be patient ~' : 
  status === 'shipped' ? 'Expected delivery in 2-3 business days' :
@@ -386,7 +387,7 @@ Amount: {amount} TJS
 
 Статус: {status}
 Сумма: {amount} TJS
-{hasTracking ? `Номер отслеживания: ${trackingNumber}` : ''}
+{hasTracking ? \`Номер отслеживания: \${trackingNumber}\` : ''}
 
 {status === 'paid' ? 'Мы организуем для вас доставку, пожалуйста, наберитесь терпения ~' : 
  status === 'shipped' ? 'Ожидаемая доставка в течение 2-3 рабочих дней' :
@@ -396,7 +397,7 @@ Amount: {amount} TJS
 
 Ҳолат: {status}
 Маблағ: {amount} TJS
-{hasTracking ? `Рақами пайгирӣ: ${trackingNumber}` : ''}
+{hasTracking ? \`Рақами пайгирӣ: \${trackingNumber}\` : ''}
 
 {status === 'paid' ? 'Мо барои шумо интиқол месозем, лутфан сабр кунед ~' : 
  status === 'shipped' ? 'Расонидани интизорӣ дар муддати 2-3 рӯзи корӣ' :
@@ -862,7 +863,7 @@ export class NotificationTemplateManager {
     if (template.buttons && template.buttons[language]) {
       const buttons = template.buttons[language].map(btn => {
         if (btn.url) {
-          const url = this.replaceVariables(btn.url, { ...variables, appUrl: process.env.MINI_APP_URL || 'http://localhost:3000' });
+          const url = this.replaceVariables(btn.url, { ...variables, appUrl: apiConfig.telegram.miniAppURL });
           return [Markup.button.url(btn.text, url)];
         } else {
           return [Markup.button.callback(btn.text, btn.action)];

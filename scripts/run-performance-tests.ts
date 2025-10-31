@@ -276,7 +276,7 @@ class PerformanceTestRunner {
         const tester = new StressTester({
           maxConcurrentUsers: 20,
           testDuration: 30000,
-          baseUrl: 'http://localhost:3000'
+          baseUrl: '${API_BASE_URL}'
         });
         
         tester.runLoadTest().then(results => {
@@ -332,7 +332,7 @@ class PerformanceTestRunner {
         const { StressTester } = require('./utils/stress-tester.ts');
         
         const tester = new StressTester({
-          baseUrl: 'http://localhost:3000',
+          baseUrl: '${API_BASE_URL}',
           testDuration: 30000 // 30秒测试
         });
         

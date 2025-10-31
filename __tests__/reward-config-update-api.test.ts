@@ -70,9 +70,10 @@ describe('奖励配置更新API', () => {
     jest.clearAllMocks();
     
     // 准备测试数据
+    const testBaseURL = process.env.TEST_API_BASE_URL || '${API_BASE_URL}';
     mockRequest = {
       method: 'PUT',
-      url: 'http://localhost:3000/api/admin/reward-config/register_referrer_l1',
+      url: `${testBaseURL}/api/admin/reward-config/register_referrer_l1`,
       headers: new Map([
         ['content-type', 'application/json'],
         ['user-agent', 'TestAgent/1.0'],

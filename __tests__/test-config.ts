@@ -35,7 +35,9 @@ export interface TestConfig {
 
 export const testConfig: TestConfig = {
   database: {
-    url: process.env.DATABASE_URL || 'postgresql://test:test@localhost:5432/luckymart_test'
+    url: process.env.DATABASE_URL || 
+         process.env.TEST_DATABASE_URL || 
+         'postgresql://test:test@localhost:5432/luckymart_test'
   },
   jwt: {
     secret: process.env.JWT_SECRET || 'test-jwt-secret-for-testing-only',
@@ -45,7 +47,9 @@ export const testConfig: TestConfig = {
     botToken: process.env.TELEGRAM_BOT_TOKEN || 'test-bot-token-for-testing'
   },
   redis: {
-    url: process.env.REDIS_URL || 'redis://localhost:6379'
+    url: process.env.REDIS_URL || 
+         process.env.TEST_REDIS_URL || 
+         'redis://localhost:6379'
   },
   performance: {
     timeout: 30000,

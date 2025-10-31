@@ -244,7 +244,10 @@ export function resetDatabase() {
 export function setTestEnvironment() {
   process.env.NODE_ENV = 'test';
   process.env.TELEGRAM_BOT_TOKEN = 'test-bot-token';
-  process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test';
+  process.env.DATABASE_URL = process.env.TEST_DATABASE_URL || 'postgresql://test:test@localhost:5432/test';
+  process.env.REDIS_URL = process.env.TEST_REDIS_URL || 'redis://localhost:6379';
+  process.env.TEST_API_BASE_URL = process.env.TEST_API_BASE_URL || '${API_BASE_URL}';
+  process.env.MINI_APP_URL = process.env.TEST_MINI_APP_URL || '${API_BASE_URL}';
 }
 
 /**
@@ -254,4 +257,7 @@ export function cleanupTestEnvironment() {
   delete process.env.NODE_ENV;
   delete process.env.TELEGRAM_BOT_TOKEN;
   delete process.env.DATABASE_URL;
+  delete process.env.REDIS_URL;
+  delete process.env.TEST_API_BASE_URL;
+  delete process.env.MINI_APP_URL;
 }

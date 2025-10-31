@@ -4,6 +4,11 @@
  */
 
 import { NextRequest } from 'next/server';
+import { getTestApiConfig } from '../config/api-config';
+
+// 获取测试环境API配置
+const testConfig = getTestApiConfig();
+const DEFAULT_API_BASE_URL = 'http://localhost:3000';
 
 // 模拟测试数据
 const testCases = {
@@ -46,7 +51,7 @@ const testCases = {
 
 // 测试工具函数
 class LotteryParticipationTester {
-  constructor(private baseUrl: string = 'http://localhost:3000') {}
+  constructor(private baseUrl: string = testConfig.baseURL || DEFAULT_API_BASE_URL) {}
 
   /**
    * 模拟POST请求到抽奖参与API

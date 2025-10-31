@@ -210,7 +210,7 @@ describe('夺宝邀请奖励集成测试', () => {
 
       // 模拟触发邀请奖励的逻辑
       try {
-        const rewardResponse = await fetch('http://localhost:3000/api/referral/trigger-reward', {
+        const rewardResponse = await fetch(`${process.env.TEST_API_BASE_URL || '${API_BASE_URL}'}/api/referral/trigger-reward`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -252,7 +252,7 @@ describe('夺宝邀请奖励集成测试', () => {
 
       // 再次尝试触发奖励（应该被拒绝）
       try {
-        const rewardResponse = await fetch('http://localhost:3000/api/referral/trigger-reward', {
+        const rewardResponse = await fetch(`${process.env.TEST_API_BASE_URL || '${API_BASE_URL}'}/api/referral/trigger-reward`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -417,7 +417,7 @@ describe('充值邀请奖励集成测试', () => {
 
     // 模拟触发邀请奖励的逻辑
     try {
-      const rewardResponse = await fetch('http://localhost:3000/api/referral/trigger-reward', {
+      const rewardResponse = await fetch(`${process.env.TEST_API_BASE_URL || '${API_BASE_URL}'}/api/referral/trigger-reward`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -477,7 +477,7 @@ describe('错误处理和日志记录测试', () => {
     } as Response);
 
     try {
-      const rewardResponse = await fetch('http://localhost:3000/api/referral/trigger-reward', {
+      const rewardResponse = await fetch(`${process.env.TEST_API_BASE_URL || '${API_BASE_URL}'}/api/referral/trigger-reward`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

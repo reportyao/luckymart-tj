@@ -7,11 +7,12 @@ import { describe, test, expect, beforeAll, afterEach, beforeEach, jest } from '
 import { prisma } from '../lib/prisma';
 import { checkIdempotency, completeIdempotency, cleanupExpiredLogs } from '../lib/idempotency-manager';
 import { withIdempotency } from '../lib/idempotency-middleware';
+import { getTestApiConfig } from '../config/api-config';
 
 // Mock NextRequest/NextResponse for testing
 const mockNextRequest = (method: string = 'POST', body: any = {}) => ({
   method,
-  url: 'http://localhost:3000/test',
+  url: `${testConfig.baseURL}/test`,
   headers: new Headers(),
   json: async () => body,
   body: null
@@ -23,6 +24,7 @@ const mockNextResponse = (data: any, status: number = 200) => ({
 });
 
 describe('人工核销幂等性测试', () => {
+  const testConfig = getTestApiConfig();
   const TEST_WITHDRAW_ID = 'test-withdraw-idempotent';
   const TEST_ORDER_ID = 'test-order-idempotent';
 

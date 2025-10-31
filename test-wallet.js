@@ -10,7 +10,7 @@
 const fs = require('fs');
 const https = require('https');
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = '${API_BASE_URL}/api';
 const JWT_TOKEN = 'your-jwt-token-here'; // 替换为实际token
 
 // 测试配置

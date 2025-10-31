@@ -6,7 +6,7 @@
  */
 
 // 基础配置
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '${API_BASE_URL}';
 const ACCESS_TOKEN = 'your_access_token_here'; // 需要替换为有效的访问令牌
 
 // 请求头配置

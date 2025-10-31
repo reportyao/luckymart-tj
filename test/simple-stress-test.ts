@@ -17,7 +17,7 @@ interface SimpleTestResult {
 }
 
 class SimpleStressTest {
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = '${API_BASE_URL}';
 
   async runSimpleTest(testName: string, url: string, requests: number = 100): Promise<SimpleTestResult> {
     console.log(`\n🧪 开始测试: ${testName}`);

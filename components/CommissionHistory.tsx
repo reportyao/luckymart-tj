@@ -669,4 +669,6 @@ const CommissionHistory: React.FC<CommissionHistoryProps> = ({
       )}
     </div>
   );
-};\n\nexport default CommissionHistory;
+};
+
+export default CommissionHistory;

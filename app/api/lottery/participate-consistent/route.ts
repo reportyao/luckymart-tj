@@ -8,6 +8,7 @@ import { cacheKeyBuilder } from '@/lib/redis-cache';
 import { cacheManager } from '@/lib/cache-manager';
 import { triggerImmediateDraw } from '@/lib/lottery';
 import { getLogger } from '@/lib/logger';
+import { API_BASE_URL } from '@/config/api-config';
 
 const logger = getLogger();
 
@@ -295,7 +296,7 @@ export async function POST(request: NextRequest) {
 
         // 调用触发邀请奖励API
         try {
-          const rewardResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/referral/trigger-reward`, {
+          const rewardResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || API_BASE_URL}/api/referral/trigger-reward`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

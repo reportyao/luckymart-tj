@@ -100,7 +100,7 @@ const PERFORMANCE_TEST_DATA = [
  */
 export class SearchPerformanceTester {
   private results: SearchTestResult[] = [];
-  private baseUrl: string = process.env.TEST_API_URL || 'http://localhost:3000';
+  private baseUrl: string = process.env.TEST_API_URL || '${API_BASE_URL}';
 
   /**
    * 运行完整的搜索性能测试套件

@@ -11,7 +11,7 @@ const path = require('path');
 class AdminRewardConfigTester {
   constructor() {
     this.serverProcess = null;
-    this.baseUrl = 'http://localhost:3000';
+    this.baseUrl = '${API_BASE_URL}';
     this.testResults = [];
   }
 

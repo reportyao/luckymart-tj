@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 // 测试配置
-const API_BASE = 'http://localhost:3000/api/admin/products';
+const API_BASE = '${API_BASE_URL}/api/admin/products';
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'your-admin-token-here';
 
 class ProductAnalyticsTester {

@@ -538,7 +538,7 @@ export class TranslationWorkflowManager extends EventEmitter {
     
     const userTasks: { [userId: string]: number } = {};
     const typeDistribution: { [type: string]: number } = {};
-    const priorityDistribution: { priority: string]: number } = {};
+    const priorityDistribution: { [priority: string]: number } = {};
     
     let totalCompletionTime = 0;
     

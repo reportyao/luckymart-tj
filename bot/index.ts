@@ -8,8 +8,10 @@ import { RewardNotifier } from './services/reward-notifier';
 import { NotificationService } from './services/notification-service';
 import { Language, NotificationType } from './utils/notification-templates';
 
+import { apiConfig } from '../lib/config/api-config';
+
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const MINI_APP_URL = process.env.MINI_APP_URL || 'http://localhost:3000';
+const MINI_APP_URL = apiConfig.telegram.miniAppURL;
 
 if (!BOT_TOKEN) {
   logger.error('错误：TELEGRAM_BOT_TOKEN未配置');

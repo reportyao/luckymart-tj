@@ -703,7 +703,7 @@ async function getSpendingTimeline(userId: string) {
       AND created_at >= CURRENT_DATE - INTERVAL '30 days'
     GROUP BY DATE(created_at), type
     ORDER BY date DESC, type
-  `, userId);
+  `(userId);
 
   return timeline;
 }

@@ -48,7 +48,7 @@ describe('综合性能和稳定性测试套件', () => {
       maxConcurrentUsers: 50,
       testDuration: 60000, // 1分钟
       rampUpTime: 10000,   // 10秒
-      baseUrl: 'http://localhost:3000'
+      baseUrl: '${API_BASE_URL}'
     });
 
     console.log('性能测试环境初始化完成');

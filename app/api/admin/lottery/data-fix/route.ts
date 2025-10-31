@@ -63,7 +63,6 @@ export async function POST(request: NextRequest) {
     }
   })(request);
 }
-}
 
 // 修复售出份额不匹配问题
 async function fixSoldSharesMismatch(roundId?: string, dryRun: boolean = true) {

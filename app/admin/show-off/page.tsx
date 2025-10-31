@@ -579,7 +579,7 @@ function QualityTab() {
         <div className="bg-white rounded-lg border p-4">
           <p className="text-sm text-gray-600 mb-1">低质量</p>
           <p className="text-2xl font-bold text-red-600">{quality?.stats?.lowQuality || 0}</p>
-          <p className="text-xs text-gray-500 mt-1">得分 < 60</p>
+          <p className="text-xs text-gray-500 mt-1">得分 &lt; 60</p>
         </div>
         <div className="bg-white rounded-lg border p-4">
           <p className="text-sm text-gray-600 mb-1">可疑内容</p>

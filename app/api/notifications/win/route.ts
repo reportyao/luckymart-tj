@@ -343,8 +343,8 @@ Please claim your prize in time. Thank you for your participation!`,
     prize: prize.amount,
     prizeType: prize.type,
     numbers: participation.numbers,
-    claimUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/lottery/claim?participationId=${participation.id}`,
-    detailsUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/lottery/records`
+    claimUrl: `${process.env.NEXT_PUBLIC_APP_URL || '${API_BASE_URL}'}/lottery/claim?participationId=${participation.id}`,
+    detailsUrl: `${process.env.NEXT_PUBLIC_APP_URL || '${API_BASE_URL}'}/lottery/records`
   };
 }
 

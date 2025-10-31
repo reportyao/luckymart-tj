@@ -9,7 +9,8 @@ import { describe, test, expect, beforeEach } from '@jest/globals';
 import { ApiClient, ApiError, InvitationApiClient } from '../examples/invitation-api-examples';
 
 // 测试配置
-const API_BASE_URL = process.env.TEST_API_BASE_URL || 'http://localhost:3000';
+import { API_BASE_URL } from '../config/api-config';
+
 const TEST_ACCESS_TOKEN = process.env.TEST_ACCESS_TOKEN || 'test-jwt-token';
 
 describe('邀请裂变系统 API 测试', () => {
@@ -18,7 +19,7 @@ describe('邀请裂变系统 API 测试', () => {
   let testUserId: string;
 
   beforeEach(() => {
-    apiClient = new ApiClient(API_BASE_URL);
+    apiClient = new ApiClient(API_BASE_URL || process.env.TEST_API_BASE_URL || 'http://localhost:3000');
     apiClient.setAccessToken(TEST_ACCESS_TOKEN);
     invitationApi = new InvitationApiClient(apiClient);
     testUserId = 'test-user-uuid';
@@ -551,7 +552,7 @@ describe('邀请流程集成测试', () => {
   let invitationApi: InvitationApiClient;
 
   beforeAll(() => {
-    apiClient = new ApiClient(API_BASE_URL);
+    apiClient = new ApiClient(API_BASE_URL || process.env.TEST_API_BASE_URL || 'http://localhost:3000');
     apiClient.setAccessToken(TEST_ACCESS_TOKEN);
     invitationApi = new InvitationApiClient(apiClient);
   });

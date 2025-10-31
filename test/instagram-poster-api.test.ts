@@ -1,7 +1,7 @@
 // Instagram海报生成API测试脚本
 // 测试 /api/referral/generate-instagram-poster 端点
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '${API_BASE_URL}';
 
 interface GeneratePosterRequest {
   prize_name: string;

@@ -34,7 +34,7 @@ interface LoadTestConfig {
 
 class StressTestRunner {
   private results: TestResult[] = [];
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = '${API_BASE_URL}';
 
   async runLoadTest(config: LoadTestConfig): Promise<TestResult> {
     console.log(`\n🚀 开始加载测试: ${config.name}`);

@@ -303,7 +303,7 @@ export function useTransactionHistory(apiClient: WalletApiClient) {
 import React from 'react';
 
 export function WalletBalancePage({ token }: { token: string }) {
-  const apiClient = new WalletApiClient('http://localhost:3000', token);
+  const apiClient = new WalletApiClient('${API_BASE_URL}', token);
   const { balance, loading, error, refreshBalance, transferToLuckyCoins } = useWalletBalance(apiClient);
 
   const [transferAmount, setTransferAmount] = useState('');
@@ -395,7 +395,7 @@ export function WalletBalancePage({ token }: { token: string }) {
  * 使用示例 - 交易记录页面组件
  */
 export function TransactionHistoryPage({ token }: { token: string }) {
-  const apiClient = new WalletApiClient('http://localhost:3000', token);
+  const apiClient = new WalletApiClient('${API_BASE_URL}', token);
   const { transactions, pagination, loading, error, fetchTransactions, loadMore } = useTransactionHistory(apiClient);
 
   const [filters, setFilters] = useState({

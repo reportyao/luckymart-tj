@@ -6,6 +6,13 @@
 
 import { performance } from 'perf_hooks';
 
+// 获取API基础URL配置
+const getApiBaseUrl = () => {
+  return process.env.TEST_API_BASE_URL || 
+         process.env.NEXT_PUBLIC_API_BASE_URL || 
+         '${API_BASE_URL}';
+};
+
 interface ModuleTest {
   name: string;
   description: string;
@@ -13,7 +20,7 @@ interface ModuleTest {
 }
 
 class BasicModuleTester {
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = getApiBaseUrl();
 
   async runBasicTests(): Promise<void> {
     console.log('🔧 LuckyMartTJ 基础功能验证测试');

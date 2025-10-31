@@ -1,0 +1,188 @@
+{
+  "timestamp": "2025-10-31T17:14:30.570Z",
+  "summary": {
+    "totalSuites": 13,
+    "totalTests": 13,
+    "totalPassed": 0,
+    "totalFailed": 13,
+    "totalSkipped": 0,
+    "totalDuration": 289883
+  },
+  "coverage": {
+    "lines": 0,
+    "functions": 0,
+    "branches": 0,
+    "statements": 0
+  },
+  "suites": [
+    {
+      "suite": "JWT认证系统",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 31941.564766,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "VRF开奖算法",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 2390.187729,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "数据库锁机制",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 2595.742144,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "API安全验证",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 3088.610953,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "性能优化缓存",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 2022.258971,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "Bot容错机制",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 2293.692702,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "核心业务流程",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 2168.137082,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "数据库事务控制",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 2705.483447,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "缓存系统集成",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 2396.187312,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "N+1查询优化",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 1501.583836,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "缓存性能测试",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 2100.588471,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "N+1查询性能",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 760.752627,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    },
+    {
+      "suite": "性能基准测试",
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "duration": 3612.950575,
+      "coverage": {
+        "lines": 0,
+        "functions": 0,
+        "branches": 0,
+        "statements": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,354 @@
+
+> luckymart-tj@0.1.0 type-check
+> tsc --noEmit --strict
+
+app/admin/show-off/page.tsx(582,58): error TS1003: Identifier expected.
+app/admin/user-analytics/page.tsx(137,61): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+app/api/admin/lottery/data-fix/route.ts(66,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/conversion/route.ts(318,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/performance/route.ts(255,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/profit/route.ts(450,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/trending/route.ts(452,1): error TS1128: Declaration or statement expected.
+app/api/admin/users/retention/route.ts(312,12): error TS1005: ',' expected.
+app/api/admin/users/spending/route.ts(706,12): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(288,1): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(313,15): error TS1005: ',' expected.
+bot/utils/notification-templates.ts(313,20): error TS1005: ',' expected.
+bot/utils/notification-templates.ts(313,33): error TS1005: ',' expected.
+bot/utils/notification-templates.ts(313,36): error TS1127: Invalid character.
+bot/utils/notification-templates.ts(315,12): error TS1005: ',' expected.
+bot/utils/notification-templates.ts(318,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(320,15): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(320,19): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(320,37): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(325,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(327,15): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(327,17): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(327,21): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(327,39): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(332,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(334,15): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(334,33): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(334,42): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(339,5): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(339,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(341,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(344,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(347,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(350,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(354,3): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(354,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(356,41): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(358,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(359,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(360,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(361,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(362,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(363,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(365,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(369,17): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(369,20): error TS1127: Invalid character.
+bot/utils/notification-templates.ts(369,21): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(375,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(379,17): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(379,34): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(385,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(389,17): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(389,37): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(395,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(399,17): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(399,33): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(405,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(407,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(410,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(413,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(416,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(420,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(422,37): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(424,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(425,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(426,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(427,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(428,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(429,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(431,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(439,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(447,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(455,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(463,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(465,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(469,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(473,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(477,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(482,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(484,40): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(486,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(487,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(488,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(489,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(490,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(491,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(493,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(503,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(513,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(523,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(533,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(535,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(539,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(543,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(547,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(552,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(554,41): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(556,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(557,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(558,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(559,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(560,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(561,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(563,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(573,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(583,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(593,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(603,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(605,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(608,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(611,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(614,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(618,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(620,34): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(622,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(623,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(624,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(625,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(626,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(627,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(629,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(637,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(645,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(653,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(661,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(663,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(667,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(671,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(675,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(680,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(682,41): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(684,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(685,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(686,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(687,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(688,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(689,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(691,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(694,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(697,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(700,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(703,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(705,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(708,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(711,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(714,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(718,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(720,34): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(722,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(723,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(724,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(725,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(726,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(727,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(729,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(740,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(751,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(762,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(773,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(775,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(779,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(783,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(787,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(792,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(794,40): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(796,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(797,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(798,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(799,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(800,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(801,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(803,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(804,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(805,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(806,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(807,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(809,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(815,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(821,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(827,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(835,1): error TS1128: Declaration or statement expected.
+components/CommissionHistory.tsx(672,3): error TS1127: Invalid character.
+components/CommissionHistory.tsx(672,5): error TS1127: Invalid character.
+components/CommissionHistory.tsx(672,6): error TS1435: Unknown keyword or identifier. Did you mean 'export'?
+components/CommissionHistory.tsx(672,14): error TS1005: 'export' expected.
+components/InvitationCode.tsx(312,3): error TS1127: Invalid character.
+components/InvitationCode.tsx(312,5): error TS1127: Invalid character.
+components/InvitationCode.tsx(312,6): error TS1435: Unknown keyword or identifier. Did you mean 'export'?
+components/InvitationCode.tsx(312,14): error TS1005: 'export' expected.
+components/InvitationHistory.tsx(517,3): error TS1127: Invalid character.
+components/InvitationHistory.tsx(517,5): error TS1127: Invalid character.
+components/InvitationHistory.tsx(517,6): error TS1435: Unknown keyword or identifier. Did you mean 'export'?
+components/InvitationHistory.tsx(517,14): error TS1005: 'export' expected.
+components/LanguageSwitcher.tsx(124,3): error TS1127: Invalid character.
+components/LanguageSwitcher.tsx(124,5): error TS1127: Invalid character.
+components/LanguageSwitcher.tsx(124,6): error TS1435: Unknown keyword or identifier. Did you mean 'export'?
+components/LanguageSwitcher.tsx(124,14): error TS1005: 'export' expected.
+components/TranslationQualityDashboard.tsx(417,5): error TS2657: JSX expressions must have one parent element.
+components/TranslationQualityDashboard.tsx(761,9): error TS2657: JSX expressions must have one parent element.
+components/TranslationQualityDashboard.tsx(769,15): error TS2657: JSX expressions must have one parent element.
+components/TranslationQualityDashboard.tsx(771,20): error TS17008: JSX element 'span' has no corresponding closing tag.
+components/TranslationQualityDashboard.tsx(790,15): error TS1005: ')' expected.
+components/TranslationQualityDashboard.tsx(791,14): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+components/TranslationQualityDashboard.tsx(795,18): error TS17008: JSX element 'span' has no corresponding closing tag.
+components/TranslationQualityDashboard.tsx(812,18): error TS17008: JSX element 'span' has no corresponding closing tag.
+components/TranslationQualityDashboard.tsx(831,13): error TS1005: ')' expected.
+components/TranslationQualityDashboard.tsx(835,18): error TS17008: JSX element 'span' has no corresponding closing tag.
+components/TranslationQualityDashboard.tsx(843,13): error TS1005: ')' expected.
+components/TranslationQualityDashboard.tsx(845,13): error TS2657: JSX expressions must have one parent element.
+components/TranslationQualityDashboard.tsx(847,18): error TS17008: JSX element 'span' has no corresponding closing tag.
+components/TranslationQualityDashboard.tsx(855,13): error TS1128: Declaration or statement expected.
+components/TranslationQualityDashboard.tsx(857,13): error TS2657: JSX expressions must have one parent element.
+components/TranslationQualityDashboard.tsx(859,18): error TS17008: JSX element 'span' has no corresponding closing tag.
+components/TranslationQualityDashboard.tsx(867,13): error TS1128: Declaration or statement expected.
+components/TranslationQualityDashboard.tsx(868,11): error TS1109: Expression expected.
+components/TranslationQualityDashboard.tsx(869,9): error TS1109: Expression expected.
+components/TranslationQualityDashboard.tsx(870,7): error TS1109: Expression expected.
+components/TranslationQualityDashboard.tsx(870,8): error TS1128: Declaration or statement expected.
+components/TranslationQualityDashboard.tsx(871,5): error TS1128: Declaration or statement expected.
+components/TranslationQualityDashboard.tsx(872,3): error TS1109: Expression expected.
+components/TranslationQualityDashboard.tsx(873,1): error TS1128: Declaration or statement expected.
+components/WeakNetworkOptimizationDemo.tsx(28,21): error TS1005: ',' expected.
+components/WeakNetworkOptimizationDemo.tsx(29,56): error TS1005: ',' expected.
+components/WeakNetworkOptimizationDemo.tsx(30,22): error TS1005: ',' expected.
+components/WeakNetworkOptimizationDemo.tsx(31,50): error TS1109: Expression expected.
+components/WeakNetworkOptimizationDemo.tsx(32,4): error TS1109: Expression expected.
+components/WeakNetworkOptimizationDemo.tsx(260,31): error TS1005: '}' expected.
+components/WeakNetworkOptimizationDemo.tsx(260,44): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+lib/i18n-middleware.ts(170,7): error TS1005: ',' expected.
+lib/i18n-middleware.ts(170,10): error TS1005: ';' expected.
+lib/i18n-middleware.ts(170,12): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
+lib/i18n-middleware.ts(171,16): error TS1005: ';' expected.
+lib/i18n-middleware.ts(172,14): error TS1005: ';' expected.
+lib/i18n-middleware.ts(173,18): error TS1005: ';' expected.
+lib/i18n-middleware.ts(174,21): error TS1005: ';' expected.
+lib/i18n-middleware.ts(175,18): error TS1005: ';' expected.
+lib/i18n-middleware.ts(176,25): error TS1005: ';' expected.
+lib/i18n-middleware.ts(177,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(178,22): error TS1005: ';' expected.
+lib/i18n-middleware.ts(179,22): error TS1005: ';' expected.
+lib/i18n-middleware.ts(180,21): error TS1005: ';' expected.
+lib/i18n-middleware.ts(181,29): error TS1005: ';' expected.
+lib/i18n-middleware.ts(182,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(183,27): error TS1005: ';' expected.
+lib/i18n-middleware.ts(184,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(185,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(186,24): error TS1005: ';' expected.
+lib/i18n-middleware.ts(187,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(188,26): error TS1005: ';' expected.
+lib/i18n-middleware.ts(189,25): error TS1005: ';' expected.
+lib/i18n-middleware.ts(190,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(191,6): error TS1128: Declaration or statement expected.
+lib/i18n-middleware.ts(192,10): error TS1005: ';' expected.
+lib/i18n-middleware.ts(193,16): error TS1005: ';' expected.
+lib/i18n-middleware.ts(194,14): error TS1005: ';' expected.
+lib/i18n-middleware.ts(195,18): error TS1005: ';' expected.
+lib/i18n-middleware.ts(196,21): error TS1005: ';' expected.
+lib/i18n-middleware.ts(197,18): error TS1005: ';' expected.
+lib/i18n-middleware.ts(198,25): error TS1005: ';' expected.
+lib/i18n-middleware.ts(199,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(200,22): error TS1005: ';' expected.
+lib/i18n-middleware.ts(201,22): error TS1005: ';' expected.
+lib/i18n-middleware.ts(202,21): error TS1005: ';' expected.
+lib/i18n-middleware.ts(203,29): error TS1005: ';' expected.
+lib/i18n-middleware.ts(204,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(205,27): error TS1005: ';' expected.
+lib/i18n-middleware.ts(206,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(207,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(208,24): error TS1005: ';' expected.
+lib/i18n-middleware.ts(209,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(210,26): error TS1005: ';' expected.
+lib/i18n-middleware.ts(211,25): error TS1005: ';' expected.
+lib/i18n-middleware.ts(212,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(213,6): error TS1128: Declaration or statement expected.
+lib/i18n-middleware.ts(214,10): error TS1005: ';' expected.
+lib/i18n-middleware.ts(215,16): error TS1005: ';' expected.
+lib/i18n-middleware.ts(216,14): error TS1005: ';' expected.
+lib/i18n-middleware.ts(217,18): error TS1005: ';' expected.
+lib/i18n-middleware.ts(218,21): error TS1005: ';' expected.
+lib/i18n-middleware.ts(219,18): error TS1005: ';' expected.
+lib/i18n-middleware.ts(220,25): error TS1005: ';' expected.
+lib/i18n-middleware.ts(221,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(222,22): error TS1005: ';' expected.
+lib/i18n-middleware.ts(223,22): error TS1005: ';' expected.
+lib/i18n-middleware.ts(224,21): error TS1005: ';' expected.
+lib/i18n-middleware.ts(225,29): error TS1005: ';' expected.
+lib/i18n-middleware.ts(226,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(227,27): error TS1005: ';' expected.
+lib/i18n-middleware.ts(228,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(229,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(230,24): error TS1005: ';' expected.
+lib/i18n-middleware.ts(231,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(232,26): error TS1005: ';' expected.
+lib/i18n-middleware.ts(233,25): error TS1005: ';' expected.
+lib/i18n-middleware.ts(234,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(235,6): error TS1128: Declaration or statement expected.
+lib/i18n-middleware.ts(236,10): error TS1005: ';' expected.
+lib/i18n-middleware.ts(237,16): error TS1005: ';' expected.
+lib/i18n-middleware.ts(238,14): error TS1005: ';' expected.
+lib/i18n-middleware.ts(239,18): error TS1005: ';' expected.
+lib/i18n-middleware.ts(240,21): error TS1005: ';' expected.
+lib/i18n-middleware.ts(241,18): error TS1005: ';' expected.
+lib/i18n-middleware.ts(242,25): error TS1005: ';' expected.
+lib/i18n-middleware.ts(243,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(244,22): error TS1005: ';' expected.
+lib/i18n-middleware.ts(245,22): error TS1005: ';' expected.
+lib/i18n-middleware.ts(246,21): error TS1005: ';' expected.
+lib/i18n-middleware.ts(247,29): error TS1005: ';' expected.
+lib/i18n-middleware.ts(248,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(249,27): error TS1005: ';' expected.
+lib/i18n-middleware.ts(250,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(251,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(252,24): error TS1005: ';' expected.
+lib/i18n-middleware.ts(253,23): error TS1005: ';' expected.
+lib/i18n-middleware.ts(254,26): error TS1005: ';' expected.
+lib/i18n-middleware.ts(255,25): error TS1005: ';' expected.
+lib/i18n-middleware.ts(256,30): error TS1005: ';' expected.
+lib/i18n-middleware.ts(258,3): error TS1128: Declaration or statement expected.
+lib/i18n-middleware.ts(260,22): error TS1005: ',' expected.
+lib/i18n-middleware.ts(260,44): error TS1005: ';' expected.
+lib/i18n-middleware.ts(267,16): error TS1005: ',' expected.
+lib/i18n-middleware.ts(267,35): error TS1109: Expression expected.
+lib/i18n-middleware.ts(267,44): error TS1005: ';' expected.
+lib/i18n-middleware.ts(267,46): error TS1434: Unexpected keyword or identifier.
+lib/i18n-middleware.ts(276,9): error TS1005: ',' expected.
+lib/i18n-middleware.ts(277,13): error TS1109: Expression expected.
+lib/i18n-middleware.ts(278,10): error TS1109: Expression expected.
+lib/i18n-middleware.ts(279,4): error TS1005: ';' expected.
+lib/i18n-middleware.ts(279,6): error TS1434: Unexpected keyword or identifier.
+lib/i18n-middleware.ts(295,9): error TS1005: ',' expected.
+lib/i18n-middleware.ts(296,13): error TS1109: Expression expected.
+lib/i18n-middleware.ts(297,13): error TS1109: Expression expected.
+lib/i18n-middleware.ts(298,4): error TS1005: ';' expected.
+lib/i18n-middleware.ts(298,6): error TS1434: Unexpected keyword or identifier.
+lib/i18n-middleware.ts(316,9): error TS1005: ',' expected.
+lib/i18n-middleware.ts(316,15): error TS1011: An element access expression should take an argument.
+lib/i18n-middleware.ts(317,15): error TS1005: ',' expected.
+lib/i18n-middleware.ts(318,19): error TS1005: ',' expected.
+lib/i18n-middleware.ts(319,20): error TS1005: ',' expected.
+lib/i18n-middleware.ts(320,20): error TS1005: ',' expected.
+lib/i18n-middleware.ts(321,25): error TS1005: ',' expected.
+lib/i18n-middleware.ts(323,13): error TS1109: Expression expected.
+lib/i18n-middleware.ts(324,4): error TS1005: ';' expected.
+lib/i18n-middleware.ts(324,6): error TS1434: Unexpected keyword or identifier.
+lib/i18n-middleware.ts(337,29): error TS1005: ',' expected.
+lib/i18n-middleware.ts(337,39): error TS1005: ';' expected.
+lib/i18n-middleware.ts(337,41): error TS1434: Unexpected keyword or identifier.
+lib/i18n-middleware.ts(344,1): error TS1128: Declaration or statement expected.
+workflows/translation-update-workflow.ts(541,51): error TS1005: ';' expected.
+workflows/translation-update-workflow.ts(541,52): error TS1131: Property or signature expected.

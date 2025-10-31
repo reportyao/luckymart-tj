@@ -1,0 +1,638 @@
+
+> luckymart-tj@0.1.0 lint
+> next lint
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+
+./app/addresses/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+37:6  Warning: React Hook useEffect has a missing dependency: 'fetchAddresses'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+48:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+52:7  Warning: Unexpected console statement.  no-console
+52:21  Error: Unexpected string concatenation.  prefer-template
+63:19  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+67:22  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+79:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+80:15  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+80:28  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+86:15  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+86:26  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+89:7  Warning: Unexpected console statement.  no-console
+89:21  Error: Unexpected string concatenation.  prefer-template
+100:17  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+100:34  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+121:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+125:15  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+125:26  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+128:7  Warning: Unexpected console statement.  no-console
+128:21  Error: Unexpected string concatenation.  prefer-template
+192:16  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+
+./app/admin/analytics/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+9:50  Error: 'FiCreditCard' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+9:50  Error: 'FiCreditCard' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+13:76  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+14:8  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+14:35  Error: Expected { after 'if' condition.  curly
+16:40  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+17:40  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+20:31  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+35:21  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+47:75  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+48:8  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+48:35  Error: Expected { after 'if' condition.  curly
+50:40  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+55:21  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+87:41  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+88:8  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+88:35  Error: Expected { after 'if' condition.  curly
+90:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+97:21  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+129:52  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+130:54  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+131:62  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+132:64  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+136:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+141:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+168:7  Warning: Unexpected console statement.  no-console
+174:65  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+180:10  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+265:38  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+302:55  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+317:70  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+325:57  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+334:35  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+367:59  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+377:69  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+379:61  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+383:46  Error: Generic Object Injection Sink  security/detect-object-injection
+398:63  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+402:58  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+413:64  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+426:38  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+460:63  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+480:70  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+500:64  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+516:66  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+537:39  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+571:65  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+575:65  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+596:80  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+598:69  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+602:46  Error: Generic Object Injection Sink  security/detect-object-injection
+617:67  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+641:62  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./app/admin/commerce/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+50:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+78:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+78:30  Error: Expected { after 'if' condition.  curly
+79:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+79:35  Error: Expected { after 'if' condition.  curly
+80:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+80:35  Error: Expected { after 'if' condition.  curly
+82:7  Warning: Unexpected console statement.  no-console
+88:58  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./app/admin/cost-monitoring/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+15:3  Error: 'TrendingDown' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+15:3  Error: 'TrendingDown' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+21:3  Error: 'Calendar' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+21:3  Error: 'Calendar' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+37:3  Error: 'BarChart' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+37:3  Error: 'BarChart' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+38:3  Error: 'Bar' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+38:3  Error: 'Bar' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+97:7  Error: 'COLORS' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+97:7  Error: 'COLORS' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+99:1  Error: Function 'CostMonitoringPage' has a complexity of 22. Maximum allowed is 10.  complexity
+135:7  Warning: Unexpected console statement.  no-console
+146:9  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+150:20  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+150:46  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+151:27  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+151:60  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+161:9  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+165:23  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+165:52  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+166:14  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+166:44  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+167:23  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+167:52  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+168:20  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+168:51  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+169:27  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+169:65  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+179:9  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+189:9  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+195:40  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+219:6  Warning: React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+536:61  Error: Generic Object Injection Sink  security/detect-object-injection
+
+./app/admin/dashboard/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+8:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+21:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+21:20  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+41:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+45:7  Warning: Unexpected console statement.  no-console
+56:8  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+
+./app/admin/financial-dashboard/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+18:3  Error: 'PieChart' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+18:3  Error: 'PieChart' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+19:3  Error: 'LineChart' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+19:3  Error: 'LineChart' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+22:107  Error: 'BarChart' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+22:107  Error: 'BarChart' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+22:117  Error: 'Bar' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+22:117  Error: 'Bar' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+53:1  Error: Function 'FinancialDashboard' has a complexity of 22. Maximum allowed is 10.  complexity
+59:54  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+60:10  Error: 'profitData' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+60:10  Error: 'profitData' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+60:48  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+63:34  Error: Async arrow function has a complexity of 17. Maximum allowed is 10.  complexity
+84:23  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+84:57  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+85:25  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+85:61  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+86:22  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+86:55  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+87:28  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+87:67  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+88:21  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+88:53  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+89:21  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+89:49  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+90:22  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+90:54  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+91:20  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+91:50  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+92:23  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+92:57  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+94:24  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+94:60  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+95:23  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+95:58  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+96:24  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+96:60  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+101:20  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+101:42  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+102:24  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+102:51  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+103:21  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+103:47  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+106:7  Warning: Unexpected console statement.  no-console
+146:81  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+302:22  Error: 'Pie' is not defined.  react/jsx-no-undef
+388:76  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./app/admin/growth-center/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+28:16  Error: Function 'GrowthCenterPage' has a complexity of 14. Maximum allowed is 10.  complexity
+37:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+42:6  Warning: React Hook useEffect has a missing dependency: 'fetchGrowthData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+61:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+61:32  Error: Expected { after 'if' condition.  curly
+62:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+62:33  Error: Expected { after 'if' condition.  curly
+64:7  Warning: Unexpected console statement.  no-console
+70:66  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+76:10  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+135:20  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+135:38  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+142:20  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+142:41  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+149:20  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+149:43  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+156:20  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+156:43  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+163:20  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+163:42  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+170:20  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+170:49  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+185:22  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+185:58  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+191:40  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+191:64  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+199:24  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+199:48  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+199:58  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+199:79  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+205:42  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+205:66  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+205:76  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+205:97  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+
+./app/admin/invitations/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+23:3  Error: 'Calendar' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+23:3  Error: 'Calendar' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+85:5  Warning: Unexpected console statement.  no-console
+
+./app/admin/layout.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+49:3  Error: React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+51:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+
+./app/admin/lottery/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+24:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+35:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+35:20  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+60:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+61:25  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+61:48  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+64:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+65:28  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+65:54  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+68:7  Warning: Unexpected console statement.  no-console
+92:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+96:15  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+96:26  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+98:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+105:8  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+258:28  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+258:48  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+262:65  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+262:86  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+266:28  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+285:6  Error: 'PagePermission' is not defined.  react/jsx-no-undef
+289:8  Error: 'AdminLotteryPage' is not defined.  react/jsx-no-undef
+
+./app/admin/orders/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+31:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+37:6  Warning: React Hook useEffect has a missing dependency: 'fetchOrders'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+48:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+52:7  Warning: Unexpected console statement.  no-console
+60:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+78:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+82:15  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+82:26  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+85:7  Warning: Unexpected console statement.  no-console
+100:12  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+100:12  Error: Generic Object Injection Sink  security/detect-object-injection
+100:30  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+111:12  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+111:12  Error: Generic Object Injection Sink  security/detect-object-injection
+111:29  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+174:24  Error: Arrow function has a complexity of 11. Maximum allowed is 10.  complexity
+175:32  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+175:54  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+175:57  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+175:78  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+214:26  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+234:26  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+274:6  Error: 'PagePermission' is not defined.  react/jsx-no-undef
+
+./app/admin/organization/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+22:16  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+43:10  Error: 'showDeptModal' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+43:10  Error: 'showDeptModal' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+44:10  Error: 'editingDept' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+44:10  Error: 'editingDept' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+48:10  Error: 'showRoleModal' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+48:10  Error: 'showRoleModal' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+49:10  Error: 'editingRole' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+49:10  Error: 'editingRole' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+49:23  Error: 'setEditingRole' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+49:23  Error: 'setEditingRole' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+56:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+61:6  Warning: React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+73:13  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+73:27  Error: Expected { after 'if' condition.  curly
+79:13  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+79:27  Error: Expected { after 'if' condition.  curly
+85:13  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+85:27  Error: Expected { after 'if' condition.  curly
+88:7  Warning: Unexpected console statement.  no-console
+95:34  Error: Expected { after 'if' condition.  curly
+105:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+108:15  Error: Unexpected string concatenation.  prefer-template
+110:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+128:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+131:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+136:87  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+239:65  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+239:82  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+323:65  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+323:82  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+429:6  Error: 'PagePermission' is not defined.  react/jsx-no-undef
+
+./app/admin/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+31:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+39:18  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+39:29  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+42:7  Warning: Unexpected console statement.  no-console
+42:21  Error: Unexpected string concatenation.  prefer-template
+
+./app/admin/product-analytics/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+67:16  Error: Function 'ProductAnalyticsPage' has a complexity of 22. Maximum allowed is 10.  complexity
+69:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+80:42  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+81:62  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+82:54  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+83:50  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+90:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+90:20  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+131:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+136:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+141:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+146:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+148:24  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+148:50  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+151:7  Warning: Unexpected console statement.  no-console
+168:8  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+244:74  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+244:118  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+258:89  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+258:114  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+272:91  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+272:117  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+286:89  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+286:118  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+311:71  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+311:94  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+380:68  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+380:119  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+384:69  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+384:119  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+388:70  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+388:124  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+392:70  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+392:122  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+396:67  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+396:122  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+446:84  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+446:111  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+450:82  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+450:113  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+454:85  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+454:114  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+458:68  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+458:110  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+570:92  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+570:112  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+
+./app/admin/products/[id]/edit/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+9:3  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+10:3  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+37:6  Warning: React Hook useEffect has a missing dependency: 'loadProduct'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+39:23  Error: Async arrow function has a complexity of 12. Maximum allowed is 10.  complexity
+44:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+44:27  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+47:19  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+47:28  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+48:19  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+48:28  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+49:19  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+49:28  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+50:26  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+50:42  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+51:26  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+51:42  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+52:26  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+52:42  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+53:19  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+53:28  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+57:21  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+57:32  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+65:7  Warning: Unexpected console statement.  no-console
+81:22  Error: Variable Assigned to Object Injection Sink  security/detect-object-injection
+83:43  Error: Prefer `String#slice()` over `String#substring()`.  unicorn/prefer-string-slice
+86:17  Error: 'data' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+86:17  Error: 'data' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+107:21  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+108:7  Warning: Unexpected console statement.  no-console
+151:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+155:15  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+155:26  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+158:7  Warning: Unexpected console statement.  no-console
+300:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./app/admin/products/create/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+9:3  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+10:3  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+13:16  Error: Function 'CreateProductPage' has a complexity of 16. Maximum allowed is 10.  complexity
+57:22  Error: Variable Assigned to Object Injection Sink  security/detect-object-injection
+59:43  Error: Prefer `String#slice()` over `String#substring()`.  unicorn/prefer-string-slice
+62:17  Error: 'data' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+62:17  Error: 'data' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+84:21  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+85:7  Warning: Unexpected console statement.  no-console
+99:24  Error: Async arrow function has a complexity of 11. Maximum allowed is 10.  complexity
+131:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+135:15  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+135:26  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+138:7  Warning: Unexpected console statement.  no-console
+298:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+501:97  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+516:98  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./app/admin/products/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+14:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+21:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+21:20  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+35:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+36:21  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+36:40  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+39:7  Warning: Unexpected console statement.  no-console
+65:11  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+69:15  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+69:26  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+71:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+76:8  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+167:30  Error: Unexpected object value in conditional. The condition is always true.  @typescript-eslint/strict-boolean-expressions
+167:30  Error: Prefer using an optional chain expression instead, as it's more concise and easier to read.  @typescript-eslint/prefer-optional-chain
+167:48  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+168:31  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./app/admin/risk-control/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+3:27  Error: 'useEffect' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+3:27  Error: 'useEffect' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+6:10  Error: 'Input' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+6:10  Error: 'Input' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+7:10  Error: 'Label' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+7:10  Error: 'Label' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+10:71  Error: 'Users' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+10:71  Error: 'Users' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+35:15  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+38:18  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+204:17  Error: 'setStats' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+204:17  Error: 'setStats' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+206:10  Error: 'selectedIncident' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+206:10  Error: 'selectedIncident' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+254:49  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+258:7  Warning: Unexpected console statement.  no-console
+275:7  Warning: Unexpected console statement.  no-console
+402:82  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+405:78  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./app/admin/risk-dashboard/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+11:9  Error: 'barWidth' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+11:9  Error: 'barWidth' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+97:10  Error: 'adminInfo' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+97:10  Error: 'adminInfo' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+97:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+99:25  Error: 'setDashboardData' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+99:25  Error: 'setDashboardData' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+119:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+119:20  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+
+./app/admin/risk-events/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+21:25  Error: Arrow function has a complexity of 11. Maximum allowed is 10.  complexity
+30:15  Error: 'id' is defined but never used. Allowed unused args must match /^_/u.  no-unused-vars
+31:14  Error: 'id' is defined but never used. Allowed unused args must match /^_/u.  no-unused-vars
+32:20  Error: 'id' is defined but never used. Allowed unused args must match /^_/u.  no-unused-vars
+34:15  Error: Expected { after 'if' condition.  curly
+153:1  Error: Function 'RiskEventsPage' has a complexity of 11. Maximum allowed is 10.  complexity
+155:10  Error: 'adminInfo' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+155:10  Error: 'adminInfo' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+155:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+174:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+174:20  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+248:9  Error: 'filtered' is never reassigned. Use 'const' instead.  prefer-const
+249:81  Error: Expected { after 'if' condition.  curly
+250:72  Error: Expected { after 'if' condition.  curly
+251:81  Error: Expected { after 'if' condition.  curly
+253:75  Error: Expected { after 'if' condition.  curly
+258:19  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+258:32  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./app/admin/risk-rules/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+25:24  Error: Arrow function has a complexity of 16. Maximum allowed is 10.  complexity
+33:12  Error: 'rule' is defined but never used. Allowed unused args must match /^_/u.  no-unused-vars
+44:27  Error: Expected { after 'if' condition.  curly
+47:9  Error: Unexpected object value in conditional. The condition is always true.  @typescript-eslint/strict-boolean-expressions
+259:1  Error: Function 'RiskRulesPage' has a complexity of 12. Maximum allowed is 10.  complexity
+261:10  Error: 'adminInfo' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+261:10  Error: 'adminInfo' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+261:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+291:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+291:20  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+400:9  Error: 'filtered' is never reassigned. Use 'const' instead.  prefer-const
+401:77  Error: Expected { after 'if' condition.  curly
+404:41  Error: Expected { after 'if' condition.  curly
+407:83  Error: Expected { after 'if' condition.  curly
+412:19  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+412:32  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+445:9  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+445:25  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+448:15  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+449:22  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+450:19  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+451:19  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+452:20  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+453:20  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+454:17  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+455:19  Warning: Forbidden non-null assertion.  @typescript-eslint/no-non-null-assertion
+
+./app/admin/risk-users/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+34:14  Error: Expected { after 'if' condition.  curly
+176:1  Error: Function 'RiskUsersPage' has a complexity of 11. Maximum allowed is 10.  complexity
+178:10  Error: 'adminInfo' is assigned a value but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+178:10  Error: 'adminInfo' is assigned a value but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+178:46  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+196:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+196:20  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+296:9  Error: 'filtered' is never reassigned. Use 'const' instead.  prefer-const
+297:80  Error: Expected { after 'if' condition.  curly
+298:92  Error: Expected { after 'if' condition.  curly
+301:74  Error: Expected { after 'if' condition.  curly
+306:19  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+306:32  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+550:36  Error: Arrow function has a complexity of 12. Maximum allowed is 10.  complexity
+
+./app/admin/settings/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+81:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+97:13  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+102:7  Warning: Unexpected console statement.  no-console
+127:20  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+127:31  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+129:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+613:8  Error: 'AdminSettingsPage' is not defined.  react/jsx-no-undef
+
+./app/admin/show-off/page.tsx
+582:57  Error: Parsing error: Identifier expected.
+
+./app/admin/system-settings/page.tsx
+1:1  Error: Definition for rule '@typescript-eslint/prefer-const' was not found.  @typescript-eslint/prefer-const
+1:1  Error: Definition for rule 'unicorn/prefer-destructuring' was not found.  unicorn/prefer-destructuring
+8:10  Error: 'Input' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+8:10  Error: 'Input' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+9:10  Error: 'Label' is defined but never used. Allowed unused vars must match /^_/u.  no-unused-vars
+9:10  Error: 'Label' is defined but never used. Allowed unused vars must match /^_/u.  @typescript-eslint/no-unused-vars
+128:10  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+133:6  Warning: React Hook useEffect has a missing dependency: 'loadAllData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+146:7  Warning: Unexpected console statement.  no-console
+162:27  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+162:37  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+165:7  Warning: Unexpected console statement.  no-console
+178:26  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+178:36  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+181:7  Warning: Unexpected console statement.  no-console
+194:24  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+194:34  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+197:7  Warning: Unexpected console statement.  no-console
+210:25  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+210:35  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+213:7  Warning: Unexpected console statement.  no-console
+226:29  Error: Unexpected any value in conditional. An explicit comparison or type conversion is required.  @typescript-eslint/strict-boolean-expressions
+226:39  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+229:7  Warning: Unexpected console statement.  no-console
+256:7  Warning: Unexpected console statement.  no-console
+288:24  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+288:24  Error: Generic Object Injection Sink  security/detect-object-injection
+288:49  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+490:55  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+490:75  Error: Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.  @typescript-eslint/prefer-nullish-coalescing
+527:26  Error: Unexpected nullable string value in conditional. Please handle the nullish/empty cases explicitly.  @typescript-eslint/strict-boolean-expressions
+537:24  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+543:24  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+549:24  Error: Unexpected nullable number value in conditional. Please handle the nullish/zero/NaN cases explicitly.  @typescript-eslint/strict-boolean-expressions
+555:24  Error: Unexpected 

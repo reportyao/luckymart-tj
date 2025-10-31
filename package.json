@@ -83,7 +83,13 @@
     "check:all": "npm run type-check && npm run lint && npm run static-analysis",
     "quality:full": "npm run lint && npm run type-check && npm run format:check && npm run security-check && npm run complexity-check",
     "security:scan": "npm run security-audit && npm run security-check",
-    "env:security-check": "grep -r 'password\\|secret\\|token\\|key' .env* 2>/dev/null || echo 'No hardcoded credentials found'"
+    "env:security-check": "grep -r 'password\\|secret\\|token\\|key' .env* 2>/dev/null || echo 'No hardcoded credentials found'",
+    "image:optimize": "node scripts/image-optimizer.js",
+    "image:optimize:webp": "node scripts/image-optimizer.js --formats webp",
+    "image:optimize:avif": "node scripts/image-optimizer.js --formats avif",
+    "image:optimize:batch": "node scripts/image-optimizer.js --parallel 5 --quality 80",
+    "image:performance:test": "node -e \"console.log('图片性能测试功能开发中...')\"",
+    "image:monitor": "node -e \"console.log('图片监控功能开发中...')\""
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

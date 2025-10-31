@@ -17,6 +17,11 @@ import { TelegramThemeButton } from '@/components/telegram/TelegramFeatures';
 import { apiClient, handleApiError } from '@/lib/api-client';
 import type { Product } from '@/types';
 import Image from 'next/image';
+import ErrorBoundary from '@/components/ErrorBoundary';
+
+// 懒加载组件导入
+import { LazyImage, VirtualImageGrid, RouteLoader } from '@/components/lazy';
+import { preloadCriticalResources } from '@/utils/resource-preloader';
 
 interface ProductWithRound extends Product {
   currentRound: {
@@ -36,6 +41,80 @@ function HomePage() {
   const { user, theme, deviceInfo, themeMode, setThemeMode, hapticFeedback, showNotification } = useTelegram();
   const [viewMode, setViewMode] = useState<'products' | 'lottery'>('products');
   const [searchQuery, setSearchQuery] = useState('');
+  const [resourcesPreloaded, setResourcesPreloaded] = useState(false);
+
+  // 预加载关键资源
+  useEffect(() => {
+    const preloadResources = async () => {
+      if (!resourcesPreloaded) {
+        try {
+          // 预加载关键资源
+          await preloadCriticalResources([
+            { 
+              type: 'image' as const, 
+              url: '/images/banner-bg.jpg',
+              priority: 'high' as const
+            },
+            { 
+              type: 'image' as const, 
+              url: '/images/loading-placeholder.png',
+              priority: 'medium' as const
+            },
+            // 预加载常见产品图片尺寸的占位图
+            { 
+              type: 'image' as const, 
+              url: '/images/product-placeholder.jpg',
+              priority: 'medium' as const
+            }
+          ]);
+          
+          // 预加载主要路由
+          RouteLoader.preloadRoute('/product');
+          RouteLoader.preloadRoute('/lottery');
+          RouteLoader.preloadRoute('/showoff');
+          RouteLoader.preloadRoute('/profile');
+          
+          setResourcesPreloaded(true);
+        } catch (error) {
+          console.warn('资源预加载失败:', error);
+        }
+      }
+    };
+
+    // 延迟执行资源预加载，确保页面基本渲染完成
+    const timer = setTimeout(preloadResources, 100);
+    
+    return () => clearTimeout(timer);
+  }, [resourcesPreloaded]);
+
+  // 页面卸载时的清理工作
+  useEffect(() => {
+    return () => {
+      // 清理预加载缓存，避免内存泄漏
+      if (typeof window !== 'undefined') {
+        // 可以在这里添加清理逻辑
+      }
+    };
+  }, []);
+
+  // 预取相关页面数据
+  useEffect(() => {
+    const prefetchRelatedData = async () => {
+      // 当视图切换时预取相关数据
+      if (viewMode === 'products') {
+        // 预取商品详情页的路由
+        products.slice(0, 6).forEach(product => {
+          RouteLoader.preloadRoute(`/product/${product.id}`);
+        });
+      } else {
+        // 预取抽奖相关路由
+        RouteLoader.preloadRoute('/lottery/rules');
+        RouteLoader.preloadRoute('/lottery/history');
+      }
+    };
+
+    prefetchRelatedData();
+  }, [viewMode, products]);
 
   // 使用改进的API Hook - 获取抽奖期次
   const { data: lotteryRounds = [], loading, error, refetch } = useApi<any[]>(
@@ -317,8 +396,17 @@ function HomePage() {
               </div>
             ) : (
               <>
-                {/* 晒单轮播区域 */}
-                <ShowOffCarousel className="mb-6" />
+                {/* 晒单轮播区域 - 使用懒加载 */}
+                <div className="mb-6">
+                  <RouteLoader 
+                    route="/showoff"
+                    component={ShowOffCarousel}
+                    props={{ className: "" }}
+                    fallback={<div className="h-48 bg-gray-200 rounded-lg animate-pulse" />}
+                    enablePreload={true}
+                    threshold={0.5}
+                  />
+                </div>
                 
                 {/* 抽奖列表 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -346,28 +434,46 @@ function HomePage() {
             ) : (
               <AutoOrientation
                 portraitLayout={
-                  <div className="grid grid-cols-2 gap-3">
-                    {products.map((product, index) => (
-                      <ProductCard 
-                        key={product.id} 
-                        product={product}
-                        language={language}
-                        onClick={() => hapticFeedback('light')}
-                      />
-                    ))}
-                  </div>
+                  <VirtualImageGrid
+                    items={products.map(product => ({
+                      id: product.id,
+                      src: product.images?.[0] || '/images/product-placeholder.jpg',
+                      alt: product.name,
+                      href: `/product/${product.id}`,
+                      price: product.marketPrice,
+                      name: product.name,
+                      currentRound: product.currentRound,
+                      marketingBadge: product.marketingBadge,
+                      language: language as 'zh' | 'en' | 'ru',
+                      onClick: () => hapticFeedback('light')
+                    }))}
+                    columns={2}
+                    gap={12}
+                    className="grid grid-cols-2 gap-3"
+                    enableLazyLoading={true}
+                    enableVirtualization={products.length > 20}
+                  />
                 }
                 landscapeLayout={
-                  <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
-                    {products.map((product, index) => (
-                      <ProductCard 
-                        key={product.id} 
-                        product={product}
-                        language={language}
-                        onClick={() => hapticFeedback('light')}
-                      />
-                    ))}
-                  </div>
+                  <VirtualImageGrid
+                    items={products.map(product => ({
+                      id: product.id,
+                      src: product.images?.[0] || '/images/product-placeholder.jpg',
+                      alt: product.name,
+                      href: `/product/${product.id}`,
+                      price: product.marketPrice,
+                      name: product.name,
+                      currentRound: product.currentRound,
+                      marketingBadge: product.marketingBadge,
+                      language: language as 'zh' | 'en' | 'ru',
+                      onClick: () => hapticFeedback('light')
+                    }))}
+                    columns={4}
+                    gap={16}
+                    className="grid grid-cols-3 md:grid-cols-4 gap-4"
+                    enableLazyLoading={true}
+                    enableVirtualization={products.length > 30}
+                  />
                 }
               />
             )
@@ -377,85 +483,6 @@ function HomePage() {
     </ResponsiveLayout>
   );
 }
-
-// 商品卡片组件
-interface ProductCardProps {
-  product: ProductWithRound;
-  language: string;
-  onClick?: () => void;
-}
-
-const ProductCard: React.FC<ProductCardProps> = ({ product, language, onClick }) => {
-  const { t } = useLanguage();
-  const { hapticFeedback } = useTelegram();
-
-  const handleClick = () => {
-    hapticFeedback('light');
-    onClick?.();
-  };
-
-  return (
-    <Link 
-      href={`/product/${product.id}`}
-      className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
-      onClick={handleClick}
-    >
-      <div className="aspect-square bg-gray-100 relative overflow-hidden">
-        {/* 营销角标 */}
-        <MarketingBadgeDisplay 
-          badge={product.marketingBadge} 
-          language={language as 'zh' | 'en' | 'ru'}
-        />
-        
-        {product.images && product.images[0] ? (
-          <Image
-            src={product.images[0]} 
-            alt={product.name}
-            fill
-            className="object-cover group-hover:scale-110 transition-transform duration-300"
-            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-            loading="lazy"
-            quality={85}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
-            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </div>
-        )}
-      </div>
-      
-      <div className="p-2">
-        <h3 className="font-semibold text-sm mb-1 line-clamp-2 min-h-[2.5rem]">{product.name}</h3>
-        
-        <div className="flex items-baseline gap-1 mb-2">
-          <span className="text-purple-600 font-bold text-base">
-            {product.marketPrice}
-          </span>
-          <span className="text-xs text-gray-500">
-            {t('common.tjs')}
-          </span>
-        </div>
-
-        {product.currentRound && (
-          <div>
-            <div className="flex justify-between text-xs text-gray-600 mb-1">
-              <span>{t('home.progress')}</span>
-              <span className="font-medium">{product.currentRound.soldShares}/{product.currentRound.totalShares}</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-1.5">
-              <div 
-                className="bg-gradient-to-r from-purple-600 to-blue-600 h-1.5 rounded-full transition-all"
-                style={{ width: `${product.currentRound.progress}%` }}
-              ></div>
-            </div>
-          </div>
-        )}
-      </div>
-    </Link>
-  );
-};
 
 // 使用错误边界包装组件
 export default function HomePageWithErrorBoundary() {

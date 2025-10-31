@@ -1,0 +1,326 @@
+__tests__/localization-audit.test.ts(408,37): error TS1127: Invalid character.
+__tests__/localization-audit.test.ts(408,38): error TS1127: Invalid character.
+bot/utils/notification-templates.ts(313,15): error TS1005: ',' expected.
+bot/utils/notification-templates.ts(313,20): error TS1005: ',' expected.
+bot/utils/notification-templates.ts(313,33): error TS1005: ',' expected.
+bot/utils/notification-templates.ts(313,36): error TS1127: Invalid character.
+bot/utils/notification-templates.ts(315,12): error TS1005: ',' expected.
+bot/utils/notification-templates.ts(318,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(320,15): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(320,19): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(320,37): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(325,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(327,15): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(327,17): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(327,21): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(327,39): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(332,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(334,15): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(334,33): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(334,42): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(339,5): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(339,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(341,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(344,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(347,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(350,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(354,3): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(354,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(356,41): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(358,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(359,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(360,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(361,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(362,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(363,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(365,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(369,17): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(369,20): error TS1127: Invalid character.
+bot/utils/notification-templates.ts(369,21): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(375,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(379,17): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(379,34): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(385,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(389,17): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(389,37): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(395,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(399,17): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(399,33): error TS1434: Unexpected keyword or identifier.
+bot/utils/notification-templates.ts(405,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(407,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(410,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(413,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(416,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(420,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(422,37): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(424,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(425,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(426,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(427,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(428,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(429,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(431,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(439,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(447,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(455,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(463,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(465,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(469,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(473,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(477,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(482,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(484,40): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(486,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(487,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(488,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(489,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(490,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(491,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(493,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(503,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(513,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(523,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(533,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(535,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(539,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(543,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(547,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(552,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(554,41): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(556,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(557,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(558,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(559,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(560,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(561,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(563,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(573,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(583,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(593,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(603,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(605,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(608,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(611,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(614,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(618,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(620,34): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(622,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(623,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(624,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(625,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(626,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(627,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(629,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(637,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(645,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(653,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(661,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(663,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(667,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(671,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(675,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(680,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(682,41): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(684,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(685,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(686,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(687,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(688,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(689,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(691,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(694,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(697,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(700,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(703,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(705,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(708,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(711,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(714,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(718,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(720,34): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(722,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(723,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(724,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(725,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(726,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(727,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(729,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(740,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(751,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(762,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(773,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(775,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(779,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(783,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(787,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(792,4): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(794,40): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(796,10): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(797,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(798,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(799,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(800,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(801,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(803,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(804,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(805,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(806,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(807,6): error TS1128: Declaration or statement expected.
+bot/utils/notification-templates.ts(809,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(815,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(821,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(827,20): error TS1005: ';' expected.
+bot/utils/notification-templates.ts(835,1): error TS1128: Declaration or statement expected.
+examples/invitation-api-examples.ts(480,20): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(480,24): error TS1110: Type expected.
+examples/invitation-api-examples.ts(484,17): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(484,26): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(484,37): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(484,47): error TS1110: Type expected.
+examples/invitation-api-examples.ts(488,22): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(501,10): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(501,19): error TS1005: ')' expected.
+examples/invitation-api-examples.ts(502,17): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(503,12): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(504,15): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(504,24): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(504,37): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(504,52): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(505,17): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(505,45): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(506,17): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(506,53): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(507,8): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(509,12): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(510,18): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(511,20): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(511,49): error TS1110: Type expected.
+examples/invitation-api-examples.ts(512,16): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(512,44): error TS1110: Type expected.
+examples/invitation-api-examples.ts(513,8): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(515,12): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(516,18): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(517,17): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(517,45): error TS1110: Type expected.
+examples/invitation-api-examples.ts(518,16): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(518,49): error TS1110: Type expected.
+examples/invitation-api-examples.ts(519,17): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(519,49): error TS1110: Type expected.
+examples/invitation-api-examples.ts(520,17): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(520,56): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(521,8): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(522,6): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(523,3): error TS1128: Declaration or statement expected.
+examples/invitation-api-examples.ts(561,10): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(561,19): error TS1005: ')' expected.
+examples/invitation-api-examples.ts(562,18): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(563,13): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(565,11): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(565,15): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(568,21): error TS1136: Property assignment expected.
+examples/invitation-api-examples.ts(568,25): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(569,23): error TS1005: ':' expected.
+examples/invitation-api-examples.ts(570,10): error TS1109: Expression expected.
+examples/invitation-api-examples.ts(571,17): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(571,21): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(571,31): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(572,22): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(573,10): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(574,8): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(577,14): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(577,23): error TS1005: ')' expected.
+examples/invitation-api-examples.ts(577,74): error TS1109: Expression expected.
+examples/invitation-api-examples.ts(578,18): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(579,10): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(580,7): error TS1128: Declaration or statement expected.
+examples/invitation-api-examples.ts(581,6): error TS1110: Type expected.
+examples/invitation-api-examples.ts(582,3): error TS1128: Declaration or statement expected.
+examples/invitation-api-examples.ts(583,1): error TS1128: Declaration or statement expected.
+examples/invitation-api-examples.ts(592,20): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(592,24): error TS1110: Type expected.
+examples/invitation-api-examples.ts(596,17): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(596,26): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(596,37): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(596,47): error TS1110: Type expected.
+examples/invitation-api-examples.ts(600,24): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(655,10): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(655,19): error TS1005: ')' expected.
+examples/invitation-api-examples.ts(656,12): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(656,21): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(657,18): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(658,14): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(659,20): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(659,52): error TS1110: Type expected.
+examples/invitation-api-examples.ts(660,20): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(660,50): error TS1110: Type expected.
+examples/invitation-api-examples.ts(661,20): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(661,53): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(662,10): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(663,8): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(665,12): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(667,11): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(667,18): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(668,36): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(670,33): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(671,10): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(672,17): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(674,10): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(675,8): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(677,12): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(678,14): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(679,16): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(679,19): error TS1005: ')' expected.
+examples/invitation-api-examples.ts(679,27): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(679,32): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(679,43): error TS1136: Property assignment expected.
+examples/invitation-api-examples.ts(679,93): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(680,18): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(680,27): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(682,17): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(682,21): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(683,41): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(684,27): error TS1136: Property assignment expected.
+examples/invitation-api-examples.ts(684,30): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(685,33): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(686,16): error TS1109: Expression expected.
+examples/invitation-api-examples.ts(687,21): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(687,30): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(688,24): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(689,16): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(690,21): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(690,54): error TS1005: ',' expected.
+examples/invitation-api-examples.ts(690,69): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(690,87): error TS1110: Type expected.
+examples/invitation-api-examples.ts(691,14): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(693,18): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(694,20): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(694,43): error TS1110: Type expected.
+examples/invitation-api-examples.ts(695,22): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(695,70): error TS1110: Type expected.
+examples/invitation-api-examples.ts(696,22): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(696,70): error TS1110: Type expected.
+examples/invitation-api-examples.ts(697,20): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(700,17): error TS1110: Type expected.
+examples/invitation-api-examples.ts(701,14): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(702,12): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(703,9): error TS1128: Declaration or statement expected.
+examples/invitation-api-examples.ts(703,10): error TS1128: Declaration or statement expected.
+examples/invitation-api-examples.ts(703,11): error TS1128: Declaration or statement expected.
+examples/invitation-api-examples.ts(704,8): error TS1110: Type expected.
+examples/invitation-api-examples.ts(706,12): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(707,17): error TS1005: ';' expected.
+examples/invitation-api-examples.ts(707,41): error TS1127: Invalid character.
+examples/invitation-api-examples.ts(707,42): error TS1434: Unexpected keyword or identifier.
+examples/invitation-api-examples.ts(707,75): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(708,8): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(709,6): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(710,3): error TS1128: Declaration or statement expected.
+examples/invitation-api-examples.ts(711,1): error TS1128: Declaration or statement expected.
+examples/invitation-api-examples.ts(759,10): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(759,19): error TS1005: ')' expected.
+examples/invitation-api-examples.ts(760,16): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(763,28): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(766,25): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(769,20): error TS1005: '>' expected.
+examples/invitation-api-examples.ts(770,6): error TS1161: Unterminated regular expression literal.
+examples/invitation-api-examples.ts(771,3): error TS1128: Declaration or statement expected.

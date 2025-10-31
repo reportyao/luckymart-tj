@@ -115,7 +115,7 @@ export function calculateSecureWinningNumber(
   const winningNumberBuffer = crypto.createHash('sha256').update(prk).digest();
   
   // 转换为大整数
-  const winningBigInt = BigInt('0x' + winningNumberBuffer.toString('hex'));
+  const winningBigInt = BigInt(`0x${  winningNumberBuffer.toString('hex')}`);
   
   // 使用模运算分配随机性
   const winningNumber = Number(winningBigInt % BigInt(totalShares)) + 10000001;
@@ -176,7 +176,7 @@ export function verifySecureDrawResult(
   // 重新计算中奖号码
   const prk = crypto.createHmac('sha256', finalSeed).update('lottery-vrf').digest();
   const winningNumberBuffer = crypto.createHash('sha256').update(prk).digest();
-  const winningBigInt = BigInt('0x' + winningNumberBuffer.toString('hex'));
+  const winningBigInt = BigInt(`0x${  winningNumberBuffer.toString('hex')}`);
   const calculatedWinningNumber = Number(winningBigInt % BigInt(totalShares)) + 10000001;
 
   return {
@@ -208,7 +208,7 @@ export function generateSecureDrawProof(result: SecureDrawResult): string {
       hashB: result.hashB,
       hashC: result.hashC
     },
-    seed: result.seed.substring(0, 32) + '...', // 只显示部分seed
+    seed: `${result.seed.substring(0, 32)  }...`, // 只显示部分seed
     securityFeatures: [
       'No predictable timestamps',
       'Cryptographic entropy source',

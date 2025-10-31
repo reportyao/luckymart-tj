@@ -9,6 +9,12 @@ const REFRESH_TOKEN_EXPIRY = '7d'; // 刷新token有效期：7天
 const TELEGRAM_AUTH_WINDOW = 5 * 60 * 1000; // Telegram认证时效窗口：5分钟（毫秒）
 const REFRESH_THRESHOLD = 5 * 60 * 1000; // Token刷新阈值：5分钟（毫秒）
 
+// ============= 邀请系统常量 =============
+const REFERRAL_CODE_LENGTH = 8; // 邀请码长度
+const REFERRAL_CODE_PREFIX = 'LM'; // 邀请码前缀
+const MAX_REFERRAL_DEPTH = 3; // 最大推荐层级
+const REFERRAL_CODE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // 邀请码字符集
+
 // ============= 安全工具函数 =============
 
 // 生成安全的随机字符串
@@ -19,6 +25,105 @@ function generateSecureRandom(length: number = 32): string {
 // 生成哈希值
 function generateHash(data: string): string {
   return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+// ============= 邀请码生成和验证 =============
+
+/**
+ * 生成唯一邀请码
+ */
+function generateUniqueReferralCode(): string {
+  const chars = REFERRAL_CODE_CHARS;
+  let result = REFERRAL_CODE_PREFIX;
+  
+  for (let i = 0; i < REFERRAL_CODE_LENGTH - REFERRAL_CODE_PREFIX.length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  
+  return result;
+}
+
+/**
+ * 验证邀请码格式
+ */
+export function validateReferralCodeFormat(code: string): {
+  isValid: boolean;
+  error?: string;
+} {
+  if (!code) {
+    return { isValid: false, error: '邀请码不能为空' };
+  }
+
+  if (code.length !== REFERRAL_CODE_LENGTH) {
+    return { isValid: false, error: `邀请码长度必须为${REFERRAL_CODE_LENGTH}位` };
+  }
+
+  if (!code.startsWith(REFERRAL_CODE_PREFIX)) {
+    return { isValid: false, error: '邀请码格式无效' };
+  }
+
+  // 检查是否包含有效字符
+  const invalidChars = code.split('').filter(char => !REFERRAL_CODE_CHARS.includes(char));
+  if (invalidChars.length > 0) {
+    return { isValid: false, error: '邀请码包含无效字符' };
+  }
+
+  return { isValid: true };
+}
+
+/**
+ * 生成邀请相关的安全令牌
+ */
+export function generateReferralToken(userId: string, referrerId: string, expiresIn: string = '24h'): string {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET环境变量未配置');
+  }
+
+  return jwt.sign(
+    {
+      userId,
+      referrerId,
+      tokenType: 'referral',
+      iat: Math.floor(Date.now() / 1000)
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn,
+      issuer: 'luckymart',
+      audience: 'luckymart-referral'
+    }
+  );
+}
+
+/**
+ * 验证邀请令牌
+ */
+export function verifyReferralToken(token: string): {
+  userId: string;
+  referrerId: string;
+  tokenType: string;
+  iat: number;
+} | null {
+  try {
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET环境变量未配置');
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET, {
+      issuer: 'luckymart',
+      audience: 'luckymart-referral'
+    }) as any;
+
+    // 验证token类型
+    if (decoded.tokenType !== 'referral') {
+      throw new Error('无效的邀请token类型');
+    }
+
+    return decoded;
+  } catch (error) {
+    console.error('邀请Token验证失败:', error);
+    return null;
+  }
 }
 
 // ============= Telegram WebApp数据验证 =============
@@ -775,4 +880,19 @@ export interface TokenPair {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
+}
+
+export interface ReferralInfo {
+  userId: string;
+  telegramId: string;
+  referralCode: string;
+  referrerId?: string;
+  referralLevel?: number;
+}
+
+export interface ReferralValidationResult {
+  isValid: boolean;
+  error?: string;
+  referrerId?: string;
+  riskScore?: number;
 }

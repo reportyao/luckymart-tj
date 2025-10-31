@@ -4,8 +4,12 @@ import jwt from 'jsonwebtoken';
 import { generateOrderNumber } from '@/lib/utils';
 import { validationEngine } from '@/lib/validation';
 import { supabaseAdmin } from '@/lib/supabase';
+import { getLogger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
+  const logger = getLogger();
+  const requestId = `recharge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
   try {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -14,6 +18,12 @@ export async function POST(request: NextRequest) {
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+
+    logger.info('充值请求开始', {
+      requestId,
+      userId: decoded.userId,
+      tokenPrefix: `${token.substring(0, 10)  }...`
+    });
 
     const body = await request.json();
     const { packageId, paymentMethod } = body;
@@ -86,7 +96,7 @@ export async function POST(request: NextRequest) {
     // 模拟支付 - 生产环境需要对接真实支付接口
     if (paymentMethod === 'mock') {
       // 自动完成支付（仅用于开发测试）
-      await handlePaymentSuccess(order.id, 'MOCK_' + Date.now());
+      await handlePaymentSuccess(order.id, `MOCK_${  Date.now()}`);
       
       return NextResponse.json({
         success: true,
@@ -129,7 +139,12 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('Create recharge order error:', error);
+    logger.error('创建充值订单失败', error, {
+      requestId,
+      userId: decoded?.userId,
+      error: error.message,
+      stack: error.stack
+    });
     // 统一错误处理，不暴露敏感信息
     return NextResponse.json(
       { error: '创建充值订单失败' },
@@ -140,6 +155,9 @@ export async function POST(request: NextRequest) {
 
 // 处理支付成功（供支付回调使用）
 async function handlePaymentSuccess(orderId: string, transactionId: string) {
+  const logger = getLogger();
+  const requestId = `payment_success_${orderId}`;
+
   const order = await prisma.orders.findUnique({
     where: { id: orderId }
   });
@@ -151,6 +169,13 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
   const orderNotes = JSON.parse(order.notes || '{}');
   const totalCoins = orderNotes.coins + orderNotes.bonusCoins;
 
+  logger.info('支付成功，开始处理订单', {
+    requestId,
+    orderId,
+    userId: order.userId,
+    totalCoins
+  });
+
   await prisma.$transaction(async (tx) => {
     // 更新订单状态
     await tx.orders.update({
@@ -158,7 +183,7 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
       data: {
         paymentStatus: 'paid',
         fulfillmentStatus: 'completed',
-        notes: order.notes + ` | 交易ID: ${transactionId}`
+        notes: `${order.notes  } | 交易ID: ${transactionId}`
       }
     });
 
@@ -192,4 +217,77 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
       }
     });
   });
+
+  // 触发邀请奖励（独立事务，不影响充值逻辑）
+  try {
+    logger.info('开始检查用户首次充值触发奖励', {
+      requestId,
+      userId: order.userId,
+      orderId
+    });
+
+    // 检查用户是否首次充值
+    const userForRewardCheck = await prisma.users.findUnique({
+      where: { id: order.userId },
+      select: { has_first_purchase: true }
+    });
+
+    if (!userForRewardCheck?.has_first_purchase) {
+      logger.info('用户首次充值，触发邀请奖励', {
+        requestId,
+        userId: order.userId,
+        orderId,
+        totalCoins
+      });
+
+      // 调用触发邀请奖励API
+      try {
+        const rewardResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/referral/trigger-reward`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user_id: order.userId,
+            event_type: 'first_purchase',
+            event_data: {
+              order_id: orderId,
+              transaction_id: transactionId,
+              amount: parseFloat(order.totalAmount.toString()),
+              coins_received: totalCoins
+            }
+          })
+        });
+
+        if (rewardResponse.ok) {
+          const rewardData = await rewardResponse.json();
+          logger.info('邀请奖励触发成功', {
+            requestId,
+            userId: order.userId,
+            rewardData
+          });
+        } else {
+          const errorData = await rewardResponse.text();
+          logger.warn('邀请奖励触发失败', {
+            requestId,
+            userId: order.userId,
+            status: rewardResponse.status,
+            error: errorData
+          });
+        }
+      } catch (rewardError) {
+        logger.error('触发邀请奖励时发生错误', rewardError, {
+          requestId,
+          userId: order.userId,
+          orderId
+        });
+      }
+    }
+  } catch (rewardCheckError) {
+    logger.error('检查用户首次充值状态时发生错误', rewardCheckError, {
+      requestId,
+      userId: order.userId,
+      orderId
+    });
+  }
 }

@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { triggerImmediateDraw } from '@/lib/lottery';
+import { getLogger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
+  const logger = getLogger();
+  const requestId = `lottery_participate_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
   try {
     // 验证JWT Token
     const authHeader = request.headers.get('authorization');
@@ -13,6 +17,12 @@ export async function POST(request: NextRequest) {
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+
+    logger.info('夺宝参与请求开始', {
+      requestId,
+      userId: decoded.userId,
+      tokenPrefix: `${token.substring(0, 10)  }...`
+    });
 
     const body = await request.json();
     const { roundId, sharesCount, useType = 'paid' } = body;
@@ -143,17 +153,88 @@ export async function POST(request: NextRequest) {
         where: { id: roundId }
       });
 
-      return { participation, finalRound };
+      return { participation, finalRound, user };
     });
+
+    // 触发邀请奖励（独立事务，不影响夺宝逻辑）
+    try {
+      logger.info('开始检查用户首次参与夺宝触发奖励', {
+        requestId,
+        userId: decoded.userId,
+        participationId: result.participation.id
+      });
+
+      // 检查用户是否首次参与夺宝
+      const userForRewardCheck = await prisma.users.findUnique({
+        where: { id: decoded.userId },
+        select: { has_first_lottery: true }
+      });
+
+      if (!userForRewardCheck?.has_first_lottery) {
+        logger.info('用户首次参与夺宝，触发邀请奖励', {
+          requestId,
+          userId: decoded.userId,
+          participationId: result.participation.id
+        });
+
+        // 调用触发邀请奖励API
+        try {
+          const rewardResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/referral/trigger-reward`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              user_id: decoded.userId,
+              event_type: 'first_lottery',
+              event_data: {
+                participation_id: result.participation.id,
+                round_id: roundId,
+                shares_count: sharesCount,
+                cost: cost,
+                use_type: useType
+              }
+            })
+          });
+
+          if (rewardResponse.ok) {
+            const rewardData = await rewardResponse.json();
+            logger.info('邀请奖励触发成功', {
+              requestId,
+              userId: decoded.userId,
+              rewardData
+            });
+          } else {
+            const errorData = await rewardResponse.text();
+            logger.warn('邀请奖励触发失败', {
+              requestId,
+              userId: decoded.userId,
+              status: rewardResponse.status,
+              error: errorData
+            });
+          }
+        } catch (rewardError) {
+          logger.error('触发邀请奖励时发生错误', rewardError, {
+            requestId,
+            userId: decoded.userId
+          });
+        }
+      }
+    } catch (rewardCheckError) {
+      logger.error('检查用户首次参与状态时发生错误', rewardCheckError, {
+        requestId,
+        userId: decoded.userId
+      });
+    }
 
     // 如果期次已满，触发立即开奖
     if (willBeSoldOut) {
       try {
-        console.log(`[Participate] 期次 ${roundId} 已售罄，触发立即开奖`);
+        logger.info(`期次 ${roundId} 已售罄，触发立即开奖`, { requestId, roundId });
         
         // 异步执行开奖，不阻塞用户响应
         triggerImmediateDraw(roundId).catch(error => {
-          console.error(`[Participate] 开奖失败:`, error);
+          logger.error('开奖失败', error, { requestId, roundId });
         });
 
         return NextResponse.json({
@@ -171,7 +252,7 @@ export async function POST(request: NextRequest) {
           message: '参与成功！期次已售罄，正在开奖中...'
         });
       } catch (error) {
-        console.error(`[Participate] 立即开奖失败:`, error);
+        logger.error('立即开奖失败', error, { requestId, roundId });
         // 即使开奖失败，也返回购买成功的结果
       }
     }
@@ -182,15 +263,21 @@ export async function POST(request: NextRequest) {
         participationId: result.participation.id,
         numbers: result.participation.numbers,
         sharesCount: result.participation.sharesCount,
-        roundStatus: result.updatedRound.status,
-        soldShares: result.updatedRound.soldShares,
-        totalShares: result.updatedRound.totalShares
+        roundStatus: result.finalRound.status,
+        soldShares: result.finalRound.soldShares,
+        totalShares: result.finalRound.totalShares
       },
       message: '参与成功！祝您好运！'
     });
 
   } catch (error: any) {
-    console.error('Participate error:', error);
+    logger.error('夺宝参与失败', error, {
+      requestId,
+      userId: decoded?.userId,
+      error: error.message,
+      stack: error.stack
+    });
+    
     return NextResponse.json(
       { error: '参与失败', message: error.message },
       { status: 500 }

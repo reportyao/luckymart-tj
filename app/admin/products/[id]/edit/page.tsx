@@ -71,7 +71,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {return;}
 
     setUploading(true);
     try {
@@ -106,7 +106,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       alert('图片上传成功');
     } catch (error: any) {
       console.error('Upload error:', error);
-      alert('图片上传失败：' + error.message);
+      alert(`图片上传失败：${  error.message}`);
     } finally {
       setUploading(false);
     }

@@ -120,7 +120,7 @@ const PerformanceDashboard: React.FC = () => {
 
   // 自动刷新
   useEffect(() => {
-    if (!autoRefresh) return;
+    if (!autoRefresh) {return;}
 
     const interval = setInterval(() => {
       fetchData();
@@ -141,8 +141,8 @@ const PerformanceDashboard: React.FC = () => {
 
   // 获取状态颜色
   const getStatusColor = (value: number, thresholds: [number, number]): string => {
-    if (value < thresholds[0]) return 'text-green-600';
-    if (value < thresholds[1]) return 'text-yellow-600';
+    if (value < thresholds[0]) {return 'text-green-600';}
+    if (value < thresholds[1]) {return 'text-yellow-600';}
     return 'text-red-600';
   };
 

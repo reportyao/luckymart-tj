@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-10-30T21:21:51.651Z",
+  "mode": "模拟模式",
+  "summary": {
+    "totalTests": 5,
+    "passedTests": 5,
+    "failedTests": 0,
+    "totalAssertions": 4098,
+    "totalDuration": 1,
+    "successRate": 100
+  },
+  "testResults": [
+    {
+      "testName": "100个用户同时绑定推荐关系",
+      "status": "passed",
+      "duration": 1,
+      "assertions": 100,
+      "performance": {
+        "avgResponseTime": 0.01,
+        "throughput": 100000
+      }
+    },
+    {
+      "testName": "小数精度计算准确性测试",
+      "status": "passed",
+      "duration": 0,
+      "assertions": 4,
+      "performance": {
+        "avgResponseTime": 0
+      }
+    },
+    {
+      "testName": "防作弊边界条件测试",
+      "status": "passed",
+      "duration": 0,
+      "assertions": 8,
+      "performance": {
+        "avgResponseTime": 0
+      }
+    },
+    {
+      "testName": "缓存性能测试",
+      "status": "passed",
+      "duration": 0,
+      "assertions": 850,
+      "performance": {
+        "avgResponseTime": 5,
+        "throughput": null
+      }
+    },
+    {
+      "testName": "负载测试",
+      "status": "passed",
+      "duration": 0,
+      "assertions": 3136,
+      "performance": {
+        "avgResponseTime": 0,
+        "throughput": null
+      }
+    }
+  ],
+  "recommendations": [
+    "数据库连接配置需要检查和修复",
+    "建议使用真实的数据库环境进行完整测试",
+    "当前为模拟模式，测试结果仅供参考",
+    "建议在生产环境部署前进行真实数据库测试"
+  ]
+}

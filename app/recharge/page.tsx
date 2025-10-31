@@ -43,7 +43,7 @@ export default function RechargePage() {
   };
 
   const handlePayment = async (method: 'alif_mobi' | 'dc_bank') => {
-    if (!selectedPackage) return;
+    if (!selectedPackage) {return;}
 
     try {
       const token = localStorage.getItem('token');

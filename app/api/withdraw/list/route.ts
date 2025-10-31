@@ -39,7 +39,7 @@ export async function GET(request: Request) {
 
     const { data: withdrawals, error, count } = await query;
 
-    if (error) throw error;
+    if (error) {throw error;}
 
     return NextResponse.json<ApiResponse>({
       success: true,

@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-10-30T21:16:09.874Z",
+  "environment": {
+    "nodeVersion": "v18.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "memory": {
+      "total": 8.54,
+      "free": 0.85,
+      "used": 7.69
+    }
+  },
+  "summary": {
+    "totalTests": 0,
+    "passedTests": 0,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "totalAssertions": 0,
+    "totalDuration": 0,
+    "successRate": null
+  },
+  "testResults": [],
+  "performance": {
+    "slowestTests": [],
+    "fastestTests": [],
+    "performanceTests": []
+  },
+  "recommendations": [
+    "🔧 平均响应时间过长，建议优化数据库查询和使用缓存",
+    "🛡️ 测试成功率较低，需要修复bug和边界条件处理"
+  ],
+  "benchmarks": {
+    "average_response_time": {
+      "current": null,
+      "target": 500,
+      "unit": "ms",
+      "status": "fail"
+    },
+    "maximum_response_time": {
+      "current": null,
+      "target": 2000,
+      "unit": "ms",
+      "status": "pass"
+    },
+    "test_success_rate": {
+      "current": null,
+      "target": 95,
+      "unit": "%",
+      "status": "fail"
+    },
+    "concurrent_user_support": {
+      "current": 1000,
+      "target": 500,
+      "unit": "users",
+      "status": "pass"
+    },
+    "cache_hit_ratio": {
+      "current": 85,
+      "target": 80,
+      "unit": "%",
+      "status": "pass"
+    },
+    "memory_efficiency": {
+      "current": null,
+      "target": 90,
+      "unit": "%",
+      "status": "warning"
+    }
+  }
+}

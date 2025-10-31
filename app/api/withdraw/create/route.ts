@@ -125,7 +125,7 @@ export async function POST(request: Request) {
       .select()
       .single();
 
-    if (insertError) throw insertError;
+    if (insertError) {throw insertError;}
 
     // 扣除余额
     const { error: updateError } = await supabaseAdmin
@@ -135,7 +135,7 @@ export async function POST(request: Request) {
       })
       .eq('id', user.userId);
 
-    if (updateError) throw updateError;
+    if (updateError) {throw updateError;}
 
     // 记录交易
     await supabaseAdmin

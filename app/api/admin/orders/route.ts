@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAdminFromRequest } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
+import { rewardTrigger } from '@/lib/reward-trigger-manager';
+import { getLogger } from '@/lib/logger';
+import { getMonitor } from '@/lib/monitoring';
 
 // 获取订单列表
 export async function GET(request: NextRequest) {
@@ -86,6 +89,10 @@ export async function GET(request: NextRequest) {
 
 // 更新订单状态（发货）
 export async function POST(request: NextRequest) {
+  const logger = getLogger();
+  const monitor = getMonitor();
+  const operationSpan = monitor.startSpan('order_ship');
+
   try {
     // 验证管理员权限
     const admin = getAdminFromRequest(request);
@@ -106,19 +113,27 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { orderId, trackingNumber } = body;
+    const { orderId, trackingNumber, updateType = 'ship' } = body;
 
     // 验证参数
-    if (!orderId || !trackingNumber) {
+    if (!orderId) {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '缺少必填参数'
+        error: '缺少必填参数：orderId'
       }, { status: 400 });
     }
 
     // 获取订单
     const order = await prisma.orders.findUnique({
-      where: { id: orderId }
+      where: { id: orderId },
+      include: {
+        users: {
+          select: {
+            referred_by_user_id: true,
+            has_first_purchase: true
+          }
+        }
+      }
     });
 
     if (!order) {
@@ -128,49 +143,141 @@ export async function POST(request: NextRequest) {
       }, { status: 404 });
     }
 
-    // 检查订单状态
-    if (order.status !== 'pending_shipment') {
+    // 检查订单状态并更新
+    let newStatus = order.status;
+    let shouldTriggerReward = false;
+
+    if (updateType === 'ship' && order.status === 'pending_shipment') {
+      newStatus = 'shipped';
+      await prisma.orders.update({
+        where: { id: orderId },
+        data: {
+          status: 'shipped',
+          trackingNumber
+        }
+      });
+    } else if (updateType === 'complete' && order.status === 'shipped') {
+      newStatus = 'completed';
+      await prisma.orders.update({
+        where: { id: orderId },
+        data: {
+          status: 'completed',
+          fulfillmentStatus: 'completed'
+        }
+      });
+      
+      // 标记用户已完成首次购买
+      if (!order.users.has_first_purchase) {
+        await prisma.users.update({
+          where: { id: order.userId },
+          data: { has_first_purchase: true }
+        });
+      }
+      
+      shouldTriggerReward = true;
+    } else {
       return NextResponse.json<ApiResponse>({
         success: false,
-        error: '订单状态不正确'
+        error: `无法从状态 ${order.status} 更新为 ${updateType}`
       }, { status: 400 });
     }
 
-    // 更新订单状态
-    await prisma.orders.update({
-      where: { id: orderId },
-      data: {
-        status: 'shipped',
-        trackingNumber
-      }
-    });
-
     // 发送通知
     try {
+      const notificationType = updateType === 'ship' ? 'order_shipped' : 'order_completed';
+      const notificationTitle = updateType === 'ship' ? '商品已发货' : '订单已完成';
+      const notificationContent = updateType === 'ship' 
+        ? `您的订单 ${order.orderNumber} 已发货，物流单号：${trackingNumber}`
+        : `您的订单 ${order.orderNumber} 已完成，感谢您的购买！`;
+
       await prisma.notifications.create({
         data: {
           userId: order.userId,
-          type: 'order_shipped',
-          title: '商品已发货',
-          content: `您的订单 ${order.orderNumber} 已发货，物流单号：${trackingNumber}`,
+          type: notificationType,
+          title: notificationTitle,
+          content: notificationContent,
           isRead: false
         }
       });
     } catch (notificationError) {
-      console.warn('发送通知失败:', notificationError);
+      logger.warn('发送通知失败', notificationError as Error, { orderId });
       // 通知失败不影响主要业务逻辑
     }
 
+    // 触发邀请奖励（如果需要）
+    let rewardResult = null;
+    if (shouldTriggerReward && order.users.referred_by_user_id) {
+      try {
+        const rewardType = !order.users.has_first_purchase ? 'FIRST_PURCHASE' : 'ORDER_COMPLETION';
+        
+        rewardResult = await rewardTrigger.triggerReward({
+          type: rewardType,
+          userId: order.userId,
+          data: {
+            orderId: order.id,
+            orderAmount: order.totalAmount,
+            orderNumber: order.orderNumber
+          },
+          timestamp: new Date()
+        });
+
+        logger.info('订单奖励触发结果', {
+          orderId: order.id,
+          rewardType,
+          rewardSuccess: rewardResult.success,
+          totalRewards: rewardResult.result?.totalRewards || 0
+        });
+
+        monitor.increment(`order_reward_trigger_${rewardType.toLowerCase()}_success_total`, 1);
+
+      } catch (rewardError) {
+        logger.warn('订单奖励触发失败', rewardError as Error, {
+          orderId: order.id,
+          userId: order.userId,
+          rewardType: shouldTriggerReward ? 'FIRST_PURCHASE' : 'ORDER_COMPLETION'
+        });
+
+        monitor.increment(`order_reward_trigger_${shouldTriggerReward ? 'first_purchase' : 'order_completion'}_error_total`, 1);
+      }
+    }
+
+    operationSpan.finish(true, {
+      orderId: order.id,
+      updateType,
+      hasReferral: !!order.users.referred_by_user_id,
+      shouldTriggerReward,
+      rewardTriggered: !!rewardResult?.success
+    });
+
+    const successMessage = updateType === 'ship' ? '发货成功' : '订单完成';
+    const rewardMessage = rewardResult?.success ? `，邀请奖励已发放（${rewardResult.result?.totalRewards || 0}币）` : '';
+
     return NextResponse.json<ApiResponse>({
       success: true,
-      message: '发货成功'
+      message: `${successMessage}${rewardMessage}`,
+      data: {
+        orderId: order.id,
+        newStatus,
+        rewardTriggered: !!rewardResult?.success,
+        totalRewards: rewardResult?.result?.totalRewards || 0
+      }
     });
 
   } catch (error: any) {
-    console.error('发货失败:', error);
+    operationSpan.finish(false, {
+      error: error.message
+    });
+
+    monitor.increment('order_update_error_total', 1);
+
+    logger.error('订单状态更新失败', error as Error, { 
+      orderId: body?.orderId,
+      updateType: body?.updateType 
+    });
+
     return NextResponse.json<ApiResponse>({
       success: false,
-      error: error.message || '发货失败'
+      error: error.message || '订单状态更新失败'
     }, { status: 500 });
   }
 }

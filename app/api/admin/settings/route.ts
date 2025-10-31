@@ -26,7 +26,7 @@ function updateCache(settings: any) {
 // 从数据库获取所有设置
 async function getAllSettings() {
   const cached = await getCachedSettings();
-  if (cached) return cached;
+  if (cached) {return cached;}
 
   const settings = await prisma.systemSettings.findMany();
   const settingsMap: any = {};

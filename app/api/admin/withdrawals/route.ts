@@ -190,7 +190,7 @@ export async function POST(request: NextRequest) {
     console.error('审核提现失败:', error);
     
     // 处理具体的错误信息
-    let errorMessage = error.message || '审核提现失败';
+    const errorMessage = error.message || '审核提现失败';
     
     return NextResponse.json<ApiResponse>({
       success: false,

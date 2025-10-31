@@ -38,7 +38,7 @@ const CustomDialog: React.FC<DialogState> = ({
   }, [isOpen]);
 
   const handleConfirm = async () => {
-    if (isConfirming || loading) return;
+    if (isConfirming || loading) {return;}
     
     setIsConfirming(true);
     try {
@@ -51,7 +51,7 @@ const CustomDialog: React.FC<DialogState> = ({
   };
 
   const handleCancel = () => {
-    if (isConfirming) return;
+    if (isConfirming) {return;}
     onCancel?.();
     setShow(false);
   };
@@ -86,7 +86,7 @@ const CustomDialog: React.FC<DialogState> = ({
     }
   };
 
-  if (!show) return null;
+  if (!show) {return null;}
 
   const styles = getTypeStyles();
 

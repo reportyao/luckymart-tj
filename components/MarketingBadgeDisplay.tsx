@@ -60,7 +60,7 @@ const MarketingBadgeDisplay: React.FC<MarketingBadgeDisplayProps> = ({
   };
 
   const text = getText();
-  if (!text) return null;
+  if (!text) {return null;}
 
   return (
     <div

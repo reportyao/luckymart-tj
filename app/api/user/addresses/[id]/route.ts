@@ -69,7 +69,7 @@ export async function PUT(
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {throw error;}
 
     return NextResponse.json<ApiResponse<UserAddress>>({
       success: true,
@@ -122,7 +122,7 @@ export async function DELETE(
       .delete()
       .eq('id', addressId);
 
-    if (error) throw error;
+    if (error) {throw error;}
 
     return NextResponse.json<ApiResponse>({
       success: true,

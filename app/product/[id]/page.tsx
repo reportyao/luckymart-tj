@@ -37,7 +37,7 @@ export default function ProductDetailPage() {
   };
 
   const handleParticipate = async () => {
-    if (!product?.currentRound) return;
+    if (!product?.currentRound) {return;}
     
     setParticipating(true);
     try {

@@ -3,6 +3,9 @@ import { prisma } from '../lib/prisma';
 import { logger, performanceLogger, errorTracker } from './utils/logger';
 import { faultToleranceManager } from './utils/fault-tolerance-manager';
 import { MessageQueue } from './utils/message-queue';
+import { UserInfoService } from './services/user-info-service';
+import { RewardNotifier } from './services/reward-notifier';
+import { Language, NotificationType } from './utils/notification-templates';
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const MINI_APP_URL = process.env.MINI_APP_URL || 'http://localhost:3000';
@@ -15,9 +18,15 @@ if (!BOT_TOKEN) {
 // 全局消息队列实例
 let messageQueue: MessageQueue;
 
+// 全局用户信息服务实例
+let userInfoService: UserInfoService;
+
+// 全局奖励通知服务实例
+let rewardNotifier: RewardNotifier;
+
 const bot = new Telegraf(BOT_TOKEN);
 
-// 初始化消息队列
+// 初始化消息队列和奖励通知服务
 function initializeMessageQueue() {
   messageQueue = faultToleranceManager.getMessageQueue();
   
@@ -36,6 +45,28 @@ function initializeMessageQueue() {
       duration: data.duration
     });
   });
+}
+
+// 初始化用户信息服务
+function initializeUserInfoService() {
+  userInfoService = UserInfoService.getInstance(bot);
+  
+  logger.info('用户信息服务初始化成功', {
+    serviceVersion: '1.0.0',
+    cacheTTL: userInfoService.getServiceStats().cache.ttl || 'default'
+  });
+}
+
+// 初始化奖励通知服务
+function initializeRewardNotifier() {
+  rewardNotifier = new RewardNotifier(bot, {
+    maxRetries: 3,
+    initialDelay: 1000,
+    maxDelay: 30000,
+    backoffMultiplier: 2
+  });
+  
+  logger.info('奖励通知服务已初始化');
 }
 
 // /start命令 - 用户冷启动 + 用户注册
@@ -113,6 +144,29 @@ bot.command('start', performanceLogger('start_command'), async (ctx) => {
       username: user.username,
       initialBalance: user.balance
     });
+
+    // 发送注册奖励通知
+    if (rewardNotifier) {
+      try {
+        const userLanguage = (user.language as Language) || Language.RU;
+        await rewardNotifier.sendRegistrationReward(
+          user.id, 
+          telegramUser.first_name || telegramUser.username || 'Пользователь',
+          { language: userLanguage }
+        );
+        
+        logger.info('注册奖励通知已发送', {
+          userId: user.id,
+          telegramId
+        });
+      } catch (notificationError) {
+        logger.warn('发送注册奖励通知失败', {
+          userId: user.id,
+          telegramId,
+          error: (notificationError as Error).message
+        });
+      }
+    }
     
   } catch (error) {
     logger.error('Start command error', { 
@@ -347,6 +401,216 @@ bot.command('support', async (ctx) => {
   );
 });
 
+// /userinfo命令 - 获取详细用户信息
+bot.command('userinfo', async (ctx) => {
+  const telegramId = ctx.from.id.toString();
+  
+  try {
+    if (!userInfoService) {
+      await ctx.reply('用户信息服务未初始化，请稍后重试');
+      return;
+    }
+
+    const userInfo = await userInfoService.getUserInfo(telegramId);
+    
+    if (!userInfo) {
+      await ctx.reply('未找到用户信息，请先使用 /start 注册');
+      return;
+    }
+
+    const message = `
+👤 您的详细用户信息
+
+📋 基本信息：
+• Telegram ID: ${userInfo.telegramId}
+• 用户名: ${userInfo.username || '未设置'}
+• 姓名: ${userInfo.firstName} ${userInfo.lastName || ''}
+• 语言: ${userInfo.language}
+• 头像: ${userInfo.avatarUrl ? '有' : '无'}
+
+💰 账户信息：
+• 夺宝币余额: ${userInfo.balance} 币
+• 平台余额: ${userInfo.platformBalance} TJS
+• 总消费: ${userInfo.totalSpent} TJS
+• VIP等级: ${userInfo.vipLevel}
+
+📅 时间信息：
+• 注册时间: ${userInfo.createdAt.toLocaleDateString()}
+• 最后更新: ${userInfo.updatedAt.toLocaleDateString()}
+• 免费次数: ${userInfo.freeDailyCount}/3
+
+🔧 Telegram状态：
+• 用户类型: ${userInfo.isPremium ? 'Premium' : '普通用户'}
+• 管理员: ${userInfo.isAdministrator ? '是' : '否'}
+• 机器人: ${userInfo.isBot ? '是' : '否'}
+• 状态: ${userInfo.telegramStatus || '未知'}
+`;
+
+    await ctx.reply(message);
+
+  } catch (error) {
+    logger.error('Get userinfo error', { 
+      telegramId, 
+      error: (error as Error).message 
+    }, error as Error);
+    
+    await ctx.reply('获取用户信息失败，请稍后重试');
+  }
+});
+
+// /status命令 - 获取用户活动状态
+bot.command('status', async (ctx) => {
+  const telegramId = ctx.from.id.toString();
+  
+  try {
+    if (!userInfoService) {
+      await ctx.reply('用户信息服务未初始化，请稍后重试');
+      return;
+    }
+
+    const userStatus = await userInfoService.getUserStatus(telegramId);
+    
+    const statusEmojis = {
+      'active': '🟢',
+      'new': '🆕',
+      'inactive': '🟡',
+      'suspended': '🔴',
+      'not_found': '❌'
+    };
+
+    const statusEmoji = statusEmojis[userStatus.status as keyof typeof statusEmojis] || '⚪';
+    const activityEmojis = {
+      'high': '🔥',
+      'medium': '📊',
+      'low': '📉',
+      'none': '💤'
+    };
+
+    const activityEmoji = activityEmojis[userStatus.activityLevel as keyof typeof activityEmojis] || '❓';
+
+    const message = `
+📊 用户活动状态报告
+
+${statusEmoji} 用户状态: ${userStatus.status}
+${activityEmoji} 活跃程度: ${userStatus.activityLevel}
+⭐ 参与度评分: ${userStatus.engagementScore}/100
+
+👤 账户信息:
+• 注册天数: ${userStatus.daysSinceRegistration}天
+• 最后活跃: ${userStatus.daysSinceLastActivity}天前
+• 余额: ${userStatus.balance} 夺宝币
+• 总消费: ${userStatus.totalSpent} TJS
+• VIP等级: ${userStatus.vipLevel}
+
+${userStatus.isActive ? '✅ 账户正常活跃' : '⚠️  账户可能需要关注'}
+`;
+
+    await ctx.reply(message);
+
+  } catch (error) {
+    logger.error('Get user status error', { 
+      telegramId, 
+      error: (error as Error).message 
+    }, error as Error);
+    
+    await ctx.reply('获取用户状态失败，请稍后重试');
+  }
+});
+
+// /validate命令 - 验证用户有效性
+bot.command('validate', async (ctx) => {
+  const telegramId = ctx.from.id.toString();
+  
+  try {
+    if (!userInfoService) {
+      await ctx.reply('用户信息服务未初始化，请稍后重试');
+      return;
+    }
+
+    const validation = await userInfoService.validateUser(telegramId);
+    
+    const validationEmoji = validation.isValid ? '✅' : '❌';
+    
+    let message = `
+${validationEmoji} 用户验证结果
+
+🔍 基础验证:
+• 用户存在: ${validation.exists ? '是' : '否'}
+• 账户有效: ${validation.isValid ? '是' : '否'}
+
+`;
+
+    if (validation.isNewUser) {
+      message += '🆕 这是一个新用户（注册时间不足24小时）\n';
+    }
+
+    if (validation.isVipUser) {
+      message += '👑 这是一个VIP用户\n';
+    }
+
+    if (validation.isInactive) {
+      message += '😴 用户长时间未活跃\n';
+    }
+
+    if (validation.errors.length > 0) {
+      message += '\n❌ 发现问题:\n';
+      validation.errors.forEach(error => {
+        message += `• ${error}\n`;
+      });
+    }
+
+    if (validation.warnings && validation.warnings.length > 0) {
+      message += '\n⚠️  注意事项:\n';
+      validation.warnings.forEach(warning => {
+        message += `• ${warning}\n`;
+      });
+    }
+
+    await ctx.reply(message);
+
+  } catch (error) {
+    logger.error('Validate user error', { 
+      telegramId, 
+      error: (error as Error).message 
+    }, error as Error);
+    
+    await ctx.reply('用户验证失败，请稍后重试');
+  }
+});
+
+// /notifications命令 - 通知设置
+bot.command('notifications', async (ctx) => {
+  const telegramId = ctx.from.id.toString();
+  
+  try {
+    const user = await prisma.users.findUnique({
+      where: { telegramId }
+    });
+
+    if (!user) {
+      await messageQueue?.addMessage('telegram', {
+        type: 'send_message',
+        chatId: ctx.chat.id,
+        text: '您还未注册，请点击 /start 开始使用'
+      });
+      return;
+    }
+
+    if (rewardNotifier) {
+      await rewardNotifier.showNotificationSettings(user.id, ctx);
+    } else {
+      await ctx.reply('通知服务暂不可用，请稍后重试');
+    }
+  } catch (error) {
+    logger.error('打开通知设置失败', { 
+      telegramId, 
+      error: (error as Error).message 
+    }, error as Error);
+    
+    await ctx.reply('打开通知设置失败，请稍后重试');
+  }
+});
+
 // 语言切换回调
 bot.action(/lang_(.+)/, async (ctx) => {
   const lang = ctx.match[1];
@@ -367,7 +631,10 @@ bot.action(/lang_(.+)/, async (ctx) => {
     await ctx.answerCbQuery();
     await ctx.reply(messages[lang] || messages.zh);
   } catch (error) {
-    console.error('Language switch error:', error);
+    logger.error('语言切换失败', { 
+      telegramId, 
+      error: (error as Error).message 
+    }, error as Error);
     await ctx.answerCbQuery('切换失败，请稍后重试');
   }
 });
@@ -490,100 +757,22 @@ class MessageTemplates {
 🎁 商品：${productName}
 
 ✅ 支付已确认，正在安排发货
-📱 关注订单状态变化
-
-// 错误处理
-bot.catch((err, ctx) => {
-  const updateType = ctx.updateType || 'unknown';
-  const userId = ctx.from?.id.toString() || 'unknown';
-  
-  logger.error(`Bot error for ${updateType}`, {
-    userId,
-    updateType,
-    error: err.message,
-    stack: err.stack
-  }, err);
-  
-  errorTracker.recordError(`bot_${updateType}_error`, err);
-  
-  // 尝试发送错误回复给用户
-  if (ctx.chat && ctx.from) {
-    messageQueue?.addMessage('telegram', {
-      type: 'send_message',
-      chatId: ctx.chat.id,
-      text: '抱歉，处理您请求时出现了问题，请稍后重试或联系客服'
-    }).catch(replyError => {
-      logger.error('Failed to send error reply to user', { 
-        userId, 
-        error: (replyError as Error).message 
-      }, replyError as Error);
-    });
+📱 关注订单状态变化`;
   }
-});
-
-// 启动Bot
-export function startBot() {
-  try {
-    // 初始化消息队列
-    initializeMessageQueue();
-    
-    // 启动Bot
-    bot.launch();
-    
-    logger.info('Telegram Bot启动成功', {
-      tokenConfigured: !!BOT_TOKEN,
-      miniAppUrl: MINI_APP_URL,
-      version: process.env.npm_package_version || '1.0.0',
-      environment: process.env.NODE_ENV || 'development'
-    });
-
-    // 设置优雅关闭
-    process.once('SIGINT', () => {
-      logger.info('收到SIGINT信号，正在关闭Bot...');
-      bot.stop('SIGINT');
-    });
-    
-    process.once('SIGTERM', () => {
-      logger.info('收到SIGTERM信号，正在关闭Bot...');
-      bot.stop('SIGTERM');
-    });
-
-    // 记录Bot启动事件
-    logger.business('bot_started', undefined, {
-      timestamp: new Date().toISOString(),
-      platform: process.platform,
-      nodeVersion: process.version
-    });
-    
-  } catch (error) {
-    logger.error('Bot启动失败', { error: (error as Error).message }, error as Error);
-    throw error;
-  }
-}
-
-// 获取Bot实例（供其他模块使用）
-export function getBot() {
-  return bot;
-}
-
-// 获取消息队列（供其他模块使用）
-export function getMessageQueue(): MessageQueue | undefined {
-  return messageQueue;
-}
 
 // 转售状态推送
-  static resaleStatusUpdate(resaleId: string, status: string, progress?: number) {
+static resaleStatusUpdate(resaleId: string, status: string, progress?: number) {
     const statusMessages = {
-      created: `📦 转售申请已创建\n转售ID：${resaleId}\n正在寻找买家...`,
-      matching: `🔍 正在为您寻找买家\n转售ID：${resaleId}\n⏰ 预计匹配时间：5-10分钟`,
-      matched: `🎯 找到买家！\n转售ID：${resaleId}\n正在处理交易...`,
-      sold: `🎉 转售成功！\n转售ID：${resaleId}\n💰 资金已到账（扣除5%手续费）`,
-      cancelled: `❌ 转售已取消\n转售ID：${resaleId}`
+      created: `转售申请已创建\n转售ID：${resaleId}\n正在寻找买家...`,
+      matching: `正在为您寻找买家\n转售ID：${resaleId}\n预计匹配时间：5-10分钟`,
+      matched: `找到买家！\n转售ID：${resaleId}\n正在处理交易...`,
+      sold: `转售成功！\n转售ID：${resaleId}\n资金已到账（扣除5%手续费）`,
+      cancelled: `转售已取消\n转售ID：${resaleId}`
     };
     
     const message = statusMessages[status as keyof typeof statusMessages];
     if (progress && status === 'matching') {
-      return `${message}\n📊 匹配进度：${progress}%`;
+      return `${message}\n匹配进度：${progress}%`;
     }
     
     return message;
@@ -603,24 +792,9 @@ export function getMessageQueue(): MessageQueue | undefined {
   // 开奖结果通知
   static lotteryResult(roundId: string, productName: string, winnerId: string, isWinner: boolean) {
     if (isWinner) {
-      return `🎉 恭喜您中奖！
-
-🎁 商品：${productName}
-🎫 期号：${roundId}
-👑 恭喜您获得本期奖品！
-
-💳 我们将联系您安排发货
-📦 请保持联系方式畅通`;
+      return `恭喜您中奖！\n\n商品：${productName}\n期号：${roundId}\n恭喜您获得本期奖品！\n\n我们将联系您安排发货\n请保持联系方式畅通`;
     } else {
-      return `🎲 开奖结果
-
-🎁 商品：${productName}
-🎫 期号：${roundId}
-
-😔 很遗憾，本次未中奖
-💪 继续参与，下期中奖的就是您！
-
-🎯 立即参与更多商品夺宝`;
+      return `开奖结果\n\n商品：${productName}\n期号：${roundId}\n\n很遗憾，本次未中奖\n继续参与，下期中奖的就是您！\n\n立即参与更多商品夺宝`;
     }
   }
 
@@ -629,14 +803,7 @@ export function getMessageQueue(): MessageQueue | undefined {
     const levelNames = ['普通用户', '青铜VIP', '白银VIP', '黄金VIP', '铂金VIP', '钻石VIP'];
     const newLevelName = levelNames[newLevel] || `VIP${newLevel}`;
     
-    return `🏆 VIP等级提升！
-
-从 ${levelNames[oldLevel] || `VIP${oldLevel}`} 升级到 ${newLevelName}
-
-🎁 新增特权：
-${benefits.map(benefit => `• ${benefit}`).join('\n')}
-
-感谢您的支持！`;
+    return `VIP等级提升！\n\n从 ${levelNames[oldLevel] || `VIP${oldLevel}`} 升级到 ${newLevelName}\n\n新增特权：\n${benefits.map(benefit => `• ${benefit}`).join('\n')}\n\n感谢您的支持！`;
   }
 }
 
@@ -647,7 +814,10 @@ export async function sendNotification(telegramId: string, message: string, opti
     await bot.telegram.sendMessage(numericId, message, options);
     return true;
   } catch (error) {
-    console.error('Send notification error:', error);
+    logger.error('发送通知失败', { 
+      telegramId, 
+      error: (error as Error).message 
+    }, error as Error);
     return false;
   }
 }
@@ -776,9 +946,9 @@ async function resetDailyFreeCount() {
       });
     }
 
-    console.log(`重置了 ${users.length} 个用户的每日免费次数`);
+    logger.info(`重置了 ${users.length} 个用户的每日免费次数`);
   } catch (error) {
-    console.error('重置每日免费次数失败:', error);
+    logger.error('重置每日免费次数失败', error);
   }
 }
 
@@ -800,10 +970,10 @@ async function checkPendingLotteries() {
     for (const round of pendingRounds) {
       // 这里应该触发开奖逻辑
       // 由于开奖算法比较复杂，暂时记录日志
-      console.log(`准备开奖：${round.id} - ${round.lotteryProduct?.name}`);
+      logger.info(`准备开奖：${round.id} - ${round.lotteryProduct?.name}`);
     }
   } catch (error) {
-    console.error('检查待开奖彩票失败:', error);
+    logger.error('检查待开奖彩票失败', error);
   }
 }
 

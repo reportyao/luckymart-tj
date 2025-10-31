@@ -23,7 +23,7 @@ export async function GET(request: Request) {
       .order('isDefault', { ascending: false })
       .order('createdAt', { ascending: false });
 
-    if (error) throw error;
+    if (error) {throw error;}
 
     return NextResponse.json<ApiResponse<UserAddress[]>>({
       success: true,
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {throw error;}
 
     return NextResponse.json<ApiResponse<UserAddress>>({
       success: true,

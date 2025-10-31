@@ -63,12 +63,13 @@ export interface User {
   lastName?: string; // @db.VarChar(255)
   avatarUrl?: string;
   language: string; // @db.VarChar(5)
-  balance: number; // Decimal @db.Decimal(10, 2)
+  coinBalance: number; // Decimal @db.Decimal(10, 1) - 从balance重命名
   platformBalance: number; // Decimal @db.Decimal(10, 2)
   vipLevel: number;
   totalSpent: number; // Decimal @db.Decimal(10, 2)
   freeDailyCount: number;
   lastFreeResetDate: Date; // @db.Date
+  referralCode?: string; // 邀请码
   createdAt: Date;
   updatedAt: Date;
 }
@@ -421,4 +422,46 @@ export function convertTransactionsFromPrisma(transactions: any[]): Transaction[
 
 export function convertWithdrawRequestsFromPrisma(withdrawRequests: any[]): WithdrawRequest[] {
   return withdrawRequests.map(convertWithdrawRequestFromPrisma);
+}
+
+// 邀请码相关类型
+export interface ShareLinks {
+  telegram: string;
+  general: string;
+}
+
+export interface ShareTexts {
+  zh: string;
+  ru: string;
+  tg: string;
+}
+
+export interface ReferralData {
+  referralCode: string;
+  shareLinks: ShareLinks;
+  shareTexts: ShareTexts;
+}
+
+// 邀请关系类型
+export interface ReferralRelationship {
+  id: string;
+  referrerUserId: string; // 邀请人ID
+  referredUserId: string; // 被邀请人ID
+  referralCode: string; // 邀请码
+  rewardAmount: number; // 奖励金额
+  status: 'pending' | 'completed' | 'cancelled';
+  createdAt: Date;
+  completedAt?: Date;
+}
+
+// 转换邀请关系数据
+export function convertReferralRelationshipFromPrisma(relationship: any): ReferralRelationship {
+  return {
+    ...relationship,
+    rewardAmount: toNumber(relationship.rewardAmount)
+  };
+}
+
+export function convertReferralRelationshipsFromPrisma(relationships: any[]): ReferralRelationship[] {
+  return relationships.map(convertReferralRelationshipFromPrisma);
 }

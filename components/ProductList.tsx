@@ -113,10 +113,10 @@ const ProductList: React.FC<ProductListProps> = ({
 
   // 无限滚动加载
   useEffect(() => {
-    if (!hasMore || loadingMore) return;
+    if (!hasMore || loadingMore) {return;}
 
     const currentRef = loadMoreRef.current;
-    if (!currentRef) return;
+    if (!currentRef) {return;}
 
     observerRef.current = new IntersectionObserver(
       (entries) => {
@@ -164,12 +164,12 @@ const ProductList: React.FC<ProductListProps> = ({
 
   // 性能优化的过滤函数
   const handleCategoryChange = useCallback((newCategory: string) => {
-    if (newCategory === category) return;
+    if (newCategory === category) {return;}
     router.push(`/?category=${newCategory}&status=${status}`, { scroll: false });
   }, [category, status, router]);
 
   const handleStatusChange = useCallback((newStatus: string) => {
-    if (newStatus === status) return;
+    if (newStatus === status) {return;}
     router.push(`/?category=${category}&status=${newStatus}`, { scroll: false });
   }, [category, status, router]);
 

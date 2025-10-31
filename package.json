@@ -1,6 +1,10 @@
 {
   "name": "luckymart-tj",
   "version": "0.1.0",
+  "description": "LuckyMart-TJ 乐享商城 - 基于Next.js的现代化电商平台，集成了多层级裂变推荐系统、防欺诈系统、Telegram机器人服务和智能缓存优化",
+  "keywords": ["nextjs", "react", "ecommerce", "referral-system", "telegram-bot", "typescript", "prisma", "supabase", "redis"],
+  "author": "LuckyMart-TJ Development Team <dev@luckymart.com>",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -23,7 +27,14 @@
     "cache:preload": "node -r ts-node/register lib/cache-init.ts preload",
     "cache:cleanup": "node -r ts-node/register lib/cache-init.ts cleanup",
     "test:cache": "tsx test/cache-system.test.ts",
-    
+    "init-reward-config": "tsx scripts/init-reward-config.ts",
+    "reward-config:init": "npm run init-reward-config init",
+    "reward-config:status": "npm run init-reward-config status",
+    "reward-config:backup": "npm run init-reward-config backup",
+    "reward-config:restore": "tsx scripts/init-reward-config.ts restore",
+    "reward-config:validate": "npm run init-reward-config validate",
+    "reward-config:clear-cache": "npm run init-reward-config clear-cache",
+    "test:reward-config": "jest __tests__/reward-config-manager.test.ts",
     "benchmark": "tsx scripts/benchmark-performance.ts",
     "benchmark:compare": "tsx scripts/benchmark-performance.ts compare",
     "benchmark:stress": "tsx scripts/benchmark-performance.ts stress",
@@ -31,7 +42,6 @@
     "check:n-plus-one": "node -e \"require('./lib/n-plus-one-detector').NPlusOneDetector.enableMonitoring(); console.log('N+1检测已启用');\"",
     "optimize:deploy": "./deploy-n-plus-one-fixes.sh",
     "optimize:verify": "tsx test-n-plus-one-fixes.ts && npm run benchmark",
-    
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -45,14 +55,19 @@
     "test:bot": "jest __tests__/bot-fault-tolerance.test.ts",
     "test:all": "tsx run-all-tests.ts",
     "test:report": "npm run test:all && npm run test:coverage",
-    
     "type-check": "tsc --noEmit --strict",
     "lint:fix": "next lint --fix",
-    "security-check": "tsx scripts/check-types.ts security",
-    "quality-check": "tsx scripts/check-types.ts quality", 
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:fix": "npm run format && npm run lint:fix",
+    "security-check": "npm audit --audit-level moderate",
+    "quality-check": "tsx scripts/check-types.ts quality",
     "static-analysis": "tsx scripts/check-types.ts static",
-    "pre-commit": "bash scripts/pre-commit-check.sh",
-    "check:all": "npm run type-check && npm run lint && npm run static-analysis"
+    "complexity-check": "eslint . --ext .ts,.tsx --no-eslintrc --rule 'complexity: [error, 10]' --format json",
+    "quality-report": "npm run type-check && npm run lint && npm run security-check && npm run complexity-check > quality-report.json",
+    "pre-commit": "bash scripts/pre-commit-check.sh && npm run lint && npm run type-check && npm run format:check",
+    "check:all": "npm run type-check && npm run lint && npm run static-analysis",
+    "quality:full": "npm run lint && npm run type-check && npm run format:check && npm run security-check && npm run complexity-check"
   },
   "dependencies": {
     "@prisma/client": "^6.18.0",
@@ -62,9 +77,15 @@
     "ioredis": "^5.4.1",
     "jsonwebtoken": "^9.0.2",
     "next": "^14.2.33",
+    "papaparse": "^5.4.1",
+    "puppeteer": "^21.0.0",
+    "qrcode": "^1.5.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "telegraf": "^4.16.3"
+    "react-icons": "^4.12.0",
+    "recharts": "^2.15.4",
+    "telegraf": "^4.16.3",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
@@ -73,6 +94,8 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.14.15",
+    "@types/papaparse": "^5.3.14",
+    "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
@@ -85,38 +108,12 @@
     "tailwindcss": "^3.4.10",
     "ts-jest": "^29.2.5",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.2"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/$1"
-    },
-    "testMatch": [
-      "**/__tests__/**/*.test.ts",
-      "**/test/**/*.test.ts",
-      "**/*.test.ts"
-    ],
-    "collectCoverageFrom": [
-      "lib/**/*.{ts,tsx}",
-      "app/api/**/*.{ts,tsx}",
-      "bot/**/*.{ts,tsx}",
-      "components/**/*.{ts,tsx}",
-      "contexts/**/*.{ts,tsx}",
-      "hooks/**/*.{ts,tsx}",
-      "!**/*.d.ts",
-      "!**/node_modules/**",
-      "!**/.next/**",
-      "!**/coverage/**"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 70,
-        "functions": 70,
-        "lines": 70,
-        "statements": 70
-      }
-    }
+    "typescript": "^5.6.2",
+    "prettier": "^3.3.3",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "eslint-plugin-complexity": "^0.4.2",
+    "eslint-plugin-security": "^2.1.0",
+    "eslint-plugin-unicorn": "^56.0.0"
   }
 }

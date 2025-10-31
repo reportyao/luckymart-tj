@@ -104,7 +104,7 @@ export default function AddressPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('确认删除该地址？')) return;
+    if (!confirm('确认删除该地址？')) {return;}
 
     try {
       const token = localStorage.getItem('token');

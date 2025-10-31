@@ -144,7 +144,7 @@ export async function POST(request: Request) {
       .select()
       .single();
 
-    if (insertError) throw insertError;
+    if (insertError) {throw insertError;}
 
     // 更新订单的转售状态（如果订单表有相关字段）
     // 注意：schema.prisma中orders表没有isResale和resalePrice字段

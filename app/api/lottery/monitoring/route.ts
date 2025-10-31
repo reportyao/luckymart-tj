@@ -459,9 +459,9 @@ async function getPerformanceStats() {
 function getUrgencyLevel(round: any): string {
   const waitingTime = Math.floor((Date.now() - round.createdAt.getTime()) / 1000 / 60);
   
-  if (waitingTime > 30) return 'critical';
-  if (waitingTime > 10) return 'high';
-  if (waitingTime > 5) return 'medium';
+  if (waitingTime > 30) {return 'critical';}
+  if (waitingTime > 10) {return 'high';}
+  if (waitingTime > 5) {return 'medium';}
   return 'low';
 }
 

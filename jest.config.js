@@ -13,11 +13,29 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  moduleNameMapping: {
+  moduleNameMapper: {
     // Handle module aliases (this matches the tsconfig.json paths)
     '^@/(.*)$': '<rootDir>/$1',
   },
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'node',
+
+  coverageThreshold: {
+    global: {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90
+    }
+  },
+  coverageDirectory: '<rootDir>/test-results/coverage',
+  coverageReporters: [
+    'text',
+    'text-summary',
+    'html',
+    'lcov',
+    'json',
+    'clover'
+  ],
   collectCoverageFrom: [
     'lib/**/*.{ts,tsx}',
     'app/api/**/*.{ts,tsx}',
@@ -25,26 +43,29 @@ const customJestConfig = {
     'components/**/*.{ts,tsx}',
     'contexts/**/*.{ts,tsx}',
     'hooks/**/*.{ts,tsx}',
+    'scripts/**/*.{ts,tsx}',
     '!**/*.d.ts',
     '!**/node_modules/**',
     '!**/.next/**',
-    '!**/coverage/**'
+    '!**/coverage/**',
+    '!**/test-results/**',
+    '!**/jest.config.js',
+    '!**/jest.setup.js',
+    '!**/__tests__/**'
   ],
-  coverageThreshold: {
-    global: {
-      branches: 70,
-      functions: 70,
-      lines: 70,
-      statements: 70
-    }
-  },
   testMatch: [
     '<rootDir>/__tests__/**/*.{test,spec}.{js,ts,tsx}',
     '<rootDir>/test/**/*.{test,spec}.{js,ts,tsx}',
     '<rootDir>/!**/__tests__/**/*.{test,spec}.{js,ts,tsx}'
   ],
   testTimeout: 30000,
-  verbose: true
+  verbose: true,
+  maxWorkers: '50%',
+  detectOpenHandles: true,
+  forceExit: true,
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

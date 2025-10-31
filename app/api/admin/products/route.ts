@@ -201,19 +201,19 @@ export async function PUT(request: NextRequest) {
 
     // 构建更新数据
     const data: any = {};
-    if (updateData.nameZh) data.nameZh = updateData.nameZh;
-    if (updateData.nameEn) data.nameEn = updateData.nameEn;
-    if (updateData.nameRu) data.nameRu = updateData.nameRu;
-    if (updateData.descriptionZh !== undefined) data.descriptionZh = updateData.descriptionZh;
-    if (updateData.descriptionEn !== undefined) data.descriptionEn = updateData.descriptionEn;
-    if (updateData.descriptionRu !== undefined) data.descriptionRu = updateData.descriptionRu;
-    if (updateData.images) data.images = updateData.images;
-    if (updateData.marketPrice) data.marketPrice = parseFloat(updateData.marketPrice);
-    if (updateData.totalShares) data.totalShares = parseInt(updateData.totalShares);
-    if (updateData.pricePerShare) data.pricePerShare = parseFloat(updateData.pricePerShare);
-    if (updateData.category) data.category = updateData.category;
-    if (updateData.stock !== undefined) data.stock = parseInt(updateData.stock);
-    if (updateData.status) data.status = updateData.status;
+    if (updateData.nameZh) {data.nameZh = updateData.nameZh;}
+    if (updateData.nameEn) {data.nameEn = updateData.nameEn;}
+    if (updateData.nameRu) {data.nameRu = updateData.nameRu;}
+    if (updateData.descriptionZh !== undefined) {data.descriptionZh = updateData.descriptionZh;}
+    if (updateData.descriptionEn !== undefined) {data.descriptionEn = updateData.descriptionEn;}
+    if (updateData.descriptionRu !== undefined) {data.descriptionRu = updateData.descriptionRu;}
+    if (updateData.images) {data.images = updateData.images;}
+    if (updateData.marketPrice) {data.marketPrice = parseFloat(updateData.marketPrice);}
+    if (updateData.totalShares) {data.totalShares = parseInt(updateData.totalShares);}
+    if (updateData.pricePerShare) {data.pricePerShare = parseFloat(updateData.pricePerShare);}
+    if (updateData.category) {data.category = updateData.category;}
+    if (updateData.stock !== undefined) {data.stock = parseInt(updateData.stock);}
+    if (updateData.status) {data.status = updateData.status;}
 
     // 更新商品
     await prisma.products.update({

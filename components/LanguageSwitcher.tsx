@@ -16,7 +16,7 @@ export default function LanguageSwitcher() {
   const currentLang = languages.find(l => l.code === language);
 
   const handleLanguageChange = (langCode: string) => {
-    if (isLoading || langCode === language) return;
+    if (isLoading || langCode === language) {return;}
     setLanguage(langCode as any);
     setIsOpen(false);
   };

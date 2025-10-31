@@ -50,7 +50,7 @@ export default function AdminWithdrawalsPage() {
   };
 
   const handleApprove = async (withdrawId: number) => {
-    if (!confirm('确认通过该提现申请？')) return;
+    if (!confirm('确认通过该提现申请？')) {return;}
 
     setProcessing(withdrawId);
     try {
@@ -84,7 +84,7 @@ export default function AdminWithdrawalsPage() {
 
   const handleReject = async (withdrawId: number) => {
     const reason = prompt('请输入拒绝原因:');
-    if (!reason) return;
+    if (!reason) {return;}
 
     setProcessing(withdrawId);
     try {

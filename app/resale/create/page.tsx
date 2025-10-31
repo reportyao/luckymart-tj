@@ -80,7 +80,7 @@ export default function CreateResalePage() {
     try {
       const token = localStorage.getItem('token');
       const body: any = { orderId };
-      if (price) body.customPrice = parseFloat(price);
+      if (price) {body.customPrice = parseFloat(price);}
 
       const response = await fetch('/api/resale/suggest-price', {
         method: 'POST',
@@ -126,7 +126,7 @@ export default function CreateResalePage() {
   };
 
   const handleCreateResale = async (price: number) => {
-    if (!selectedOrder) return;
+    if (!selectedOrder) {return;}
 
     setSubmitting(true);
     try {
@@ -146,7 +146,7 @@ export default function CreateResalePage() {
       const data = await response.json();
       if (data.success) {
         alert(`转售创建成功！正在为您寻找买家，预计1-10分钟内快速成交。\n\n您的商品：${selectedOrder.lottery_rounds?.products.name_zh}\n转售价格：${price} TJS\n平台手续费：${Math.round(price * 0.02 * 100) / 100} TJS`);
-        router.push('/resale/status/' + data.data.id);
+        router.push(`/resale/status/${  data.data.id}`);
       } else {
         alert(data.error || '创建转售失败');
       }

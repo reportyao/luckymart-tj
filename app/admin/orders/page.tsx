@@ -57,7 +57,7 @@ export default function AdminOrdersPage() {
 
   const handleShipment = async (orderId: number) => {
     const trackingNumber = prompt('请输入物流单号:');
-    if (!trackingNumber) return;
+    if (!trackingNumber) {return;}
 
     setProcessing(orderId);
     try {

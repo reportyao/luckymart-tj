@@ -36,12 +36,12 @@ const ProductCard = memo<ProductCardProps>(({ product, index = 0, onParticipate 
 
   // 使用useMemo优化计算，避免重复计算
   const progress = useMemo(() => {
-    if (!product.currentRound) return 0;
+    if (!product.currentRound) {return 0;}
     return product.currentRound.progress;
   }, [product.currentRound?.progress]);
 
   const remainingShares = useMemo(() => {
-    if (!product.currentRound) return 0;
+    if (!product.currentRound) {return 0;}
     return product.currentRound.totalShares - product.currentRound.soldShares;
   }, [product.currentRound?.totalShares, product.currentRound?.soldShares]);
 

@@ -155,7 +155,7 @@ function generateSecureRandomNumber(
     .digest();
   
   // 转换为大整数
-  const randomBigInt = BigInt('0x' + randomBuffer.toString('hex'));
+  const randomBigInt = BigInt(`0x${  randomBuffer.toString('hex')}`);
   
   // 使用模运算分配随机性，避免偏向
   const winningNumber = Number(randomBigInt % BigInt(totalShares)) + 10000001;
@@ -479,7 +479,7 @@ export async function verifyDrawResult(roundId: string): Promise<{
         winningNumber: round.winningNumber,
         verificationWinningNumber,
         participationHash: drawAlgorithmData.participationHash,
-        entropy: drawAlgorithmData.entropy.substring(0, 16) + '...',
+        entropy: `${drawAlgorithmData.entropy.substring(0, 16)  }...`,
         totalParticipants: round.participations.length,
         algorithmVersion: drawAlgorithmData.version,
         timestamp: round.drawTime

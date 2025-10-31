@@ -233,3 +233,20 @@ model admins {
   lastLogin    DateTime? @map("last_login")
   createdAt    DateTime  @default(now()) @map("created_at")
 }
+
+model processingLogs {
+  id            String    @id @default(uuid()) @db.Uuid
+  entityId      String    @map("entity_id") @db.Uuid
+  operationType String    @map("operation_type") @db.VarChar(100)
+  status        String    @db.VarChar(20) // 'processing', 'completed', 'failed'
+  requestId     String?   @map("request_id") @db.VarChar(255)
+  errorMessage  String?   @map("error_message")
+  data          Json?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  completedAt   DateTime? @map("completed_at")
+
+  @@index([entityId, operationType])
+  @@index([status])
+  @@index([requestId])
+  @@map("processing_logs")
+}

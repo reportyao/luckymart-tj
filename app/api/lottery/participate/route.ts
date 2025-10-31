@@ -3,10 +3,14 @@ import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { triggerImmediateDraw } from '@/lib/lottery';
 import { getLogger } from '@/lib/logger';
+import { withRateLimit, lotteryRateLimit } from '@/lib/rate-limit-middleware';
+import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
 
-export async function POST(request: NextRequest) {
+// 应用速率限制的抽奖参与处理函数
+const handleLotteryParticipateRequest = async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `lottery_participate_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  (request as any).startTime = Date.now();
 
   try {
     // 验证JWT Token
@@ -271,6 +275,63 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
+    const logger = getLogger();
+    logger.error('夺宝参与失败', error, {
+      requestId,
+      userId: decoded?.userId,
+      error: error.message,
+      stack: error.stack
+    });
+    
+    // 记录速率限制监控数据
+    rateLimitMonitor.recordMetric({
+      timestamp: Date.now(),
+      endpoint: '/api/lottery/participate',
+      identifier: decoded?.userId || 'anonymous',
+      hits: 1,
+      blocked: false,
+      strategy: 'leaky_bucket',
+      windowMs: 60 * 1000,
+      limit: 10,
+      remaining: 0,
+      resetTime: Date.now() + 60 * 1000,
+      responseTime: Date.now() - (request as any).startTime
+    });
+    
+    return NextResponse.json(
+      { error: '参与失败', message: error.message },
+      { status: 500 }
+    );
+  }
+};
+
+// 应用速率限制并导出处理函数
+const processRequest = withRateLimit(handleLotteryParticipateRequest, lotteryRateLimit({
+  onLimitExceeded: async (result, request) => {
+    return NextResponse.json(
+      {
+        success: false,
+        error: '参与操作过于频繁，请稍后再试',
+        rateLimit: {
+          limit: result.totalHits + result.remaining,
+          remaining: result.remaining,
+          resetTime: new Date(result.resetTime).toISOString()
+        }
+      },
+      {
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': (result.totalHits + result.remaining).toString(),
+          'X-RateLimit-Remaining': result.remaining.toString(),
+          'X-RateLimit-Reset': result.resetTime.toString()
+        }
+      }
+    );
+  }
+}));
+
+// 导出主处理函数
+export { processRequest as POST };
     logger.error('夺宝参与失败', error, {
       requestId,
       userId: decoded?.userId,

@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
+import { validateOrder, validateOrderQuery } from '@/lib/order-validator';
+import { CommonErrors } from '@/lib/errors';
 
 export async function GET(request: NextRequest) {
   try {
+    // 验证认证
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
@@ -12,11 +15,24 @@ export async function GET(request: NextRequest) {
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
 
+    // 验证查询参数
     const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const type = searchParams.get('type'); // lottery_win, recharge, resale
-    const status = searchParams.get('status'); // pending, paid, etc.
+    const queryData = Object.fromEntries(searchParams);
+    
+    const validationResult = validateOrderQuery(queryData);
+    if (!validationResult.isValid) {
+      const errorMessages = validationResult.errors.map(e => e.message).join('; ');
+      return NextResponse.json(
+        { error: '查询参数验证失败', details: errorMessages },
+        { status: 400 }
+      );
+    }
+
+    // 使用验证后的参数
+    const page = validationResult.sanitizedData?.page || 1;
+    const limit = validationResult.sanitizedData?.limit || 20;
+    const type = validationResult.sanitizedData?.type;
+    const status = validationResult.sanitizedData?.status;
 
     const skip = (page - 1) * limit;
 

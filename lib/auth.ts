@@ -1,12 +1,14 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 // ============= 常量定义 =============
 const ACCESS_TOKEN_EXPIRY = '15m'; // 访问token有效期：15分钟
 const REFRESH_TOKEN_EXPIRY = '7d'; // 刷新token有效期：7天
 const TELEGRAM_AUTH_WINDOW = 5 * 60 * 1000; // Telegram认证时效窗口：5分钟（毫秒）
+const TELEGRAM_HASH_ALGORITHM = 'sha256'; // Telegram使用的哈希算法
+const TELEGRAM_SECRET_PREFIX = 'WebAppData'; // Telegram密钥前缀
 const REFRESH_THRESHOLD = 5 * 60 * 1000; // Token刷新阈值：5分钟（毫秒）
 
 // ============= 邀请系统常量 =============
@@ -129,7 +131,7 @@ export function verifyReferralToken(token: string): {
 // ============= Telegram WebApp数据验证 =============
 
 /**
- * 验证Telegram WebApp数据（增强版 - 包含时效性验证）
+ * 验证Telegram WebApp数据（完整安全版本 - 防止认证绕过）
  * @param initData - Telegram WebApp初始数据
  * @returns 验证后的用户信息
  * @throws Error - 验证失败时抛出错误
@@ -140,110 +142,198 @@ export function validateTelegramWebAppData(initData: string): any {
     throw new Error('TELEGRAM_BOT_TOKEN环境变量未配置');
   }
 
+  if (!initData || typeof initData !== 'string') {
+    throw new Error('无效的initData格式');
+  }
+
   const urlParams = new URLSearchParams(initData);
   const hash = urlParams.get('hash');
+  
+  if (!hash) {
+    throw new Error('缺少hash字段');
+  }
+
+  // 提取并删除hash字段
   urlParams.delete('hash');
 
-  // 验证auth_date时效性
+  // 1. 验证auth_date时效性（防止重放攻击）
   const authDate = urlParams.get('auth_date');
   if (!authDate) {
     throw new Error('缺少auth_date字段');
   }
 
-  const authTimestamp = parseInt(authDate, 10) * 1000; // 转换为毫秒
-  const currentTime = Date.now();
-  const timeDiff = Math.abs(currentTime - authTimestamp);
-
-  // 验证时效性：5分钟窗口
-  if (timeDiff > TELEGRAM_AUTH_WINDOW) {
-    throw new Error(`Telegram认证数据已过期（时效窗口${TELEGRAM_AUTH_WINDOW / 1000 / 60}分钟）`);
+  const authTimestamp = parseInt(authDate, 10);
+  if (isNaN(authTimestamp) || authTimestamp <= 0) {
+    throw new Error('无效的auth_date格式');
   }
 
-  const dataCheckString = Array.from(urlParams.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, value]) => `${key}=${value}`)
-    .join('\n');
+  const currentTime = Math.floor(Date.now() / 1000); // 秒级时间戳
+  const timeDiff = currentTime - authTimestamp;
 
-  const secretKey = crypto
-    .createHmac('sha256', 'WebAppData')
-    .update(BOT_TOKEN)
-    .digest();
-
-  const calculatedHash = crypto
-    .createHmac('sha256', secretKey)
-    .update(dataCheckString)
-    .digest('hex');
-
-  if (calculatedHash !== hash) {
-    throw new Error('Telegram认证数据哈希验证失败');
+  // 严格验证时效性：5分钟窗口期
+  if (timeDiff < -60) {
+    // 允许60秒的系统时间偏差（客户端时间超前）
+    throw new Error('认证数据时间超前，请检查设备时间');
+  }
+  
+  if (timeDiff > TELEGRAM_AUTH_WINDOW / 1000) {
+    throw new Error(`Telegram认证数据已过期（时效窗口${TELEGRAM_AUTH_WINDOW / 1000 / 60}分钟），请重新授权`);
   }
 
+  // 2. 验证必需字段存在性
   const userStr = urlParams.get('user');
   if (!userStr) {
     throw new Error('缺少用户信息');
   }
 
-  const user = JSON.parse(userStr);
-  
-  // 额外的用户信息验证
-  if (!user.id || !user.first_name) {
-    throw new Error('用户信息不完整');
+  // 3. 解析并验证用户信息格式
+  let user: any;
+  try {
+    user = JSON.parse(userStr);
+  } catch (error) {
+    throw new Error('用户信息格式无效');
   }
 
-  return user;
+  // 4. 验证用户信息完整性
+  if (!user || typeof user !== 'object') {
+    throw new Error('用户信息不是有效对象');
+  }
+
+  if (!user.id || typeof user.id !== 'number') {
+    throw new Error('缺少或无效的用户ID');
+  }
+
+  if (!user.first_name || typeof user.first_name !== 'string') {
+    throw new Error('缺少或无效的用户名');
+  }
+
+  // 5. 生成data_check_string（严格按照Telegram文档）
+  const dataCheckString = Array.from(urlParams.entries())
+    .filter(([key, value]) => key && value !== null && value !== undefined && value !== '')
+    .sort(([a], [b]) => a.localeCompare(b, 'en', { numeric: true, sensitivity: 'base' }))
+    .map(([key, value]) => `${key}=${value}`)
+    .join('\n');
+
+  if (!dataCheckString) {
+    throw new Error('无有效的认证参数');
+  }
+
+  // 6. 按照Telegram官方文档计算HMAC密钥
+  // secret_key = HMAC_SHA256("WebAppData", bot_token)
+  const secretKey = crypto
+    .createHmac('sha256', 'WebAppData')
+    .update(BOT_TOKEN, 'utf8')
+    .digest();
+
+  // 7. 计算数据哈希
+  // hash = HMAC_SHA256(data_check_string, secret_key)
+  const calculatedHash = crypto
+    .createHmac('sha256', secretKey)
+    .update(dataCheckString, 'utf8')
+    .digest('hex');
+
+  // 8. 验证哈希匹配（防止数据篡改）
+  if (calculatedHash !== hash) {
+    console.warn('Telegram认证失败:', {
+      providedHash: hash,
+      calculatedHash,
+      dataCheckString: dataCheckString.substring(0, 100) + '...'
+    });
+    throw new Error('Telegram认证数据哈希验证失败，可能是数据被篡改或Bot Token配置错误');
+  }
+
+  // 9. 额外的安全验证：检查用户ID的有效性范围
+  if (user.id <= 0 || user.id > 9223372036854775807) {
+    throw new Error('无效的用户ID范围');
+  }
+
+  // 10. 验证用户名长度（防止过长字符串攻击）
+  if (user.first_name.length > 100 || (user.last_name && user.last_name.length > 100)) {
+    throw new Error('用户名长度超出限制');
+  }
+
+  // 11. 清理并返回安全的用户信息
+  return {
+    id: user.id,
+    first_name: user.first_name.substring(0, 100), // 限制长度
+    last_name: user.last_name ? user.last_name.substring(0, 100) : undefined,
+    username: user.username ? user.username.substring(0, 100) : undefined,
+    language_code: user.language_code,
+    photo_url: user.photo_url ? user.photo_url.substring(0, 500) : undefined,
+    allows_write_to_pm: user.allows_write_to_pm,
+    auth_date: authTimestamp
+  };
 }
 
 // ============= JWT Token管理 =============
 
 /**
- * 生成访问Token（15分钟有效期）
+ * 生成访问Token（15分钟有效期 - 加强安全版本）
  */
 export function generateAccessToken(userId: string, telegramId: string): string {
   if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET环境变量未配置');
   }
 
-  return jwt.sign(
-    { 
-      userId, 
-      telegramId, 
-      tokenType: 'access',
-      iat: Math.floor(Date.now() / 1000)
-    },
-    process.env.JWT_SECRET,
-    { 
-      expiresIn: ACCESS_TOKEN_EXPIRY,
-      issuer: 'luckymart',
-      audience: 'luckymart-users'
+  if (!userId || !telegramId) {
+    throw new Error('用户ID和Telegram ID不能为空');
+  }
+
+  const payload = {
+    userId: String(userId),
+    telegramId: String(telegramId),
+    tokenType: 'access',
+    iat: Math.floor(Date.now() / 1000),
+    jti: generateSecureRandom(16) // 添加唯一标识符防止重放攻击
+  };
+
+  return jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: ACCESS_TOKEN_EXPIRY,
+    issuer: 'luckymart',
+    audience: 'luckymart-users',
+    algorithm: 'HS256',
+    header: {
+      typ: 'JWT',
+      alg: 'HS256',
+      kid: 'access-v1'
     }
-  );
+  });
 }
 
 /**
- * 生成刷新Token（7天有效期）
+ * 生成刷新Token（7天有效期 - 加强安全版本）
  */
 export function generateRefreshToken(userId: string, telegramId: string): string {
   if (!process.env.JWT_REFRESH_SECRET) {
     throw new Error('JWT_REFRESH_SECRET环境变量未配置');
   }
 
+  if (!userId || !telegramId) {
+    throw new Error('用户ID和Telegram ID不能为空');
+  }
+
   const refreshId = generateSecureRandom(16);
   
-  return jwt.sign(
-    { 
-      userId, 
-      telegramId, 
-      tokenType: 'refresh',
-      refreshId,
-      iat: Math.floor(Date.now() / 1000)
-    },
-    process.env.JWT_REFRESH_SECRET,
-    { 
-      expiresIn: REFRESH_TOKEN_EXPIRY,
-      issuer: 'luckymart',
-      audience: 'luckymart-users'
+  const payload = {
+    userId: String(userId),
+    telegramId: String(telegramId),
+    tokenType: 'refresh',
+    refreshId,
+    iat: Math.floor(Date.now() / 1000),
+    jti: generateSecureRandom(16) // 添加唯一标识符
+  };
+
+  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
+    expiresIn: REFRESH_TOKEN_EXPIRY,
+    issuer: 'luckymart',
+    audience: 'luckymart-users',
+    algorithm: 'HS256',
+    header: {
+      typ: 'JWT',
+      alg: 'HS256',
+      kid: 'refresh-v1'
     }
-  );
+  });
 }
 
 /**
@@ -266,27 +356,43 @@ export function generateTokenPair(userId: string, telegramId: string): {
 }
 
 /**
- * 验证访问Token
+ * 验证访问Token（加强安全版本）
  */
 export function verifyAccessToken(token: string): {
   userId: string;
   telegramId: string;
   tokenType: string;
   iat: number;
+  jti?: string;
 } | null {
   try {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET环境变量未配置');
     }
 
+    if (!token || typeof token !== 'string') {
+      throw new Error('无效的token格式');
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET, {
       issuer: 'luckymart',
-      audience: 'luckymart-users'
+      audience: 'luckymart-users',
+      algorithms: ['HS256']
     }) as any;
 
     // 验证token类型
     if (decoded.tokenType !== 'access') {
       throw new Error('无效的token类型');
+    }
+
+    // 验证必需字段
+    if (!decoded.userId || !decoded.telegramId || !decoded.jti) {
+      throw new Error('token字段缺失或不完整');
+    }
+
+    // 验证JWT ID存在性（防止重放攻击）
+    if (typeof decoded.jti !== 'string' || decoded.jti.length < 8) {
+      throw new Error('无效的token唯一标识符');
     }
 
     return decoded;
@@ -297,7 +403,7 @@ export function verifyAccessToken(token: string): {
 }
 
 /**
- * 验证刷新Token
+ * 验证刷新Token（加强安全版本）
  */
 export function verifyRefreshToken(token: string): {
   userId: string;
@@ -305,20 +411,36 @@ export function verifyRefreshToken(token: string): {
   tokenType: string;
   refreshId: string;
   iat: number;
+  jti?: string;
 } | null {
   try {
     if (!process.env.JWT_REFRESH_SECRET) {
       throw new Error('JWT_REFRESH_SECRET环境变量未配置');
     }
 
+    if (!token || typeof token !== 'string') {
+      throw new Error('无效的token格式');
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET, {
       issuer: 'luckymart',
-      audience: 'luckymart-users'
+      audience: 'luckymart-users',
+      algorithms: ['HS256']
     }) as any;
 
     // 验证token类型
     if (decoded.tokenType !== 'refresh') {
       throw new Error('无效的token类型');
+    }
+
+    // 验证必需字段
+    if (!decoded.userId || !decoded.telegramId || !decoded.refreshId) {
+      throw new Error('token字段缺失或不完整');
+    }
+
+    // 验证refreshId格式
+    if (typeof decoded.refreshId !== 'string' || decoded.refreshId.length < 8) {
+      throw new Error('无效的refreshId');
     }
 
     return decoded;

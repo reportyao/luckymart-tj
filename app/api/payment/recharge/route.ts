@@ -5,10 +5,14 @@ import { generateOrderNumber } from '@/lib/utils';
 import { validationEngine } from '@/lib/validation';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getLogger } from '@/lib/logger';
+import { withRateLimit, rechargeRateLimit } from '@/lib/rate-limit-middleware';
+import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
 
-export async function POST(request: NextRequest) {
+// 应用速率限制的充值处理函数
+const handleRechargeRequest = async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `recharge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const startTime = Date.now();
 
   try {
     const authHeader = request.headers.get('authorization');
@@ -139,6 +143,73 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
+    const logger = getLogger();
+    logger.error('创建充值订单失败', error, {
+      requestId,
+      userId: decoded?.userId,
+      error: error.message,
+      stack: error.stack
+    });
+    
+    // 记录速率限制监控数据
+    rateLimitMonitor.recordMetric({
+      timestamp: Date.now(),
+      endpoint: '/api/payment/recharge',
+      identifier: decoded?.userId || 'anonymous',
+      hits: 1,
+      blocked: false,
+      strategy: 'sliding_window',
+      windowMs: 5 * 60 * 1000,
+      limit: 5,
+      remaining: 0,
+      resetTime: Date.now() + 5 * 60 * 1000,
+      responseTime: Date.now() - startTime
+    });
+
+    // 统一错误处理，不暴露敏感信息
+    return NextResponse.json(
+      { error: '创建充值订单失败' },
+      { status: 500 }
+    );
+  }
+};
+
+// 应用速率限制并导出处理函数
+const processRequest = withRateLimit(handleRechargeRequest, rechargeRateLimit({
+  onLimitExceeded: async (result, request) => {
+    const logger = getLogger();
+    logger.warn('充值接口速率限制触发', {
+      identifier: 'unknown',
+      endpoint: '/api/payment/recharge',
+      limit: result.totalHits + result.remaining,
+      remaining: result.remaining,
+      resetTime: result.resetTime
+    });
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: '充值操作过于频繁，请稍后再试',
+        rateLimit: {
+          limit: result.totalHits + result.remaining,
+          remaining: result.remaining,
+          resetTime: new Date(result.resetTime).toISOString()
+        }
+      },
+      {
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': (result.totalHits + result.remaining).toString(),
+          'X-RateLimit-Remaining': result.remaining.toString(),
+          'X-RateLimit-Reset': result.resetTime.toString()
+        }
+      }
+    );
+  }
+}));
+
+// 导出主处理函数
+export { processRequest as POST };
     logger.error('创建充值订单失败', error, {
       requestId,
       userId: decoded?.userId,
@@ -158,31 +229,114 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
   const logger = getLogger();
   const requestId = `payment_success_${orderId}`;
 
-  const order = await prisma.orders.findUnique({
-    where: { id: orderId }
+  // 生成幂等性请求ID
+  const idempotencyKey = `payment_success_${orderId}_${transactionId}`;
+  
+  // 检查是否已经处理过该支付
+  const existingRequest = await prisma.processingLogs.findFirst({
+    where: {
+      entityId: orderId,
+      operationType: 'payment_success',
+      status: 'completed'
+    }
   });
 
-  if (!order || order.paymentStatus === 'paid') {
+  if (existingRequest) {
+    logger.info('支付已处理过，跳过重复处理', {
+      requestId,
+      orderId,
+      transactionId,
+      existingRequestId: existingRequest.requestId
+    });
+    return;
+  }
+
+  // 记录处理开始
+  const processingLog = await prisma.processingLogs.create({
+    data: {
+      entityId: orderId,
+      operationType: 'payment_success',
+      status: 'processing',
+      requestId: idempotencyKey,
+      createdAt: new Date()
+    }
+  });
+
+  logger.info('支付成功，开始原子检查订单状态', {
+    requestId,
+    orderId,
+    transactionId
+  });
+
+  // 使用原子操作检查和更新订单状态，防止并发重复处理
+  const updateResult = await prisma.orders.updateMany({
+    where: {
+      id: orderId,
+      paymentStatus: 'pending' // 只有在支付状态为待支付时才更新
+    },
+    data: {
+      paymentStatus: 'paid',
+      fulfillmentStatus: 'completed',
+      updatedAt: new Date()
+    }
+  });
+
+  // 如果没有行被更新，说明订单已经被处理过，直接返回
+  if (updateResult.count === 0) {
+    logger.info('订单已被处理，跳过重复处理', {
+      requestId,
+      orderId,
+      transactionId
+    });
+    
+    // 标记处理失败
+    await prisma.processingLogs.update({
+      where: { id: processingLog.id },
+      data: { 
+        status: 'failed',
+        errorMessage: '订单状态已处理，跳过重复处理'
+      }
+    });
+    
+    return;
+  }
+
+  // 获取订单信息（在事务外查询，因为订单状态已确定）
+  const order = await prisma.orders.findUnique({
+    where: { id: orderId },
+    select: {
+      userId: true,
+      totalAmount: true,
+      notes: true,
+      paymentStatus: true
+    }
+  });
+
+  if (!order) {
+    logger.error('订单不存在但状态更新成功，数据不一致', {
+      requestId,
+      orderId,
+      transactionId
+    });
     return;
   }
 
   const orderNotes = JSON.parse(order.notes || '{}');
   const totalCoins = orderNotes.coins + orderNotes.bonusCoins;
 
-  logger.info('支付成功，开始处理订单', {
+  logger.info('支付状态确认成功，开始处理订单业务逻辑', {
     requestId,
     orderId,
     userId: order.userId,
     totalCoins
   });
 
+  // 开始事务处理业务逻辑
   await prisma.$transaction(async (tx) => {
-    // 更新订单状态
+    // 更新订单备注，添加交易ID
     await tx.orders.update({
       where: { id: orderId },
       data: {
-        paymentStatus: 'paid',
-        fulfillmentStatus: 'completed',
         notes: `${order.notes  } | 交易ID: ${transactionId}`
       }
     });
@@ -289,5 +443,18 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
       userId: order.userId,
       orderId
     });
+  } finally {
+    // 标记处理完成
+    try {
+      await prisma.processingLogs.update({
+        where: { id: processingLog.id },
+        data: { 
+          status: 'completed',
+          completedAt: new Date()
+        }
+      });
+    } catch (logError) {
+      logger.warn('更新处理日志失败', logError as Error, { processingLogId: processingLog.id });
+    }
   }
 }

@@ -1,12 +1,15 @@
 // 创建提现申请
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { calculateWithdrawFee } from '@/lib/utils';
 import { validationEngine } from '@/lib/validation';
+import { withRateLimit, withdrawRateLimit } from '@/lib/rate-limit-middleware';
+import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
 import type { ApiResponse, WithdrawRequest } from '@/types';
 
-export async function POST(request: Request) {
+// 应用速率限制的提现处理函数
+const handleWithdrawRequest = async (request: NextRequest) => {
   try {
     // 验证用户
     const user = getUserFromRequest(request);
@@ -157,9 +160,50 @@ export async function POST(request: Request) {
 
   } catch (error: any) {
     console.error('创建提现申请失败:', error);
+    
+    // 记录速率限制监控数据
+    rateLimitMonitor.recordMetric({
+      timestamp: Date.now(),
+      endpoint: '/api/withdraw/create',
+      identifier: 'unknown',
+      hits: 1,
+      blocked: false,
+      strategy: 'token_bucket',
+      windowMs: 60 * 60 * 1000,
+      limit: 3,
+      remaining: 0,
+      resetTime: Date.now() + 60 * 60 * 1000,
+      responseTime: Date.now()
+    });
+
     return NextResponse.json<ApiResponse>({
       success: false,
       error: error.message || '创建提现申请失败'
     }, { status: 500 });
   }
-}
+};
+
+// 应用速率限制并导出处理函数
+const processRequest = withRateLimit(handleWithdrawRequest, withdrawRateLimit({
+  onLimitExceeded: async (result, request) => {
+    return NextResponse.json<ApiResponse>({
+      success: false,
+      error: '提现操作过于频繁，请稍后再试',
+      rateLimit: {
+        limit: result.totalHits + result.remaining,
+        remaining: result.remaining,
+        resetTime: new Date(result.resetTime).toISOString()
+      }
+    }, {
+      status: 429,
+      headers: {
+        'X-RateLimit-Limit': (result.totalHits + result.remaining).toString(),
+        'X-RateLimit-Remaining': result.remaining.toString(),
+        'X-RateLimit-Reset': result.resetTime.toString()
+      }
+    });
+  }
+}));
+
+// 导出主处理函数
+export { processRequest as POST };

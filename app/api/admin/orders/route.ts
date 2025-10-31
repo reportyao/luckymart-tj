@@ -6,6 +6,8 @@ import type { ApiResponse } from '@/types';
 import { rewardTrigger } from '@/lib/reward-trigger-manager';
 import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';
+import { createOrderValidationMiddleware, ORDER_VALIDATION_MIDDLEWARES } from '@/lib/order-validation-middleware';
+import { ErrorFactory } from '@/lib/errors';
 
 // 获取订单列表
 export async function GET(request: NextRequest) {
@@ -112,16 +114,52 @@ export async function POST(request: NextRequest) {
       }, { status: 403 });
     }
 
-    const body = await request.json();
-    const { orderId, trackingNumber, updateType = 'ship' } = body;
+    // 使用订单验证中间件
+    return await ORDER_VALIDATION_MIDDLEWARES.admin(request, async (req, validatedData) => {
+      const body = validatedData;
+      const { orderId, trackingNumber, updateType = 'ship' } = body;
 
-    // 验证参数
-    if (!orderId) {
+      // 额外验证更新操作特有参数
+      if (!orderId) {
+        return NextResponse.json<ApiResponse>({
+          success: false,
+          error: '缺少必填参数：orderId'
+        }, { status: 400 });
+      }
+
+    // 生成幂等性请求ID
+    const idempotencyKey = `order_update_${orderId}_${updateType}_${Date.now()}`;
+    
+    // 检查是否已经处理过该请求
+    const existingRequest = await prisma.processingLogs.findFirst({
+      where: {
+        entityId: orderId,
+        operationType: `order_${updateType}`,
+        status: 'completed'
+      }
+    });
+
+    if (existingRequest) {
       return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '缺少必填参数：orderId'
-      }, { status: 400 });
+        success: true,
+        message: '该订单操作已处理过',
+        data: { 
+          idempotent: true,
+          message: '重复的订单操作已被忽略'
+        }
+      });
     }
+
+    // 记录处理开始
+    const processingLog = await prisma.processingLogs.create({
+      data: {
+        entityId: orderId,
+        operationType: `order_${updateType}`,
+        status: 'processing',
+        requestId: idempotencyKey,
+        createdAt: new Date()
+      }
+    });
 
     // 获取订单
     const order = await prisma.orders.findUnique({
@@ -137,52 +175,112 @@ export async function POST(request: NextRequest) {
     });
 
     if (!order) {
+      // 标记处理失败
+      await prisma.processingLogs.update({
+        where: { id: processingLog.id },
+        data: { 
+          status: 'failed',
+          errorMessage: '订单不存在'
+        }
+      });
+      
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '订单不存在'
       }, { status: 404 });
     }
 
-    // 检查订单状态并更新
+    // 检查订单状态并使用原子操作更新，防止并发处理
     let newStatus = order.status;
     let shouldTriggerReward = false;
 
     if (updateType === 'ship' && order.status === 'pending_shipment') {
-      newStatus = 'shipped';
-      await prisma.orders.update({
-        where: { id: orderId },
+      // 使用原子操作检查和更新，防止并发发货
+      const updateResult = await prisma.orders.updateMany({
+        where: {
+          id: orderId,
+          status: 'pending_shipment'
+        },
         data: {
           status: 'shipped',
-          trackingNumber
+          trackingNumber: trackingNumber,
+          updatedAt: new Date()
         }
       });
+
+      // 如果没有行被更新，说明状态已改变
+      if (updateResult.count === 0) {
+        await prisma.processingLogs.update({
+          where: { id: processingLog.id },
+          data: { 
+            status: 'failed',
+            errorMessage: `订单状态异常，当前状态: ${order.status}`
+          }
+        });
+        
+        return NextResponse.json<ApiResponse>({
+          success: false,
+          error: `订单状态已变化，请刷新页面重试`
+        }, { status: 400 });
+      }
+
+      newStatus = 'shipped';
+      
     } else if (updateType === 'complete' && order.status === 'shipped') {
-      newStatus = 'completed';
-      await prisma.orders.update({
-        where: { id: orderId },
+      // 使用原子操作检查和更新，防止并发完成
+      const updateResult = await prisma.orders.updateMany({
+        where: {
+          id: orderId,
+          status: 'shipped'
+        },
         data: {
           status: 'completed',
-          fulfillmentStatus: 'completed'
+          fulfillmentStatus: 'completed',
+          updatedAt: new Date()
+        }
+      });
+
+      // 如果没有行被更新，说明状态已改变
+      if (updateResult.count === 0) {
+        await prisma.processingLogs.update({
+          where: { id: processingLog.id },
+          data: { 
+            status: 'failed',
+            errorMessage: `订单状态异常，当前状态: ${order.status}`
+          }
+        });
+        
+        return NextResponse.json<ApiResponse>({
+          success: false,
+          error: `订单状态已变化，请刷新页面重试`
+        }, { status: 400 });
+      }
+
+      newStatus = 'completed';
+      shouldTriggerReward = true;
+      
+      // 标记用户已完成首次购买
+      await prisma.users.update({
+        where: { id: order.userId },
+        data: { has_first_purchase: true }
+      });
+      
+    } else {
+      await prisma.processingLogs.update({
+        where: { id: processingLog.id },
+        data: { 
+          status: 'failed',
+          errorMessage: `状态转换错误: ${order.status} -> ${updateType}`
         }
       });
       
-      // 标记用户已完成首次购买
-      if (!order.users.has_first_purchase) {
-        await prisma.users.update({
-          where: { id: order.userId },
-          data: { has_first_purchase: true }
-        });
-      }
-      
-      shouldTriggerReward = true;
-    } else {
       return NextResponse.json<ApiResponse>({
         success: false,
         error: `无法从状态 ${order.status} 更新为 ${updateType}`
       }, { status: 400 });
     }
 
-    // 发送通知
+    // 发送通知（在事务外处理，通知失败不影响主要业务）
     try {
       const notificationType = updateType === 'ship' ? 'order_shipped' : 'order_completed';
       const notificationTitle = updateType === 'ship' ? '商品已发货' : '订单已完成';
@@ -196,7 +294,7 @@ export async function POST(request: NextRequest) {
           type: notificationType,
           title: notificationTitle,
           content: notificationContent,
-          isRead: false
+          status: 'pending'
         }
       });
     } catch (notificationError) {
@@ -241,6 +339,15 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // 标记处理完成
+    await prisma.processingLogs.update({
+      where: { id: processingLog.id },
+      data: { 
+        status: 'completed',
+        completedAt: new Date()
+      }
+    });
+
     operationSpan.finish(true, {
       orderId: order.id,
       updateType,
@@ -275,9 +382,10 @@ export async function POST(request: NextRequest) {
       updateType: body?.updateType 
     });
 
-    return NextResponse.json<ApiResponse>({
-      success: false,
-      error: error.message || '订单状态更新失败'
-    }, { status: 500 });
-  }
+      return NextResponse.json<ApiResponse>({
+        success: false,
+        error: error.message || '订单状态更新失败'
+      }, { status: 500 });
+    }
+  });
 }

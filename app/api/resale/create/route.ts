@@ -1,12 +1,15 @@
 // 创建转售商品
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { sendResaleStatusNotification } from '../../../bot/index';
 import { validationEngine } from '@/lib/validation';
+import { withRateLimit, generalRateLimit } from '@/lib/rate-limit-middleware';
+import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
 import type { ApiResponse, ResaleListing } from '@/types';
 
-export async function POST(request: Request) {
+// 应用速率限制的转售创建处理函数
+const handleResaleCreateRequest = async (request: NextRequest) => {
   try {
     // 验证用户
     const user = getUserFromRequest(request);
@@ -178,6 +181,21 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('创建转售失败:', error);
     
+    // 记录速率限制监控数据
+    rateLimitMonitor.recordMetric({
+      timestamp: Date.now(),
+      endpoint: '/api/resale/create',
+      identifier: 'unknown',
+      hits: 1,
+      blocked: false,
+      strategy: 'sliding_window',
+      windowMs: 5 * 60 * 1000,
+      limit: 5,
+      remaining: 0,
+      resetTime: Date.now() + 5 * 60 * 1000,
+      responseTime: Date.now()
+    });
+    
     // 区分不同类型的错误
     let errorMessage = '创建转售失败';
     let statusCode = 500;
@@ -200,4 +218,29 @@ export async function POST(request: Request) {
       error: errorMessage
     }, { status: statusCode });
   }
-}
+};
+
+// 应用速率限制并导出处理函数
+const processRequest = withRateLimit(handleResaleCreateRequest, generalRateLimit({
+  onLimitExceeded: async (result, request) => {
+    return NextResponse.json<ApiResponse>({
+      success: false,
+      error: '转售操作过于频繁，请稍后再试',
+      rateLimit: {
+        limit: result.totalHits + result.remaining,
+        remaining: result.remaining,
+        resetTime: new Date(result.resetTime).toISOString()
+      }
+    }, {
+      status: 429,
+      headers: {
+        'X-RateLimit-Limit': (result.totalHits + result.remaining).toString(),
+        'X-RateLimit-Remaining': result.remaining.toString(),
+        'X-RateLimit-Reset': result.resetTime.toString()
+      }
+    });
+  }
+}));
+
+// 导出主处理函数
+export { processRequest as POST };

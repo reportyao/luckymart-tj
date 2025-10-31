@@ -88,21 +88,71 @@ describe('JWT认证系统测试', () => {
       validAccessToken = generateAccessToken(mockUserId, mockTelegramId);
     });
 
-    test('应该成功验证有效的访问Token', () => {
+    test('应该成功验证有效的访问Token（包含安全字段）', () => {
       const result = verifyAccessToken(validAccessToken);
       
       expect(result).toBeDefined();
       expect(result.userId).toBe(mockUserId);
       expect(result.telegramId).toBe(mockTelegramId);
-      expect(result.type).toBe('access');
+      expect(result.tokenType).toBe('access');
+      expect(result.jti).toBeDefined();
+      expect(typeof result.jti).toBe('string');
+      expect(result.jti.length).toBeGreaterThanOrEqual(8);
     });
 
-    test('应该拒绝无效的Token', () => {
+    test('应该拒绝无效的Token格式', () => {
       const invalidToken = 'invalid.jwt.token';
       
       expect(() => {
         verifyAccessToken(invalidToken);
       }).toThrow();
+    });
+
+    test('应该拒绝空或非字符串Token', () => {
+      expect(() => {
+        verifyAccessToken('');
+      }).toThrow('无效的token格式');
+
+      expect(() => {
+        verifyAccessToken(null as any);
+      }).toThrow('无效的token格式');
+
+      expect(() => {
+        verifyAccessToken(123 as any);
+      }).toThrow('无效的token格式');
+    });
+
+    test('应该拒绝缺少必需字段的Token', () => {
+      const malformedToken = jwt.sign(
+        {
+          userId: mockUserId,
+          // 缺少 telegramId 和 jti
+          type: 'access'
+        },
+        mockJWT_SECRET,
+        { expiresIn: '15m' }
+      );
+      
+      expect(() => {
+        verifyAccessToken(malformedToken);
+      }).toThrow('token字段缺失或不完整');
+    });
+
+    test('应该拒绝无效的JWT ID', () => {
+      const malformedToken = jwt.sign(
+        {
+          userId: mockUserId,
+          telegramId: mockTelegramId,
+          type: 'access',
+          jti: 'short' // 太短的JTI
+        },
+        mockJWT_SECRET,
+        { expiresIn: '15m' }
+      );
+      
+      expect(() => {
+        verifyAccessToken(malformedToken);
+      }).toThrow('无效的token唯一标识符');
     });
 
     test('应该拒绝过期的Token', () => {
@@ -111,7 +161,8 @@ describe('JWT认证系统测试', () => {
         {
           userId: mockUserId,
           telegramId: mockTelegramId,
-          type: 'access',
+          tokenType: 'access',
+          jti: generateSecureRandom(16),
           exp: Math.floor(Date.now() / 1000) - 3600 // 1小时前过期
         },
         mockJWT_SECRET
@@ -128,7 +179,7 @@ describe('JWT认证系统测试', () => {
       // 刷新token不应该被access token验证器接受
       expect(() => {
         verifyAccessToken(refreshToken);
-      }).toThrow();
+      }).toThrow('无效的token类型');
     });
   });
 
@@ -145,6 +196,7 @@ describe('JWT认证系统测试', () => {
       expect(result).toBeDefined();
       expect(result.userId).toBe(mockUserId);
       expect(result.telegramId).toBe(mockTelegramId);
+      expect(result).toHaveProperty('jti');
     });
 
     test('应该返回null对于无效Token', () => {
@@ -159,6 +211,14 @@ describe('JWT认证系统测试', () => {
       
       const result = verifyToken(malformedToken);
       expect(result).toBeNull();
+    });
+
+    test('应该验证JWT唯一标识符（jti）', () => {
+      const result = verifyToken(validToken);
+      expect(result).toBeDefined();
+      expect(result.jti).toBeDefined();
+      expect(typeof result.jti).toBe('string');
+      expect(result.jti.length).toBeGreaterThanOrEqual(8);
     });
   });
 
@@ -200,53 +260,281 @@ describe('JWT认证系统测试', () => {
     });
   });
 
-  describe('Telegram WebApp验证测试', () => {
-    test('应该验证有效的Telegram数据', () => {
-      // 创建模拟的Telegram WebApp数据
-      const mockUser = {
+  describe('Telegram WebApp验证测试（加强安全版）', () => {
+    let testBotToken: string;
+    let mockUser: any;
+    let currentTime: number;
+
+    beforeEach(() => {
+      testBotToken = 'test_bot_token_12345';
+      currentTime = Math.floor(Date.now() / 1000);
+      mockUser = {
         id: 123456789,
         first_name: 'Test',
         last_name: 'User',
         username: 'testuser',
         language_code: 'en'
       };
+    });
 
-      const authDate = Math.floor(Date.now() / 1000);
+    test('应该验证有效的Telegram数据（包含完整HMAC计算）', () => {
+      // 生成有效的Telegram WebApp数据
+      const authDate = currentTime - 60; // 1分钟前
+      const initDataParams = new URLSearchParams({
+        auth_date: authDate.toString(),
+        user: JSON.stringify(mockUser)
+      });
+
+      // 计算正确的HMAC
+      const dataCheckString = Array.from(initDataParams.entries())
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, value]) => `${key}=${value}`)
+        .join('\n');
+
+      const secretKey = crypto
+        .createHmac('sha256', 'WebAppData')
+        .update(testBotToken)
+        .digest();
+
+      const correctHash = crypto
+        .createHmac('sha256', secretKey)
+        .update(dataCheckString)
+        .digest('hex');
+
+      initDataParams.set('hash', correctHash);
+      const initData = initDataParams.toString();
+
+      const user = validateTelegramWebAppData(initData);
+      
+      expect(user.id).toBe(123456789);
+      expect(user.first_name).toBe('Test');
+      expect(user.last_name).toBe('User');
+      expect(user.auth_date).toBe(authDate);
+    });
+
+    test('应该拒绝过期的认证数据（超过5分钟）', () => {
+      const authDate = currentTime - 301; // 超过5分钟
+      const initDataParams = new URLSearchParams({
+        auth_date: authDate.toString(),
+        user: JSON.stringify(mockUser)
+      });
+
+      const dataCheckString = Array.from(initDataParams.entries())
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, value]) => `${key}=${value}`)
+        .join('\n');
+
+      const secretKey = crypto
+        .createHmac('sha256', 'WebAppData')
+        .update(testBotToken)
+        .digest();
+
+      const correctHash = crypto
+        .createHmac('sha256', secretKey)
+        .update(dataCheckString)
+        .digest('hex');
+
+      initDataParams.set('hash', correctHash);
+      const initData = initDataParams.toString();
+
+      expect(() => {
+        validateTelegramWebAppData(initData);
+      }).toThrow(/认证数据已过期/);
+    });
+
+    test('应该拒绝时间超前的数据（超过60秒）', () => {
+      const authDate = currentTime + 61; // 时间超前61秒
+      const initDataParams = new URLSearchParams({
+        auth_date: authDate.toString(),
+        user: JSON.stringify(mockUser)
+      });
+
+      const dataCheckString = Array.from(initDataParams.entries())
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, value]) => `${key}=${value}`)
+        .join('\n');
+
+      const secretKey = crypto
+        .createHmac('sha256', 'WebAppData')
+        .update(testBotToken)
+        .digest();
+
+      const correctHash = crypto
+        .createHmac('sha256', secretKey)
+        .update(dataCheckString)
+        .digest('hex');
+
+      initDataParams.set('hash', correctHash);
+      const initData = initDataParams.toString();
+
+      expect(() => {
+        validateTelegramWebAppData(initData);
+      }).toThrow(/认证数据时间超前/);
+    });
+
+    test('应该拒绝无效的hash', () => {
+      const authDate = currentTime - 60;
       const initData = new URLSearchParams({
         auth_date: authDate.toString(),
         user: JSON.stringify(mockUser),
-        hash: 'mock-hash'
-      }).toString();
-
-      // 这里我们只测试数据结构，因为完整的HMAC计算需要真实的Bot Token
-      const user = JSON.parse(new URLSearchParams(initData).get('user') || '{}');
-      expect(user.id).toBe(123456789);
-      expect(user.first_name).toBe('Test');
-    });
-
-    test('应该检查auth_date字段存在性', () => {
-      const initData = new URLSearchParams({
-        user: JSON.stringify({ id: 123, first_name: 'Test' }),
-        hash: 'mock-hash'
+        hash: 'invalid-hash'
       }).toString();
 
       expect(() => {
         validateTelegramWebAppData(initData);
+      }).toThrow(/哈希验证失败/);
+    });
+
+    test('应该拒绝缺少必需字段的数据', () => {
+      // 缺少auth_date
+      expect(() => {
+        validateTelegramWebAppData('user=test&hash=test');
       }).toThrow('缺少auth_date字段');
+
+      // 缺少hash
+      expect(() => {
+        const initData = new URLSearchParams({
+          auth_date: currentTime.toString(),
+          user: JSON.stringify(mockUser)
+        }).toString();
+        validateTelegramWebAppData(initData);
+      }).toThrow('缺少hash字段');
+
+      // 缺少用户信息
+      expect(() => {
+        const initData = new URLSearchParams({
+          auth_date: currentTime.toString(),
+          hash: 'test'
+        }).toString();
+        validateTelegramWebAppData(initData);
+      }).toThrow('缺少用户信息');
+    });
+
+    test('应该拒绝无效的用户数据格式', () => {
+      const authDate = currentTime - 60;
+      const initData = new URLSearchParams({
+        auth_date: authDate.toString(),
+        user: 'invalid-json',
+        hash: 'test'
+      }).toString();
+
+      expect(() => {
+        validateTelegramWebAppData(initData);
+      }).toThrow('用户信息格式无效');
+    });
+
+    test('应该验证用户信息完整性', () => {
+      const authDate = currentTime - 60;
+      
+      // 缺少用户ID
+      expect(() => {
+        const initData = new URLSearchParams({
+          auth_date: authDate.toString(),
+          user: JSON.stringify({ first_name: 'Test' }),
+          hash: 'test'
+        }).toString();
+        validateTelegramWebAppData(initData);
+      }).toThrow('缺少或无效的用户ID');
+
+      // 缺少用户名
+      expect(() => {
+        const initData = new URLSearchParams({
+          auth_date: authDate.toString(),
+          user: JSON.stringify({ id: 123 }),
+          hash: 'test'
+        }).toString();
+        validateTelegramWebAppData(initData);
+      }).toThrow('缺少或无效的用户名');
+    });
+
+    test('应该处理过长的用户名（防止字符串攻击）', () => {
+      const authDate = currentTime - 60;
+      const longUser = {
+        id: 123456789,
+        first_name: 'a'.repeat(101), // 超过100字符限制
+        username: 'testuser'
+      };
+
+      expect(() => {
+        const initData = new URLSearchParams({
+          auth_date: authDate.toString(),
+          user: JSON.stringify(longUser),
+          hash: 'test'
+        }).toString();
+        validateTelegramWebAppData(initData);
+      }).toThrow('用户名长度超出限制');
     });
 
     test('应该检查Bot Token配置', () => {
       delete process.env.TELEGRAM_BOT_TOKEN;
       
       const initData = new URLSearchParams({
-        auth_date: Math.floor(Date.now() / 1000).toString(),
-        user: JSON.stringify({ id: 123, first_name: 'Test' }),
-        hash: 'mock-hash'
+        auth_date: currentTime.toString(),
+        user: JSON.stringify(mockUser),
+        hash: 'test'
       }).toString();
 
       expect(() => {
         validateTelegramWebAppData(initData);
       }).toThrow('TELEGRAM_BOT_TOKEN环境变量未配置');
+    });
+
+    test('应该清理返回的用户信息（防止数据泄露）', () => {
+      const authDate = currentTime - 60;
+      const userWithExtraFields = {
+        ...mockUser,
+        extra_field: 'should_be_removed',
+        private_data: 'sensitive_info'
+      };
+
+      const initDataParams = new URLSearchParams({
+        auth_date: authDate.toString(),
+        user: JSON.stringify(userWithExtraFields)
+      });
+
+      const dataCheckString = Array.from(initDataParams.entries())
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, value]) => `${key}=${value}`)
+        .join('\n');
+
+      const secretKey = crypto
+        .createHmac('sha256', 'WebAppData')
+        .update(testBotToken)
+        .digest();
+
+      const correctHash = crypto
+        .createHmac('sha256', secretKey)
+        .update(dataCheckString)
+        .digest('hex');
+
+      initDataParams.set('hash', correctHash);
+      const initData = initDataParams.toString();
+
+      const user = validateTelegramWebAppData(initData);
+      
+      // 应该只包含安全的字段
+      expect(user).toHaveProperty('id');
+      expect(user).toHaveProperty('first_name');
+      expect(user).not.toHaveProperty('extra_field');
+      expect(user).not.toHaveProperty('private_data');
+      expect(user.auth_date).toBe(authDate);
+    });
+
+    test('应该验证用户ID的有效范围', () => {
+      const authDate = currentTime - 60;
+      const invalidUser = {
+        id: -1, // 负数ID
+        first_name: 'Test'
+      };
+
+      expect(() => {
+        const initData = new URLSearchParams({
+          auth_date: authDate.toString(),
+          user: JSON.stringify(invalidUser),
+          hash: 'test'
+        }).toString();
+        validateTelegramWebAppData(initData);
+      }).toThrow('无效的用户ID范围');
     });
   });
 

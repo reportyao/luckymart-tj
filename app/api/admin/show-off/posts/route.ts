@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
-import { AdminPermissions } from '@/lib/admin-permissions';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();

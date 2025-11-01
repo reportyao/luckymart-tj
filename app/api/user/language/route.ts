@@ -6,7 +6,6 @@ import { validateLanguageParameter } from '@/lib/i18n-middleware';
 /**
  * 更新用户语言偏好设置
  */
-@validateLanguageParameter('language')
 async function PUT(request: NextRequest & { languageContext: ApiLanguageContext }) {
   const { languageContext, formatter } = request;
   

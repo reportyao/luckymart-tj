@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { validateTelegramWebAppData, generateJWT } from '@/lib/utils';
-import { withErrorHandling } from '../../../lib/middleware';
+import { withErrorHandling } from '@/lib/middleware';
 import { createRequestTracker, trackPerformance } from '@/lib/request-tracker';
 import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';

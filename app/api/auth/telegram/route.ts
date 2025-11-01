@@ -9,7 +9,7 @@ import {
   type AuthError 
 } from '@/lib/enhanced-auth';
 import { generateJWT } from '@/lib/utils';
-import { withErrorHandling } from '../../../lib/middleware';
+import { withErrorHandling } from '@/lib/middleware';
 import { createRequestTracker, trackPerformance } from '@/lib/request-tracker';
 import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';

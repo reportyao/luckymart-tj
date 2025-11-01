@@ -1,3 +1,5 @@
+'use client';
+
 // offline/page.tsx - 离线降级页面
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';

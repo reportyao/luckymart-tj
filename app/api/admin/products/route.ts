@@ -3,7 +3,7 @@ import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { requireAdminPermission } from '@/lib/admin-auth-middleware';
 
-import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 
 

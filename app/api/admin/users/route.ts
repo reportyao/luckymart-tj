@@ -6,7 +6,7 @@ import { validateReferralCodeFormat } from '@/lib/auth';
 import { rewardTrigger } from '@/lib/reward-trigger-manager';
 import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';
-import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
+import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 
 // 创建权限中间件

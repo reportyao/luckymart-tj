@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
-import { AdminPermissions } from '@/lib/admin-permissions';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { prisma } from '@/lib/prisma';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.FEATURES_READ);

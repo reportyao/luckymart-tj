@@ -11,7 +11,7 @@ function AdminDashboardDemoPage() {
   };
 
   return (
-    <PagePermission permissions={AdminPermissions.dashboard.read()}>
+    <PagePermission permissions={AdminPermissions.system.manage()}>
       <AdminDashboard
         className="min-h-screen"
         showRealTimeUpdates={true}

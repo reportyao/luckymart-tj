@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
-import { AdminPermissions } from '@/lib/admin-permissions';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { rateLimitConfigManager, initializeRateLimitConfigs } from '@/lib/rate-limit-config';
 import { rateLimitMonitor, DEFAULT_ALERT_RULES } from '@/lib/rate-limit-monitor';
 import { getRateLimitStats, resetRateLimitStats, cleanupRateLimits } from '@/lib/rate-limit-middleware';

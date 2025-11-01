@@ -16,7 +16,7 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
  * 管理员可以手动触发某个已售罄的抽奖轮次的开奖
  */
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();
@@ -83,8 +83,8 @@ export async function POST(request: NextRequest) {
     }
 
     // 5. 执行开奖算法
-    const participationIds = participations.map(p => p.id);
-    const participationData = participations.map(p => ({
+    const participationIds = participations.map((p : any) => p.id);
+    const participationData = participations.map((p : any) => ({
       userId: p.userId,
       numbers: p.numbers,
       amount: Number(p.cost),
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
     );
 
     // 6. 查找中奖用户
-    const participationsWithNumbers = participations.map(p => ({
+    const participationsWithNumbers = participations.map((p : any) => ({
       userId: p.userId,
       numbers: p.numbers
     }));
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 7. 执行开奖事务
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       // 更新轮次状态
       await tx.lotteryRounds.update({
         where: { id: roundId },
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
  * GET - 获取待开奖列表
  */
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
 
     // 查询已售罄但未开奖的轮次（soldShares >= totalShares）
@@ -217,11 +217,11 @@ export async function GET(request: NextRequest) {
     });
     
     // 筛选出已售罄的轮次
-    const readyRounds = allActiveRounds.filter(r => r.soldShares >= r.totalShares);
+    const readyRounds = allActiveRounds.filter((r : any) => r.soldShares >= r.totalShares);
 
     // 手动查询产品信息和参与人数
     const roundsWithDetails = await Promise.all(
-      readyRounds.map(async (r) => {
+      readyRounds.map(async (r) : any => {
         const product = await prisma.products.findUnique({
           where: { id: r.productId },
           select: {

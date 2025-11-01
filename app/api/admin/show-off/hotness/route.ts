@@ -84,7 +84,7 @@ export async function GET(req: NextRequest) {
     };
 
     return NextResponse.json({
-      posts: posts.map(post => ({
+      posts: posts.map((post : any) => ({
         id: post.id,
         content: post.content,
         images: post.images,
@@ -102,7 +102,7 @@ export async function GET(req: NextRequest) {
           views: (post.viewsCount || 0) * weights.views,
         },
       })),
-      distribution: hotnessDistribution.map(d => ({
+      distribution: hotnessDistribution.map((d : any) => ({
         score: d.hotnessScore,
         count: d._count,
       })),
@@ -145,7 +145,7 @@ export async function POST(req: NextRequest) {
       });
 
       // 批量更新热度分数
-      const updatePromises = posts.map(post => {
+      const updatePromises = posts.map((post : any) => {
         const daysSinceCreated = Math.floor(
           (Date.now() - post.createdAt.getTime()) / (1000 * 60 * 60 * 24)
         );

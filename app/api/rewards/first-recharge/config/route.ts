@@ -62,10 +62,10 @@ export const GET = async (request: NextRequest) => {
           preventSmallAmountAbuse: true // 防止恶意小金额充值刷奖励
         },
         metadata: {
-          supportedAmounts: FIRST_RECHARGE_REWARDS.map(tier => tier.amount),
+          supportedAmounts: FIRST_RECHARGE_REWARDS.map((tier : any) => tier.amount),
           totalRewardOptions: FIRST_RECHARGE_REWARDS.length,
-          minimumRechargeAmount: Math.min(...FIRST_RECHARGE_REWARDS.map(tier => tier.amount)),
-          maximumRewardAmount: Math.max(...FIRST_RECHARGE_REWARDS.map(tier => tier.reward))
+          minimumRechargeAmount: Math.min(...FIRST_RECHARGE_REWARDS.map((tier : any) => tier.amount)),
+          maximumRewardAmount: Math.max(...FIRST_RECHARGE_REWARDS.map((tier : any) => tier.reward))
         }
       },
       meta: {

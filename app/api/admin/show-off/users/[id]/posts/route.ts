@@ -52,15 +52,15 @@ export async function GET(
     // 计算用户晒单统计
     const stats = {
       totalPosts: posts.length,
-      approvedPosts: posts.filter(p => p.status === 'approved').length,
-      rejectedPosts: posts.filter(p => p.status === 'rejected').length,
-      pendingPosts: posts.filter(p => p.status === 'pending').length,
-      totalLikes: posts.reduce((sum, p) => sum + (p.likesCount || 0), 0),
-      totalComments: posts.reduce((sum, p) => sum + (p.commentsCount || 0), 0),
-      totalViews: posts.reduce((sum, p) => sum + (p.viewsCount || 0), 0),
+      approvedPosts: posts.filter((p : any) => p.status === 'approved').length,
+      rejectedPosts: posts.filter((p : any) => p.status === 'rejected').length,
+      pendingPosts: posts.filter((p : any) => p.status === 'pending').length,
+      totalLikes: posts.reduce((sum: any,  p: any) => sum + (p.likesCount || 0), 0),
+      totalComments: posts.reduce((sum: any,  p: any) => sum + (p.commentsCount || 0), 0),
+      totalViews: posts.reduce((sum: any,  p: any) => sum + (p.viewsCount || 0), 0),
       averageHotness:
         posts.length > 0
-          ? Math.round(posts.reduce((sum, p) => sum + (p.hotnessScore || 0), 0) / posts.length)
+          ? Math.round(posts.reduce((sum: any,  p: any) => sum + (p.hotnessScore || 0), 0) / posts.length)
           : 0,
     };
 
@@ -71,7 +71,7 @@ export async function GET(
       lowQuality: 0, // 平均互动 < 5
     };
 
-    posts.forEach(post => {
+    posts.forEach((post : any) => {
       const avgEngagement = ((post.likesCount || 0) + (post.commentsCount || 0)) / 2;
       if (avgEngagement > 20) qualityDistribution.highQuality++;
       else if (avgEngagement >= 5) qualityDistribution.mediumQuality++;
@@ -96,7 +96,7 @@ export async function GET(
       }, {} as Record<string, { count: number; totalValue: number }>);
 
     // 时间分布分析
-    const postsByMonth = posts.reduce((acc, p) => {
+    const postsByMonth = posts.reduce((acc: any,  p: any) => {
       const month = new Date(p.createdAt).toISOString().slice(0, 7); // YYYY-MM
       if (!acc[month]) acc[month] = 0;
       acc[month]++;
@@ -139,7 +139,7 @@ export async function GET(
 
     return NextResponse.json({
       user,
-      posts: posts.map(post => ({
+      posts: posts.map((post : any) => ({
         id: post.id,
         content: post.content,
         images: post.images,

@@ -363,7 +363,7 @@ function CostMonitoringPage() {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </RechartsPieChart>
-                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Tooltip formatter={(value: any) => formatCurrency(Number(value))} />
                     <Legend />
                   </RechartsPieChart>
                 </ResponsiveContainer>
@@ -425,7 +425,7 @@ function CostMonitoringPage() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
                   <YAxis />
-                  <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                  <Tooltip formatter={(value: any) => formatCurrency(Number(value))} />
                   <Legend />
                   <Area type="monotone" dataKey="总成本" stackId="1" stroke="#8884d8" fill="#8884d8" />
                   <Area type="monotone" dataKey="激励成本" stackId="2" stroke="#0088FE" fill="#0088FE" />
@@ -454,7 +454,7 @@ function CostMonitoringPage() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
                     <YAxis />
-                    <Tooltip formatter={(value) => `${value}%`} />
+                    <Tooltip formatter={(value: any) => `${value}%`} />
                     <Legend />
                     <Line type="monotone" dataKey="ROI" stroke="#8884d8" strokeWidth={2} />
                     <Line type="monotone" dataKey="利润率" stroke="#82ca9d" strokeWidth={2} />

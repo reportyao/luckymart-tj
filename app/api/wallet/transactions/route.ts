@@ -149,7 +149,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     });
 
     // 格式化交易记录数据
-    const formattedTransactions = transactions.map((tx: any) => ({
+    const formattedTransactions = transactions.map(((tx: any) : any) => ({
       id: tx.id,
       type: tx.type,
       amount: parseFloat(tx.amount.toString()),
@@ -185,7 +185,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       },
       statistics: {
         totalTransactions: totalCount,
-        balanceTypeStats: statistics.map((stat: any) => ({
+        balanceTypeStats: statistics.map(((stat: any) : any) => ({
           balanceType: stat.balanceType,
           balanceTypeName: {
             balance: '普通余额',

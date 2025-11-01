@@ -10,7 +10,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware(Ad
 
 // 获取待审核晒单列表
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     // 格式化返回数据
-    const formattedPosts = posts.map(post => ({
+    const formattedPosts = posts.map((post : any) => ({
       id: post.id,
       user: {
         id: post.user.id,
@@ -117,7 +117,7 @@ export async function GET(request: NextRequest) {
 
 // 审核晒单
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const body = await request.json();
     const { postId, action, reason } = body;
 
@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
 
 // 处理审核通过
 async function processApproval(postId: string, reviewerId: string) {
-  return await prisma.$transaction(async (tx) => {
+  return await prisma.$transaction(async (tx: any) => {
     // 更新晒单状态
     const updatedPost = await tx.showOffPosts.update({
       where: { id: postId },

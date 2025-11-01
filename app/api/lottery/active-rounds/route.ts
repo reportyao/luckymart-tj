@@ -57,12 +57,12 @@ const handleActiveRounds = async (request: NextRequest) => {
     });
 
     // 计算每个期次的详细信息
-    const enrichedRounds = rounds.map(round => {
+    const enrichedRounds = rounds.map((round : any) => {
       const progress = round.totalShares > 0 ? (round.soldShares / round.totalShares) * 100 : 0;
       const availableShares = round.totalShares - round.soldShares;
       
       // 计算用户参与统计（如果有用户ID的话）
-      const userParticipations = round.participations.reduce((acc, p) => {
+      const userParticipations = round.participations.reduce((acc: any,  p: any) => {
         if (!acc[p.userId]) {
           acc[p.userId] = {
             sharesCount: 0,
@@ -94,7 +94,7 @@ const handleActiveRounds = async (request: NextRequest) => {
           images: round.product.images || []
         },
         statistics: {
-          totalParticipants: new Set(round.participations.map(p => p.userId)).size,
+          totalParticipants: new Set(round.participations.map((p : any) => p.userId)).size,
           totalSharesSold: round.soldShares,
           winProbability: round.totalShares > 0 ? Math.round((round.soldShares / round.totalShares) * 100) : 0,
           estimatedDrawTime: round.drawTime ? new Date(round.drawTime).toLocaleString('zh-CN') : null

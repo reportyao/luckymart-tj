@@ -139,13 +139,13 @@ async function getMobilePerformanceStats(filters: {
   let filteredData = performanceStore;
   
   if (filters.deviceType === 'mobile') {
-    filteredData = filteredData.filter(item => item.deviceInfo?.isMobile);
+    filteredData = filteredData.filter((item : any) => item.deviceInfo?.isMobile);
   } else if (filters.deviceType === 'desktop') {
-    filteredData = filteredData.filter(item => !item.deviceInfo?.isMobile);
+    filteredData = filteredData.filter((item : any) => !item.deviceInfo?.isMobile);
   }
   
   if (filters.pageUrl) {
-    filteredData = filteredData.filter(item => item.pageUrl === filters.pageUrl);
+    filteredData = filteredData.filter((item : any) => item.pageUrl === filters.pageUrl);
   }
 
   // 计算平均值
@@ -179,12 +179,12 @@ function getMobilePerformanceIssues(filters: {
   let filteredData = performanceStore;
   
   if (filters.deviceType === 'mobile') {
-    filteredData = filteredData.filter(item => item.deviceInfo?.isMobile);
+    filteredData = filteredData.filter((item : any) => item.deviceInfo?.isMobile);
   }
   
   // 汇总所有问题
   const allIssues = filteredData.flatMap(item => item.issues || []);
-  const issueCounts = allIssues.reduce((acc, issue) => {
+  const issueCounts = allIssues.reduce((acc: any,  issue: any) => {
     acc[issue.type] = (acc[issue.type] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
@@ -273,26 +273,26 @@ function getMobileOptimizationRecommendations(filters: {
     totalRecommendations: recommendations.length,
     recommendations,
     priority: {
-      high: recommendations.filter(r => r.priority === 'high').length,
-      medium: recommendations.filter(r => r.priority === 'medium').length,
-      low: recommendations.filter(r => r.priority === 'low').length
+      high: recommendations.filter((r : any) => r.priority === 'high').length,
+      medium: recommendations.filter((r : any) => r.priority === 'medium').length,
+      low: recommendations.filter((r : any) => r.priority === 'low').length
     }
   };
 }
 
 // 辅助函数
 function calculateAverage(data: any[], field: string): number {
-  const values = data.map(item => item[field]).filter(val => typeof val === 'number');
-  return values.length > 0 ? values.reduce((sum, val) => sum + val, 0) / values.length : 0;
+  const values = data.map((item : any) => item[field]).filter(val => typeof val === 'number');
+  return values.length > 0 ? values.reduce((sum: any,  val: any) => sum + val, 0) / values.length : 0;
 }
 
 function calculateAverageScore(data: any[]): number {
-  const scores = data.map(item => item.score?.overall).filter(score => typeof score === 'number');
-  return scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0;
+  const scores = data.map((item : any) => item.score?.overall).filter(score => typeof score === 'number');
+  return scores.length > 0 ? scores.reduce((sum: any,  score: any) => sum + score, 0) / scores.length : 0;
 }
 
 function calculateDeviceStats(data: any[], isMobile: boolean): { sessions: number; avgScore: number } {
-  const deviceData = data.filter(item => item.deviceInfo?.isMobile === isMobile);
+  const deviceData = data.filter((item : any) => item.deviceInfo?.isMobile === isMobile);
   return {
     sessions: deviceData.length,
     avgScore: calculateAverageScore(deviceData)
@@ -436,7 +436,7 @@ export async function POST(request: NextRequest) {
         console.log('Performance Alert:', {
           pageUrl: validatedData.pageUrl,
           sessionId: validatedData.sessionId,
-          issues: issues.map(i => ({ type: i.type, severity: i.severity })),
+          issues: issues.map((i : any) => ({ type: i.type, severity: i.severity })),
           timestamp: new Date()
         });
       }
@@ -497,7 +497,7 @@ function calculatePerformanceScore(data: z.infer<typeof PerformanceMetricsSchema
   
   const validScores = Object.values(scores).filter(score => score !== null) as number[];
   const overallScore = validScores.length > 0 
-    ? validScores.reduce((sum, score) => sum + score, 0) / validScores.length 
+    ? validScores.reduce((sum: any,  score: any) => sum + score, 0) / validScores.length 
     : 0;
   
   return {
@@ -601,7 +601,7 @@ function generateOptimizationRecommendations(data: z.infer<typeof PerformanceMet
     estimatedImpact: string;
   }> = [];
   
-  issues.forEach(issue => {
+  issues.forEach((issue : any) => {
     switch (issue.type) {
       case 'fcp-slow':
         recommendations.push({

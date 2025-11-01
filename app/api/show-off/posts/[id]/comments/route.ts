@@ -69,7 +69,7 @@ export async function GET(
     ]);
 
     // 格式化返回数据
-    const formattedComments = comments.map(comment => ({
+    const formattedComments = comments.map((comment : any) => ({
       id: comment.id,
       user: {
         id: comment.user.id,
@@ -80,7 +80,7 @@ export async function GET(
       content: comment.content,
       likeCount: comment.likeCount,
       createdAt: comment.createdAt,
-      replies: comment.showOffComments.map(reply => ({
+      replies: comment.showOffComments.map((reply : any) => ({
         id: reply.id,
         user: {
           id: reply.user.id,

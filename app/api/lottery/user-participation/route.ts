@@ -130,8 +130,8 @@ async function getRoundParticipation(userId: string, roundId: string) {
   });
 
   // 3. 计算用户总参与信息
-  const totalSharesCount = participations.reduce((sum, p) => sum + p.sharesCount, 0);
-  const totalCost = participations.reduce((sum, p) => sum + Number(p.cost), 0);
+  const totalSharesCount = participations.reduce((sum: any,  p: any) => sum + p.sharesCount, 0);
+  const totalCost = participations.reduce((sum: any,  p: any) => sum + Number(p.cost), 0);
   const winProbability = round.totalShares > 0 ? (totalSharesCount / round.totalShares) * 100 : 0;
 
   // 4. 获取用户幸运币余额
@@ -152,7 +152,7 @@ async function getRoundParticipation(userId: string, roundId: string) {
     userParticipation: {
       sharesCount: totalSharesCount,
       totalCost: totalCost,
-      participations: participations.map(p => ({
+      participations: participations.map((p : any) => ({
         id: p.id,
         sharesCount: p.sharesCount,
         numbers: p.numbers,
@@ -227,7 +227,7 @@ async function getAllParticipations(userId: string) {
   let totalSpent = 0;
   let totalWins = 0;
 
-  participations.forEach(participation => {
+  participations.forEach((participation : any) => {
     const roundId = participation.roundId;
     const existing = roundStats.get(roundId) || {
       roundId,
@@ -257,7 +257,7 @@ async function getAllParticipations(userId: string) {
   });
 
   // 4. 计算每个期次的中奖概率
-  roundStats.forEach((stats, roundId) => {
+  roundStats.forEach(((stats, roundId) : any) => {
     stats.winProbability = stats.totalShares > 0 
       ? (stats.userShares / stats.totalShares) * 100 
       : 0;
@@ -272,7 +272,7 @@ async function getAllParticipations(userId: string) {
     },
     coinBalance: user.luckyCoins,
     totalSpent: user.totalSpent,
-    participations: participations.map(p => ({
+    participations: participations.map((p : any) => ({
       id: p.id,
       roundId: p.roundId,
       productId: p.productId,

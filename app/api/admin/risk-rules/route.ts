@@ -60,7 +60,7 @@ const mockRiskRules = [
 ];
 
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -73,16 +73,16 @@ export async function GET(request: NextRequest) {
     let filteredRules = mockRiskRules;
 
     if (category && category !== 'all') {
-      filteredRules = filteredRules.filter(rule => rule.category === category);
+      filteredRules = filteredRules.filter((rule : any) => rule.category === category);
     }
 
     if (isActive !== null && isActive !== 'all') {
       const active = isActive === 'active';
-      filteredRules = filteredRules.filter(rule => rule.isActive === active);
+      filteredRules = filteredRules.filter((rule : any) => rule.isActive === active);
     }
 
     if (search) {
-      filteredRules = filteredRules.filter(rule => 
+      filteredRules = filteredRules.filter((rule : any) => 
         rule.name.toLowerCase().includes(search.toLowerCase()) ||
         rule.description.toLowerCase().includes(search.toLowerCase())
       );
@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const { name, description, category, riskType, condition, threshold, action, isActive } = body;
@@ -161,7 +161,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const { ruleId, updates } = body;
@@ -205,7 +205,7 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const ruleId = searchParams.get('ruleId');

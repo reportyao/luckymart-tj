@@ -610,7 +610,7 @@ function ProtectedSettingsPage() {
       permissions={AdminPermissions.settings.read()}
       showFallback={true}
     >
-      <AdminSettingsPage />
+      <AdminSettings />
     </PagePermission>
   );
 }

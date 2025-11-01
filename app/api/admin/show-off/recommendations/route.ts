@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
     };
 
     return NextResponse.json({
-      recommendations: recommendations.map(rec => ({
+      recommendations: recommendations.map((rec : any) => ({
         id: rec.id,
         position: rec.position,
         priority: rec.priority,
@@ -285,7 +285,7 @@ export async function PUT(req: NextRequest) {
     const body = await req.json();
     const { recommendations } = body; // [{ id, priority }]
 
-    const updatePromises = recommendations.map((rec: any) =>
+    const updatePromises = recommendations.map((rec: any) : any =>
       prisma.showOffRecommendation.update({
         where: { id: rec.id },
         data: { priority: rec.priority },
@@ -300,7 +300,7 @@ export async function PUT(req: NextRequest) {
         adminId: adminUser.id,
         action: 'batch_update_recommendation_priority',
         resource: 'show_off_recommendation',
-        resourceId: recommendations.map((r: any) => r.id).join(','),
+        resourceId: recommendations.map((r: any) : any => r.id).join(','),
         details: {
           recommendations,
         },

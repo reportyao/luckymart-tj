@@ -13,6 +13,23 @@ interface AdminUser extends User {
     orders: number;
     transactions: number;
   };
+  // 确保所有必要的属性都可用
+  id: string;
+  telegramId: string;
+  username?: string;
+  firstName: string;
+  lastName?: string;
+  language: string;
+  coinBalance: number;
+  balance?: number;
+  platformBalance: number;
+  vipLevel: number;
+  totalSpent: number;
+  freeDailyCount: number;
+  lastFreeResetDate: Date;
+  referralCode?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface UserDetail {
@@ -255,7 +272,7 @@ function AdminUsersPage() {
                       <div className="text-sm text-gray-900">{user.telegramId}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-green-600">{user.balance.toFixed(2)}</div>
+                      <div className="text-sm font-medium text-green-600">{(user.balance || 0).toFixed(2)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{user.platformBalance.toFixed(2)}</div>

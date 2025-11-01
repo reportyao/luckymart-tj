@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
     const langSuffix = language === 'zh' ? 'Zh' : language === 'en' ? 'En' : 'Ru';
 
-    const localizedPackages = packages.map(pkg => ({
+    const localizedPackages = packages.map((pkg : any) => ({
       id: pkg.id,
       name: pkg[`name${langSuffix}` as keyof typeof pkg],
       price: parseFloat(pkg.price.toString()),

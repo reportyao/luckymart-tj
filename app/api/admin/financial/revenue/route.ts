@@ -4,6 +4,30 @@ import { createClient } from '@supabase/supabase-js';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 
+// 类型定义
+interface RevenueStatistics {
+  period_type: string;
+  period_start: string;
+  period_end: string;
+  total_revenue: number;
+  actual_received: number;
+  order_count: number;
+  average_order_value: number;
+  growth_rate: number | null;
+}
+
+interface RevenueStats {
+  totalRevenue: number;
+  actualReceived: number;
+  totalOrders: number;
+}
+
+interface PeriodBreakdown {
+  revenue: number;
+  actualReceived: number;
+  orders: number;
+}
+
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -25,7 +49,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - limit: 限制返回记录数
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const periodType = searchParams.get('periodType') || 'daily';
@@ -66,7 +90,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 计算汇总统计
-    const totalStats = revenueData?.reduce((acc, curr) => {
+    const totalStats = revenueData?.reduce((acc: RevenueStats, curr: RevenueStatistics) => {
       acc.totalRevenue += parseFloat(curr.total_revenue.toString());
       acc.actualReceived += parseFloat(curr.actual_received.toString());
       acc.totalOrders += curr.order_count;
@@ -102,7 +126,7 @@ export async function GET(request: NextRequest) {
     })) || [];
 
     // 按期间类型分组统计
-    const periodBreakdown = revenueData?.reduce((acc, curr) => {
+    const periodBreakdown = revenueData?.reduce((acc: Record<string, PeriodBreakdown>, curr: RevenueStatistics) => {
       const period = curr.period_start;
       if (!acc[period]) {
         acc[period] = {
@@ -115,7 +139,7 @@ export async function GET(request: NextRequest) {
       acc[period].actualReceived += parseFloat(curr.actual_received.toString());
       acc[period].orders += curr.order_count;
       return acc;
-    }, {} as Record<string, any>) || {};
+    }, {} as Record<string, PeriodBreakdown>) || {};
 
     const response = {
       data: revenueData || [],
@@ -168,7 +192,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const {
@@ -220,7 +244,7 @@ export async function POST(request: NextRequest) {
       .gte('created_at', `${startISO}T00:00:00`)
       .lte('created_at', `${endISO}T23:59:59`);
 
-    const totalRevenue = ordersData?.reduce((sum, order) => 
+    const totalRevenue = ordersData?.reduce((sum: number, order: any) => 
       sum + parseFloat(order.total_amount.toString()), 0) || 0;
 
     const actualReceived = totalRevenue * 0.95; // 假设平台收取5%手续费

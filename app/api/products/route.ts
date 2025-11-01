@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     );
 
     // 过滤状态
-    const filteredProducts = products.filter(p => p.status === status);
+    const filteredProducts = products.filter((p : any) => p.status === status);
 
     return NextResponse.json({
       success: true,

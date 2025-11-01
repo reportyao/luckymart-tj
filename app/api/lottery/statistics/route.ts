@@ -2,6 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 import { authenticateUser } from '../../../../lib/auth';
 
+// 类型定义
+interface ParticipationRecord {
+  round: {
+    product: {
+      category: string;
+      categoryMultilingual: string;
+      pricePerShare: number;
+    };
+  };
+  sharesCount: number;
+  cost: number;
+  isWinner: boolean;
+  type: 'paid' | 'free';
+  createdAt: Date;
+}
+
 // GET /api/lottery/statistics - 获取用户抽奖统计
 export async function GET(request: NextRequest) {
   try {
@@ -84,7 +100,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     // 计算总奖金
-    const totalWinnings = winningRecords.reduce((sum, record) => {
+    const totalWinnings = winningRecords.reduce((sum: number: any,  record: ParticipationRecord: any) => {
       const prize = calculatePrize(record.round.product, record.sharesCount);
       return sum + prize.amount;
     }, 0);
@@ -189,7 +205,7 @@ async function getMonthlyStatistics(userId: string, dateFilter: Date | null, typ
   // 按月分组统计
   const monthlyData: { [key: string]: any } = {};
   
-  participations.forEach(participation => {
+  participations.forEach(((participation: ParticipationRecord) : any) => {
     const monthKey = participation.createdAt.toISOString().slice(0, 7); // YYYY-MM
     const month = participation.createdAt.getMonth();
     const year = participation.createdAt.getFullYear();
@@ -249,7 +265,7 @@ async function getCategoryStatistics(userId: string, dateFilter: Date | null, ty
 
   const categoryData: { [key: string]: any } = {};
   
-  participations.forEach(participation => {
+  participations.forEach(((participation: ParticipationRecord) : any) => {
     const category = getProductCategory(participation.round.product);
     
     if (!categoryData[category]) {
@@ -302,7 +318,7 @@ async function getTypeStatistics(userId: string, dateFilter: Date | null) {
     free: { participations: 0, wins: 0, totalSpent: 0, totalWinnings: 0 }
   };
 
-  participations.forEach(participation => {
+  participations.forEach(((participation: ParticipationRecord) : any) => {
     const type = participation.type as 'paid' | 'free';
     const prize = calculatePrize(participation.round.product, participation.sharesCount);
     
@@ -316,7 +332,7 @@ async function getTypeStatistics(userId: string, dateFilter: Date | null) {
   });
 
   // 计算中奖率
-  Object.keys(typeData).forEach(type => {
+  Object.keys(typeData).forEach((type: string) => {
     const data = typeData[type as keyof typeof typeData];
     data.winRate = data.participations > 0 ? data.wins / data.participations : 0;
   });
@@ -344,7 +360,7 @@ async function getParticipationPatterns(userId: string, dateFilter: Date | null,
   const hourlyPattern = new Array(24).fill(0);
   const dailyPattern = new Array(7).fill(0);
   
-  participations.forEach(participation => {
+  participations.forEach(((participation: ParticipationRecord) : any) => {
     const hour = participation.createdAt.getHours();
     const day = participation.createdAt.getDay();
     
@@ -360,7 +376,7 @@ async function getParticipationPatterns(userId: string, dateFilter: Date | null,
   }
 
   const avgInterval = intervals.length > 0 
-    ? intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length 
+    ? intervals.reduce((sum: number: any,  interval: number: any) => sum + interval, 0) / intervals.length 
     : 0;
 
   return {

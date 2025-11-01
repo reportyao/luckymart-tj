@@ -17,7 +17,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
       const userId = params.id;
 
@@ -58,7 +58,7 @@ export async function GET(
 
       // 获取参与记录的详细信息
       const participationsWithDetails = await Promise.all(
-        participations.map(async (p) => {
+        participations.map(async (p) : any => {
           const [product, round] = await Promise.all([
             prisma.products.findUnique({
               where: { id: p.productId },
@@ -114,7 +114,7 @@ export async function GET(
             lastFreeResetDate: user.lastFreeResetDate.toISOString(),
             createdAt: user.createdAt.toISOString(),
             participations: participationsWithDetails,
-            orders: orders.map(o => ({
+            orders: orders.map((o : any) => ({
               id: o.id,
               orderNumber: o.orderNumber,
               type: o.type,
@@ -123,7 +123,7 @@ export async function GET(
               fulfillmentStatus: o.fulfillmentStatus,
               createdAt: o.createdAt.toISOString()
             })),
-            transactions: transactions.map(t => ({
+            transactions: transactions.map((t : any) => ({
               id: t.id,
               type: t.type,
               amount: Number(t.amount),
@@ -131,7 +131,7 @@ export async function GET(
               description: t.description,
               createdAt: t.createdAt.toISOString()
             })),
-            withdrawRequests: withdrawRequests.map(w => ({
+            withdrawRequests: withdrawRequests.map((w : any) => ({
               id: w.id,
               amount: Number(w.amount),
               fee: Number(w.fee),
@@ -157,7 +157,7 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
       const userId = params.id;
       const body = await request.json();
@@ -171,7 +171,7 @@ export async function POST(
       }
 
       // 执行充值
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async (tx: any) => {
         // 更新用户余额
         await tx.users.update({
           where: { id: userId },

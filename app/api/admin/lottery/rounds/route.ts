@@ -15,7 +15,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取开奖轮次列表
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
 
     const { searchParams } = new URL(request.url);
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     // 手动查询产品信息和中奖用户信息
     const roundsWithDetails = await Promise.all(
-      rounds.map(async (r) => {
+      rounds.map(async (r) : any => {
         const product = await prisma.products.findUnique({
           where: { id: r.productId },
           select: {

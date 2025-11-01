@@ -18,7 +18,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // 获取提现申请列表
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
 
     const { searchParams } = new URL(request.url);
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
 
 // 审核提现申请
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 使用事务处理审核操作，并检查状态
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       // 使用原子操作检查和更新状态，防止并发处理
       const updateResult = await tx.withdrawRequests.updateMany({
         where: {

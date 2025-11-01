@@ -20,7 +20,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取用户列表
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
 
     const { searchParams } = new URL(request.url);
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 
 // POST - 创建用户（支持邀请奖励触发）
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const logger = getLogger();
     const monitor = getMonitor();
     const operationSpan = monitor.startSpan('user_create');
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 在事务中创建用户和触发奖励
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       // 1. 检查用户是否已存在
       const existingUser = await tx.users.findUnique({
         where: { telegramId: telegramId.toString() },

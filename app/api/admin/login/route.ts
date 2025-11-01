@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     });
 
     // 构建权限数组
-    const permissionStrings = permissions.map(p => `${p.resource}:${p.action}`);
+    const permissionStrings = permissions.map((p : any) => `${p.resource}:${p.action}`);
 
     // 生成管理员 token（使用管理员专用JWT）
     const token = generateAdminToken(

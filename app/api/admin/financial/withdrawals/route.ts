@@ -25,7 +25,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - limit: 限制返回记录数
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const periodType = searchParams.get('periodType') || 'daily';
@@ -142,8 +142,8 @@ export async function GET(request: NextRequest) {
       keyMetrics: {
         averageDailyAmount: trendData.length > 0 ? totalStats.totalAmount / trendData.length : 0,
         averageDailyUsers: trendData.length > 0 ? totalStats.totalUsers / trendData.length : 0,
-        successRateTrend: calculateTrend(trendData.map(t => t.successRate)),
-        amountTrend: calculateTrend(trendData.map(t => t.totalAmount)),
+        successRateTrend: calculateTrend(trendData.map((t : any) => t.successRate)),
+        amountTrend: calculateTrend(trendData.map((t : any) => t.totalAmount)),
         platformRevenue: totalStats.platformFee
       }
     };
@@ -171,7 +171,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const {
@@ -231,24 +231,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const totalAmount = withdrawalRequests.reduce((sum, req) => 
+    const totalAmount = withdrawalRequests.reduce((sum: any,  req: any) => 
       sum + parseFloat(req.amount.toString()), 0);
 
-    const platformFee = withdrawalRequests.reduce((sum, req) => 
+    const platformFee = withdrawalRequests.reduce((sum: any,  req: any) => 
       sum + parseFloat(req.fee.toString()), 0);
 
     const withdrawalCount = withdrawalRequests.length;
-    const totalUsers = new Set(withdrawalRequests.map(req => req.user_id)).size;
+    const totalUsers = new Set(withdrawalRequests.map((req : any) => req.user_id)).size;
 
-    const successCount = withdrawalRequests.filter(req => req.status === 'completed').length;
-    const failureCount = withdrawalRequests.filter(req => req.status === 'rejected').length;
-    const pendingCount = withdrawalRequests.filter(req => req.status === 'pending').length;
+    const successCount = withdrawalRequests.filter((req : any) => req.status === 'completed').length;
+    const failureCount = withdrawalRequests.filter((req : any) => req.status === 'rejected').length;
+    const pendingCount = withdrawalRequests.filter((req : any) => req.status === 'pending').length;
 
     const successRate = withdrawalCount > 0 ? (successCount / withdrawalCount) * 100 : 0;
     const averageAmount = totalUsers > 0 ? totalAmount / totalUsers : 0;
 
     // 按提现方式分组
-    const methodBreakdown = withdrawalRequests.reduce((acc, req) => {
+    const methodBreakdown = withdrawalRequests.reduce((acc: any,  req: any) => {
       const method = req.withdraw_method || 'unknown';
       if (!acc[method]) {
         acc[method] = { count: 0, amount: 0, users: new Set() };
@@ -326,7 +326,7 @@ function analyzeAmountDistribution(data: any[]) {
     huge: { count: 0, amount: 0, range: '1000+' }        // 巨额：1000+ TJS
   };
 
-  data.forEach(record => {
+  data.forEach((record : any) => {
     const amount = parseFloat(record.total_amount.toString());
     const users = record.total_users;
 
@@ -353,8 +353,8 @@ function calculateTrend(values: number[]): number {
   if (values.length < 2) return 0;
   const n = values.length;
   const sumX = n * (n - 1) / 2;
-  const sumY = values.reduce((sum, val) => sum + val, 0);
-  const sumXY = values.reduce((sum, val, index) => sum + val * index, 0);
+  const sumY = values.reduce((sum: any,  val: any) => sum + val, 0);
+  const sumXY = values.reduce((sum: any,  val, index: any) => sum + val * index, 0);
   const sumXX = n * (n - 1) * (2 * n - 1) / 6;
   return n * sumXY - sumX * sumY > 0 ? 1 : -1; // 简化处理，只返回趋势方向
 }

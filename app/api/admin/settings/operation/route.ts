@@ -176,7 +176,7 @@ async function validatePromoCode(promoCode: string, excludeId?: string) {
 }
 
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     const url = new URL(request.url);
     const category = url.searchParams.get('category');
     const promoCode = url.searchParams.get('promo_code');
@@ -244,7 +244,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const data = await request.json();
 
     // 验证必填字段
@@ -308,7 +308,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const data = await request.json();
     const { id } = data;
 
@@ -372,7 +372,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const url = new URL(request.url);
     const id = url.searchParams.get('id');
 
@@ -394,7 +394,7 @@ export async function DELETE(request: NextRequest) {
 
 // 验证促销代码的专用接口
 export async function OPTIONS(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     const url = new URL(request.url);
     const promoCode = url.searchParams.get('code');
     const excludeId = url.searchParams.get('exclude_id');

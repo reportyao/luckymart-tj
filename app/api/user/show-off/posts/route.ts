@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     // 格式化返回数据
-    const formattedPosts = posts.map(post => ({
+    const formattedPosts = posts.map((post : any) => ({
       id: post.id,
       content: post.content,
       images: post.images,

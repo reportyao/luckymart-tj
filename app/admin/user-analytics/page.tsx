@@ -409,6 +409,7 @@ function UserAnalytics() {
 
   const renderSpending = () => {
     if (!analyticsData?.spending) return null;
+    const spending = analyticsData.spending;
 
     return (
       <div className="space-y-6">

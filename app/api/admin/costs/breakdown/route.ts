@@ -6,6 +6,37 @@ import { ErrorHandler } from '@/lib/errors';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 
+// 类型定义
+interface CostBreakdownData {
+  breakdown_type: string;
+  user_type: string | null;
+  time_dimension: string | null;
+  cost_amount: number;
+  user_count: number;
+  transaction_count: number;
+  cost_per_user: number;
+  breakdown_date: string;
+}
+
+interface CostStats {
+  totalCost: number;
+  totalUserCount: number;
+  totalTransactionCount: number;
+}
+
+interface UserTypeBreakdown {
+  cost: number;
+  userCount: number;
+  transactionCount: number;
+  avgCostPerUser: number;
+}
+
+interface TimeDimensionBreakdown {
+  cost: number;
+  userCount: number;
+  transactionCount: number;
+}
+
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -30,7 +61,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - endDate: 结束日期
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const breakdownType = searchParams.get('breakdownType');
@@ -84,7 +115,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 计算汇总统计
-    const totalStats = breakdownData?.reduce((acc, curr) => {
+    const totalStats = breakdownData?.reduce((acc: CostStats, curr: CostBreakdownData) => {
       acc.totalCost += parseFloat(curr.cost_amount.toString());
       acc.totalUserCount += curr.user_count;
       acc.totalTransactionCount += curr.transaction_count;
@@ -96,7 +127,7 @@ export async function GET(request: NextRequest) {
     }) || {};
 
     // 按用户类型分组统计
-    const userTypeBreakdown = breakdownData?.reduce((acc, curr) => {
+    const userTypeBreakdown = breakdownData?.reduce((acc: Record<string, UserTypeBreakdown>, curr: CostBreakdownData) => {
       if (curr.user_type) {
         if (!acc[curr.user_type]) {
           acc[curr.user_type] = {
@@ -111,16 +142,16 @@ export async function GET(request: NextRequest) {
         acc[curr.user_type].transactionCount += curr.transaction_count;
       }
       return acc;
-    }, {} as Record<string, any>) || {};
+    }, {} as Record<string, UserTypeBreakdown>) || {};
 
     // 计算平均成本
-    Object.keys(userTypeBreakdown).forEach(type => {
+    Object.keys(userTypeBreakdown).forEach((type: string) => {
       const stats = userTypeBreakdown[type];
       stats.avgCostPerUser = stats.userCount > 0 ? stats.cost / stats.userCount : 0;
     });
 
     // 按时间维度分组统计
-    const timeDimensionBreakdown = breakdownData?.reduce((acc, curr) => {
+    const timeDimensionBreakdown = breakdownData?.reduce((acc: Record<string, TimeDimensionBreakdown>, curr: CostBreakdownData) => {
       if (curr.time_dimension) {
         if (!acc[curr.time_dimension]) {
           acc[curr.time_dimension] = {
@@ -134,10 +165,10 @@ export async function GET(request: NextRequest) {
         acc[curr.time_dimension].transactionCount += curr.transaction_count;
       }
       return acc;
-    }, {} as Record<string, any>) || {};
+    }, {} as Record<string, TimeDimensionBreakdown>) || {};
 
     // 成本趋势数据（最近7天）
-    const trendData = breakdownData?.slice(0, 7).reverse().map(item => ({
+    const trendData = breakdownData?.slice(0, 7).reverse().map((item: CostBreakdownData) => ({
       date: item.breakdown_date,
       cost: parseFloat(item.cost_amount.toString()),
       userCount: item.user_count
@@ -183,7 +214,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const {
@@ -236,11 +267,11 @@ export async function POST(request: NextRequest) {
             .lt('created_at', `${date}T23:59:59`);
 
           userCount = new Set([
-            ...(taskData?.map(d => d.user_id) || []),
-            ...(checkinData?.map(d => d.user_id) || [])
+            ...(taskData?.map((d: any) => d.user_id) || []),
+            ...(checkinData?.map((d: any) => d.user_id) || [])
           ]).size;
 
-          costAmount = (firstChargeData?.reduce((sum, curr) => 
+          costAmount = (firstChargeData?.reduce((sum: number, curr: any) => 
             sum + parseFloat(curr.reward_amount.toString()), 0) || 0);
         } 
         else if (type === 'active_user') {
@@ -251,8 +282,8 @@ export async function POST(request: NextRequest) {
             .gte('created_at', `${date}T00:00:00`)
             .lt('created_at', `${date}T23:59:59`);
 
-          userCount = new Set(lotteryData?.map(d => d.user_id) || []).size;
-          costAmount = lotteryData?.reduce((sum, curr) => 
+          userCount = new Set(lotteryData?.map((d: any) => d.user_id) || []).size;
+          costAmount = lotteryData?.reduce((sum: number, curr: any) => 
             sum + parseFloat(curr.cost.toString()), 0) || 0;
         }
         else if (type === 'vip_user') {

@@ -149,7 +149,7 @@ async function bulkOptimizeImages(data: {
 }) {
   const { images, outputFormat = 'webp' } = data;
   
-  const optimizedImages = images.map(image => ({
+  const optimizedImages = images.map((image : any) => ({
     original: image.src,
     optimized: generateOptimizedImageUrl({
       src: image.src,
@@ -170,7 +170,7 @@ async function bulkOptimizeImages(data: {
     data: {
       totalImages: images.length,
       optimizedImages,
-      totalSizeReduction: optimizedImages.reduce((sum, img) => sum + img.estimatedSizeReduction, 0)
+      totalSizeReduction: optimizedImages.reduce((sum: any,  img: any) => sum + img.estimatedSizeReduction, 0)
     }
   });
 }
@@ -186,8 +186,8 @@ async function generateSrcSet(data: {
   
   const srcSet: Record<string, string> = {};
   
-  formats.forEach(format => {
-    const urlSet = sizes.map(size => {
+  formats.forEach((format : any) => {
+    const urlSet = sizes.map((size : any) => {
       const url = generateOptimizedImageUrl({
         src,
         width: size,

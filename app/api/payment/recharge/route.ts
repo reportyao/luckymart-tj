@@ -176,7 +176,7 @@ const handleRechargeRequest = async (request: NextRequest) => {
         .select('*');
       
       if (settings) {
-        const config = settings.reduce((acc, setting) => {
+        const config = settings.reduce((acc: any,  setting: any) => {
           acc[setting.setting_key] = setting.parsed_value;
           return acc;
         }, {} as any);

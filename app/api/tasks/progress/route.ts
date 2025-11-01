@@ -222,8 +222,8 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       totalRewardClaimed: updatedTasks
         .filter(task => task.status === 'rewarded')
         .reduce((sum, task) => sum + task.reward.amount, 0),
-      totalPossibleReward: updatedTasks.reduce((sum, task) => sum + task.reward.amount, 0),
-      availableToClaim: updatedTasks.filter(task => task.canClaim).length
+      totalPossibleReward: updatedTasks.reduce((sum: any,  task: any) => sum + task.reward.amount, 0),
+      availableToClaim: updatedTasks.filter((task : any) => task.canClaim).length
     };
     
     if (stats.total > 0) {

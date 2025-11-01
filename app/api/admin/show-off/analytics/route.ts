@@ -7,7 +7,7 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware(Adm
 
 // 获取晒单数据统计
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
       const url = new URL(request.url);
       const days = parseInt(url.searchParams.get('days') || '30');

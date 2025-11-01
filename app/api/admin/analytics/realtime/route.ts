@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
+import { AdminPermissionManager, AdminPermissions, AdminUser } from '../../../../../lib/admin-permission-manager';
+
+const withPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.stats.read()
+});
 
 export async function GET(request: NextRequest) {
-  const withPermission = AdminPermissionManager.createPermissionMiddleware({
-    customPermissions: AdminPermissions.stats.read()
-  });
-
-  return withPermission(async (request, admin) => {
+  return withPermission(async (request: NextRequest, admin: AdminUser) => {
 
     // 模拟实时数据
     const realtimeData = {
@@ -29,5 +29,5 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(realtimeData);
-  })(request);
+  });
 }

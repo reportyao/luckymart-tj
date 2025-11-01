@@ -126,7 +126,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       `;
 
     // 构建响应数据
-    const tasks = updatedTasks.map((task: any) => {
+    const tasks = updatedTasks.map(((task: any) : any) => {
       // 解析多语言字段
       const nameMultilingual = task.name_multilingual || {};
       const descriptionMultilingual = task.description_multilingual || {};
@@ -164,15 +164,15 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     // 统计信息
     const stats = {
       total: tasks.length,
-      pending: tasks.filter(task => !task.status || task.status === 'pending').length,
-      completed: tasks.filter(task => task.status === 'completed').length,
-      rewarded: tasks.filter(task => task.status === 'rewarded').length,
-      updated: tasks.filter(task => task.wasUpdated).length,
+      pending: tasks.filter((task : any) => !task.status || task.status === 'pending').length,
+      completed: tasks.filter((task : any) => task.status === 'completed').length,
+      rewarded: tasks.filter((task : any) => task.status === 'rewarded').length,
+      updated: tasks.filter((task : any) => task.wasUpdated).length,
       completionRate: 0,
       totalRewardClaimed: tasks
         .filter(task => task.status === 'rewarded')
         .reduce((sum, task) => sum + task.reward.amount, 0),
-      totalPossibleReward: tasks.reduce((sum, task) => sum + task.reward.amount, 0)
+      totalPossibleReward: tasks.reduce((sum: any,  task: any) => sum + task.reward.amount, 0)
     };
     
     if (stats.total > 0) {

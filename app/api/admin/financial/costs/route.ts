@@ -4,6 +4,34 @@ import { createClient } from '@supabase/supabase-js';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 
+// 类型定义
+interface CostData {
+  cost_amount: number;
+  user_count: number;
+  transaction_count: number;
+  user_type: string;
+  breakdown_date: string;
+}
+
+interface CostStats {
+  totalCost: number;
+  totalUserCount: number;
+  totalTransactionCount: number;
+}
+
+interface CostTypeBreakdown {
+  cost: number;
+  userCount: number;
+  transactionCount: number;
+  avgCostPerUser: number;
+}
+
+interface TimeDimensionBreakdown {
+  cost: number;
+  userCount: number;
+  transactionCount: number;
+}
+
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -26,7 +54,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - limit: 限制返回记录数
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const periodType = searchParams.get('periodType') || 'daily';
@@ -68,7 +96,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 计算汇总统计
-    const totalStats = costData?.reduce((acc, curr) => {
+    const totalStats = costData?.reduce((acc: CostStats, curr: CostData) => {
       acc.totalCost += parseFloat(curr.cost_amount.toString());
       acc.totalUserCount += curr.user_count;
       acc.totalTransactionCount += curr.transaction_count;
@@ -77,14 +105,14 @@ export async function GET(request: NextRequest) {
       totalCost: 0,
       totalUserCount: 0,
       totalTransactionCount: 0
-    }) || {};
+    } as CostStats) || {};
 
     const averageCostPerUser = totalStats.totalUserCount > 0 
       ? totalStats.totalCost / totalStats.totalUserCount 
       : 0;
 
     // 按成本类型分组统计
-    const costTypeBreakdown = costData?.reduce((acc, curr) => {
+    const costTypeBreakdown = costData?.reduce((acc: Record<string, CostTypeBreakdown>, curr: CostData) => {
       const type = curr.user_type || 'unknown';
       if (!acc[type]) {
         acc[type] = {
@@ -98,16 +126,16 @@ export async function GET(request: NextRequest) {
       acc[type].userCount += curr.user_count;
       acc[type].transactionCount += curr.transaction_count;
       return acc;
-    }, {} as Record<string, any>) || {};
+    }, {} as Record<string, CostTypeBreakdown>) || {};
 
     // 计算各类型的平均成本
-    Object.keys(costTypeBreakdown).forEach(type => {
+    Object.keys(costTypeBreakdown).forEach((type: string) => {
       const stats = costTypeBreakdown[type];
       stats.avgCostPerUser = stats.userCount > 0 ? stats.cost / stats.userCount : 0;
     });
 
     // 按时间维度分组统计
-    const timeDimensionBreakdown = costData?.reduce((acc, curr) => {
+    const timeDimensionBreakdown = costData?.reduce((acc: Record<string, TimeDimensionBreakdown>, curr: CostData) => {
       const date = curr.breakdown_date;
       if (!acc[date]) {
         acc[date] = {
@@ -120,7 +148,7 @@ export async function GET(request: NextRequest) {
       acc[date].userCount += curr.user_count;
       acc[date].transactionCount += curr.transaction_count;
       return acc;
-    }, {} as Record<string, any>) || {};
+    }, {} as Record<string, TimeDimensionBreakdown>) || {};
 
     // 成本趋势数据（最近30天）
     const trendData = costData?.slice(0, 30).reverse().map(item => ({
@@ -148,9 +176,9 @@ export async function GET(request: NextRequest) {
     // 计算成本增长率
     let costGrowthRate = 0;
     if (costData && costData.length > 1) {
-      const recentCost = costData.slice(0, 7).reduce((sum, item) => 
+      const recentCost = costData.slice(0, 7).reduce((sum: number, item: CostData) => 
         sum + parseFloat(item.cost_amount.toString()), 0);
-      const previousCost = costData.slice(7, 14).reduce((sum, item) => 
+      const previousCost = costData.slice(7, 14).reduce((sum: number, item: CostData) => 
         sum + parseFloat(item.cost_amount.toString()), 0);
       if (previousCost > 0) {
         costGrowthRate = ((recentCost - previousCost) / previousCost) * 100;
@@ -204,7 +232,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const {
@@ -262,9 +290,9 @@ async function calculateIncentiveCosts(date: string, supabase: any) {
     .gte('created_at', `${date}T00:00:00`)
     .lt('created_at', `${date}T23:59:59`);
 
-  const taskCost = taskData?.reduce((sum, task) => 
+  const taskCost = taskData?.reduce((sum: number, task: any) => 
     sum + parseFloat(task.reward_amount.toString()), 0) || 0;
-  const taskUsers = new Set(taskData?.map(t => t.user_id) || []).size;
+  const taskUsers = new Set(taskData?.map((t: any) => t.user_id) || []).size;
 
   if (taskCost > 0) {
     const { data: taskResult } = await supabase
@@ -293,9 +321,9 @@ async function calculateIncentiveCosts(date: string, supabase: any) {
     .gte('created_at', `${date}T00:00:00`)
     .lt('created_at', `${date}T23:59:59`);
 
-  const checkinCost = checkinData?.reduce((sum, checkin) => 
+  const checkinCost = checkinData?.reduce((sum: number, checkin: any) => 
     sum + parseFloat(checkin.reward_amount.toString()), 0) || 0;
-  const checkinUsers = new Set(checkinData?.map(c => c.user_id) || []).size;
+  const checkinUsers = new Set(checkinData?.map((c: any) => c.user_id) || []).size;
 
   if (checkinCost > 0) {
     const { data: checkinResult } = await supabase
@@ -324,9 +352,9 @@ async function calculateIncentiveCosts(date: string, supabase: any) {
     .gte('created_at', `${date}T00:00:00`)
     .lt('created_at', `${date}T23:59:59`);
 
-  const firstRechargeCost = firstRechargeData?.reduce((sum, reward) => 
+  const firstRechargeCost = firstRechargeData?.reduce((sum: number, reward: any) => 
     sum + parseFloat(reward.reward_amount.toString()), 0) || 0;
-  const firstRechargeUsers = new Set(firstRechargeData?.map(r => r.user_id) || []).size;
+  const firstRechargeUsers = new Set(firstRechargeData?.map((r: any) => r.user_id) || []).size;
 
   if (firstRechargeCost > 0) {
     const { data: firstRechargeResult } = await supabase
@@ -362,8 +390,8 @@ async function calculatePrizeCosts(date: string, supabase: any) {
     .lt('created_at', `${date}T23:59:59`);
 
   const participationCount = participationsData?.length || 0;
-  const participationUsers = new Set(participationsData?.map(p => p.user_id) || []).size;
-  const totalParticipationCost = participationsData?.reduce((sum, p) => 
+  const participationUsers = new Set(participationsData?.map((p: any) => p.user_id) || []).size;
+  const totalParticipationCost = participationsData?.reduce((sum: number, p: any) => 
     sum + parseFloat(p.cost.toString()), 0) || 0;
 
   // 假设奖品成本占参与成本的20%
@@ -476,7 +504,7 @@ function analyzeCostTypes(costTypeBreakdown: Record<string, any>) {
 
   // 找出主要成本类型
   let maxCost = 0;
-  Object.keys(costTypeBreakdown).forEach(type => {
+  Object.keys(costTypeBreakdown).forEach((type: string) => {
     const cost = costTypeBreakdown[type].cost;
     if (cost > maxCost) {
       maxCost = cost;
@@ -485,7 +513,7 @@ function analyzeCostTypes(costTypeBreakdown: Record<string, any>) {
   });
 
   // 计算效率指标
-  Object.keys(costTypeBreakdown).forEach(type => {
+  Object.keys(costTypeBreakdown).forEach((type: string) => {
     const stats = costTypeBreakdown[type];
     analysis.efficiency[type] = stats.userCount > 0 ? stats.cost / stats.userCount : 0;
   });
@@ -504,7 +532,7 @@ function analyzeCostTypes(costTypeBreakdown: Record<string, any>) {
 // 辅助函数：找出成本最高的一天
 function findHighestCostDay(trendData: any[]) {
   if (trendData.length === 0) return null;
-  return trendData.reduce((max, current) => 
+  return trendData.reduce((max: any, current: any) => 
     current.cost > max.cost ? current : max
   );
 }
@@ -514,7 +542,7 @@ function findMostEfficientType(costTypeBreakdown: Record<string, any>) {
   let minCostPerUser = Infinity;
   let mostEfficient = null;
   
-  Object.keys(costTypeBreakdown).forEach(type => {
+  Object.keys(costTypeBreakdown).forEach((type: string) => {
     const stats = costTypeBreakdown[type];
     if (stats.avgCostPerUser < minCostPerUser && stats.userCount > 0) {
       minCostPerUser = stats.avgCostPerUser;
@@ -528,9 +556,9 @@ function findMostEfficientType(costTypeBreakdown: Record<string, any>) {
 // 辅助函数：计算成本波动性
 function calculateCostVolatility(trendData: any[]) {
   if (trendData.length < 2) return 0;
-  const costs = trendData.map(d => d.cost);
-  const mean = costs.reduce((sum, cost) => sum + cost, 0) / costs.length;
-  const variance = costs.reduce((sum, cost) => sum + Math.pow(cost - mean, 2), 0) / costs.length;
+  const costs = trendData.map((d: any) => d.cost);
+  const mean = costs.reduce((sum: number, cost: number) => sum + cost, 0) / costs.length;
+  const variance = costs.reduce((sum: number, cost: number) => sum + Math.pow(cost - mean, 2), 0) / costs.length;
   return Math.sqrt(variance);
 }
 

@@ -26,7 +26,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - limit: 每页记录数
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get('date');
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 计算汇总统计
-    const totalStats = costData?.reduce((acc, curr) => {
+    const totalStats = costData?.reduce((acc: any, curr: any) => {
       acc.totalCost += parseFloat(curr.total_cost.toString());
       acc.incentiveCost += parseFloat(curr.incentive_cost.toString());
       acc.operationCost += parseFloat(curr.operation_cost.toString());
@@ -129,7 +129,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const targetDate = body.date || new Date().toISOString().split('T')[0];

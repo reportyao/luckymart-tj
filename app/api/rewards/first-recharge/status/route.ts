@@ -101,7 +101,7 @@ async function getFirstRechargeStatus(userId: string) {
     const hasClaimed = !!existingReward;
 
     // 获取可用奖励档位
-    const availableRewards = FIRST_RECHARGE_REWARDS.map(tier => ({
+    const availableRewards = FIRST_RECHARGE_REWARDS.map((tier : any) => ({
       amount: tier.amount,
       reward: tier.reward,
       rate: tier.rate,

@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 转换数据格式
-    const wins = winningParticipations.map(participation => {
+    const wins = winningParticipations.map((participation : any) => {
       const product = participation.round.product;
       const productName = getMultilingualProductName(product);
       
@@ -328,7 +328,7 @@ async function calculateWinStatistics(userId: string, period: string) {
   });
 
   const totalWins = wins.length;
-  const totalPrize = wins.reduce((sum, win) => {
+  const totalPrize = wins.reduce((sum: any,  win: any) => {
     const prize = calculatePrize(win.round.product, win.sharesCount);
     return sum + prize.amount;
   }, 0);
@@ -343,7 +343,7 @@ async function calculateWinStatistics(userId: string, period: string) {
     minor: 0    // < 20
   };
 
-  wins.forEach(win => {
+  wins.forEach((win : any) => {
     const prize = calculatePrize(win.round.product, win.sharesCount);
     const period = getPrizePeriod(prize.amount, win.round.roundNumber);
     prizeDistribution[period as keyof typeof prizeDistribution]++;
@@ -353,7 +353,7 @@ async function calculateWinStatistics(userId: string, period: string) {
     totalWins,
     totalPrize: parseFloat(totalPrize.toFixed(2)),
     averagePrize: parseFloat(averagePrize.toFixed(2)),
-    maxPrize: Math.max(...wins.map(win => calculatePrize(win.round.product, win.sharesCount).amount), 0),
+    maxPrize: Math.max(...wins.map((win : any) => calculatePrize(win.round.product, win.sharesCount).amount), 0),
     prizeDistribution,
     period
   };

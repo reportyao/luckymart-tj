@@ -263,7 +263,7 @@ function FinancialDashboard() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
                     <YAxis />
-                    <Tooltip formatter={(value) => [formatCurrency(Number(value)), '收入']} />
+                    <Tooltip formatter={(value: any) => [formatCurrency(Number(value)), '收入']} />
                     <Line type="monotone" dataKey="totalRevenue" stroke="#8884d8" strokeWidth={2} />
                   </RechartsLineChart>
                 </ResponsiveContainer>
@@ -281,7 +281,7 @@ function FinancialDashboard() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" />
                     <YAxis />
-                    <Tooltip formatter={(value) => [formatCurrency(Number(value)), '利润']} />
+                    <Tooltip formatter={(value: any) => [formatCurrency(Number(value)), '利润']} />
                     <Line type="monotone" dataKey="grossProfit" stroke="#00C49F" strokeWidth={2} />
                     <Line type="monotone" dataKey="netProfit" stroke="#FF8042" strokeWidth={2} />
                   </RechartsLineChart>
@@ -304,7 +304,7 @@ function FinancialDashboard() {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }: { name: any, percent: any }) => `${name} ${(percent * 100).toFixed(0)}%`}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
@@ -313,7 +313,7 @@ function FinancialDashboard() {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => [formatCurrency(Number(value)), '成本']} />
+                    <Tooltip formatter={(value: any) => [formatCurrency(Number(value)), '成本']} />
                   </RechartsPieChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -367,7 +367,7 @@ function FinancialDashboard() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
                   <YAxis />
-                  <Tooltip formatter={(value) => [formatCurrency(Number(value)), '']} />
+                  <Tooltip formatter={(value: any) => [formatCurrency(Number(value)), '']} />
                   <Line type="monotone" dataKey="totalRevenue" stroke="#8884d8" strokeWidth={2} name="总收入" />
                   <Line type="monotone" dataKey="actualReceived" stroke="#00C49F" strokeWidth={2} name="实际到账" />
                 </RechartsLineChart>

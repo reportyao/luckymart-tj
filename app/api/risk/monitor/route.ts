@@ -287,19 +287,19 @@ async function analyzeUserBehavior(
     // 分析行为模式
     if (userActions && userActions.length > 0) {
       // 快速连续操作
-      const actionTimes = userActions.map((action: any) => new Date(action.timestamp));
+      const actionTimes = userActions.map(((action: any) : any) => new Date(action.timestamp));
       const intervals = actionTimes.slice(1).map((time, index) => 
         time.getTime() - actionTimes[index].getTime()
       );
 
-      const avgInterval = intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length;
+      const avgInterval = intervals.reduce((sum: any,  interval: any) => sum + interval, 0) / intervals.length;
       if (avgInterval < 1000) { // 小于1秒的平均间隔
         riskIncrease += 30;
         analysis.suspiciousIndicators.push('rapid_action_sequence');
       }
 
       // 异常操作类型
-      const actionTypes = new Set(userActions.map((action: any) => action.type));
+      const actionTypes = new Set(userActions.map(((action: any) : any) => action.type));
       if (actionTypes.size > 10) { // 太多不同类型的操作
         riskIncrease += 20;
         analysis.suspiciousIndicators.push('diverse_action_pattern');

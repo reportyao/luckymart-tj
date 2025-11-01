@@ -66,7 +66,7 @@ async function getAllSystemSettings() {
     
     const settingsMap: any = {};
     
-    settings.forEach((setting: any) => {
+    settings.forEach((setting: any) : any => {
       let value = setting.setting_value;
       
       // 根据类型转换值
@@ -184,7 +184,7 @@ async function updateSystemSetting(
 }
 
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     const url = new URL(request.url);
     const category = url.searchParams.get('category');
     const subCategory = url.searchParams.get('sub_category');
@@ -243,7 +243,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const data = await request.json();
     const { settings, operator_id, operator_name, change_reason } = data;
 
@@ -254,7 +254,7 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    const updatePromises = settings.map((setting: any) => 
+    const updatePromises = settings.map((setting: any) : any => 
       updateSystemSetting(
         setting.key,
         setting.value,
@@ -282,7 +282,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const data = await request.json();
     const { key, value, type, category, sub_category, change_reason } = data;
 
@@ -313,7 +313,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const url = new URL(request.url);
     const key = url.searchParams.get('key');
 

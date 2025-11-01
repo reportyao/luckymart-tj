@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
     });
 
     // 格式化交易记录
-    const formattedTransactions = transactions.map(transaction => ({
+    const formattedTransactions = transactions.map((transaction : any) => ({
       id: transaction.id,
       type: transaction.type,
       amount: transaction.amount,

@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 转换数据格式
-    const records = participations.map(participation => {
+    const records = participations.map((participation : any) => {
       const product = participation.round.product;
       const productName = getMultilingualProductName(product);
       
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
       try {
         const cachedRecords = JSON.parse(localStorage.getItem('lottery_records_cache') || '[]');
         const updatedCache = [
-          ...records.filter((record: any) => !cachedRecords.some((cached: any) => cached.id === record.id)),
+          ...records.filter((record: any) : any => !cachedRecords.some((cached: any) : any => cached.id === record.id)),
           ...cachedRecords
         ].slice(0, 1000); // 最多缓存1000条记录
         

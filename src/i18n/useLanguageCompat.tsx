@@ -9,6 +9,7 @@ type Language = 'zh' | 'en' | 'ru' | 'tg';
 
 interface LanguageContextType {
   language: Language;
+  currentLanguage: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string) => string;
   isLoading: boolean;
@@ -70,6 +71,7 @@ export function useLanguage(): LanguageContextType {
   
   return {
     language,
+    currentLanguage: language,
     setLanguage,
     t,
     isLoading: !i18n.isInitialized,

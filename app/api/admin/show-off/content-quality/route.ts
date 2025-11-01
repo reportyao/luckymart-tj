@@ -128,7 +128,7 @@ export async function GET(req: NextRequest) {
     });
 
     // 计算质量分数和检测问题
-    const analyzedPosts = posts.map(post => {
+    const analyzedPosts = posts.map((post : any) => {
       const qualityScore = calculateQualityScore({
         ...post,
         user: {
@@ -161,9 +161,9 @@ export async function GET(req: NextRequest) {
     // 根据筛选条件过滤
     let filteredPosts = analyzedPosts;
     if (filter === 'low_quality') {
-      filteredPosts = analyzedPosts.filter(p => p.qualityScore < 60);
+      filteredPosts = analyzedPosts.filter((p : any) => p.qualityScore < 60);
     } else if (filter === 'suspicious') {
-      filteredPosts = analyzedPosts.filter(p => p.issues.length > 0);
+      filteredPosts = analyzedPosts.filter((p : any) => p.issues.length > 0);
     }
 
     // 限制返回数量
@@ -172,12 +172,12 @@ export async function GET(req: NextRequest) {
     // 统计信息
     const stats = {
       total: analyzedPosts.length,
-      highQuality: analyzedPosts.filter(p => p.qualityScore >= 80).length,
-      mediumQuality: analyzedPosts.filter(p => p.qualityScore >= 60 && p.qualityScore < 80).length,
-      lowQuality: analyzedPosts.filter(p => p.qualityScore < 60).length,
-      suspicious: analyzedPosts.filter(p => p.issues.length > 0).length,
+      highQuality: analyzedPosts.filter((p : any) => p.qualityScore >= 80).length,
+      mediumQuality: analyzedPosts.filter((p : any) => p.qualityScore >= 60 && p.qualityScore < 80).length,
+      lowQuality: analyzedPosts.filter((p : any) => p.qualityScore < 60).length,
+      suspicious: analyzedPosts.filter((p : any) => p.issues.length > 0).length,
       averageScore: Math.round(
-        analyzedPosts.reduce((sum, p) => sum + p.qualityScore, 0) / analyzedPosts.length
+        analyzedPosts.reduce((sum: any,  p: any) => sum + p.qualityScore, 0) / analyzedPosts.length
       ),
     };
 

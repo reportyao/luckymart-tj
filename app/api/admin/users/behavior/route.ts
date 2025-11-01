@@ -17,7 +17,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取用户行为统计
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     const logger = getLogger();
 
     try {
@@ -116,7 +116,7 @@ export async function GET(request: NextRequest) {
 
 // POST - 记录用户行为
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const logger = getLogger();
 
     try {

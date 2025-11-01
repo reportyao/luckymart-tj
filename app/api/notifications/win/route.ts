@@ -185,7 +185,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 转换数据格式
-    const notificationList = notifications.map(notification => {
+    const notificationList = notifications.map((notification : any) => {
       let content = {};
       try {
         content = typeof notification.content === 'string' 

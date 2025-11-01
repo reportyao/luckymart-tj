@@ -8,7 +8,7 @@ const logger = getLogger();
 
 // 7天签到奖励配置
 const CHECK_IN_REWARDS = [0.1, 0.2, 0.3, 0.4, 0.5, 0.25, 0.25];
-const TOTAL_REWARD_AMOUNT = CHECK_IN_REWARDS.reduce((sum, reward) => sum + reward, 0);
+const TOTAL_REWARD_AMOUNT = CHECK_IN_REWARDS.reduce((sum: any,  reward: any) => sum + reward, 0);
 
 /**
  * 查询签到状态API
@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
     const todayReward = todayIsCheckedIn ? 0 : CHECK_IN_REWARDS[todayRewardDay - 1] || 0;
 
     // 连续签到的记录
-    const streakDates = recentCheckIns.map(checkin => {
+    const streakDates = recentCheckIns.map((checkin : any) => {
       const date = new Date(checkin.checkInDate);
       return {
         date: date.toISOString().split('T')[0],
@@ -159,8 +159,8 @@ export async function GET(request: NextRequest) {
       calendar: calendarData,
       statistics: {
         totalCheckIns: recentCheckIns.length,
-        maxConsecutiveDays: Math.max(...recentCheckIns.map(c => c.consecutiveDays), 0),
-        totalEarned: recentCheckIns.reduce((sum, c) => sum + parseFloat(c.rewardAmount.toString()), 0)
+        maxConsecutiveDays: Math.max(...recentCheckIns.map((c : any) => c.consecutiveDays), 0),
+        totalEarned: recentCheckIns.reduce((sum: any,  c: any) => sum + parseFloat(c.rewardAmount.toString()), 0)
       }
     };
 

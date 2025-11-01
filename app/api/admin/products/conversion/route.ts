@@ -16,7 +16,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取转化漏斗分析数据
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
 
     const { searchParams } = new URL(request.url);
@@ -111,7 +111,7 @@ export async function GET(request: NextRequest) {
     const totalPurchases = Number(summary._sum.purchases || 0);
 
     // 转换数据格式
-    const formattedData = conversionData.map(item => {
+    const formattedData = conversionData.map((item : any) => {
       const pageViews = Number(item.page_views);
       const detailViews = Number(item.detail_page_views);
       const favorites = Number(item.favorites);
@@ -197,7 +197,7 @@ export async function GET(request: NextRequest) {
 
 // POST - 创建或更新转化漏斗数据
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();

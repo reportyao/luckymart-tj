@@ -123,14 +123,14 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     // 统计任务进度
     const stats = {
       total: tasks.length,
-      pending: tasks.filter(task => task.status === 'pending').length,
-      completed: tasks.filter(task => task.status === 'completed').length,
-      rewarded: tasks.filter(task => task.status === 'rewarded').length,
+      pending: tasks.filter((task : any) => task.status === 'pending').length,
+      completed: tasks.filter((task : any) => task.status === 'completed').length,
+      rewarded: tasks.filter((task : any) => task.status === 'rewarded').length,
       completionRate: 0,
       totalRewardClaimed: tasks
         .filter(task => task.status === 'rewarded')
         .reduce((sum, task) => sum + task.reward.amount, 0),
-      totalPossibleReward: tasks.reduce((sum, task) => sum + task.reward.amount, 0)
+      totalPossibleReward: tasks.reduce((sum: any,  task: any) => sum + task.reward.amount, 0)
     };
     
     if (stats.total > 0) {

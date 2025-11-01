@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
 
     // 转换数据格式并添加额外信息
     const incidentsWithDetails = await Promise.all(
-      result.incidents.map(async (incident) => {
+      result.incidents.map((async (incident) : any) => {
         // 获取相关的风险处理记录
         const actions = await getRiskActionsForIncident(incident.id);
         

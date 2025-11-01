@@ -42,7 +42,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       });
 
       return NextResponse.json<ApiResponse>(
-        ApiResponse.badRequest('请求参数无效: ' + validationError.errors.map((e: any) => e.message).join(', ')),
+        ApiResponse.badRequest('请求参数无效: ' + validationError.errors.map(((e: any) : any) => e.message).join(', ')),
         { status: 400 }
       );
     }

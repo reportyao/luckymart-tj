@@ -65,7 +65,7 @@ const mockRiskUsers = [
 ];
 
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -78,15 +78,15 @@ export async function GET(request: NextRequest) {
     let filteredUsers = mockRiskUsers;
 
     if (riskLevel && riskLevel !== 'all') {
-      filteredUsers = filteredUsers.filter(user => user.riskLevel === riskLevel);
+      filteredUsers = filteredUsers.filter((user : any) => user.riskLevel === riskLevel);
     }
 
     if (accountStatus && accountStatus !== 'all') {
-      filteredUsers = filteredUsers.filter(user => user.accountStatus === accountStatus);
+      filteredUsers = filteredUsers.filter((user : any) => user.accountStatus === accountStatus);
     }
 
     if (search) {
-      filteredUsers = filteredUsers.filter(user => 
+      filteredUsers = filteredUsers.filter((user : any) => 
         user.userName.toLowerCase().includes(search.toLowerCase()) ||
         user.email.toLowerCase().includes(search.toLowerCase()) ||
         user.id.toLowerCase().includes(search.toLowerCase())
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const { userId, action } = body;

@@ -7,7 +7,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware(Ad
 
 // 批量审核晒单
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const body = await request.json();
     const { postIds, action, reason } = body;
 
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     try {
       const results = await Promise.all(
-        postIds.map(async (postId: string) => {
+        postIds.map(async (postId: string) : any => {
           try {
             if (action === 'approve') {
               return await processApproval(postId, admin.id);
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         })
       );
 
-      const successCount = results.filter(r => r.success !== false).length;
+      const successCount = results.filter((r : any) => r.success !== false).length;
       const failCount = results.length - successCount;
 
       return NextResponse.json({
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
 
 // 处理审核通过
 async function processApproval(postId: string, adminId: string) {
-  return await prisma.$transaction(async (tx) => {
+  return await prisma.$transaction(async (tx: any) => {
     // 获取晒单信息
     const post = await tx.$queryRaw<any[]>`
       SELECT * FROM show_off_posts WHERE id = ${postId}::uuid AND status = 'pending'
@@ -158,7 +158,7 @@ async function processApproval(postId: string, adminId: string) {
 
 // 处理审核拒绝
 async function processRejection(postId: string, adminId: string, reason: string) {
-  return await prisma.$transaction(async (tx) => {
+  return await prisma.$transaction(async (tx: any) => {
     // 获取晒单信息
     const post = await tx.$queryRaw<any[]>`
       SELECT * FROM show_off_posts WHERE id = ${postId}::uuid AND status = 'pending'

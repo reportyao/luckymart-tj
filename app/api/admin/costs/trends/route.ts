@@ -26,7 +26,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - endDate: 自定义结束日期
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const period = searchParams.get('period') || '30d';
@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 处理数据并按成本类型过滤
-    const processedData = costData?.map(item => {
+    const processedData = costData?.map((item: any) => {
       const totalCost = parseFloat(item.total_cost.toString());
       const incentiveCost = parseFloat(item.incentive_cost.toString());
       const operationCost = parseFloat(item.operation_cost.toString());
@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
 function groupDataByPeriod(data: any[], period: string) {
   const grouped: Record<string, any> = {};
 
-  data.forEach(item => {
+  data.forEach((item : any) => {
     const date = new Date(item.date);
     let key: string;
 
@@ -207,13 +207,13 @@ function calculateTrendStats(data: any[]) {
     };
   }
 
-  const totalCost = data.reduce((sum, item) => sum + item.selectedCost, 0);
+  const totalCost = data.reduce((sum: any,  item: any) => sum + item.selectedCost, 0);
   const averageDailyCost = totalCost / data.length;
-  const maxDailyCost = Math.max(...data.map(item => item.selectedCost));
-  const minDailyCost = Math.min(...data.map(item => item.selectedCost));
+  const maxDailyCost = Math.max(...data.map((item : any) => item.selectedCost));
+  const minDailyCost = Math.min(...data.map((item : any) => item.selectedCost));
 
   // 计算成本波动性（标准差）
-  const variance = data.reduce((sum, item) => 
+  const variance = data.reduce((sum: any,  item: any) => 
     sum + Math.pow(item.selectedCost - averageDailyCost, 2), 0) / data.length;
   const costVolatility = Math.sqrt(variance);
 
@@ -225,8 +225,8 @@ function calculateTrendStats(data: any[]) {
     const firstHalf = data.slice(0, Math.floor(data.length / 2));
     const secondHalf = data.slice(Math.floor(data.length / 2));
 
-    const firstAvg = firstHalf.reduce((sum, item) => sum + item.selectedCost, 0) / firstHalf.length;
-    const secondAvg = secondHalf.reduce((sum, item) => sum + item.selectedCost, 0) / secondHalf.length;
+    const firstAvg = firstHalf.reduce((sum: any,  item: any) => sum + item.selectedCost, 0) / firstHalf.length;
+    const secondAvg = secondHalf.reduce((sum: any,  item: any) => sum + item.selectedCost, 0) / secondHalf.length;
 
     if (secondAvg > firstAvg * 1.1) {
       trendDirection = 'increasing';
@@ -254,7 +254,7 @@ function calculateTrendStats(data: any[]) {
 
 // 计算成本占比
 function calculateCostBreakdown(data: any[]) {
-  const totals = data.reduce((acc, item) => {
+  const totals = data.reduce((acc: any,  item: any) => {
     acc.incentive += item.incentiveCost;
     acc.operation += item.operationCost;
     acc.referral += item.referralCost;
@@ -296,8 +296,8 @@ function calculateGrowthMetrics(data: any[]) {
   const lastWeek = data.slice(-7);
   const previousWeek = data.slice(-14, -7);
 
-  const lastWeekAvg = lastWeek.reduce((sum, item) => sum + item.selectedCost, 0) / lastWeek.length;
-  const previousWeekAvg = previousWeek.reduce((sum, item) => sum + item.selectedCost, 0) / previousWeek.length;
+  const lastWeekAvg = lastWeek.reduce((sum: any,  item: any) => sum + item.selectedCost, 0) / lastWeek.length;
+  const previousWeekAvg = previousWeek.reduce((sum: any,  item: any) => sum + item.selectedCost, 0) / previousWeek.length;
 
   const weekOverWeek = previousWeekAvg > 0 
     ? ((lastWeekAvg - previousWeekAvg) / previousWeekAvg) * 100 

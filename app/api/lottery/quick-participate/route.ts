@@ -122,7 +122,7 @@ const handleQuickParticipate = async (request: NextRequest) => {
         }
       });
 
-      const currentSharesCount = currentParticipation.reduce((sum, p) => sum + p.sharesCount, 0);
+      const currentSharesCount = currentParticipation.reduce((sum: any,  p: any) => sum + p.sharesCount, 0);
 
       // 4. 创建新的参与记录
       const participation = await tx.participations.create({

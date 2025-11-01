@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
     const hasMore = page < totalPages;
 
     // 格式化返回数据
-    const formattedPosts = posts.map(post => ({
+    const formattedPosts = posts.map((post : any) => ({
       id: post.id,
       user: {
         id: post.user.id,

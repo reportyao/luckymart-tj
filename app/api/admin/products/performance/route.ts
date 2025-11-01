@@ -16,7 +16,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取商品表现统计数据
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
 
     const { searchParams } = new URL(request.url);
@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 转换数据格式
-    const formattedData = performanceData.map(item => ({
+    const formattedData = performanceData.map((item : any) => ({
       id: item.id,
       productId: item.product_id,
       productName: {
@@ -160,7 +160,7 @@ export async function GET(request: NextRequest) {
 
 // POST - 创建或更新商品表现数据
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();

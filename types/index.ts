@@ -72,6 +72,8 @@ export interface User {
   referralCode?: string; // 邀请码
   createdAt: Date;
   updatedAt: Date;
+  // 管理后台兼容性别名
+  balance?: number;
 }
 
 // 用户地址类型
@@ -154,6 +156,10 @@ export interface Participation {
   createdAt: Date;
 }
 
+// 订单状态类型
+export type OrderStatus = 'pending' | 'confirmed' | 'cancelled' | 'pending_address' | 'pending_shipment' | 'shipped' | 'delivered';
+export type FulfillmentStatus = 'pending_address' | 'pending_shipment' | 'shipped' | 'delivered' | 'cancelled';
+
 // 订单类型
 export interface Order {
   id: string;
@@ -164,11 +170,11 @@ export interface Order {
   type: 'lottery_win' | 'direct_buy' | 'recharge' | 'resale' | 'resale_purchase'; // @db.VarChar(20)
   quantity: number;
   totalAmount: number; // Decimal @db.Decimal(10, 2)
-  status: 'pending' | 'confirmed' | 'cancelled'; // @db.VarChar(20)
+  status: OrderStatus; // @db.VarChar(20)
   paymentMethod?: string; // @db.VarChar(50)
   paymentStatus: 'pending' | 'paid' | 'failed' | 'cancelled'; // @db.VarChar(20)
-  fulfillmentStatus: 'pending' | 'processing' | 'shipped' | 'delivered' | 'completed' | 'resold'; // @db.VarChar(20)
-  shippingAddress?: ShippingAddress; // Json
+  fulfillmentStatus: FulfillmentStatus; // @db.VarChar(20)
+  shippingAddress?: ShippingAddress | string; // Json或字符串
   trackingNumber?: string; // @db.VarChar(255)
   notes?: string;
   // 转售相关字段
@@ -176,6 +182,9 @@ export interface Order {
   resalePrice?: number; // Decimal @db.Decimal(10, 2)
   createdAt: Date;
   updatedAt: Date;
+  // 兼容字段，用于管理后台
+  recipientName?: string;
+  recipientPhone?: string;
 }
 
 // 转售列表类型
@@ -222,6 +231,9 @@ export interface WithdrawRequest {
   adminNote?: string;
   processedAt?: Date;
   createdAt: Date;
+  // 管理后台兼容性别名
+  paymentMethod?: 'alif_mobi' | 'dc_bank';
+  paymentAccount?: string;
 }
 
 // 交易记录类型
@@ -339,9 +351,11 @@ export function isRechargePackage(obj: any): obj is RechargePackage {
 export function convertUserFromPrisma(user: any): User {
   return {
     ...user,
-    balance: toNumber(user.balance),
+    coinBalance: toNumber(user.coinBalance ?? user.balance),
     platformBalance: toNumber(user.platformBalance),
-    totalSpent: toNumber(user.totalSpent)
+    totalSpent: toNumber(user.totalSpent),
+    // 管理后台兼容性别名
+    balance: toNumber(user.coinBalance ?? user.balance)
   };
 }
 
@@ -369,11 +383,15 @@ export function convertTransactionFromPrisma(transaction: any): Transaction {
 }
 
 export function convertWithdrawRequestFromPrisma(withdrawRequest: any): WithdrawRequest {
+  const accountInfo = withdrawRequest.accountInfo || {};
   return {
     ...withdrawRequest,
     amount: toNumber(withdrawRequest.amount),
     fee: toNumber(withdrawRequest.fee),
-    actualAmount: toNumber(withdrawRequest.actualAmount)
+    actualAmount: toNumber(withdrawRequest.actualAmount),
+    // 管理后台兼容性别名
+    paymentMethod: withdrawRequest.withdrawMethod,
+    paymentAccount: accountInfo.accountNumber || accountInfo.account_name || ''
   };
 }
 

@@ -10,7 +10,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // 数据一致性修复工具 - 边界情况处理和数据一致性检查
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();
@@ -140,8 +140,8 @@ async function fixSoldSharesMismatch(roundId?: string, dryRun: boolean = true) {
     totalMismatched: mismatchedRounds.length,
     fixes,
     summary: {
-      success: fixes.filter(f => f.status === 'success').length,
-      errors: fixes.filter(f => f.status === 'error').length,
+      success: fixes.filter((f : any) => f.status === 'success').length,
+      errors: fixes.filter((f : any) => f.status === 'error').length,
       dryRun
     }
   };
@@ -209,9 +209,9 @@ async function completeMissingDraws(roundId?: string, dryRun: boolean = true) {
     totalMissingDraws: missingDraws.length,
     fixes,
     summary: {
-      success: fixes.filter(f => f.status === 'success').length,
-      errors: fixes.filter(f => f.status === 'error').length,
-      skipped: fixes.filter(f => f.status === 'skipped').length,
+      success: fixes.filter((f : any) => f.status === 'success').length,
+      errors: fixes.filter((f : any) => f.status === 'error').length,
+      skipped: fixes.filter((f : any) => f.status === 'skipped').length,
       dryRun
     }
   };
@@ -234,7 +234,7 @@ async function recalculateParticipants(roundId?: string, dryRun: boolean = true)
   const fixes = [];
 
   for (const round of rounds) {
-    const uniqueParticipants = new Set(round.participations.map(p => p.userId)).size;
+    const uniqueParticipants = new Set(round.participations.map((p : any) => p.userId)).size;
     const currentParticipants = round.participants;
 
     if (uniqueParticipants !== currentParticipants) {
@@ -279,8 +279,8 @@ async function recalculateParticipants(roundId?: string, dryRun: boolean = true)
     mismatchedRounds: fixes.length,
     fixes,
     summary: {
-      success: fixes.filter(f => f.status === 'success').length,
-      errors: fixes.filter(f => f.status === 'error').length,
+      success: fixes.filter((f : any) => f.status === 'success').length,
+      errors: fixes.filter((f : any) => f.status === 'error').length,
       dryRun
     }
   };
@@ -309,7 +309,7 @@ async function validateNumberRanges(roundId?: string, dryRun: boolean = true) {
     const minNumber = 10000001;
     const maxNumber = 10000000 + round.totalShares;
 
-    const invalidNumbers = numbers.filter(num => num < minNumber || num > maxNumber);
+    const invalidNumbers = numbers.filter((num : any) => num < minNumber || num > maxNumber);
 
     if (invalidNumbers.length > 0) {
       issues.push({
@@ -345,7 +345,7 @@ async function cleanOrphanedRecords(dryRun: boolean = true) {
       roundId: {
         notIn: await prisma.lotteryRounds.findMany({
           select: { id: true }
-        }).then(rounds => rounds.map(r => r.id))
+        }).then(rounds => rounds.map((r : any) => r.id))
       }
     },
     take: 50
@@ -362,7 +362,7 @@ async function cleanOrphanedRecords(dryRun: boolean = true) {
     } else {
       await prisma.participations.deleteMany({
         where: {
-          id: { in: orphanedParticipations.map(p => p.id) }
+          id: { in: orphanedParticipations.map((p : any) => p.id) }
         }
       });
       fixes.push({
@@ -394,7 +394,7 @@ async function cleanOrphanedRecords(dryRun: boolean = true) {
     } else {
       await prisma.notifications.deleteMany({
         where: {
-          id: { in: invalidNotifications.map(n => n.id) }
+          id: { in: invalidNotifications.map((n : any) => n.id) }
         }
       });
       fixes.push({
@@ -410,8 +410,8 @@ async function cleanOrphanedRecords(dryRun: boolean = true) {
     totalIssues: fixes.length,
     fixes,
     summary: {
-      success: fixes.filter(f => f.status === 'success').length,
-      errors: fixes.filter(f => f.status === 'error').length,
+      success: fixes.filter((f : any) => f.status === 'success').length,
+      errors: fixes.filter((f : any) => f.status === 'error').length,
       dryRun
     }
   };
@@ -457,7 +457,7 @@ async function fixDuplicateWinners(roundId?: string, dryRun: boolean = true) {
           // 移除重复的中奖标记
           await prisma.participations.updateMany({
             where: {
-              id: { in: winnersToRemove.map(w => w.id) }
+              id: { in: winnersToRemove.map((w : any) => w.id) }
             },
             data: { isWinner: false }
           });
@@ -491,8 +491,8 @@ async function fixDuplicateWinners(roundId?: string, dryRun: boolean = true) {
     totalDuplicates: duplicateWinners.length,
     fixes,
     summary: {
-      success: fixes.filter(f => f.status === 'success').length,
-      errors: fixes.filter(f => f.status === 'error').length,
+      success: fixes.filter((f : any) => f.status === 'success').length,
+      errors: fixes.filter((f : any) => f.status === 'error').length,
       dryRun
     }
   };
@@ -509,7 +509,7 @@ async function performFullSystemCheck(dryRun: boolean = true) {
     fixDuplicateWinners(undefined, true)
   ]);
 
-  const results = checks.map((check, index) => {
+  const results = checks.map((check, index) : any => {
     const actions = ['sold_shares_mismatch', 'missing_draws', 'participants', 'number_ranges', 'orphaned_records', 'duplicate_winners'];
     return {
       action: actions[index],
@@ -522,9 +522,9 @@ async function performFullSystemCheck(dryRun: boolean = true) {
     totalChecks: results.length,
     checks: results,
     summary: {
-      completed: results.filter(r => r.status === 'fulfilled').length,
-      failed: results.filter(r => r.status === 'rejected').length,
-      totalIssues: results.reduce((sum, r) => {
+      completed: results.filter((r : any) => r.status === 'fulfilled').length,
+      failed: results.filter((r : any) => r.status === 'rejected').length,
+      totalIssues: results.reduce((sum: any,  r: any) => {
         if (r.status === 'fulfilled') {
           return sum + (r.result.totalMismatched || r.result.totalMissingDraws || r.result.mismatchedRounds || r.result.issuesFound || r.result.totalIssues || r.result.totalDuplicates || 0);
         }

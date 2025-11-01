@@ -175,7 +175,7 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
     const language = searchParams.get('language') || 'zh';
 
     // 根据语言返回商品数据
-    const products = mockProducts.map(product => {
+    const products = mockProducts.map((product : any) => {
       const localizedProduct = { ...product };
       
       // 根据语言选择商品名称

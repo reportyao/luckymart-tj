@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
 
     // 手动获取产品信息
     const roundsWithProducts = await Promise.all(
-      fullRounds.map(async (r) => {
+      fullRounds.map(async (r) : any => {
         const product = await prisma.products.findUnique({
           where: { id: r.productId },
           select: { nameZh: true, marketPrice: true }

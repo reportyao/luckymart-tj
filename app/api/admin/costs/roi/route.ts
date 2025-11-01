@@ -28,7 +28,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - limit: 每页记录数
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const analysisType = searchParams.get('analysisType');
@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 计算汇总统计
-    const totalStats = roiData?.reduce((acc, curr) => {
+    const totalStats = roiData?.reduce((acc: any, curr: any) => {
       acc.totalRevenue += parseFloat(curr.total_revenue.toString());
       acc.totalCost += parseFloat(curr.total_cost.toString());
       acc.totalUserCount += curr.user_count;
@@ -129,7 +129,7 @@ export async function GET(request: NextRequest) {
           ? totalStats.totalRevenue / totalStats.totalTransactionCount 
           : 0
       },
-      breakdownByType: roiData?.reduce((acc, curr) => {
+      breakdownByType: roiData?.reduce((acc: any, curr: any) => {
         const type = curr.analysis_type;
         if (!acc[type]) {
           acc[type] = {
@@ -171,7 +171,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const {

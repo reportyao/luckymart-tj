@@ -16,7 +16,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取利润分析数据
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
 
     const { searchParams } = new URL(request.url);
@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 转换数据格式
-    const formattedData = profitData.map(item => {
+    const formattedData = profitData.map((item : any) => {
       const revenue = Number(item.revenue);
       const productCost = Number(item.product_cost);
       const platformFee = Number(item.platform_fee);
@@ -201,7 +201,7 @@ export async function GET(request: NextRequest) {
 
 // POST - 创建或更新利润分析数据
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();
@@ -313,7 +313,7 @@ export async function POST(request: NextRequest) {
 
 // PUT - 批量更新利润数据
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();
@@ -424,7 +424,7 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    const successCount = results.filter(r => r.success).length;
+    const successCount = results.filter((r : any) => r.success).length;
 
     return NextResponse.json({
       success: true,

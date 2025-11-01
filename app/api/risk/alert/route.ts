@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     // 验证通知渠道
     const validChannels = ['telegram', 'email', 'sms', 'webhook'];
-    const selectedChannels = channels.filter(channel => validChannels.includes(channel));
+    const selectedChannels = channels.filter((channel : any) => validChannels.includes(channel));
     
     if (selectedChannels.length === 0) {
       return NextResponse.json(
@@ -205,9 +205,9 @@ export async function GET(request: NextRequest) {
         },
         summary: {
           total: notifications.length,
-          sent: notifications.filter(n => n.status === 'sent').length,
-          failed: notifications.filter(n => n.status === 'failed').length,
-          pending: notifications.filter(n => n.status === 'pending').length
+          sent: notifications.filter((n : any) => n.status === 'sent').length,
+          failed: notifications.filter((n : any) => n.status === 'failed').length,
+          pending: notifications.filter((n : any) => n.status === 'pending').length
         }
       }
     };

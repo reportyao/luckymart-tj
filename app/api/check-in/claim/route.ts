@@ -9,7 +9,7 @@ const logger = getLogger();
 
 // 签到奖励配置：7天周期的奖励金额
 const CHECK_IN_REWARDS = [1.00, 0.50, 0.30, 0.10, 0.05, 0.03, 0.02];
-const TOTAL_REWARD_AMOUNT = CHECK_IN_REWARDS.reduce((sum, reward) => sum + reward, 0);
+const TOTAL_REWARD_AMOUNT = CHECK_IN_REWARDS.reduce((sum: any,  reward: any) => sum + reward, 0);
 
 /**
  * 签到并领取奖励API

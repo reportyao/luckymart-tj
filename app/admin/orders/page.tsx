@@ -18,6 +18,9 @@ interface AdminOrder extends Order {
     nameEn: string;
     imageUrl: string;
   };
+  // 确保从数据库查询时包含这些字段
+  recipientName?: string;
+  recipientPhone?: string;
 }
 
 function AdminOrdersPage() {
@@ -25,7 +28,7 @@ function AdminOrdersPage() {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('pending_shipment');
-  const [processing, setProcessing] = useState<number | null>(null);
+  const [processing, setProcessing] = useState<string | null>(null);
 
   useEffect(() => {
     // 检查登录状态
@@ -57,7 +60,7 @@ function AdminOrdersPage() {
     }
   };
 
-  const handleShipment = async (orderId: number) => {
+  const handleShipment = async (orderId: string) => {
     const trackingNumber = prompt('请输入物流单号:');
     if (!trackingNumber) {return;}
 
@@ -213,7 +216,31 @@ function AdminOrdersPage() {
                           <span className="font-medium">{new Date(order.createdAt).toLocaleString('zh-CN')}</span>
                         </div>
                         
-                        {order.recipientName && (
+                        {order.shippingAddress && typeof order.shippingAddress === 'object' ? (
+                          <>
+                            <div>
+                              <span className="text-gray-600">收件人: </span>
+                              <span className="font-medium">{order.shippingAddress.recipientName || order.recipientName}</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">联系电话: </span>
+                              <span className="font-medium">{order.shippingAddress.phone || order.recipientPhone}</span>
+                            </div>
+                            <div className="col-span-2">
+                              <span className="text-gray-600">收货地址: </span>
+                              <span className="font-medium">
+                                {order.shippingAddress.city} {order.shippingAddress.district} {order.shippingAddress.addressLine}
+                              </span>
+                            </div>
+                          </>
+                        ) : order.shippingAddress && typeof order.shippingAddress === 'string' ? (
+                          <div className="col-span-2">
+                            <span className="text-gray-600">收货地址: </span>
+                            <span className="font-medium">{order.shippingAddress}</span>
+                          </div>
+                        ) : null}
+
+                        {(order.recipientName && !order.shippingAddress) && (
                           <>
                             <div>
                               <span className="text-gray-600">收件人: </span>
@@ -224,13 +251,6 @@ function AdminOrdersPage() {
                               <span className="font-medium">{order.recipientPhone}</span>
                             </div>
                           </>
-                        )}
-
-                        {order.shippingAddress && (
-                          <div className="col-span-2">
-                            <span className="text-gray-600">收货地址: </span>
-                            <span className="font-medium">{order.shippingAddress}</span>
-                          </div>
                         )}
 
                         {order.trackingNumber && (

@@ -107,7 +107,7 @@ async function getOverviewStats() {
           recentDrawsLast24h: recentDraws,
           pendingDrawsCount: pendingDraws.length
         },
-        pendingDraws: pendingDraws.map(round => ({
+        pendingDraws: pendingDraws.map((round : any) => ({
           id: round.id,
           roundNumber: round.roundNumber,
           soldShares: round.soldShares,
@@ -154,7 +154,7 @@ async function getFullRounds() {
   return NextResponse.json({
     success: true,
     data: {
-      fullRounds: fullRounds.map(round => ({
+      fullRounds: fullRounds.map((round : any) => ({
         ...round,
         soldOutAt: round.updatedAt,
         timeToSellOut: Math.floor((round.updatedAt.getTime() - round.createdAt.getTime()) / 1000 / 60),
@@ -193,7 +193,7 @@ async function getPendingDraws() {
   return NextResponse.json({
     success: true,
     data: {
-      pendingDraws: pendingDraws.map(round => ({
+      pendingDraws: pendingDraws.map((round : any) => ({
         ...round,
         waitingTime: Math.floor((Date.now() - round.createdAt.getTime()) / 1000 / 60),
         urgency: getUrgencyLevel(round),
@@ -237,7 +237,7 @@ async function getRecentDraws() {
   return NextResponse.json({
     success: true,
     data: {
-      recentDraws: recentDraws.map(draw => ({
+      recentDraws: recentDraws.map((draw : any) => ({
         ...draw,
         drawDuration: draw.drawTime ? Math.floor((draw.drawTime.getTime() - draw.createdAt.getTime()) / 1000 / 60) : null
       }))
@@ -306,7 +306,7 @@ async function checkDataConsistency() {
       GROUP BY lr.id, lr.status, lr.winner_user_id
     `;
 
-    const incompleteDraws = statusInconsistency.filter((row: any) => row.participation_count > 0);
+    const incompleteDraws = statusInconsistency.filter((row: any) : any => row.participation_count > 0);
 
     if (incompleteDraws.length > 0) {
       issues.push({
@@ -351,10 +351,10 @@ async function checkDataConsistency() {
         totalIssues: issues.length,
         issues,
         summary: {
-          critical: issues.filter(i => i.severity === 'critical').length,
-          high: issues.filter(i => i.severity === 'high').length,
-          medium: issues.filter(i => i.severity === 'medium').length,
-          low: issues.filter(i => i.severity === 'low').length
+          critical: issues.filter((i : any) => i.severity === 'critical').length,
+          high: issues.filter((i : any) => i.severity === 'high').length,
+          medium: issues.filter((i : any) => i.severity === 'medium').length,
+          low: issues.filter((i : any) => i.severity === 'low').length
         }
       }
     });

@@ -12,7 +12,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware(Ad
 
 // 获取系统概览
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     const logger = getLogger();
 
     const url = new URL(request.url);
@@ -131,7 +131,7 @@ async function handleAlerts() {
   
   try {
     const alertEvents = rateLimitMonitor.getAlertEvents(50);
-    const activeAlerts = alertEvents.filter(alert => alert.status === 'active');
+    const activeAlerts = alertEvents.filter((alert : any) => alert.status === 'active');
     
     return NextResponse.json({
       success: true,
@@ -212,7 +212,7 @@ async function handleHealthCheck() {
 
 // 更新配置
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const logger = getLogger();
     const body = await request.json();
     const { action } = body;

@@ -118,7 +118,7 @@ async function getAllSettings() {
   const settings = await prisma.systemSettings.findMany();
   const settingsMap: any = {};
   
-  settings.forEach(setting => {
+  settings.forEach((setting : any) => {
     let value = setting.settingValue;
     
     // 根据类型转换值
@@ -179,7 +179,7 @@ async function updateSetting(key: string, value: any, type: string = 'string') {
 }
 
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     const settings = await getAllSettings();
 
     return NextResponse.json({ 
@@ -190,7 +190,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const data = await request.json();
 
     // 批量更新设置

@@ -61,7 +61,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     `);
 
     // 构建响应数据
-    const tasks = taskStatus.map((task: any) => {
+    const tasks = taskStatus.map(((task: any) : any) => {
       // 解析多语言字段
       const nameMultilingual = task.name_multilingual || {};
       const descriptionMultilingual = task.description_multilingual || {};
@@ -94,9 +94,9 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     // 统计任务进度
     const stats = {
       total: tasks.length,
-      pending: tasks.filter(task => task.status === 'pending').length,
-      completed: tasks.filter(task => task.status === 'completed').length,
-      rewarded: tasks.filter(task => task.status === 'rewarded').length,
+      pending: tasks.filter((task : any) => task.status === 'pending').length,
+      completed: tasks.filter((task : any) => task.status === 'completed').length,
+      rewarded: tasks.filter((task : any) => task.status === 'rewarded').length,
       completionRate: 0
     };
     

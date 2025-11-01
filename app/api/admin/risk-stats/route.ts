@@ -73,7 +73,7 @@ const mockDashboardData = {
 };
 
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const period = searchParams.get('period') || 'today'; // today, week, month
@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
 
 // 获取实时统计数据（用于WebSocket或轮询）
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const { metric, action } = body;

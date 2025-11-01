@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     
     const validationResult = validateOrderQuery(queryData);
     if (!validationResult.isValid) {
-      const errorMessages = validationResult.errors.map(e => e.message).join('; ');
+      const errorMessages = validationResult.errors.map((e : any) => e.message).join('; ');
       return NextResponse.json(
         { error: '查询参数验证失败', details: errorMessages },
         { status: 400 }
@@ -59,16 +59,16 @@ export async function GET(request: NextRequest) {
       prisma.orders.count({ where }),
       // 预加载所有相关商品信息
       prisma.products.findMany({
-        where: { id: { in: orders.map(o => o.productId).filter(Boolean) } },
+        where: { id: { in: orders.map((o : any) => o.productId).filter(Boolean) } },
         select: { id: true, nameZh: true, nameEn: true, images: true }
       })
     ]);
 
     // 创建商品映射表
-    const productMap = new Map(products.map(p => [p.id, p]));
+    const productMap = new Map(products.map((p : any) => [p.id, p]));
 
     // 格式化订单数据，使用映射表避免循环查找
-    const formattedOrders = orders.map(order => {
+    const formattedOrders = orders.map((order : any) => {
       const product = order.productId ? productMap.get(order.productId) : null;
       
       return {

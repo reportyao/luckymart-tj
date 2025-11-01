@@ -21,7 +21,7 @@ const withDeletePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取所有商品
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
 
     const { searchParams } = new URL(request.url);
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: {
-        products: products.map(p => ({
+        products: products.map((p : any) => ({
           id: p.id,
           nameZh: p.nameZh,
           nameEn: p.nameEn,
@@ -56,8 +56,8 @@ export async function GET(request: NextRequest) {
         })),
         stats: {
           total: products.length,
-          active: products.filter(p => p.status === 'active').length,
-          inactive: products.filter(p => p.status === 'inactive').length
+          active: products.filter((p : any) => p.status === 'active').length,
+          inactive: products.filter((p : any) => p.status === 'inactive').length
         }
       }
     });
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
 
 // POST - 创建商品
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();
@@ -156,7 +156,7 @@ export async function POST(request: NextRequest) {
 
 // PUT - 更新商品
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();
@@ -207,7 +207,7 @@ export async function PUT(request: NextRequest) {
 
 // DELETE - 删除商品
 export async function DELETE(request: NextRequest) {
-  return withDeletePermission(async (request, admin) => {
+  return withDeletePermission(async (request: any, admin: any) => {
     try {
 
     const { searchParams } = new URL(request.url);

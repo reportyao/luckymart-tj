@@ -16,7 +16,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取热销趋势数据
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     try {
 
     const { searchParams } = new URL(request.url);
@@ -148,7 +148,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 转换数据格式
-    const formattedData = trendingData.map(item => ({
+    const formattedData = trendingData.map((item : any) => ({
       id: item.id,
       productId: item.product_id,
       productName: {
@@ -172,7 +172,7 @@ export async function GET(request: NextRequest) {
     }));
 
     // 转换排行榜数据格式
-    const formattedTopProducts = topProducts.map(item => ({
+    const formattedTopProducts = topProducts.map((item : any) => ({
       id: item.id,
       productId: item.product_id,
       productName: {
@@ -238,7 +238,7 @@ export async function GET(request: NextRequest) {
 
 // POST - 创建或更新热销趋势数据
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();
@@ -335,7 +335,7 @@ export async function POST(request: NextRequest) {
 
 // PUT - 批量更新排行榜数据
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();
@@ -425,7 +425,7 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    const successCount = results.filter(r => r.success).length;
+    const successCount = results.filter((r : any) => r.success).length;
 
     return NextResponse.json({
       success: true,

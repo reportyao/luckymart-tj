@@ -17,7 +17,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取用户消费行为分析
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
     const logger = getLogger();
 
     try {
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
 
 // POST - 更新用户消费分析
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
     const logger = getLogger();
 
     try {
@@ -348,10 +348,10 @@ async function calculateUserSpendingData(userId: string) {
 
   // 计算各种指标
   const totalOrders = orders.length;
-  const completedOrders = orders.filter(o => o.status === 'completed').length;
-  const cancelledOrders = orders.filter(o => o.status === 'cancelled').length;
-  const totalSpent = orders.reduce((sum, order) => sum + parseFloat(order.totalAmount.toString()), 0);
-  const totalRechargeAmount = recharges.reduce((sum, recharge) => sum + parseFloat(recharge.amount?.toString() || '0'), 0);
+  const completedOrders = orders.filter((o : any) => o.status === 'completed').length;
+  const cancelledOrders = orders.filter((o : any) => o.status === 'cancelled').length;
+  const totalSpent = orders.reduce((sum: any,  order: any) => sum + parseFloat(order.totalAmount.toString()), 0);
+  const totalRechargeAmount = recharges.reduce((sum: any,  recharge: any) => sum + parseFloat(recharge.amount?.toString() || '0'), 0);
 
   // 计算首次和最后购买日期
   const firstPurchaseDate = orders.length > 0 ? orders[0].createdAt : null;

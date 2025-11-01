@@ -48,7 +48,7 @@ const mockRiskEvents = [
 ];
 
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request, admin) => {
+  return withReadPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -62,19 +62,19 @@ export async function GET(request: NextRequest) {
     let filteredEvents = mockRiskEvents;
 
     if (riskLevel && riskLevel !== 'all') {
-      filteredEvents = filteredEvents.filter(event => event.riskLevel === riskLevel);
+      filteredEvents = filteredEvents.filter((event : any) => event.riskLevel === riskLevel);
     }
 
     if (status && status !== 'all') {
-      filteredEvents = filteredEvents.filter(event => event.status === status);
+      filteredEvents = filteredEvents.filter((event : any) => event.status === status);
     }
 
     if (eventType && eventType !== 'all') {
-      filteredEvents = filteredEvents.filter(event => event.eventType === eventType);
+      filteredEvents = filteredEvents.filter((event : any) => event.eventType === eventType);
     }
 
     if (search) {
-      filteredEvents = filteredEvents.filter(event => 
+      filteredEvents = filteredEvents.filter((event : any) => 
         event.userName.toLowerCase().includes(search.toLowerCase()) ||
         event.id.toLowerCase().includes(search.toLowerCase())
       );
@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request, admin) => {
+  return withWritePermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const { userId, eventType, riskLevel, description, riskScore } = body;

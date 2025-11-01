@@ -82,7 +82,7 @@ export async function GET(
       }) : [];
 
       // 获取参与用户信息
-      const userIds = recentParticipations.map(p => p.userId);
+      const userIds = recentParticipations.map((p : any) => p.userId);
       const users = userIds.length > 0 ? await prisma.users.findMany({
         where: { id: { in: userIds } },
         select: { 
@@ -93,9 +93,9 @@ export async function GET(
         }
       }) : [];
 
-      const userMap = new Map(users.map(u => [u.id, u]));
+      const userMap = new Map(users.map((u : any) => [u.id, u]));
 
-      const formattedParticipations = recentParticipations.map(p => {
+      const formattedParticipations = recentParticipations.map((p : any) => {
         const user = userMap.get(p.userId);
         return {
           id: p.id,

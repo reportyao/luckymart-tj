@@ -62,6 +62,7 @@ interface TrendingData {
   popularityScore: number;
   salesTrend: number;
   searchVolume: number;
+  marketPosition: string;
 }
 
 function ProductAnalyticsPage() {

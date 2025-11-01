@@ -25,7 +25,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - limit: 限制返回记录数
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const periodType = searchParams.get('periodType') || 'daily';
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 计算汇总统计
-    const totalStats = profitData?.reduce((acc, curr) => {
+    const totalStats = profitData?.reduce((acc: any, curr: any) => {
       acc.grossRevenue += parseFloat(curr.revenue.toString());
       acc.productCosts += parseFloat(curr.product_cost.toString());
       acc.platformFees += parseFloat(curr.platform_fee.toString());
@@ -137,9 +137,9 @@ export async function GET(request: NextRequest) {
       keyMetrics: {
         averageDailyRevenue: trendData.length > 0 ? totalStats.grossRevenue / trendData.length : 0,
         averageDailyProfit: trendData.length > 0 ? totalStats.netProfit / trendData.length : 0,
-        profitVolatility: calculateVolatility(trendData.map(t => t.netProfit)),
-        costTrend: calculateTrend(trendData.map(t => t.productCost + t.platformFee + t.operationCost)),
-        revenueGrowth: calculateGrowth(trendData.map(t => t.revenue))
+        profitVolatility: calculateVolatility(trendData.map((t: any) => t.netProfit)),
+        costTrend: calculateTrend(trendData.map((t: any) => t.productCost + t.platformFee + t.operationCost)),
+        revenueGrowth: calculateGrowth(trendData.map((t: any) => t.revenue))
       }
     };
 
@@ -165,7 +165,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const {
@@ -184,7 +184,7 @@ export async function POST(request: NextRequest) {
       .gte('created_at', startDate)
       .lte('created_at', endDate);
 
-    const revenue = ordersData?.reduce((sum, order) => 
+    const revenue = ordersData?.reduce((sum: number, order: any) => 
       sum + parseFloat(order.total_amount.toString()), 0) || 0;
 
     // 计算产品成本（基于抽奖参与）
@@ -194,7 +194,7 @@ export async function POST(request: NextRequest) {
       .gte('created_at', startDate)
       .lte('created_at', endDate);
 
-    const productCost = participationsData?.reduce((sum, participation) => 
+    const productCost = participationsData?.reduce((sum: number, participation: any) => 
       sum + parseFloat(participation.cost.toString()), 0) || 0;
 
     // 计算平台费用（假设为收入的5%）
@@ -223,10 +223,10 @@ export async function POST(request: NextRequest) {
       .lte('created_at', endDate);
 
     const operationCost = [
-      ...(taskData?.map(t => parseFloat(t.reward_amount.toString())) || []),
-      ...(checkinData?.map(c => parseFloat(c.reward_amount.toString())) || []),
-      ...(firstRechargeData?.map(f => parseFloat(f.reward_amount.toString())) || [])
-    ].reduce((sum, amount) => sum + amount, 0);
+      ...(taskData?.map((t: any) => parseFloat(t.reward_amount.toString())) || []),
+      ...(checkinData?.map((c: any) => parseFloat(c.reward_amount.toString())) || []),
+      ...(firstRechargeData?.map((f: any) => parseFloat(f.reward_amount.toString())) || [])
+    ].reduce((sum: number, amount: number) => sum + amount, 0);
 
     // 计算毛利润和净利润
     const grossProfit = revenue - productCost;
@@ -293,8 +293,8 @@ export async function POST(request: NextRequest) {
 // 辅助函数：计算波动性
 function calculateVolatility(values: number[]): number {
   if (values.length < 2) return 0;
-  const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-  const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+  const mean = values.reduce((sum: number, val: number) => sum + val, 0) / values.length;
+  const variance = values.reduce((sum: number, val: number) => sum + Math.pow(val - mean, 2), 0) / values.length;
   return Math.sqrt(variance);
 }
 
@@ -303,8 +303,8 @@ function calculateTrend(values: number[]): number {
   if (values.length < 2) return 0;
   const n = values.length;
   const sumX = n * (n - 1) / 2;
-  const sumY = values.reduce((sum, val) => sum + val, 0);
-  const sumXY = values.reduce((sum, val, index) => sum + val * index, 0);
+  const sumY = values.reduce((sum: number, val: number) => sum + val, 0);
+  const sumXY = values.reduce((sum: number, val: number, index: number) => sum + val * index, 0);
   const sumXX = n * (n - 1) * (2 * n - 1) / 6;
   return n * sumXY - sumX * sumY > 0 ? 1 : -1; // 简化处理，只返回趋势方向
 }

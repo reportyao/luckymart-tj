@@ -24,7 +24,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - limit: 限制返回记录数
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const reportType = searchParams.get('reportType');
@@ -117,7 +117,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request, admin) => {
+  return withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const {
@@ -275,15 +275,15 @@ function calculateRevenueSummary(data: any[]) {
 
   if (data.length === 0) return summary;
 
-  summary.totalRevenue = data.reduce((sum, item) => sum + parseFloat(item.total_revenue.toString()), 0);
-  summary.actualReceived = data.reduce((sum, item) => sum + parseFloat(item.actual_received.toString()), 0);
-  summary.totalOrders = data.reduce((sum, item) => sum + item.order_count, 0);
+  summary.totalRevenue = data.reduce((sum: any,  item: any) => sum + parseFloat(item.total_revenue.toString()), 0);
+  summary.actualReceived = data.reduce((sum: any,  item: any) => sum + parseFloat(item.actual_received.toString()), 0);
+  summary.totalOrders = data.reduce((sum: any,  item: any) => sum + item.order_count, 0);
   summary.averageOrderValue = summary.totalOrders > 0 ? summary.totalRevenue / summary.totalOrders : 0;
 
   // 计算平均增长率
-  const growthRates = data.filter(item => item.growth_rate).map(item => parseFloat(item.growth_rate.toString()));
+  const growthRates = data.filter((item : any) => item.growth_rate).map(item => parseFloat(item.growth_rate.toString()));
   summary.growthRate = growthRates.length > 0 
-    ? growthRates.reduce((sum, rate) => sum + rate, 0) / growthRates.length 
+    ? growthRates.reduce((sum: any,  rate: any) => sum + rate, 0) / growthRates.length 
     : 0;
 
   return summary;
@@ -300,12 +300,12 @@ function calculateCostSummary(data: any[]) {
 
   if (data.length === 0) return summary;
 
-  summary.totalCost = data.reduce((sum, item) => sum + parseFloat(item.cost_amount.toString()), 0);
-  const totalUsers = data.reduce((sum, item) => sum + item.user_count, 0);
+  summary.totalCost = data.reduce((sum: any,  item: any) => sum + parseFloat(item.cost_amount.toString()), 0);
+  const totalUsers = data.reduce((sum: any,  item: any) => sum + item.user_count, 0);
   summary.averageCostPerUser = totalUsers > 0 ? summary.totalCost / totalUsers : 0;
 
   // 按类型分组
-  data.forEach(item => {
+  data.forEach((item : any) => {
     const type = item.user_type || 'unknown';
     if (!summary.costByType[type]) {
       summary.costByType[type] = 0;
@@ -328,16 +328,16 @@ function calculateProfitSummary(data: any[]) {
 
   if (data.length === 0) return summary;
 
-  summary.grossProfit = data.reduce((sum, item) => sum + parseFloat(item.gross_profit.toString()), 0);
-  summary.netProfit = data.reduce((sum, item) => sum + parseFloat(item.net_profit.toString()), 0);
+  summary.grossProfit = data.reduce((sum: any,  item: any) => sum + parseFloat(item.gross_profit.toString()), 0);
+  summary.netProfit = data.reduce((sum: any,  item: any) => sum + parseFloat(item.net_profit.toString()), 0);
   
-  const totalRevenue = data.reduce((sum, item) => sum + parseFloat(item.revenue.toString()), 0);
+  const totalRevenue = data.reduce((sum: any,  item: any) => sum + parseFloat(item.revenue.toString()), 0);
   summary.profitMargin = totalRevenue > 0 ? (summary.netProfit / totalRevenue) * 100 : 0;
 
   // 计算平均ROI
-  const rois = data.filter(item => item.roi).map(item => parseFloat(item.roi.toString()));
+  const rois = data.filter((item : any) => item.roi).map(item => parseFloat(item.roi.toString()));
   summary.roi = rois.length > 0 
-    ? rois.reduce((sum, roi) => sum + roi, 0) / rois.length 
+    ? rois.reduce((sum: any,  roi: any) => sum + roi, 0) / rois.length 
     : 0;
 
   return summary;
@@ -355,12 +355,12 @@ function calculateWithdrawalSummary(data: any[]) {
 
   if (data.length === 0) return summary;
 
-  summary.totalAmount = data.reduce((sum, item) => sum + parseFloat(item.total_amount.toString()), 0);
-  summary.totalUsers = data.reduce((sum, item) => sum + item.total_users, 0);
-  summary.platformFee = data.reduce((sum, item) => sum + parseFloat(item.platform_fee.toString()), 0);
+  summary.totalAmount = data.reduce((sum: any,  item: any) => sum + parseFloat(item.total_amount.toString()), 0);
+  summary.totalUsers = data.reduce((sum: any,  item: any) => sum + item.total_users, 0);
+  summary.platformFee = data.reduce((sum: any,  item: any) => sum + parseFloat(item.platform_fee.toString()), 0);
   
-  const totalWithdrawals = data.reduce((sum, item) => sum + item.withdrawal_count, 0);
-  const totalSuccess = data.reduce((sum, item) => sum + item.success_count, 0);
+  const totalWithdrawals = data.reduce((sum: any,  item: any) => sum + item.withdrawal_count, 0);
+  const totalSuccess = data.reduce((sum: any,  item: any) => sum + item.success_count, 0);
   summary.successRate = totalWithdrawals > 0 ? (totalSuccess / totalWithdrawals) * 100 : 0;
   summary.averageAmount = summary.totalUsers > 0 ? summary.totalAmount / summary.totalUsers : 0;
 
@@ -404,11 +404,11 @@ function generateKeyMetrics(revenue: any, cost: any, profit: any, withdrawal: an
 // 辅助函数：生成趋势分析
 function generateTrends(revenue: any[], profit: any[], cost: any[]) {
   return {
-    revenue: calculateArrayTrend(revenue.map(r => parseFloat(r.total_revenue.toString()))),
-    profit: calculateArrayTrend(profit.map(p => parseFloat(p.net_profit.toString()))),
-    cost: calculateArrayTrend(cost.map(c => parseFloat(c.cost_amount.toString()))),
-    orders: calculateArrayTrend(revenue.map(r => r.order_count)),
-    customers: calculateArrayTrend(cost.map(c => c.user_count))
+    revenue: calculateArrayTrend(revenue.map((r : any) => parseFloat(r.total_revenue.toString()))),
+    profit: calculateArrayTrend(profit.map((p : any) => parseFloat(p.net_profit.toString()))),
+    cost: calculateArrayTrend(cost.map((c : any) => parseFloat(c.cost_amount.toString()))),
+    orders: calculateArrayTrend(revenue.map((r : any) => r.order_count)),
+    customers: calculateArrayTrend(cost.map((c : any) => c.user_count))
   };
 }
 

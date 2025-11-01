@@ -12,6 +12,25 @@ interface AdminWithdrawRequest extends WithdrawRequest {
     firstName?: string;
     telegramId: string;
   };
+  // 确保所有必要的属性都可用
+  id: string;
+  userId: string;
+  amount: number;
+  fee: number;
+  actualAmount: number;
+  withdrawMethod: 'alif_mobi' | 'dc_bank';
+  paymentMethod?: 'alif_mobi' | 'dc_bank';
+  accountInfo: {
+    accountNumber: string;
+    accountName: string;
+    [key: string]: any;
+  };
+  paymentAccount?: string;
+  status: 'pending' | 'approved' | 'rejected' | 'completed';
+  rejectReason?: string;
+  adminNote?: string;
+  processedAt?: Date;
+  createdAt: Date;
 }
 
 function AdminWithdrawalsPage() {
@@ -19,7 +38,7 @@ function AdminWithdrawalsPage() {
   const [withdrawals, setWithdrawals] = useState<AdminWithdrawRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('pending');
-  const [processing, setProcessing] = useState<number | null>(null);
+  const [processing, setProcessing] = useState<string | null>(null);
 
   useEffect(() => {
     // 检查登录状态
@@ -51,7 +70,7 @@ function AdminWithdrawalsPage() {
     }
   };
 
-  const handleApprove = async (withdrawId: number) => {
+  const handleApprove = async (withdrawId: string) => {
     if (!confirm('确认通过该提现申请？')) {return;}
 
     setProcessing(withdrawId);
@@ -84,7 +103,7 @@ function AdminWithdrawalsPage() {
     }
   };
 
-  const handleReject = async (withdrawId: number) => {
+  const handleReject = async (withdrawId: string) => {
     const reason = prompt('请输入拒绝原因:');
     if (!reason) {return;}
 
@@ -226,11 +245,11 @@ function AdminWithdrawalsPage() {
                         </div>
                         <div>
                           <span className="text-gray-600">支付方式: </span>
-                          <span className="font-medium">{getPaymentMethodText(withdraw.paymentMethod)}</span>
+                          <span className="font-medium">{getPaymentMethodText(withdraw.paymentMethod || withdraw.withdrawMethod || '')}</span>
                         </div>
                         <div>
                           <span className="text-gray-600">收款账号: </span>
-                          <span className="font-medium">{withdraw.paymentAccount}</span>
+                          <span className="font-medium">{withdraw.paymentAccount || withdraw.accountInfo?.accountNumber || 'N/A'}</span>
                         </div>
                         <div>
                           <span className="text-gray-600">手续费: </span>

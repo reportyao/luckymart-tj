@@ -1,3 +1,5 @@
+import { UserInfoService } from './services/user-info-service';
+import { Telegraf } from 'telegraf';
 #!/usr/bin/env node
 
 /**
@@ -5,8 +7,6 @@
  * 测试核心功能，不依赖外部数据库
  */
 
-import { UserInfoService } from './services/user-info-service';
-import { Telegraf } from 'telegraf';
 
 console.log('🧪 用户信息服务模拟测试');
 console.log('==========================================\n');
@@ -39,7 +39,7 @@ class MockTelegraf {
     
     async getChatHistory(chatId: string, limit: number) {
       console.log(`   📜 模拟获取聊天历史: chatId=${chatId}, limit=${limit}`);
-      return [
+      return [;
         { date: Math.floor(Date.now() / 1000) - 3600, message_id: 1, text: 'Hello' },
         { date: Math.floor(Date.now() / 1000) - 7200, message_id: 2, text: 'Hi' }
       ];
@@ -50,6 +50,7 @@ class MockTelegraf {
 async function runMockTests() {
   try {
     console.log('🔧 初始化测试环境...');
+  }
     
     // 创建模拟Bot实例
     const mockBot = new MockTelegraf() as any;
@@ -70,6 +71,7 @@ async function runMockTests() {
       console.log(`   - 缓存项目: ${stats.cache.size || 0}`);
     } catch (error) {
       console.log('❌ 服务统计获取失败:', (error as Error).message);
+  }
     }
     
     // 测试缓存管理功能
@@ -77,6 +79,7 @@ async function runMockTests() {
     try {
       userInfoService.cleanupExpiredCache();
       console.log('✅ 缓存清理功能正常');
+  }
       
       // 清除特定用户缓存
       userInfoService.clearUserCache('123456789');
@@ -132,6 +135,7 @@ async function runMockTests() {
       
       if (service1 === service2) {
         console.log('✅ 服务单例模式正常工作');
+  }
       } else {
         console.log('❌ 服务单例模式失效');
       }

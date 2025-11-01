@@ -1,11 +1,11 @@
 import crypto from 'crypto';
 import { 
+import { generateSystemEntropy, calculateParticipationHash } from './lib/lottery';
   calculateSecureWinningNumber,
   verifySecureDrawResult,
   generateSecureDrawProof,
   batchVerifyDrawResults 
 } from './lib/lottery-algorithm';
-import { generateSystemEntropy, calculateParticipationHash } from './lib/lottery';
 
 // 测试安全修复效果
 export async function testSecurityFixes() {
@@ -22,7 +22,7 @@ export async function testSecurityFixes() {
 
   // 测试2: 参与数据哈希
   console.log('📊 测试2: 参与数据哈希一致性');
-  const mockParticipations = [
+  const mockParticipations = [;
     {
       userId: 'user1',
       numbers: [10000001, 10000002],
@@ -34,7 +34,7 @@ export async function testSecurityFixes() {
       numbers: [10000003, 10000004],
       amount: 200,
       createdAt: new Date('2025-10-31T10:05:00Z')
-    }
+}
   ];
 
   const hash1 = calculateParticipationHash(mockParticipations);
@@ -61,7 +61,7 @@ export async function testSecurityFixes() {
       createdAt: new Date(Date.now() + i * 1000) // 模拟不同时间
     }));
     
-    const result = calculateSecureWinningNumber(
+    const result = calculateSecureWinningNumber(;
       participationIds,
       mockData,
       productId,
@@ -83,14 +83,14 @@ export async function testSecurityFixes() {
   // 测试4: 验证机制
   console.log('📊 测试4: 开奖结果验证机制');
   
-  const verificationResult = calculateSecureWinningNumber(
+  const verificationResult = calculateSecureWinningNumber(;
     participationIds,
     mockParticipations,
     productId,
     totalShares
   );
 
-  const verification = verifySecureDrawResult(
+  const verification = verifySecureDrawResult(;
     participationIds,
     mockParticipations,
     productId,
@@ -116,7 +116,7 @@ export async function testSecurityFixes() {
   // 测试6: 批量验证
   console.log('📊 测试6: 批量验证功能');
   
-  const batchTestData = [
+  const batchTestData = [;
     {
       roundId: 'round-1',
       winningNumber: verificationResult.winningNumber,

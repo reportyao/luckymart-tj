@@ -1,9 +1,9 @@
+import { 
 /**
  * 订单参数验证器测试
  * 测试订单参数验证中间件的各项功能
  */
 
-import { 
   OrderValidator, 
   validateOrderCreation, 
   validateOrderUpdate, 
@@ -15,7 +15,6 @@ import {
   DEFAULT_CONSTRAINTS,
   DEFAULT_REGEX_VALIDATORS
 } from '@/lib/order-validator';
-import { ErrorFactory } from '@/lib/errors';
 
 describe('OrderValidator', () => {
   let validator: OrderValidator;
@@ -339,7 +338,7 @@ describe('OrderValidator', () => {
       const result = customValidator.validateOrderCreation(data);
       
       expect(result.isValid).toBe(false);
-      expect(result.errors.some(e => 
+      expect(result.errors.some(e :> 
         e.message.includes('10') && e.message.includes('1000')
       )).toBe(true);
     });
@@ -355,9 +354,9 @@ describe('OrderValidator', () => {
       const result = validator.validateOrderCreation(invalidData);
       
       expect(result.isValid).toBe(false);
-      expect(result.errors[0].message).toContain('userId');
-      expect(result.errors[0].message).toContain('UUID');
-      expect(result.errors[0].message).toContain('必填字段');
+      expect(result.(errors?.0 ?? null).message).toContain('userId');
+      expect(result.(errors?.0 ?? null).message).toContain('UUID');
+      expect(result.(errors?.0 ?? null).message).toContain('必填字段');
     });
   });
 

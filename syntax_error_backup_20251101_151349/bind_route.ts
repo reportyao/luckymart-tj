@@ -1,14 +1,13 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { withAuth } from '@/lib/auth';
+import { invitationService } from '@/lib/services/invitation-service';
+import type { ApiResponse, BindReferralRequest, BindReferralResponse } from '@/types';
+import { getLogger } from '@/lib/logger';
 /**
  * 绑定邀请关系 API
  * POST /api/invitation/bind
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/auth';
-import { invitationService } from '@/lib/services/invitation-service';
-import type { ApiResponse, BindReferralRequest, BindReferralResponse } from '@/types';
-import { ErrorFactory, CommonErrors } from '@/lib/errors';
-import { getLogger } from '@/lib/logger';
 
 const logger = getLogger();
 
@@ -91,9 +90,10 @@ async function handleBindReferral(request: NextRequest, user: any) {
 
     // 默认错误处理
     return NextResponse.json<ApiResponse>({
+  }
       success: false,
       error: '绑定邀请关系时发生错误，请稍后重试'
-    }, { status: 500 });
+    }, );
   }
 }
 

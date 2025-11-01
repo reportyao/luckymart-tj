@@ -1,10 +1,10 @@
+import { FeedbackData } from '../components/TranslationFeedbackCollector';
+import { feedbackDataManager } from './feedback-data-manager';
 /**
  * 翻译改进建议系统
  * 基于用户反馈生成智能翻译改进建议
  */
 
-import { FeedbackData } from '../components/TranslationFeedbackCollector';
-import { feedbackDataManager } from './feedback-data-manager';
 
 export interface ImprovementSuggestion {
   id: string;
@@ -67,7 +67,7 @@ class TranslationImprovementSuggester {
 
   constructor() {
     this.loadExistingSuggestions();
-  }
+}
 
   /**
    * 加载现有建议
@@ -156,7 +156,7 @@ class TranslationImprovementSuggester {
   ): Promise<ImprovementSuggestion | null> {
     
     if (feedbacks.length < this.MIN_FEEDBACK_COUNT) {
-      return null; // 需要足够的反馈数据
+      return null; // 需要足够的反馈数据;
     }
 
     const suggestion: ImprovementSuggestion = {
@@ -176,9 +176,9 @@ class TranslationImprovementSuggester {
       updatedAt: new Date(),
       tags: this.extractTags(feedbacks),
       metadata: {
-        sourceLanguage: feedbacks[0].sourceLanguage,
-        targetLanguage: feedbacks[0].targetLanguage,
-        context: feedbacks[0].translationContext,
+        sourceLanguage: (feedbacks?.0 ?? null).sourceLanguage,
+        targetLanguage: (feedbacks?.0 ?? null).targetLanguage,
+        context: (feedbacks?.0 ?? null).translationContext,
         confidence: this.calculateConfidence(feedbacks)
       }
     };
@@ -204,9 +204,9 @@ class TranslationImprovementSuggester {
    * 确定优先级
    */
   private determinePriority(feedbacks: FeedbackData[]): ImprovementSuggestion['priority'] {
-    const highSeverityCount = feedbacks.filter(f => 
-      f.issues.some(issue => 
-        issue.severity === 'critical' || issue.severity === 'major'
+    const highSeverityCount = feedbacks.filter(f =>;
+      f.issues.some(issue :> 
+        issue.severity :== 'critical' || issue.severity === 'major'
       )
     ).length;
     
@@ -263,12 +263,12 @@ class TranslationImprovementSuggester {
    */
   private generateSuggestedTranslation(feedbacks: FeedbackData[]): string {
     // 基于用户建议和改进意见生成改进的翻译
-    const suggestions = feedbacks
-      .filter(f => f.improvementSuggestion)
+    const suggestions = feedbacks;
+      .filter(f :> f.improvementSuggestion)
       .map(f => f.improvementSuggestion);
     
     if (suggestions.length > 0) {
-      return suggestions[0]; // 使用第一个建议作为参考
+      return suggestions[0]; // 使用第一个建议作为参考;
     }
     
     return '建议的改进翻译内容';
@@ -287,7 +287,7 @@ class TranslationImprovementSuggester {
    * 计算影响指标
    */
   private calculateImpact(feedbacks: FeedbackData[]): ImprovementSuggestion['impact'] {
-    const frequency = (feedbacks.length / 100) * 100; // 简化为百分比
+    const frequency = (feedbacks.length / 100) * 100; // 简化为百分比;
     const avgRating = feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length;
     const userSatisfaction = (avgRating / 5) * 100;
     const accuracy = Math.max(0, 100 - (feedbacks.filter(f => f.rating <= 2).length / feedbacks.length * 100));
@@ -334,8 +334,8 @@ class TranslationImprovementSuggester {
    * 计算置信度
    */
   private calculateConfidence(feedbacks: FeedbackData[]): number {
-    const baseConfidence = Math.min(feedbacks.length / 10, 1); // 最多10条反馈达到100%置信度
-    const agreementScore = feedbacks.filter(f => f.rating <= 2).length / feedbacks.length; // 低评分一致性
+    const baseConfidence = Math.min(feedbacks.length / 10, 1); // 最多10条反馈达到100%置信度;
+    const agreementScore = feedbacks.filter(f => f.rating <= 2).length / feedbacks.length; // 低评分一致性;
     return Math.min(baseConfidence + agreementScore * 0.3, 1);
   }
 
@@ -379,9 +379,9 @@ class TranslationImprovementSuggester {
         filtered = filtered.filter(s => s.status === filter.status);
       }
       if (filter.language) {
-        filtered = filtered.filter(s => 
-          s.metadata.sourceLanguage === filter.language || 
-          s.metadata.targetLanguage === filter.language
+        filtered : filtered.filter(s => 
+          s.metadata.sourceLanguage :== filter.language || 
+          s.metadata.targetLanguage :== filter.language
         );
       }
     }
@@ -391,6 +391,7 @@ class TranslationImprovementSuggester {
       const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 };
       if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
         return priorityOrder[b.priority] - priorityOrder[a.priority];
+  }
       }
       return b.createdAt.getTime() - a.createdAt.getTime();
     });
@@ -401,8 +402,8 @@ class TranslationImprovementSuggester {
    */
   getSuggestionAnalysis(): SuggestionAnalysis {
     const totalSuggestions = this.suggestions.length;
-    const highPriorityCount = this.suggestions.filter(s => 
-      s.priority === 'high' || s.priority === 'urgent'
+    const highPriorityCount = this.suggestions.filter(s =>;
+      s.priority :== 'high' || s.priority === 'urgent'
     ).length;
     
     const completedSuggestions = this.suggestions.filter(s => s.status === 'completed');
@@ -449,7 +450,7 @@ class TranslationImprovementSuggester {
     
     // 简化的ROI计算：假设每完成一个建议可以提升5%的用户满意度
     const satisfactionGain = completedSuggestions.length * 5;
-    const timeCost = totalTime; // 假设每小时成本为单位1
+    const timeCost = totalTime; // 假设每小时成本为单位1;
     
     return timeCost > 0 ? satisfactionGain / timeCost : 0;
   }
@@ -458,7 +459,7 @@ class TranslationImprovementSuggester {
    * 获取质量指标
    */
   getQualityMetrics(): QualityMetrics {
-    const recentSuggestions = this.suggestions.filter(s => 
+    const recentSuggestions = this.suggestions.filter(s =>;
       s.createdAt.getTime() > Date.now() - 30 * 24 * 60 * 60 * 1000 // 最近30天
     );
     
@@ -583,13 +584,13 @@ class TranslationImprovementSuggester {
   } {
     const suggestions = this.suggestions.filter(s => suggestionIds.includes(s.id));
     
-    const estimatedSatisfactionGain = suggestions.reduce((sum, s) => 
+    const estimatedSatisfactionGain = suggestions.reduce((sum, s) =>;
       sum + s.impact.userSatisfaction * 0.1, 0); // 假设实现10%的潜在提升
-    const estimatedAccuracyGain = suggestions.reduce((sum, s) => 
+    const estimatedAccuracyGain = suggestions.reduce((sum, s) =>;
       sum + s.impact.accuracy * 0.1, 0);
-    const timeToImplementation = suggestions.reduce((sum, s) => 
+    const timeToImplementation = suggestions.reduce((sum, s) =>;
       sum + s.implementation.timeRequired, 0);
-    const roi = estimatedSatisfactionGain / (timeToImplementation * 10); // 简化ROI计算
+    const roi = estimatedSatisfactionGain / (timeToImplementation * 10); // 简化ROI计算;
     
     return {
       estimatedSatisfactionGain: Math.round(estimatedSatisfactionGain),

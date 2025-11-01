@@ -1,18 +1,16 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import PagePermission from '@/components/admin/PagePermission';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+'use client';
 
-interface SystemSetting {
+
+interface SystemSetting {}
   id: number;
   setting_key: string;
   setting_value: string;
@@ -23,9 +21,9 @@ interface SystemSetting {
   is_active: boolean;
   created_at: string;
   updated_at: string;
-}
 
-interface RewardConfig {
+
+interface RewardConfig {}
   id: string;
   config_name: string;
   category: string;
@@ -44,9 +42,9 @@ interface RewardConfig {
   priority: number;
   created_at: string;
   updated_at: string;
-}
 
-interface RiskConfig {
+
+interface RiskConfig {}
   id: string;
   config_name: string;
   category: string;
@@ -63,9 +61,9 @@ interface RiskConfig {
   priority: number;
   created_at: string;
   updated_at: string;
-}
 
-interface FeatureFlag {
+
+interface FeatureFlag {}
   id: string;
   flag_name: string;
   flag_key: string;
@@ -82,9 +80,9 @@ interface FeatureFlag {
   priority: number;
   created_at: string;
   updated_at: string;
-}
 
-interface OperationConfig {
+
+interface OperationConfig {}
   id: string;
   config_name: string;
   category: string;
@@ -107,9 +105,9 @@ interface OperationConfig {
   priority: number;
   created_at: string;
   updated_at: string;
-}
 
-function SystemSettingsPage() {
+
+function SystemSettingsPage() {}
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('system');
   const [loading, setLoading] = useState(false);
@@ -123,18 +121,18 @@ function SystemSettingsPage() {
   const [featureFlags, setFeatureFlags] = useState<FeatureFlag[]>([]);
   const [operationConfigs, setOperationConfigs] = useState<OperationConfig[]>([]);
 
-  useEffect(() => {
+  useEffect(() => {}
     const token = localStorage.getItem('admin_token');
-    if (!token) {
+    if (!token) {}
       router.push('/admin');
       return;
-    }
+    
     loadAllData();
   }, [router]);
 
-  const loadAllData = async () => {
+  const loadAllData = async () => {}
     setLoading(true);
-    try {
+    try {}
       await Promise.all([
         fetchSystemSettings(),
         fetchRewardConfigs(),
@@ -147,130 +145,130 @@ function SystemSettingsPage() {
       setError('加载数据失败');
     } finally {
       setLoading(false);
-    }
+    
   };
 
-  const fetchSystemSettings = async () => {
-    try {
+  const fetchSystemSettings = async () => {}
+    try {}
       const token = localStorage.getItem('admin_token');
-      const response = await fetch('/api/admin/settings/system', {
+      const response = await fetch('/api/admin/settings/system', {}
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      if (response.ok) {
+      if (response.ok) {}
         const data = await response.json();
         setSystemSettings(data.data || []);
-      }
+      
     } catch (error) {
       console.error('获取系统参数失败:', error);
-    }
+    
   };
 
-  const fetchRewardConfigs = async () => {
-    try {
+  const fetchRewardConfigs = async () => {}
+    try {}
       const token = localStorage.getItem('admin_token');
-      const response = await fetch('/api/admin/settings/rewards', {
+      const response = await fetch('/api/admin/settings/rewards', {}
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      if (response.ok) {
+      if (response.ok) {}
         const data = await response.json();
         setRewardConfigs(data.data || []);
-      }
+      
     } catch (error) {
       console.error('获取奖励配置失败:', error);
-    }
+    
   };
 
-  const fetchRiskConfigs = async () => {
-    try {
+  const fetchRiskConfigs = async () => {}
+    try {}
       const token = localStorage.getItem('admin_token');
-      const response = await fetch('/api/admin/settings/risk', {
+      const response = await fetch('/api/admin/settings/risk', {}
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      if (response.ok) {
+      if (response.ok) {}
         const data = await response.json();
         setRiskConfigs(data.data || []);
-      }
+      
     } catch (error) {
       console.error('获取风控配置失败:', error);
-    }
+    
   };
 
-  const fetchFeatureFlags = async () => {
-    try {
+  const fetchFeatureFlags = async () => {}
+    try {}
       const token = localStorage.getItem('admin_token');
-      const response = await fetch('/api/admin/settings/features', {
+      const response = await fetch('/api/admin/settings/features', {}
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      if (response.ok) {
+      if (response.ok) {}
         const data = await response.json();
         setFeatureFlags(data.data || []);
-      }
+      
     } catch (error) {
       console.error('获取功能开关失败:', error);
-    }
+    
   };
 
-  const fetchOperationConfigs = async () => {
-    try {
+  const fetchOperationConfigs = async () => {}
+    try {}
       const token = localStorage.getItem('admin_token');
-      const response = await fetch('/api/admin/settings/operation', {
+      const response = await fetch('/api/admin/settings/operation', {}
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      if (response.ok) {
+      if (response.ok) {}
         const data = await response.json();
         setOperationConfigs(data.data || []);
-      }
+      
     } catch (error) {
       console.error('获取运营配置失败:', error);
-    }
+    
   };
 
-  const toggleFeatureFlag = async (id: string, enabled: boolean) => {
-    try {
+  const toggleFeatureFlag = async (id: string, enabled: boolean) => {}
+    try {}
       const token = localStorage.getItem('admin_token');
-      const response = await fetch('/api/admin/settings/features', {
+      const response = await fetch('/api/admin/settings/features', {}
         method: 'PATCH',
-        headers: {
+        headers: {}
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
+        body: JSON.stringify({}
           id,
           enabled,
           reason: enabled ? '启用功能' : '禁用功能'
         })
       });
       
-      if (response.ok) {
+      if (response.ok) {}
         setMessage(`功能开关${enabled ? '启用' : '禁用'}成功`);
         await fetchFeatureFlags();
       } else {
         setError('操作失败');
-      }
+      
     } catch (error) {
       console.error('切换功能开关失败:', error);
       setError('操作失败');
-    }
+    
   };
 
-  const getStatusBadge = (isActive: boolean, isEnabled?: boolean) => {
-    if (isEnabled !== undefined) {
+  const getStatusBadge = (isActive: boolean, isEnabled?: boolean) => {}
+    if (isEnabled !== undefined) {}
       return isEnabled ? 
         <Badge className="bg-green-500">已启用</Badge> : 
         <Badge className="bg-red-500">已禁用</Badge>;
-    }
+    
     return isActive ? 
       <Badge className="bg-green-500">活跃</Badge> : 
       <Badge className="bg-gray-500">非活跃</Badge>;
   };
 
-  const getCategoryBadge = (category: string) => {
-    const categoryColors: { [key: string]: string } = {
+  const getCategoryBadge = (category: string) => {}
+    const categoryColors: { [key: string]: string } = {}
       'general': 'bg-blue-500',
       'newbie': 'bg-purple-500',
       'checkin': 'bg-green-500',
@@ -286,94 +284,94 @@ function SystemSettingsPage() {
     };
     
     const colorClass = categoryColors[category] || 'bg-gray-500';
-    return <Badge className={colorClass}>{category}</Badge>;
+    return <Badge className="{colorClass}>{category}</Badge>;"
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">加载中...</div>
+  if (loading) {}
+    return (;
+      <div className:"flex items-center justify-center min-h-screen">
+        <div className:"text-lg">加载中...</div>
       </div>
     );
-  }
+  
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">系统设置优化管理</h1>
-        <p className="text-gray-600">管理系统参数配置、奖励参数、风控参数、功能开关和运营参数</p>
+  return (;
+    <div className:"container mx-auto px-4 py-8">
+      <div className:"mb-8">
+        <h1 className:"text-3xl font-bold text-gray-900 mb-2">系统设置优化管理</h1>
+        <p className:"text-gray-600">管理系统参数配置、奖励参数、风控参数、功能开关和运营参数</p>
       </div>
 
-      {message && (
-        <Alert className="mb-4">
+      {message && (}
+        <Alert className:"mb-4">
           <AlertDescription>{message}</AlertDescription>
         </Alert>
-      )}
+      )
 
-      {error && (
-        <Alert className="mb-4">
+      {error && (}
+        <Alert className:"mb-4">
           <AlertDescription className="text-red-600">{error}</AlertDescription>
         </Alert>
-      )}
+      )
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="system">系统参数</TabsTrigger>
-          <TabsTrigger value="rewards">奖励参数</TabsTrigger>
-          <TabsTrigger value="risk">风控参数</TabsTrigger>
-          <TabsTrigger value="features">功能开关</TabsTrigger>
-          <TabsTrigger value="operation">运营参数</TabsTrigger>
+      <Tabs value:{activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className:"grid w-full grid-cols-5">
+          <TabsTrigger value:"system">系统参数</TabsTrigger>
+          <TabsTrigger value:"rewards">奖励参数</TabsTrigger>
+          <TabsTrigger value:"risk">风控参数</TabsTrigger>
+          <TabsTrigger value:"features">功能开关</TabsTrigger>
+          <TabsTrigger value:"operation">运营参数</TabsTrigger>
         </TabsList>
 
         {/* 系统参数配置 */}
-        <TabsContent value="system">
+        <TabsContent value:"system">
           <Card>
             <CardHeader>
               <CardTitle>系统参数配置</CardTitle>
               <CardDescription>管理系统的基础参数配置</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4">
-                {systemSettings.map((setting) => (
-                  <div key={setting.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
+              <div className:"grid gap-4">
+                {systemSettings.map((setting) => (}
+                  <div key:{setting.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className:"flex-1">
+                      <div className:"flex items-center gap-2 mb-1">
                         <h3 className="font-medium">{setting.setting_key}</h3>
                         {getCategoryBadge(setting.category)}
                       </div>
                       <p className="text-sm text-gray-600">{setting.description}</p>
-                      <p className="text-sm text-gray-800 mt-1">
+                      <p className:"text-sm text-gray-800 mt-1">
                         当前值: <span className="font-mono">{setting.setting_value}</span>
                       </p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className:"flex items-center gap-2">
                       {getStatusBadge(setting.is_active)}
                       <Badge variant="outline">{setting.setting_type}</Badge>
                     </div>
                   </div>
-                ))}
+                ))
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* 奖励参数配置 */}
-        <TabsContent value="rewards">
+        <TabsContent value:"rewards">
           <Card>
             <CardHeader>
               <CardTitle>奖励参数配置</CardTitle>
               <CardDescription>管理系统各类奖励参数</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4">
-                {rewardConfigs.map((reward) => (
-                  <div key={reward.id} className="p-4 border rounded-lg">
-                    <div className="flex items-start justify-between mb-2">
+              <div className:"grid gap-4">
+                {rewardConfigs.map((reward) => (}
+                  <div key:{reward.id} className="p-4 border rounded-lg">
+                    <div className:"flex items-start justify-between mb-2">
                       <div>
                         <h3 className="font-medium">{reward.config_name}</h3>
                         <p className="text-sm text-gray-600">{reward.name_zh}</p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className:"flex items-center gap-2">
                         {getCategoryBadge(reward.category)}
                         {getStatusBadge(reward.is_active)}
                       </div>
@@ -397,29 +395,29 @@ function SystemSettingsPage() {
                       </div>
                     </div>
                   </div>
-                ))}
+                ))
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* 风控参数配置 */}
-        <TabsContent value="risk">
+        <TabsContent value:"risk">
           <Card>
             <CardHeader>
               <CardTitle>风控参数配置</CardTitle>
               <CardDescription>管理系统风控参数和策略</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4">
-                {riskConfigs.map((risk) => (
-                  <div key={risk.id} className="p-4 border rounded-lg">
-                    <div className="flex items-start justify-between mb-2">
+              <div className:"grid gap-4">
+                {riskConfigs.map((risk) => (}
+                  <div key:{risk.id} className="p-4 border rounded-lg">
+                    <div className:"flex items-start justify-between mb-2">
                       <div>
                         <h3 className="font-medium">{risk.config_name}</h3>
                         <p className="text-sm text-gray-600">风险类型: {risk.risk_type}</p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className:"flex items-center gap-2">
                         {getCategoryBadge(risk.category)}
                         {getStatusBadge(risk.is_active)}
                       </div>
@@ -447,35 +445,35 @@ function SystemSettingsPage() {
                       </div>
                     </div>
                   </div>
-                ))}
+                ))
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* 功能开关 */}
-        <TabsContent value="features">
+        <TabsContent value:"features">
           <Card>
             <CardHeader>
               <CardTitle>功能开关</CardTitle>
               <CardDescription>管理系统功能模块的开关控制</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4">
-                {featureFlags.map((flag) => (
-                  <div key={flag.id} className="p-4 border rounded-lg">
-                    <div className="flex items-start justify-between mb-2">
+              <div className:"grid gap-4">
+                {featureFlags.map((flag) => (}
+                  <div key:{flag.id} className="p-4 border rounded-lg">
+                    <div className:"flex items-start justify-between mb-2">
                       <div>
                         <h3 className="font-medium">{flag.flag_name}</h3>
                         <p className="text-sm text-gray-600">{flag.name_zh}</p>
                         <p className="text-xs text-gray-500 mt-1">Key: {flag.flag_key}</p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className:"flex items-center gap-2">
                         {getCategoryBadge(flag.category)}
                         {getStatusBadge(flag.is_active, flag.is_enabled)}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className:"flex items-center justify-between">
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div>
                           <span className="text-gray-600">推出比例:</span>
@@ -497,99 +495,99 @@ function SystemSettingsPage() {
                       <Button
                         onClick={() => toggleFeatureFlag(flag.id, !flag.is_enabled)}
                         variant={flag.is_enabled ? "destructive" : "default"}
-                        size="sm"
+                        size:"sm"
                       >
                         {flag.is_enabled ? '禁用' : '启用'}
                       </Button>
                     </div>
                   </div>
-                ))}
+                ))
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
         {/* 运营参数配置 */}
-        <TabsContent value="operation">
+        <TabsContent value:"operation">
           <Card>
             <CardHeader>
               <CardTitle>运营参数配置</CardTitle>
               <CardDescription>管理促销活动、用户限制、平台费率等运营参数</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4">
-                {operationConfigs.map((config) => (
-                  <div key={config.id} className="p-4 border rounded-lg">
-                    <div className="flex items-start justify-between mb-2">
+              <div className:"grid gap-4">
+                {operationConfigs.map((config) => (}
+                  <div key:{config.id} className="p-4 border rounded-lg">
+                    <div className:"flex items-start justify-between mb-2">
                       <div>
                         <h3 className="font-medium">{config.config_name}</h3>
                         <p className="text-sm text-gray-600">{config.name_zh}</p>
-                        {config.promo_code && (
+                        {config.promo_code && (}
                           <p className="text-xs text-blue-600 mt-1">促销代码: {config.promo_code}</p>
-                        )}
+                        )
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className:"flex items-center gap-2">
                         {getCategoryBadge(config.category)}
                         {getStatusBadge(config.is_active)}
                       </div>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm">
-                      {config.discount_percentage && (
+                      {config.discount_percentage && (}
                         <div>
                           <span className="text-gray-600">折扣:</span>
                           <p className="font-medium">{config.discount_percentage}%</p>
                         </div>
-                      )}
-                      {config.discount_amount && (
+                      )
+                      {config.discount_amount && (}
                         <div>
                           <span className="text-gray-600">折扣金额:</span>
                           <p className="font-medium">{config.discount_amount}</p>
                         </div>
-                      )}
-                      {config.platform_fee_rate && (
+                      )
+                      {config.platform_fee_rate && (}
                         <div>
                           <span className="text-gray-600">平台费率:</span>
                           <p className="font-medium">{(config.platform_fee_rate * 100).toFixed(2)}%</p>
                         </div>
-                      )}
-                      {config.daily_limit && (
+                      )
+                      {config.daily_limit && (}
                         <div>
                           <span className="text-gray-600">日限制:</span>
                           <p className="font-medium">{config.daily_limit}</p>
                         </div>
-                      )}
-                      {config.monthly_limit && (
+                      )
+                      {config.monthly_limit && (}
                         <div>
                           <span className="text-gray-600">月限制:</span>
                           <p className="font-medium">{config.monthly_limit}</p>
                         </div>
-                      )}
+                      )
                       <div>
                         <span className="text-gray-600">优先级:</span>
                         <p className="font-medium">{config.priority}</p>
                       </div>
                     </div>
                   </div>
-                ))}
+                ))
               </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
 
-      <div className="mt-8">
+      <div className:"mt-8">
         <Button onClick={loadAllData} variant="outline">
           刷新数据
         </Button>
       </div>
     </div>
   );
-}
 
-function WrappedSystemSettingsPage() {
-  return (
+
+function WrappedSystemSettingsPage() {}
+  return (;
     <PagePermission permissions={AdminPermissions.settings.write()}>
       <SystemSettingsPage />
     </PagePermission>
   );
-}
+

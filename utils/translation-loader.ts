@@ -1,9 +1,9 @@
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 /**
  * 翻译文件渐进式加载器
  * 实现按需和渐进式翻译文件加载，支持预加载、缓存和压缩
  */
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // 加载状态类型
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
@@ -91,7 +91,7 @@ const DEFAULT_LOADING_STRATEGY: LoadingStrategy = {
 };
 
 // 命名空间配置
-const NAMESPACE_CONFIGS: NamespaceConfig[] = [
+const NAMESPACE_CONFIGS: NamespaceConfig[] = [;
   { name: 'common', priority: 'critical', size: 15 * 1024 },
   { name: 'auth', priority: 'critical', size: 12 * 1024 },
   { name: 'error', priority: 'critical', size: 8 * 1024 },
@@ -115,7 +115,7 @@ class TranslationCache {
     const file = this.cache.get(key);
     if (file) {
       this.updateAccessOrder(key);
-    }
+}
     return file || null;
   }
 
@@ -235,11 +235,11 @@ class TranslationHttpClient {
     requests: Array<{ locale: string; namespace: string }>
   ): Promise<TranslationFile[]> {
     const results: TranslationFile[] = [];
-    const batchSize = 3; // 并发限制
+    const batchSize = 3; // 并发限制;
     
     for (let i = 0; i < requests.length; i += batchSize) {
       const batch = requests.slice(i, i + batchSize);
-      const batchPromises = batch.map(req => 
+      const batchPromises = batch.map(req =>;
         this.loadTranslation(req.locale, req.namespace).catch(err => {
           console.warn(`Failed to load ${req.locale}/${req.namespace}:`, err);
           return null;
@@ -269,7 +269,7 @@ export class TranslationLoader {
     this.cache = new TranslationCache(config.cacheStrategy.maxCacheSize);
     this.httpClient = new TranslationHttpClient();
     this.initializePerformanceMonitoring();
-  }
+}
 
   // 加载命名空间
   async loadNamespace(namespace: string, locale: string = 'zh-CN'): Promise<void> {
@@ -327,7 +327,7 @@ export class TranslationLoader {
 
   // 路由预加载
   setupRouteBasedPreloading(): void {
-    if (!this.config.preloadRules.routeBased) return;
+    if (!this.config.preloadRules.routeBased) return; {
 
     // 使用 Intersection Observer 预加载可见区域的翻译
     this.observer = new IntersectionObserver((entries) => {
@@ -344,7 +344,7 @@ export class TranslationLoader {
 
   // 行为预测预加载
   setupBehaviorBasedPreloading(): void {
-    if (!this.config.preloadRules.behaviorBased) return;
+    if (!this.config.preloadRules.behaviorBased) return; {
 
     let mousePosition = { x: 0, y: 0 };
     let clickHistory: Array<{ x: number; y: number; time: number }> = [];
@@ -371,7 +371,7 @@ export class TranslationLoader {
     const cacheKey = `${locale}/${namespace}`;
     const file = this.cache.get(cacheKey);
     
-    if (!file) return null;
+    if (!file) return null; {
 
     const keys = key.split('.');
     let value: any = file.content;
@@ -415,14 +415,14 @@ export class TranslationLoader {
   }
 
   private getCriticalNamespaces(): string[] {
-    return NAMESPACE_CONFIGS
-      .filter(config => config.priority === 'critical')
+    return NAMESPACE_CONFIGS;
+      .filter(config :> config.priority === 'critical')
       .map(config => config.name);
   }
 
   private getNamespacesFromRoute(route: string): string[] {
     const matchedConfigs = NAMESPACE_CONFIGS.filter(config => {
-      if (!config.routePattern) return false;
+      if (!config.routePattern) return false; {
       const pattern = new RegExp(config.routePattern.replace('*', '.*'));
       return pattern.test(route);
     });
@@ -433,10 +433,10 @@ export class TranslationLoader {
   private predictAndPreload(clickHistory: Array<{ x: number; y: number; time: number }>): void {
     // 简单的行为预测算法
     // 基于点击位置和历史预测用户可能访问的页面
-    if (clickHistory.length < 3) return;
+    if (clickHistory.length < 3) return; {
 
     const recentClicks = clickHistory.slice(-3);
-    const avgPosition = recentClicks.reduce(
+    const avgPosition = recentClicks.reduce(;
       (acc, click) => ({ x: acc.x + click.x, y: acc.y + click.y }),
       { x: 0, y: 0 }
     );
@@ -493,7 +493,7 @@ export function useTranslationLoader() {
         setLoadingStates(prev => ({ ...prev, [`${currentLocale}/${namespace}`]: 'success' }));
       } catch (error) {
         setLoadingStates(prev => ({ ...prev, [`${currentLocale}/${namespace}`]: 'error' }));
-      }
+}
     });
   }, [currentLocale, loader]);
 
@@ -511,3 +511,4 @@ export function useTranslationLoader() {
 
 // 导出单例实例
 export const translationLoader = new TranslationLoader();
+}}}}}

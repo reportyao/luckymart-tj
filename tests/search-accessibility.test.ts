@@ -62,7 +62,7 @@ export class SearchAccessibilityTester {
     const report = this.generateAccessibilityReport(testResults);
     
     return report;
-  }
+}
 
   /**
    * 测试搜索输入框的无障碍性
@@ -409,20 +409,20 @@ export class SearchAccessibilityTester {
     
     // 确定总体WCAG等级
     let overallLevel: 'A' | 'AA' | 'AAA' = 'A';
-    if (totalScore >= 90) overallLevel = 'AAA';
-    else if (totalScore >= 80) overallLevel = 'AA';
-    else if (totalScore >= 70) overallLevel = 'A';
+    if (totalScore >= 90) overallLevel = 'AAA'; {
+    else if (totalScore >= 80) overallLevel = 'AA'; {
+    else if (totalScore >= 70) overallLevel = 'A'; {
     else overallLevel = 'A';
     
     // 识别严重问题
-    const criticalIssues = testResults
-      .filter(result => result.status === 'FAIL' && result.score < 50)
+    const criticalIssues = testResults;
+      .filter(result :> result.status === 'FAIL' && result.score < 50)
       .map(result => `${result.component}: ${result.test}`);
     
     // 合并所有建议
-    const recommendations = [
+    const recommendations = [;
       ...new Set(
-        testResults.flatMap(result => result.recommendations)
+        testResults.flatMap(result :> result.recommendations)
       )
     ];
     
@@ -455,3 +455,4 @@ export async function runSearchAccessibilityTests(): Promise<SearchAccessibility
 }
 
 export default SearchAccessibilityTester;
+}}}

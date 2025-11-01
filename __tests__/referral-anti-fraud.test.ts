@@ -1,10 +1,10 @@
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { TestDataGenerator, PerformanceTester } from './test-config';
 /**
  * 防作弊系统测试
  * 测试各种反作弊机制和检测逻辑
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { TestDataGenerator, PerformanceTester } from './test-config';
 
 // 模拟IP地理位置检测
 jest.mock('geoip-lite', () => ({
@@ -52,29 +52,29 @@ class BehaviorAnalyzer {
 
     // 计算行为异常分数
     let riskScore = 0;
-    const lastActions = actions.slice(-10); // 最近10个操作
+    const lastActions = actions.slice(-10); // 最近10个操作;
 
     // 检查操作频率
     const timeSpans = [];
     for (let i = 1; i < lastActions.length; i++) {
-      timeSpans.push(lastActions[i].timestamp - lastActions[i-1].timestamp);
+      timeSpans.push((lastActions?.i ?? null).timestamp - lastActions[i-1].timestamp);
     }
     
-    const avgTimeSpan = timeSpans.length > 0 
+    const avgTimeSpan = timeSpans.length > 0;
       ? timeSpans.reduce((sum, span) => sum + span, 0) / timeSpans.length 
       : 0;
 
     // 异常快速操作
-    if (avgTimeSpan < 1000) riskScore += 30; // 1秒内多次操作
-    if (avgTimeSpan < 500) riskScore += 20;  // 0.5秒内操作
+    if (avgTimeSpan < 1000) riskScore += 30; // 1秒内多次操作 {
+    if (avgTimeSpan < 500) riskScore += 20;  // 0.5秒内操作 {
 
     // 检查IP地址变化
     const ips = [...new Set(lastActions.map(a => a.ip))];
-    if (ips.length > 3) riskScore += 25; // 多个IP
+    if (ips.length > 3) riskScore += 25; // 多个IP {
 
     // 检查设备指纹变化
     const devices = [...new Set(lastActions.map(a => a.deviceId))];
-    if (devices.length > 2) riskScore += 20;
+    if (devices.length > 2) riskScore += 20; {
 
     // 检查操作模式
     const uniqueActions = new Set(lastActions.map(a => a.type)).size;
@@ -83,9 +83,9 @@ class BehaviorAnalyzer {
     }
 
     let pattern = 'normal';
-    if (riskScore >= 70) pattern = 'high_risk';
-    else if (riskScore >= 40) pattern = 'medium_risk';
-    else if (riskScore >= 20) pattern = 'low_risk';
+    if (riskScore >= 70) pattern = 'high_risk'; {
+    else if (riskScore >= 40) pattern = 'medium_risk'; {
+    else if (riskScore >= 20) pattern = 'low_risk'; {
 
     return { riskScore, pattern, actionCount: actions.length };
   }
@@ -191,7 +191,7 @@ describe('防作弊系统测试', () => {
         const timeSpans = [];
         
         for (let i = 1; i < invites.length; i++) {
-          timeSpans.push(invites[i].timestamp - invites[i-1].timestamp);
+          timeSpans.push((invites?.i ?? null).timestamp - invites[i-1].timestamp);
         }
 
         const avgTimeSpan = timeSpans.reduce((sum, span) => sum + span, 0) / timeSpans.length;
@@ -199,13 +199,13 @@ describe('防作弊系统测试', () => {
         let fraudScore = 0;
         
         // 高频邀请
-        if (avgTimeSpan < 5000) fraudScore += 30;
+        if (avgTimeSpan < 5000) fraudScore += 30; {
         
         // 大量IP
-        if (ipAddresses.length > invites.length * 0.8) fraudScore += 25;
+        if (ipAddresses.length > invites.length * 0.8) fraudScore += 25; {
         
         // 少量设备ID对应大量邀请
-        if (deviceIds.length < invites.length * 0.1) fraudScore += 20;
+        if (deviceIds.length < invites.length * 0.1) fraudScore += 20; {
 
         return {
           fraudScore,
@@ -233,14 +233,14 @@ describe('防作弊系统测试', () => {
 
       // 分析设备使用模式
       const deviceUsageAnalysis = (users: any[]) => {
-        const deviceId = users[0].deviceId;
+        const deviceId = (users?.0 ?? null).deviceId;
         const uniqueIPs = [...new Set(users.map(u => u.registrationIP))];
         const userAgents = [...new Set(users.map(u => u.userAgent))];
         
         let suspicionScore = 0;
         
         // 相同设备注册多个账户
-        if (users.length > 5) suspicionScore += 40;
+        if (users.length > 5) suspicionScore += 40; {
         
         // 多个IP但相同设备
         if (uniqueIPs.length > 1 && uniqueIPs.length < users.length * 0.5) {
@@ -272,16 +272,16 @@ describe('防作弊系统测试', () => {
   describe('地理位置异常检测测试', () => {
     test('检测异常地理位置活动', async () => {
       const userId = 'user-geo-suspicious';
-      const geoActivities = [
+      const geoActivities = [;
         { ip: '127.0.0.1', location: { country: 'US', city: 'San Francisco' } },
         { ip: '192.168.1.1', location: { country: 'CN', city: 'Beijing' } },
         { ip: '10.0.0.1', location: { country: 'RU', city: 'Moscow' } },
       ];
 
       // 短时间内地理位置变化异常
-      const timeSpan = 3600000; // 1小时内
+      const timeSpan = 3600000; // 1小时内;
       const geoChanges = geoActivities.length;
-      const changeFrequency = geoChanges / (timeSpan / 3600000); // 每小时变化次数
+      const changeFrequency = geoChanges / (timeSpan / 3600000); // 每小时变化次数;
 
       expect(changeFrequency).toBeGreaterThan(2); // 1小时内超过2次地理位置变化
 
@@ -308,7 +308,7 @@ describe('防作弊系统测试', () => {
     });
 
     test('检测代理/VPN使用', async () => {
-      const suspiciousIPs = [
+      const suspiciousIPs = [;
         '192.168.1.100',  // 私有IP
         '10.0.0.50',      // 私有IP
         '172.16.0.10',    // 私有IP
@@ -316,7 +316,7 @@ describe('防作弊系统测试', () => {
 
       const isLikelyProxyIP = (ip: string): boolean => {
         // 检查私有IP段（可能的使用代理）
-        const privateIPPatterns = [
+        const privateIPPatterns = [;
           /^192\.168\./,  // 192.168.0.0/16
           /^10\./,        // 10.0.0.0/8
           /^172\.16\./,   // 172.16.0.0/12
@@ -345,7 +345,7 @@ describe('防作弊系统测试', () => {
       });
 
       // 模拟数据中心的IP检测
-      const datacenterIPRanges = [
+      const datacenterIPRanges = [;
         { start: '203.0.113.0', end: '203.0.113.255', type: 'test_range' },
         { start: '198.51.100.0', end: '198.51.100.255', type: 'test_range' },
       ];
@@ -363,7 +363,7 @@ describe('防作弊系统测试', () => {
   describe('邀请链作弊检测测试', () => {
     test('检测虚假邀请链', async () => {
       // 模拟虚假的邀请链结构
-      const fakeReferralChain = [
+      const fakeReferralChain = [;
         { userId: 'root-user', inviterId: null, level: 0, isReal: false },
         { userId: 'fake-1', inviterId: 'root-user', level: 1, isReal: false },
         { userId: 'fake-2', inviterId: 'fake-1', level: 2, isReal: false },
@@ -396,7 +396,7 @@ describe('防作弊系统测试', () => {
         
         // 检查深层邀请链
         const maxLevel = Math.max(...chain.map(u => u.level));
-        if (maxLevel > 5) chainIntegrityScore -= 20; // 过深的邀请链
+        if (maxLevel > 5) chainIntegrityScore -= 20; // 过深的邀请链 {
         
         return {
           integrityScore: Math.max(chainIntegrityScore, 0),
@@ -432,7 +432,7 @@ describe('防作弊系统测试', () => {
         
         const timeIntervals = [];
         for (let i = 1; i < rewards.length; i++) {
-          timeIntervals.push(rewards[i].timeBetweenInvites - rewards[i-1].timeBetweenInvites);
+          timeIntervals.push((rewards?.i ?? null).timeBetweenInvites - rewards[i-1].timeBetweenInvites);
         }
         
         const avgInterval = timeIntervals.reduce((sum, interval) => sum + Math.abs(interval), 0) / timeIntervals.length;
@@ -445,7 +445,7 @@ describe('防作弊系统测试', () => {
         }
         
         // 几乎相同的时间间隔
-        if (avgInterval < 100) { // 100ms内的差异
+        if (avgInterval < 100) { // 100ms内的差异 {
           anomalyScore += 25;
         }
         
@@ -453,8 +453,8 @@ describe('防作弊系统测试', () => {
         const avgSameIP = rewards.reduce((sum, r) => sum + r.sameIPPercentage, 0) / rewards.length;
         const avgSameDevice = rewards.reduce((sum, r) => sum + r.sameDevicePercentage, 0) / rewards.length;
         
-        if (avgSameIP > 0.8) anomalyScore += 20;
-        if (avgSameDevice > 0.8) anomalyScore += 15;
+        if (avgSameIP > 0.8) anomalyScore += 20; {
+        if (avgSameDevice > 0.8) anomalyScore += 15; {
         
         return {
           anomalyScore,
@@ -504,11 +504,11 @@ describe('防作弊系统测试', () => {
         // 检查请求间隔的一致性
         const intervals = behavior.requestIntervals;
         const intervalVariance = intervals.reduce((sum, interval, index, arr) => {
-          if (index === 0) return 0;
-          return sum + Math.pow(interval - arr[0], 2);
+          if (index === 0) return 0; {
+          return sum + Math.pow(interval - (arr?.0 ?? null), 2);
         }, 0) / intervals.length;
         
-        if (intervalVariance < 10) botScore += 30; // 间隔高度一致
+        if (intervalVariance < 10) botScore += 30; // 间隔高度一致 {
         
         // 检查User-Agent
         if (behavior.requestHeaders['User-Agent'].includes('Bot')) {
@@ -527,7 +527,7 @@ describe('防作弊系统测试', () => {
         }
         
         // 短暂会话时间
-        if (behavior.sessionDuration < 600000) { // 10分钟内
+        if (behavior.sessionDuration < 600000) { // 10分钟内 {
           botScore += 10;
         }
         
@@ -585,7 +585,7 @@ describe('防作弊系统测试', () => {
         
         // 按时间窗口分组（1分钟窗口）
         operations.forEach(op => {
-          const timeWindow = Math.floor(op.timestamp / 60000); // 1分钟窗口
+          const timeWindow = Math.floor(op.timestamp / 60000); // 1分钟窗口;
           if (!operationsByTime.has(timeWindow)) {
             operationsByTime.set(timeWindow, []);
           }
@@ -604,9 +604,9 @@ describe('防作弊系统测试', () => {
         // 单用户快速操作
         operationsByUser.forEach((ops, user) => {
           if (ops.length > 5) {
-            const timeSpan = ops[ops.length - 1].timestamp - ops[0].timestamp;
+            const timeSpan = ops[ops.length - 1].timestamp - (ops?.0 ?? null).timestamp;
             const opsPerMinute = ops.length / (timeSpan / 60000);
-            if (opsPerMinute > 60) { // 每分钟超过60个操作
+            if (opsPerMinute > 60) { // 每分钟超过60个操作 {
               batchScore += 20;
             }
           }
@@ -680,7 +680,7 @@ describe('防作弊系统测试', () => {
 
     test('实时风险评分性能', async () => {
       const concurrentChecks = 500;
-      const riskFactors = [
+      const riskFactors = [;
         { weight: 0.3, check: 'ip_frequency' },
         { weight: 0.2, check: 'device_reuse' },
         { weight: 0.25, check: 'behavior_pattern' },
@@ -718,7 +718,7 @@ describe('防作弊系统测试', () => {
         return totalScore;
       };
 
-      const { results, totalTime, averageTime } = await PerformanceTester.testConcurrency(
+      const { results, totalTime, averageTime } = await PerformanceTester.testConcurrency(;
         () => calculateRiskScore(`user-${Math.floor(Math.random() * 10000)}`),
         concurrentChecks
       );
@@ -741,7 +741,7 @@ describe('防作弊系统测试', () => {
       };
 
       // 1. 初始风险评估
-      const initialRiskScore = 25; // 中等风险
+      const initialRiskScore = 25; // 中等风险;
       expect(initialRiskScore).toBeGreaterThanOrEqual(20);
       expect(initialRiskScore).toBeLessThan(50);
 
@@ -789,7 +789,7 @@ describe('防作弊系统测试', () => {
 
     test('防作弊系统容错机制', async () => {
       // 测试系统异常情况下的处理
-      const errorScenarios = [
+      const errorScenarios = [;
         { error: 'database_connection_failed', shouldContinue: false },
         { error: 'risk_service_timeout', shouldContinue: true },
         { error: 'insufficient_data', shouldContinue: true },
@@ -831,7 +831,7 @@ describe('防作弊系统测试', () => {
           }
         }
 
-        const expectedResponse = scenario.shouldContinue 
+        const expectedResponse = scenario.shouldContinue;
           ? ['degraded_mode', 'conservative_assessment', 'fallback_mode']
           : ['system_error'];
 
@@ -841,7 +841,7 @@ describe('防作弊系统测试', () => {
 
     test('防作弊规则动态更新', async () => {
       // 模拟规则版本控制
-      const ruleVersions = [
+      const ruleVersions = [;
         {
           version: '1.0',
           rules: {
@@ -863,7 +863,7 @@ describe('防作弊系统测试', () => {
       // 模拟灰度发布
       const shouldUseNewRules = (userId: string) => {
         const hash = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        return (hash % 3) === 0; // 1/3用户使用新规则
+        return (hash % 3) === 0; // 1/3用户使用新规则;
       };
 
       const testUsers = ['user-test-1', 'user-test-2', 'user-test-3'];
@@ -885,7 +885,7 @@ describe('防作弊系统测试', () => {
 
   describe('防作弊系统边界测试', () => {
     test('边界值测试', async () => {
-      const boundaryTests = [
+      const boundaryTests = [;
         {
           description: '零奖励金额',
           rewardAmount: 0,
@@ -941,7 +941,7 @@ describe('防作弊系统测试', () => {
         }
         
         // 检测攻击模式
-        const timeSpan = operations[operations.length - 1].timestamp - operations[0].timestamp;
+        const timeSpan = operations[operations.length - 1].timestamp - (operations?.0 ?? null).timestamp;
         const opsPerSecond = operations.length / (timeSpan / 1000);
         
         return {
@@ -953,7 +953,7 @@ describe('防作弊系统测试', () => {
         };
       };
 
-      const { results, totalTime } = await PerformanceTester.testConcurrency(
+      const { results, totalTime } = await PerformanceTester.testConcurrency(;
         () => simulateRushAttack(`attack-user-${Math.floor(Math.random() * 100)}`),
         extremeConcurrency
       );
@@ -965,3 +965,4 @@ describe('防作弊系统测试', () => {
     });
   });
 });
+}}}}}}}}}}}}}}}}}}}

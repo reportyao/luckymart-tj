@@ -1,9 +1,9 @@
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 /**
  * 弱网环境优化系统综合测试
  * 测试Service Worker、离线缓存、IndexedDB、网络状态检测等核心功能
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 
 // Mock fetch for testing
 global.fetch = jest.fn();
@@ -286,7 +286,7 @@ describe('弱网环境优化系统', () => {
     });
 
     test('应该支持批处理请求', async () => {
-      const requests = [
+      const requests = [;
         '/api/user/1',
         '/api/user/2',
         '/api/user/3',
@@ -331,7 +331,7 @@ describe('弱网环境优化系统', () => {
           result = await fetch('/api/test');
           break;
         } catch (error) {
-          if (i === maxAttempts - 1) throw error;
+          if (i === maxAttempts - 1) throw error; {
           await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
         }
       }
@@ -341,7 +341,7 @@ describe('弱网环境优化系统', () => {
     });
 
     test('应该支持指数退避策略', async () => {
-      const delays = [1000, 2000, 4000]; // 1s, 2s, 4s
+      const delays = [1000, 2000, 4000]; // 1s, 2s, 4s;
 
       for (let i = 0; i < delays.length; i++) {
         const delay = delays[i];
@@ -354,7 +354,7 @@ describe('弱网环境优化系统', () => {
       let processing = false;
 
       const processQueue = async () => {
-        if (processing || queue.length === 0) return;
+        if (processing || queue.length === 0) return; {
         processing = true;
 
         const request = queue.shift();
@@ -441,7 +441,7 @@ describe('弱网环境优化系统', () => {
     });
 
     test('应该监控离线操作数量', async () => {
-      const offlineOperations = [
+      const offlineOperations = [;
         { type: 'CREATE', resource: 'user' },
         { type: 'UPDATE', resource: 'profile' },
         { type: 'DELETE', resource: 'cart-item' },
@@ -536,7 +536,7 @@ describe('弱网环境集成测试', () => {
     // 5. 同步离线操作
     const offlineOps = JSON.parse(localStorage.getItem('offline-ops') || '[]');
     expect(offlineOps).toHaveLength(1);
-    expect(offlineOps[0].id).toBe('op-offline-1');
+    expect((offlineOps?.0 ?? null).id).toBe('op-offline-1');
   });
 
   test('缓存数据一致性验证', async () => {
@@ -554,7 +554,7 @@ describe('弱网环境集成测试', () => {
 
   test('网络质量自适应', async () => {
     // 模拟不同网络条件下的行为
-    const networkConditions = [
+    const networkConditions = [;
       { type: 'slow-2g', expectedBehavior: 'max-compression' },
       { type: '3g', expectedBehavior: 'compression' },
       { type: '4g', expectedBehavior: 'normal' },
@@ -567,3 +567,4 @@ describe('弱网环境集成测试', () => {
     });
   });
 });
+}}

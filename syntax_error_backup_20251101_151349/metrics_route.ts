@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       where: {
         date: {
           gte: startDate
-        }
+}
       },
       orderBy: {
         date: 'desc'

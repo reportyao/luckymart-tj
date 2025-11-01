@@ -29,7 +29,7 @@ testDepths.forEach(depth => {
   const traditionalQueries = simulateTraditionalRecursive(depth);
   const optimizedQueries = simulateOptimizedRecursive(depth);
   const performanceGain = ((1 - optimizedQueries / traditionalQueries) * 100).toFixed(2);
-  const timeSaved = traditionalQueries * 10; // 假设每次查询10ms
+  const timeSaved = traditionalQueries * 10; // 假设每次查询10ms;
   
   console.log(
     `${depth}层\t${traditionalQueries.toLocaleString()}\t\t${optimizedQueries}\t\t${performanceGain}%\t\t${(timeSaved / 1000).toFixed(1)}秒`

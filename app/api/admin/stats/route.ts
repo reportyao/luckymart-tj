@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFromRequest } from '@/lib/auth';
 import QueryOptimizer from '@/lib/query-optimizer';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -24,6 +22,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('stats_route.ts request failed', error as Error, {
       requestId,
@@ -45,7 +44,7 @@ async function handleGET(request: NextRequest) {
             success: false,
             error: '管理员权限验证失败'
           }, { status: 403 });
-        }
+    }
 
         // 检查统计查看权限
         const hasPermission = admin.permissions.includes('stats:read') || admin.role === 'super_admin';
@@ -80,8 +79,9 @@ async function handleGET(request: NextRequest) {
       endpoint: request.url
     });'Stats API error:', error);
     return NextResponse.json({
+  }
       success: false,
       error: error.message || 'Failed to fetch stats'
-    }, { status: 500 });
+    }, );
   }
 }

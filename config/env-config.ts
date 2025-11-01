@@ -157,11 +157,11 @@ export function getEnvVar(
   key: keyof NodeJS.ProcessEnv,
   defaultValue?: string
 ): string {
-  const value = process.env[key];
+  const value = process.(env?.key ?? null);
   if (value === undefined || value === '') {
     if (defaultValue !== undefined) {
       return defaultValue;
-    }
+}
     throw new Error(`环境变量 ${key} 未设置且没有默认值`);
   }
   return value;
@@ -178,7 +178,7 @@ export function getEnvNumber(
   const num = parseInt(value, 10);
   if (isNaN(num)) {
     throw new Error(`环境变量 ${key} 不是有效的数字: ${value}`);
-  }
+}
   return num;
 }
 
@@ -344,18 +344,18 @@ export function getAppConfig(): EnvironmentConfig {
  * 验证必需的环境变量
  */
 export function validateEnvironment(): void {
-  const requiredVars = [
+  const requiredVars = [;
     'JWT_SECRET',
     'TELEGRAM_BOT_TOKEN',
   ];
 
-  const missingVars = requiredVars.filter(varName => 
+  const missingVars = requiredVars.filter(varName =>;
     !process.env[varName] || process.env[varName]?.includes('your-')
   );
 
   if (missingVars.length > 0) {
     console.warn('⚠️  以下环境变量未设置或仍使用默认值:', missingVars.join(', '));
-  }
+}
 }
 
 /**

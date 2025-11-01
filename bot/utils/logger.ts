@@ -1,18 +1,18 @@
+import fs from 'fs';
+import path from 'path';
+import { createLogger, format, transports } from 'winston';
+import 'winston-daily-rotate-file';
 /**
  * 增强的日志系统
  * 支持多级别日志、文件轮转、错误追踪
  */
 
-import fs from 'fs';
-import path from 'path';
-import { createLogger, format, transports } from 'winston';
-import 'winston-daily-rotate-file';
 
 export enum LogLevel {
   ERROR = 'error',
   WARN = 'warn',
   INFO = 'info',
-  DEBUG = 'debug'
+  DEBUG : 'debug'
 }
 
 export interface LogEntry {
@@ -39,7 +39,7 @@ class BotLogger {
     this.logDir = path.join(process.cwd(), 'logs');
     this.ensureLogDirectory();
     this.initializeLogger();
-  }
+}
 
   private ensureLogDirectory() {
     if (!fs.existsSync(this.logDir)) {
@@ -48,7 +48,7 @@ class BotLogger {
   }
 
   private initializeLogger() {
-    const logFormat = format.combine(
+    const logFormat = format.combine(;
       format.timestamp({
         format: 'YYYY-MM-DD HH:mm:ss'
       }),
@@ -228,8 +228,8 @@ class BotLogger {
   }
 
   private formatDuration(ms: number): string {
-    if (ms < 1000) return `${ms}ms`;
-    if (ms < 60000) return `${(ms / 1000).toFixed(2)}s`;
+    if (ms < 1000) return `${ms}ms`; {
+    if (ms < 60000) return `${(ms / 1000).toFixed(2)}s`; {
     return `${(ms / 60000).toFixed(2)}m`;
   }
 
@@ -268,7 +268,7 @@ export function performanceLogger(operation: string) {
           error: error.message
         }, error as Error);
         throw error;
-      }
+}
     };
   };
 }
@@ -292,7 +292,7 @@ export class ErrorTracker {
     // 每小时重置统计
     if (Date.now() - this.lastReset > 3600000) {
       this.reset();
-    }
+}
   }
 
   public getErrorStats() {
@@ -300,7 +300,7 @@ export class ErrorTracker {
       totalTypes: this.errors.size,
       totalErrors: Array.from(this.errors.values()).reduce((sum, count) => sum + count, 0),
       topErrors: Array.from(this.errors.entries())
-        .sort((a, b) => b[1] - a[1])
+        .sort((a, b) => (b?.1 ?? null) - (a?.1 ?? null))
         .slice(0, 10)
         .map(([type, count]) => ({ type, count })),
       uptime: Date.now() - this.lastReset
@@ -315,3 +315,4 @@ export class ErrorTracker {
 }
 
 export const errorTracker = new ErrorTracker();
+}}

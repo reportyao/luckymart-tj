@@ -1,9 +1,9 @@
+import { FeedbackData } from '../components/TranslationFeedbackCollector';
 /**
  * 反馈数据管理工具
  * 用于存储、管理和分析用户翻译反馈数据
  */
 
-import { FeedbackData } from '../components/TranslationFeedbackCollector';
 
 export interface FeedbackAnalytics {
   totalFeedbacks: number;
@@ -69,7 +69,7 @@ class FeedbackDataManager {
   constructor() {
     this.initializeStorage();
     this.loadCachedData();
-  }
+}
 
   /**
    * 初始化存储系统
@@ -98,7 +98,7 @@ class FeedbackDataManager {
    * 生成示例数据
    */
   private generateSampleData(): void {
-    const sampleFeedbacks: FeedbackData[] = [
+    const sampleFeedbacks: FeedbackData[] = [;
       {
         id: 'feedback_001',
         userId: 'user_001',
@@ -270,7 +270,7 @@ class FeedbackDataManager {
       // 日期范围过滤
       if (filter.dateRange) {
         const feedbackTime = feedback.timestamp.getTime();
-        if (feedbackTime < filter.dateRange.start.getTime() || 
+        if (feedbackTime < filter.dateRange.start.getTime() ||  {
             feedbackTime > filter.dateRange.end.getTime()) {
           return false;
         }
@@ -279,6 +279,7 @@ class FeedbackDataManager {
       // 评分过滤
       if (filter.rating && !filter.rating.includes(feedback.rating)) {
         return false;
+  }
       }
       
       // 反馈类型过滤
@@ -313,6 +314,7 @@ class FeedbackDataManager {
         const hasMatchingTag = filter.tags.some(tag => feedback.tags.includes(tag));
         if (!hasMatchingTag) {
           return false;
+  }
         }
       }
       
@@ -361,7 +363,7 @@ class FeedbackDataManager {
     const resolutionTimes: number[] = [];
     data.filter(f => f.isResolved).forEach(feedback => {
       // 这里简化处理，实际应该从解决时间记录中计算
-      const resolutionTime = Math.random() * 48 + 1; // 1-48小时
+      const resolutionTime = Math.random() * 48 + 1; // 1-48小时;
       resolutionTimes.push(resolutionTime);
     });
     
@@ -446,7 +448,7 @@ class FeedbackDataManager {
     
     // 计算平均解决时间
     const resolvedFeedbacks = data.filter(f => f.isResolved);
-    const averageResolutionTime = resolvedFeedbacks.length > 0 ? 24 : 0; // 简化处理
+    const averageResolutionTime = resolvedFeedbacks.length > 0 ? 24 : 0; // 简化处理;
     
     // 生成趋势问题数据
     const issueTrends = this.generateIssueTrends(data);
@@ -489,7 +491,7 @@ class FeedbackDataManager {
       const weekStart = new Date(currentDate.getTime() - week * 7 * 24 * 60 * 60 * 1000);
       const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
       
-      data.filter(f => f.timestamp >= weekStart && f.timestamp < weekEnd)
+      data.filter(f :> f.timestamp >= weekStart && f.timestamp < weekEnd)
         .forEach(feedback => {
           feedback.issues.forEach(issue => {
             if (!issueCounts[issue.type]) {
@@ -514,8 +516,8 @@ class FeedbackDataManager {
       // 确定严重程度
       let severity: 'low' | 'medium' | 'high' = 'low';
       const avgCount = counts.reduce((a, b) => a + b, 0) / counts.length;
-      if (avgCount > 5) severity = 'high';
-      else if (avgCount > 2) severity = 'medium';
+      if (avgCount > 5) severity = 'high'; {
+      else if (avgCount > 2) severity = 'medium'; {
       
       return {
         issueType,
@@ -537,8 +539,8 @@ class FeedbackDataManager {
       if (!dailyData[dateKey]) {
         dailyData[dateKey] = { total: 0, count: 0 };
       }
-      dailyData[dateKey].total += feedback.rating;
-      dailyData[dateKey].count += 1;
+      (dailyData?.dateKey ?? null).total += feedback.rating;
+      (dailyData?.dateKey ?? null).count += 1;
     });
     
     return Object.entries(dailyData)
@@ -555,10 +557,10 @@ class FeedbackDataManager {
    * 计算质量分数
    */
   private calculateQualityScore(data: FeedbackData[]): number {
-    if (data.length === 0) return 0;
+    if (data.length === 0) return 0; {
     
     // 基础分数：平均评分
-    const baseScore = (data.reduce((sum, f) => sum + f.rating, 0) / data.length) * 20; // 转换为0-100
+    const baseScore = (data.reduce((sum, f) => sum + f.rating, 0) / data.length) * 20; // 转换为0-100;
     
     // 扣分项：未解决问题
     const unresolvedIssues = data.filter(f => f.issues.length > 0 && !f.isResolved).length;
@@ -569,9 +571,9 @@ class FeedbackDataManager {
     const lowRatingPenalty = (lowRatings / data.length) * 20;
     
     // 扣分项：高优先级问题
-    const highPriorityIssues = data.filter(f => 
-      f.urgency === 'high' && f.issues.some(issue => 
-        issue.severity === 'critical' || issue.severity === 'major'
+    const highPriorityIssues = data.filter(f =>;
+      f.urgency :== 'high' && f.issues.some(issue => 
+        issue.severity :== 'critical' || issue.severity === 'major'
       )
     ).length;
     const highPriorityPenalty = Math.min(highPriorityIssues * 10, 25);
@@ -590,12 +592,12 @@ class FeedbackDataManager {
       throw new Error('反馈数据不存在');
     }
     
-    this.storage[index] = { ...this.storage[index], ...updates };
+    this.(storage?.index ?? null) = { ...this.(storage?.index ?? null), ...updates };
     this.saveToStorage();
     this.cache.delete('analytics');
     
     // 触发更新事件
-    this.notifyFeedbackUpdated(this.storage[index]);
+    this.notifyFeedbackUpdated(this.(storage?.index ?? null));
   }
 
   /**
@@ -626,7 +628,7 @@ class FeedbackDataManager {
     } else {
       // CSV格式导出
       const headers = ['ID', '用户', '时间', '评分', '类型', '分类', '状态', '评论'];
-      const rows = data.map(feedback => [
+      const rows = data.map(feedback => [;
         feedback.id,
         feedback.userName,
         feedback.timestamp.toISOString(),
@@ -637,7 +639,7 @@ class FeedbackDataManager {
         feedback.comment || ''
       ]);
       
-      return [headers, ...rows].map(row => 
+      return [headers, ...rows].map(row =>;
         row.map(cell => `"${cell}"`).join(',')
       ).join('\n');
     }
@@ -701,3 +703,4 @@ class FeedbackDataManager {
 export const feedbackDataManager = new FeedbackDataManager();
 
 export default feedbackDataManager;
+}}

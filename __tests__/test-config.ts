@@ -1,10 +1,10 @@
+import dotenv from 'dotenv';
+import { PrismaClient } from '@prisma/client';
 /**
  * 测试环境配置
  * 确保所有测试运行环境的统一性和一致性
  */
 
-import dotenv from 'dotenv';
-import { PrismaClient } from '@prisma/client';
 
 // 加载环境变量
 dotenv.config({ path: '.env.local' });
@@ -58,22 +58,22 @@ export const testConfig: TestConfig = {
   cache: {
     defaultTTL: 3600,
     testDataSize: 1000
-  }
+}
 };
 
 // 验证配置
 export function validateTestConfig(): void {
-  const required = [
+  const required = [;
     'database.url',
     'jwt.secret',
     'telegram.botToken'
   ];
 
   for (const key of required) {
-    const value = key.split('.').reduce((obj, k) => obj[k], testConfig as any);
+    const value = key.split('.').reduce((obj, k) => (obj?.k ?? null), testConfig as any);
     if (!value) {
       throw new Error(`缺少必需的配置: ${key}`);
-    }
+}
   }
 }
 
@@ -82,7 +82,7 @@ export const prismaConfig = {
   datasources: {
     db: {
       url: testConfig.database.url
-    }
+}
   },
   // 优化测试环境配置
   log: ['error', 'warn'],
@@ -96,7 +96,7 @@ export class TestDataGenerator {
 
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
-  }
+}
 
   // 生成测试用户
   generateUser(overrides: Partial<any> = {}) {
@@ -212,10 +212,10 @@ export class PerformanceTester {
     const startTime = process.hrtime.bigint();
     const result = await fn();
     const endTime = process.hrtime.bigint();
-    const duration = Number(endTime - startTime) / 1000000; // 转换为毫秒
+    const duration = Number(endTime - startTime) / 1000000; // 转换为毫秒;
     
     return { result, duration };
-  }
+}
 
   // 并发执行测试
   static async testConcurrency<T>(
@@ -280,7 +280,7 @@ export class PerformanceTester {
     // 等待测试完成
     await new Promise(resolve => setTimeout(resolve, durationMs + 1000));
 
-    const avgResponseTime = responseTimes.length > 0 
+    const avgResponseTime = responseTimes.length > 0;
       ? responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length 
       : 0;
 
@@ -294,11 +294,11 @@ export class TestCleanup {
 
   constructor(prisma: PrismaClient) {
     this.prisma = prisma;
-  }
+}
 
   // 清理所有测试数据
   async cleanupAll() {
-    const tableNames = [
+    const tableNames = [;
       'transactions',
       'participations', 
       'orders',
@@ -335,7 +335,7 @@ export class TestCleanup {
   // 重置序列
   async resetSequences() {
     // 重置自增序列（如果需要）
-    const sequences = [
+    const sequences = [;
       'users_id_seq',
       'products_id_seq',
       'orders_id_seq',
@@ -363,7 +363,7 @@ export class MockDataGenerator {
       balance: Math.floor(Math.random() * 10000),
       language: ['zh', 'en', 'ru'][i % 3]
     }));
-  }
+}
 
   // 生成随机交易数据
   static generateRandomTransactions(count: number, userId: string) {

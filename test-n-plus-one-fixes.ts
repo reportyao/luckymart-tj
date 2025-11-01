@@ -1,9 +1,8 @@
+import QueryOptimizer from '../lib/query-optimizer';
+import { NPlusOneDetector, PerformanceTester } from '../lib/n-plus-one-detector';
 // N+1 查询修复验证测试
 // 测试各种场景下的查询性能
 
-import { prisma } from '../lib/prisma';
-import QueryOptimizer from '../lib/query-optimizer';
-import { NPlusOneDetector, PerformanceTester } from '../lib/n-plus-one-detector';
 
 export class NPlusOneFixValidator {
   // 测试用户列表查询优化
@@ -30,6 +29,7 @@ export class NPlusOneFixValidator {
       const stats = NPlusOneDetector.getStats();
       
       console.log('✅ 用户列表查询测试完成:');
+}
       console.log(`   📊 查询数量: ${stats.totalQueries} (期望: < 10)`);
       console.log(`   ⏱️ 执行时间: ${duration}ms (期望: < 1000ms)`);
       console.log(`   📋 返回记录: ${result.users.length}`);
@@ -38,6 +38,7 @@ export class NPlusOneFixValidator {
       const isOptimized = stats.totalQueries < 10 && duration < 1000;
       
       return {
+  }
         success: isOptimized,
         metrics: {
           queryCount: stats.totalQueries,
@@ -174,7 +175,7 @@ export class NPlusOneFixValidator {
   static async runAllTests() {
     console.log('🚀 开始 N+1 查询修复验证测试...\n');
     
-    const tests = [
+    const tests = [;
       { name: '用户列表优化', fn: this.testUserListOptimization },
       { name: '订单列表优化', fn: this.testOrderListOptimization },
       { name: '仪表板统计优化', fn: this.testDashboardStatsOptimization },

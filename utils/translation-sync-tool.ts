@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+import { EventEmitter } from 'events';
 /**
  * 翻译同步和发布工具
  * Translation Sync and Publish Tool
@@ -8,9 +11,6 @@
  * - 提供翻译更新的批量处理和回滚
  */
 
-import fs from 'fs';
-import path from 'path';
-import { EventEmitter } from 'events';
 
 export interface EnvironmentConfig {
   name: string;
@@ -123,7 +123,7 @@ export class TranslationSyncTool extends EventEmitter {
     
     this.initializeDirectories();
     this.setupEventListeners();
-  }
+}
 
   private initializeDirectories(): void {
     if (!fs.existsSync(this.tempDir)) {
@@ -270,7 +270,7 @@ export class TranslationSyncTool extends EventEmitter {
 
     if (options.dryRun) {
       // 干运行模式：并行执行
-      const promises = environmentNames.map(env => 
+      const promises = environmentNames.map(env =>;
         this.syncToEnvironment(env, { ...options, dryRun: true })
       );
       operationIds.push(...await Promise.all(promises));
@@ -408,6 +408,7 @@ export class TranslationSyncTool extends EventEmitter {
       const targetDeployment = this.deploymentHistory.find(d => d.deploymentId === targetDeploymentId);
       if (!targetDeployment) {
         throw new Error(`Deployment ${targetDeploymentId} not found`);
+  }
       }
 
       // 执行回滚
@@ -528,9 +529,10 @@ export class TranslationSyncTool extends EventEmitter {
     if (filters) {
       operations = operations.filter(op => {
         return Object.entries(filters).every(([key, value]) => {
-          if (!value) return true;
+          if (!value) return true; {
           if (key === 'environment') {
             return op.metadata.environments.includes(value);
+  }
           }
           if (key === 'user') {
             return op.metadata.user === value;
@@ -553,7 +555,7 @@ export class TranslationSyncTool extends EventEmitter {
       history = history.filter(d => d.environment === environmentName);
     }
 
-    return history
+    return history;
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, limit);
   }
@@ -654,7 +656,7 @@ export class TranslationSyncTool extends EventEmitter {
     syncFrequency: { date: string; operations: number }[];
   } {
     const cutoffDate = Date.now() - (days * 24 * 60 * 60 * 1000);
-    const recentOperations = this.listOperations().filter(op => 
+    const recentOperations = this.listOperations().filter(op =>;
       op.startTime && op.startTime >= cutoffDate
     );
 
@@ -772,7 +774,7 @@ export class TranslationSyncTool extends EventEmitter {
     const errors: string[] = [];
 
     for (let i = 0; i < operation.metadata.files.length; i++) {
-      const file = operation.metadata.files[i];
+      const file = operation.metadata.(files?.i ?? null);
       operation.progress = Math.round((i / operation.metadata.files.length) * 100);
 
       try {
@@ -882,7 +884,7 @@ export class TranslationSyncTool extends EventEmitter {
 
   private async getEnvironmentFiles(environmentName: string): Promise<SyncFile[]> {
     const environment = this.configs.get(environmentName);
-    if (!environment) return [];
+    if (!environment) return []; {
 
     // 简化实现 - 实际中需要从环境部署路径读取文件
     return await this.getFilesToSync({});

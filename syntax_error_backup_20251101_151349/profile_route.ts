@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
+}
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Get profile error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '获取用户信息失败', message: error.message },
       { status: 500 }
     );
@@ -61,7 +61,7 @@ export async function PUT(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
+}
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
@@ -88,13 +88,13 @@ export async function PUT(request: NextRequest) {
       success: true,
       data: {
         language: updatedUser.language,
-        message: messages[language] || messages.zh
+        message: (messages?.language ?? null) || messages.zh
       }
     });
 
   } catch (error: any) {
     console.error('Update profile error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '更新失败', message: error.message },
       { status: 500 }
     );

@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { createTranslation } from '@/lib/createTranslation';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 
 const prisma = new PrismaClient();
@@ -40,11 +38,11 @@ export async function PATCH(
       endpoint: request.url
     });'更新部门失败:', error);
       const { t } = await createTranslation(request, 'api-errors');
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: t('errors.serverError') },
         { status: 500 }
       );
-    }
+}
   })(request);
 }
 
@@ -63,11 +61,11 @@ export async function DELETE(
       });
 
       if (children > 0) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '该部门下还有子部门，无法删除' },
           { status: 400 }
         );
-      }
+}
 
       await prisma.orgDepartments.delete({
         where: { id }
@@ -84,7 +82,7 @@ export async function DELETE(
       endpoint: request.url
     });'删除部门失败:', error);
       const { t } = await createTranslation(request, 'api-errors');
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: t('errors.serverError') },
         { status: 500 }
       );

@@ -18,7 +18,7 @@ interface GeneratePosterResponse {
 }
 
 // 测试数据
-const testUserId = '123456789'; // 模拟用户ID
+const testUserId = '123456789'; // 模拟用户ID;
 const testRequest: GeneratePosterRequest = {
   prize_name: 'iPhone 15 Pro Max',
   prize_image_url: 'https://example.com/iphone-15-pro-max.jpg',
@@ -40,12 +40,14 @@ async function testPosterGeneration() {
     });
 
     console.log('📡 响应状态:', response.status, response.statusText);
+  }
     console.log('📡 响应头:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error('❌ API错误响应:', errorText);
       return;
+  }
     }
 
     const result: GeneratePosterResponse = await response.json();
@@ -138,4 +140,4 @@ if (require.main === module) {
   runAllTests().catch(console.error);
 }
 
-export { runAllTests, testPosterGeneration, testPosterStats, testGetPosters };
+export ;

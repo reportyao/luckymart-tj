@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
         success: true,
         data: stats
       });
-    }
+}
 
     if (type === 'mobile-issues') {
       const issues = getMobilePerformanceIssues({ timeRange, deviceType, pageUrl });
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Performance stats error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         error: '获取性能统计失败', 
         message: error.message 
@@ -282,7 +282,7 @@ function getMobileOptimizationRecommendations(filters: {
 
 // 辅助函数
 function calculateAverage(data: any[], field: string): number {
-  const values = data.map((item : any) => item[field]).filter(val => typeof val === 'number');
+  const values = data.map((item : any) => (item?.field ?? null)).filter(val => typeof val === 'number');
   return values.length > 0 ? values.reduce((sum: any,  val: any) => sum + val, 0) / values.length : 0;
 }
 
@@ -355,7 +355,7 @@ export async function DELETE(request: NextRequest) {
         success: true,
         message: '移动端性能监控数据已清除'
       });
-    }
+}
 
     if (type === 'old') {
       // 清除7天前的数据
@@ -386,7 +386,7 @@ export async function DELETE(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Clear performance data error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         error: '清除数据失败', 
         message: error.message 
@@ -429,7 +429,7 @@ export async function POST(request: NextRequest) {
       // 保持记录数量限制
       if (performanceStore.length > MAX_RECORDS) {
         performanceStore.splice(0, performanceStore.length - MAX_RECORDS);
-      }
+}
       
       // 发送告警（如果有问题）
       if (issues.length > 0) {
@@ -468,14 +468,15 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json(
+    return NextResponse.json(;
+  }
       { error: '无效的指标数据' },
       { status: 400 }
     );
 
   } catch (error: any) {
     console.error('Record metric error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         error: '记录指标失败', 
         message: error.message 
@@ -496,7 +497,7 @@ function calculatePerformanceScore(data: z.infer<typeof PerformanceMetricsSchema
   };
   
   const validScores = Object.values(scores).filter(score => score !== null) as number[];
-  const overallScore = validScores.length > 0 
+  const overallScore = validScores.length > 0;
     ? validScores.reduce((sum: any,  score: any) => sum + score, 0) / validScores.length 
     : 0;
   
@@ -508,8 +509,8 @@ function calculatePerformanceScore(data: z.infer<typeof PerformanceMetricsSchema
 
 // 获取单项指标评分
 function getScore(value: number, good: number, poor: number): number {
-  if (value <= good) return 100;
-  if (value >= poor) return 0;
+  if (value <= good) return 100; {
+  if (value >= poor) return 0; {
   return Math.round(((poor - value) / (poor - good)) * 100);
 }
 
@@ -654,4 +655,5 @@ function generateOptimizationRecommendations(data: z.infer<typeof PerformanceMet
   });
   
   return recommendations;
+}
 }

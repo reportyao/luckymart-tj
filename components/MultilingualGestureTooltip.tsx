@@ -1,11 +1,11 @@
-'use client';
-
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGestureI18n } from '../hooks/use-gesture-i18n';
 import { GestureEvent, SwipeDirection, GestureState } from '../utils/gesture-translations';
+'use client';
 
-interface MultilingualGestureTooltipProps {
+
+interface MultilingualGestureTooltipProps {}
   /** 触发元素 */
   children: React.ReactNode;
   
@@ -44,9 +44,9 @@ interface MultilingualGestureTooltipProps {
   
   /** 手势图标 */
   gestureIcon?: React.ReactNode;
-}
 
-const MultilingualGestureTooltip: React.FC<MultilingualGestureTooltipProps> = ({
+
+const MultilingualGestureTooltip: React.FC<MultilingualGestureTooltipProps> = ({}
   children,
   gestureType,
   direction,
@@ -65,7 +65,7 @@ const MultilingualGestureTooltip: React.FC<MultilingualGestureTooltipProps> = ({
   const [hasShown, setHasShown] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout>();
   
-  const {
+  const {}
     getSwipeText,
     getActionText,
     getStateText,
@@ -80,26 +80,26 @@ const MultilingualGestureTooltip: React.FC<MultilingualGestureTooltipProps> = ({
     enableSound: false,
     enableVisual: true,
   }, {
-    onGestureSuccess: (event) => {
+    onGestureSuccess: (event) => {}
       onSuccess?.();
       triggerFeedback('success', 'light');
       hideTooltip();
     },
-    onGestureFailed: () => {
+    onGestureFailed: () => {}
       onFailed?.();
       triggerFeedback('error', 'light');
     },
   });
 
   // 获取提示文本
-  const getTooltipText = (): string => {
-    if (customText) return customText;
+  const getTooltipText = (): string => {}
+    if (customText) return customText; {}
     
-    switch (gestureType) {
+    switch (gestureType) {}
       case 'swipe':
-        if (direction) {
+        if (direction) {}
           return getSwipeText(direction, 'start');
-        }
+        
         return getGuidanceText('hint');
         
       case 'tap':
@@ -110,50 +110,50 @@ const MultilingualGestureTooltip: React.FC<MultilingualGestureTooltipProps> = ({
         
       default:
         return getGuidanceText('hint');
-    }
+    
   };
 
   // 显示提示
-  const showTooltip = () => {
-    if (hasShown && !autoShow) return;
+  const showTooltip = () => {}
+    if (hasShown && !autoShow) return; {}
     
     setIsVisible(true);
     setHasShown(true);
     clearTimeout(timeoutRef.current);
     
-    timeoutRef.current = setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {}
       hideTooltip();
     }, duration);
   };
 
   // 隐藏提示
-  const hideTooltip = () => {
+  const hideTooltip = () => {}
     setIsVisible(false);
     clearTimeout(timeoutRef.current);
   };
 
   // 重置显示状态
-  const resetTooltip = () => {
+  const resetTooltip = () => {}
     setHasShown(false);
   };
 
   // 自动显示处理
-  useEffect(() => {
-    if (autoShow && !hasShown) {
+  useEffect(() => {}
+    if (autoShow && !hasShown) {}
       showTooltip();
-    }
+    
   }, [autoShow, hasShown]);
 
   // 清理定时器
-  useEffect(() => {
-    return () => {
+  useEffect(() => {}
+    return () => {}
       clearTimeout(timeoutRef.current);
     };
   }, []);
 
   // 获取位置样式
-  const getPositionStyles = () => {
-    switch (position) {
+  const getPositionStyles = () => {}
+    switch (position) {}
       case 'top':
         return 'bottom-full left-1/2 transform -translate-x-1/2 mb-2';
       case 'bottom':
@@ -166,12 +166,12 @@ const MultilingualGestureTooltip: React.FC<MultilingualGestureTooltipProps> = ({
         return 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2';
       default:
         return 'bottom-full left-1/2 transform -translate-x-1/2 mb-2';
-    }
+    
   };
 
   // 获取箭头样式
-  const getArrowStyles = () => {
-    switch (position) {
+  const getArrowStyles = () => {}
+    switch (position) {}
       case 'top':
         return 'top-full left-1/2 transform -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent border-t-gray-800';
       case 'bottom':
@@ -182,12 +182,12 @@ const MultilingualGestureTooltip: React.FC<MultilingualGestureTooltipProps> = ({
         return 'right-full top-1/2 transform -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-gray-800';
       default:
         return '';
-    }
+    
   };
 
   // 手势状态颜色
-  const getStateColor = () => {
-    switch (gestureState) {
+  const getStateColor = () => {}
+    switch (gestureState) {}
       case 'success':
         return 'bg-green-600 border-green-500';
       case 'failed':
@@ -196,123 +196,123 @@ const MultilingualGestureTooltip: React.FC<MultilingualGestureTooltipProps> = ({
         return 'bg-blue-600 border-blue-500';
       default:
         return 'bg-gray-800 border-gray-700';
-    }
+    
   };
 
   // 手势图标组件
-  const GestureIcon = () => {
-    if (gestureIcon) return <>{gestureIcon}</>;
+  const GestureIcon = () => {}
+    if (gestureIcon) return <>{gestureIcon}</>; {}
     
     const iconStyles = "w-4 h-4 text-white";
     
-    switch (gestureType) {
+    switch (gestureType) {}
       case 'swipe':
-        switch (direction) {
+        switch (direction) {}
           case 'left':
-            return (
-              <svg className={iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            return (;
+              <svg className:{iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             );
           case 'right':
-            return (
-              <svg className={iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            return (;
+              <svg className:{iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             );
           case 'up':
-            return (
-              <svg className={iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+            return (;
+              <svg className:{iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
               </svg>
             );
           case 'down':
-            return (
-              <svg className={iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            return (;
+              <svg className:{iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             );
           default:
-            return (
-              <svg className={iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            return (;
+              <svg className:{iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
               </svg>
             );
-        }
+        
       case 'tap':
-        return (
-          <svg className={iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+        return (;
+          <svg className:{iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
           </svg>
         );
       case 'press':
-        return (
-          <svg className={iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+        return (;
+          <svg className:{iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
           </svg>
         );
       default:
         return null;
-    }
+    
   };
 
-  return (
-    <div className={`relative inline-block ${className}`}>
+  return (;
+    <div className="{`relative" inline-block ${className}`}>
       {/* 触发元素 */}
       <div 
         onClick={() => showTooltip()}
-        onTouchStart={(e) => {
+        onTouchStart={(e) => {}}
           e.preventDefault();
           showTooltip();
-        }}
+
       >
         {children}
       </div>
 
       {/* 手势提示 */}
       <AnimatePresence>
-        {isVisible && (
+        {isVisible && (}
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: position === 'top' ? 10 : -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: position === 'top' ? 10 : -10 }}
             transition={{ duration: 0.2 }}
-            className={`absolute z-50 ${getPositionStyles()}`}
+            className="{`absolute" z-50 ${getPositionStyles()}`}
           >
-            <div className={`
+            <div className="{`"}`
               ${getStateColor()}
               text-white text-sm px-3 py-2 rounded-lg shadow-lg 
               border backdrop-blur-sm min-w-max
               ${gestureState === 'active' ? 'animate-pulse' : ''}
-            `}>
+            `}>`
               {/* 提示内容 */}
-              <div className="luckymart-layout-flex luckymart-layout-center gap-2">
+              <div className:"luckymart-layout-flex luckymart-layout-center gap-2">
                 <GestureIcon />
                 <span>{getTooltipText()}</span>
               </div>
 
               {/* 箭头 */}
-              {showArrow && (
-                <div className={`
+              {showArrow && (}
+                <div className="{`"}`
                   absolute w-0 h-0 border-4 
                   ${getArrowStyles()}
-                `} />
-              )}
+                `} />`
+              )
             </div>
           </motion.div>
-        )}
+        )
       </AnimatePresence>
 
       {/* 手势状态指示器 */}
       <AnimatePresence>
-        {gestureState !== 'idle' && (
+        {gestureState !== 'idle' && (}
           <motion.div
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
-            className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${getStateColor().split(' ')[0]}`}
+            className="{`absolute" -top-1 -right-1 w-3 h-3 rounded-full ${getStateColor().split(' ')[0]}`}
           />
-        )}
+        )
       </AnimatePresence>
     </div>
   );

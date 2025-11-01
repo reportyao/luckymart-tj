@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
-import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const prisma = new PrismaClient();
 
@@ -23,6 +20,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('history_route.ts request failed', error as Error, {
       requestId,
@@ -45,7 +43,7 @@ async function handleGET(request: NextRequest) {
             take: limit,
             orderBy: {
               sendTime: 'desc'
-            }
+    }
           });
 
           return NextResponse.json({
@@ -58,7 +56,7 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取推送历史失败:', error);
-          return NextResponse.json(
+          return NextResponse.json(;
             { success: false, error: '服务器错误' },
             { status: 500 }
           );

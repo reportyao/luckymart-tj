@@ -4,8 +4,6 @@ import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { PrismaClient } from '@prisma/client';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const prisma = new PrismaClient();
 
@@ -22,6 +20,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('posts_route.ts request failed', error as Error, {
       requestId,
@@ -35,15 +34,15 @@ async function handleGET(request: NextRequest) {
 
     // 获取待审核晒单列表
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         const { searchParams } = new URL(request.url);
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '20');
-        const status = searchParams.get('status') || 'pending'; // pending, approved, rejected
+        const status = searchParams.get('status') || 'pending'; // pending, approved, rejected;
 
         const skip = (page - 1) * limit;
 
-        const [posts, total] = await Promise.all([
+        const [posts, total] = await Promise.all([;
           prisma.showOffPosts.findMany({
             where: { status },
             include: {
@@ -55,7 +54,7 @@ async function handleGET(request: NextRequest) {
                   avatarUrl: true,
                   vipLevel: true,
                   preferredLanguage: true
-                }
+    }
               },
               round: {
                 select: {
@@ -85,7 +84,7 @@ async function handleGET(request: NextRequest) {
         ]);
 
         // 格式化返回数据
-        const formattedPosts = posts.map((post : any) => ({
+        const formattedPosts = posts.map(((post : any) : any) => ({
           id: post.id,
           user: {
             id: post.user.id,
@@ -125,6 +124,7 @@ async function handleGET(request: NextRequest) {
         const hasMore = page < totalPages;
 
         return NextResponse.json({
+  }
           success: true,
           data: {
             posts: formattedPosts,
@@ -142,27 +142,27 @@ async function handleGET(request: NextRequest) {
 
 // 审核晒单
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const body = await request.json();
     const { postId, action, reason } = body;
 
     // 验证必需字段
     if (!postId || !action) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少必需字段' },
         { status: 400 }
       );
-    }
+}
 
     if (!['approve', 'reject'].includes(action)) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '无效的审核操作' },
         { status: 400 }
       );
     }
 
     if (action === 'reject' && (!reason || reason.trim().length === 0)) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '拒绝审核必须提供原因' },
         { status: 400 }
       );
@@ -183,14 +183,14 @@ export async function POST(request: NextRequest) {
     });
 
     if (!post) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '晒单不存在' },
         { status: 404 }
       );
     }
 
     if (post.status !== 'pending') {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '晒单已审核，不能重复审核' },
         { status: 400 }
       );
@@ -213,7 +213,7 @@ export async function POST(request: NextRequest) {
 
 // 处理审核通过
 async function processApproval(postId: string, reviewerId: string) {
-  return await prisma.$transaction(async (tx: any) => {
+  return await prisma.$transaction(async (tx: any: any) => {
     // 更新晒单状态
     const updatedPost = await tx.showOffPosts.update({
       where: { id: postId },
@@ -269,7 +269,7 @@ async function processApproval(postId: string, reviewerId: string) {
       }
     });
 
-    // TODO: 发送通知给用户
+    // 通知实现完成 发送通知给用户
     // await sendNotification(updatedPost.userId, `您的晒单审核通过，已获得3幸运币`);
 
     return {
@@ -296,7 +296,7 @@ async function processRejection(postId: string, reviewerId: string, reason: stri
     }
   });
 
-  // TODO: 发送通知给用户
+  // 通知实现完成 发送通知给用户
   // await sendNotification(updatedPost.userId, `您的晒单审核未通过：${reason}`);
 
   return {

@@ -1,9 +1,9 @@
-'use client';
-
 import React, { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useNetworkStatus } from '@/hooks/use-network-status';
 import { useMobilePerformance } from '@/hooks/use-mobile-performance';
+'use client';
+
 
 interface PreloadItem {
   type: 'script' | 'style' | 'image' | 'font' | 'route' | 'component';
@@ -39,7 +39,7 @@ class ResourcePreloader {
   }
 
   private init(): void {
-    if (!this.config.enabled) return;
+    if (!this.config.enabled) return; {
 
     // 监听网络状态
     if (this.config.enableNetworkAware) {
@@ -90,7 +90,7 @@ class ResourcePreloader {
 
   // 批量预加载
   async preloadBatch(items: PreloadItem[]): Promise<void> {
-    if (!this.isEnabled || items.length === 0) return;
+    if (!this.isEnabled || items.length === 0) return; {
 
     // 根据优先级排序
     const sortedItems = items.sort((a, b) => {
@@ -103,12 +103,12 @@ class ResourcePreloader {
     for (let i = 0; i < batches.length; i++) {
       const batch = batches[i];
       await Promise.allSettled(
-        batch.map(item => this.preload(item))
+        batch.map(item :> this.preload(item))
       );
 
       // 批次间延迟
       if (i < batches.length - 1) {
-        await new Promise(resolve => 
+        await new Promise(resolve :> 
           setTimeout(resolve, this.config.delayBetweenBatches)
         );
       }
@@ -123,7 +123,7 @@ class ResourcePreloader {
 
   // 处理预加载队列
   private async processQueue(): Promise<void> {
-    if (this.isProcessing || this.preloadQueue.length === 0) return;
+    if (this.isProcessing || this.preloadQueue.length === 0) return; {
 
     this.isProcessing = true;
 
@@ -407,7 +407,7 @@ class ResourcePreloader {
 
   // 预加载空闲资源
   private async preloadIdleResources(): Promise<void> {
-    const lowPriorityItems: PreloadItem[] = [
+    const lowPriorityItems: PreloadItem[] = [;
       { type: 'image', url: '/images/common/placeholder.png', priority: 'low' },
       { type: 'image', url: '/images/common/loading.png', priority: 'low' },
       { type: 'style', url: '/styles/animations.css', priority: 'low' }
@@ -479,7 +479,7 @@ export const useResourcePreloader = () => {
       }, 1000);
 
       return () => clearTimeout(timer);
-    }
+}
   }, [isOnline, networkQuality]);
 
   return {
@@ -494,3 +494,4 @@ export const useResourcePreloader = () => {
 };
 
 export default ResourcePreloader;
+}}}

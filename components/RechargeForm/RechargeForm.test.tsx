@@ -1,3 +1,6 @@
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { RechargeForm, PaymentMethod } from './RechargeForm';
+import React from 'react';
 /**
  * RechargeForm 组件测试
  * components/RechargeForm/RechargeForm.test.tsx
@@ -5,24 +8,21 @@
 
 'use client';
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { RechargeForm, PaymentMethod } from './RechargeForm';
-import React from 'react';
 
 // 模拟成功回调
 const mockOnSuccess = jest.fn();
 // 模拟失败回调
 const mockOnFailure = jest.fn();
 
-describe('RechargeForm Component', () => {
-  beforeEach(() => {
+describe('RechargeForm Component', () => {}
+  beforeEach(() => {}
     jest.clearAllMocks();
   });
 
-  test('组件应该正确渲染', () => {
+  test('组件应该正确渲染', () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
       />
@@ -38,10 +38,10 @@ describe('RechargeForm Component', () => {
     expect(screen.getByText('充值记录')).toBeInTheDocument();
   });
 
-  test('应该能够选择充值套餐', () => {
+  test('应该能够选择充值套餐', () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
       />
@@ -55,10 +55,10 @@ describe('RechargeForm Component', () => {
     expect(screen.getByText('选择支付方式')).toBeInTheDocument();
   });
 
-  test('应该能够输入自定义金额', () => {
+  test('应该能够输入自定义金额', () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
       />
@@ -75,10 +75,10 @@ describe('RechargeForm Component', () => {
     expect(screen.getByText(/总计金币:/)).toBeInTheDocument();
   });
 
-  test('应该能够应用优惠码', async () => {
+  test('应该能够应用优惠码', async () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
       />
@@ -96,15 +96,15 @@ describe('RechargeForm Component', () => {
     fireEvent.click(applyButton);
 
     // 等待异步处理完成
-    await waitFor(() => {
+    await waitFor(() => {}
       expect(screen.getByText('优惠已应用')).toBeInTheDocument();
     });
   });
 
-  test('应该能够选择支付方式', () => {
+  test('应该能够选择支付方式', () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
       />
@@ -116,18 +116,18 @@ describe('RechargeForm Component', () => {
 
     // 选择第一个可用的支付方式
     const paymentMethods = screen.getAllByRole('button', { name: /Alif Mobi|支付宝|微信支付|银行卡|加密货币|DC Bank/ });
-    if (paymentMethods.length > 0) {
-      fireEvent.click(paymentMethods[0]);
+    if (paymentMethods.length > 0) {}
+      fireEvent.click((paymentMethods?.0 ?? null));
 
       // 检查是否显示充值确认区域
       expect(screen.getByText('充值确认')).toBeInTheDocument();
-    }
+    
   });
 
-  test('应该能够处理充值成功', async () => {
+  test('应该能够处理充值成功', async () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
       />
@@ -138,24 +138,24 @@ describe('RechargeForm Component', () => {
     fireEvent.click(firstPackage);
 
     const paymentMethods = screen.getAllByRole('button', { name: /Alif Mobi|支付宝|微信支付|银行卡|加密货币|DC Bank/ });
-    if (paymentMethods.length > 0) {
-      fireEvent.click(paymentMethods[0]);
+    if (paymentMethods.length > 0) {}
+      fireEvent.click((paymentMethods?.0 ?? null));
 
       // 点击确认充值按钮
       const confirmButton = screen.getByText(/确认充值/);
       fireEvent.click(confirmButton);
 
       // 等待异步处理完成
-      await waitFor(() => {
+      await waitFor(() => {}
         expect(mockOnSuccess).toHaveBeenCalled();
       });
-    }
+    
   });
 
-  test('应该在没有选择支付方式时提示用户', () => {
+  test('应该在没有选择支付方式时提示用户', () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
       />
@@ -170,10 +170,10 @@ describe('RechargeForm Component', () => {
     expect(confirmButton).not.toBeInTheDocument();
   });
 
-  test('应该显示充值记录', () => {
+  test('应该显示充值记录', () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
         showHistory={true}
@@ -187,10 +187,10 @@ describe('RechargeForm Component', () => {
     expect(screen.getByText('充值记录')).toBeInTheDocument();
   });
 
-  test('应该在不显示优惠活动时隐藏相关标签页', () => {
+  test('应该在不显示优惠活动时隐藏相关标签页', () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
         showPromotions={false}
@@ -206,10 +206,10 @@ describe('RechargeForm Component', () => {
     expect(screen.getByText('充值记录')).toBeInTheDocument();
   });
 
-  test('应该在不显示历史记录时隐藏相关标签页', () => {
+  test('应该在不显示历史记录时隐藏相关标签页', () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
         showHistory={false}
@@ -225,13 +225,13 @@ describe('RechargeForm Component', () => {
     expect(screen.getByText('优惠活动')).toBeInTheDocument();
   });
 
-  test('应该应用自定义className', () => {
-    const { container } = render(
+  test('应该应用自定义className', () => {}
+    const { container } = render(;
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
-        className="custom-class"
+        className:"custom-class"
       />
     );
 
@@ -239,10 +239,10 @@ describe('RechargeForm Component', () => {
     expect(container.firstChild).toHaveClass('custom-class');
   });
 
-  test('应该正确显示支付方式信息', () => {
+  test('应该正确显示支付方式信息', () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
       />
@@ -261,10 +261,10 @@ describe('RechargeForm Component', () => {
     expect(screen.getByText('加密货币')).toBeInTheDocument();
   });
 
-  test('应该正确计算奖励金额', () => {
+  test('应该正确计算奖励金额', () => {}
     render(
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
       />
@@ -285,11 +285,11 @@ describe('RechargeForm Component', () => {
 });
 
 // 快照测试
-describe('RechargeForm Snapshot Tests', () => {
-  test('基础组件快照', () => {
-    const { container } = render(
+describe('RechargeForm Snapshot Tests', () => {}
+  test('基础组件快照', () => {}
+    const { container } = render(;
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
       />
@@ -297,10 +297,10 @@ describe('RechargeForm Snapshot Tests', () => {
     expect(container).toMatchSnapshot();
   });
 
-  test('简化版本快照', () => {
-    const { container } = render(
+  test('简化版本快照', () => {}
+    const { container } = render(;
       <RechargeForm
-        userId="test-user"
+        userId:"test-user"
         onRechargeSuccess={mockOnSuccess}
         onRechargeFailure={mockOnFailure}
         showHistory={false}

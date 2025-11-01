@@ -1,8 +1,8 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 // 自动开奖定时任务 - 优化版本
 // 每1分钟检查一次是否有已售罄的夺宝期次需要开奖
 // 增加了实时监控、错误处理和数据一致性检查
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -57,7 +57,7 @@ async function calculateSecureWinningNumber(
     .map(b => b.toString(16).padStart(2, '0')).join('');
   
   // 使用HKDF导出伪随机函数密钥
-  const hmacKey = await crypto.subtle.importKey(
+  const hmacKey = await crypto.subtle.importKey(;
     'raw',
     encoder.encode(seed),
     { name: 'HMAC', hash: 'SHA-256' },
@@ -93,7 +93,7 @@ async function findWinner(
   roundId: string,
   winningNumber: number
 ): Promise<string | null> {
-  const { data: participations, error } = await supabase
+  const { data: participations, error } = await supabase;
     .from('participations')
     .select('user_id, numbers')
     .eq('round_id', roundId);
@@ -121,7 +121,7 @@ async function validateRound(roundId: string): Promise<{
 }> {
   try {
     // 获取期次信息
-    const { data: round, error: roundError } = await supabase
+    const { data: round, error: roundError } = await supabase;
       .from('lottery_rounds')
       .select('*')
       .eq('id', roundId)
@@ -142,7 +142,7 @@ async function validateRound(roundId: string): Promise<{
     }
     
     // 获取参与记录
-    const { data: participations, error: partError } = await supabase
+    const { data: participations, error: partError } = await supabase;
       .from('participations')
       .select('*')
       .eq('round_id', roundId);
@@ -183,7 +183,7 @@ async function updateRoundAtomically(
 ): Promise<boolean> {
   try {
     // 使用条件更新确保原子性
-    const { data, error } = await supabase
+    const { data, error } = await supabase;
       .from('lottery_rounds')
       .update({
         status: 'completed',
@@ -202,6 +202,7 @@ async function updateRoundAtomically(
     }
     
     return data && data.length > 0;
+  }
   } catch (error) {
     console.error('[Auto Draw] 更新期次异常:', error);
     return false;
@@ -251,7 +252,7 @@ Deno.serve(async (_req) => {
     console.log('[Auto Draw] 开始检查需要开奖的期次...', new Date().toISOString());
 
     // 查找已售罄的期次（优化版本）
-    const { data: fullRounds, error: queryError } = await supabase
+    const { data: fullRounds, error: queryError } = await supabase;
       .from('lottery_rounds')
       .select('*')
       .eq('status', 'full')
@@ -262,11 +263,12 @@ Deno.serve(async (_req) => {
     if (queryError) {
       console.error('[Auto Draw] 查询期次失败:', queryError);
       throw queryError;
+  }
     }
 
     if (!fullRounds || fullRounds.length === 0) {
       console.log('[Auto Draw] 没有需要开奖的期次');
-      return new Response(
+      return new Response(;
         JSON.stringify({ 
           success: true, 
           message: '没有需要开奖的期次',
@@ -310,7 +312,7 @@ Deno.serve(async (_req) => {
           const participationIds = validation.participations!.map((p: any) => p.id);
           
           // 执行安全开奖算法
-          const drawResult = await calculateSecureWinningNumber(
+          const drawResult = await calculateSecureWinningNumber(;
             participationIds,
             round.product_id,
             round.id,
@@ -335,7 +337,7 @@ Deno.serve(async (_req) => {
           }
 
           // 原子性更新期次状态
-          const updateSuccess = await updateRoundAtomically(
+          const updateSuccess = await updateRoundAtomically(;
             round.id,
             winnerUserId,
             drawResult.winningNumber,
@@ -353,7 +355,7 @@ Deno.serve(async (_req) => {
           }
 
           // 标记中奖参与记录
-          const { error: partError } = await supabase
+          const { error: partError } = await supabase;
             .from('participations')
             .update({ is_winner: true })
             .eq('round_id', round.id)
@@ -366,13 +368,13 @@ Deno.serve(async (_req) => {
 
           // 创建中奖订单
           const orderNumber = `LM${Date.now()}${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
-          const { data: product, error: productError } = await supabase
+          const { data: product, error: productError } = await supabase;
             .from('products')
             .select('name_zh, market_price')
             .eq('id', round.product_id)
             .single();
 
-          const { error: orderError } = await supabase
+          const { error: orderError } = await supabase;
             .from('orders')
             .insert({
               order_number: orderNumber,
@@ -399,7 +401,7 @@ Deno.serve(async (_req) => {
           }
 
           // 记录中奖交易
-          const { error: txError } = await supabase
+          const { error: txError } = await supabase;
             .from('transactions')
             .insert({
               user_id: winnerUserId,
@@ -414,7 +416,7 @@ Deno.serve(async (_req) => {
           }
 
           // 发送中奖通知
-          const { error: notifError } = await supabase
+          const { error: notifError } = await supabase;
             .from('notifications')
             .insert({
               user_id: winnerUserId,
@@ -500,7 +502,7 @@ Deno.serve(async (_req) => {
 
     console.log(`[Auto Draw] 处理完成:`, summary);
 
-    return new Response(
+    return new Response(;
       JSON.stringify({ 
         success: true, 
         message: `成功开奖 ${processedCount} 个期次`,
@@ -522,7 +524,7 @@ Deno.serve(async (_req) => {
       timestamp: new Date().toISOString()
     });
     
-    return new Response(
+    return new Response(;
       JSON.stringify({ 
         success: false, 
         error: error.message,
@@ -530,7 +532,7 @@ Deno.serve(async (_req) => {
       }),
       { 
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        headers:  
       }
     );
   }

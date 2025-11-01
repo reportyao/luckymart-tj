@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkAndDrawFullRounds } from '@/lib/lottery';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 // 手动触发开奖API（供定时任务或管理员调用）
 export async function POST(request: NextRequest) {
@@ -14,7 +12,7 @@ export async function POST(request: NextRequest) {
     
     if (authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: '无权限' }, { status: 403 });
-    }
+}
 
     // 执行开奖
     const results = await checkAndDrawFullRounds();
@@ -33,7 +31,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'Auto draw error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '自动开奖失败', message: error.message },
       { status: 500 }
     );
@@ -56,6 +54,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       error: (error as Error).message
     });
     throw error;
+}
   }
 });
 
@@ -69,7 +68,7 @@ async function handleGET(request: NextRequest) {
     
         if (authHeader !== `Bearer ${cronSecret}`) {
           return NextResponse.json({ error: '无权限' }, { status: 403 });
-        }
+    }
 
         const { prisma } = await import('@/lib/prisma');
     
@@ -79,8 +78,8 @@ async function handleGET(request: NextRequest) {
         });
 
         // 手动获取产品信息
-        const roundsWithProducts = await Promise.all(
-          fullRounds.map(async (r) : any => {
+        const roundsWithProducts = await Promise.all(;
+          fullRounds.map((async (r) : any : any) => {
             const product = await prisma.products.findUnique({
               where: { id: r.productId },
               select: { nameZh: true, marketPrice: true }
@@ -110,9 +109,10 @@ async function handleGET(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'Get pending draws error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
+  }
       { error: '获取待开奖列表失败', message: error.message },
-      { status: 500 }
+      
     );
   }
 }

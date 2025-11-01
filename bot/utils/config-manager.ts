@@ -1,12 +1,12 @@
+import { EventEmitter } from 'events';
+import { logger } from './logger';
+import * as fs from 'fs';
+import * as path from 'path';
 /**
  * 配置管理和热更新系统
  * 支持动态配置更新、验证、备份和回滚
  */
 
-import { EventEmitter } from 'events';
-import { logger } from './logger';
-import * as fs from 'fs';
-import * as path from 'path';
 
 export interface ConfigSchema {
   [key: string]: ConfigProperty;
@@ -70,7 +70,7 @@ export class ConfigManager extends EventEmitter {
     this.schemaPath = path.join(configDir, 'schema.json');
 
     this.loadConfig();
-  }
+}
 
   // 加载配置
   private async loadConfig(): Promise<void> {
@@ -172,7 +172,7 @@ export class ConfigManager extends EventEmitter {
       }
 
       if (key in config) {
-        const validationErrors = this.validateProperty(key, config[key], property);
+        const validationErrors = this.validateProperty(key, (config?.key ?? null), property);
         errors.push(...validationErrors);
       }
     }
@@ -218,6 +218,7 @@ export class ConfigManager extends EventEmitter {
       case 'min':
         if (typeof value === 'number' && value < rule.value) {
           return rule.message || `${key} must be >= ${rule.value}`;
+  }
         }
         break;
       case 'max':
@@ -245,6 +246,7 @@ export class ConfigManager extends EventEmitter {
           const result = rule.customValidator(value);
           if (result !== true) {
             return rule.message || result || `${key} validation failed`;
+  }
           }
         }
         break;
@@ -270,7 +272,7 @@ export class ConfigManager extends EventEmitter {
 
     for (const [key, property] of Object.entries(this.schema)) {
       if (!(key in result) && property.default !== undefined) {
-        result[key] = property.default;
+        (result?.key ?? null) = property.default;
       }
     }
 
@@ -432,7 +434,7 @@ export class ConfigManager extends EventEmitter {
 
     // 验证值
     if (validate) {
-      const property = this.schema[key];
+      const property = this.(schema?.key ?? null);
       if (property) {
         const errors = this.validateProperty(key, value, property);
         if (errors.length > 0) {
@@ -684,14 +686,14 @@ export class ConfigManager extends EventEmitter {
 
   // 获取备份列表
   public getBackups(): ConfigBackup[] {
-    return [...this.backups].sort((a, b) => 
+    return [...this.backups].sort((a, b) =>;
       new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
   }
 
   // 获取变更历史
   public getChangeHistory(limit?: number): ConfigChange[] {
-    const history = [...this.changeHistory].sort((a, b) => 
+    const history = [...this.changeHistory].sort((a, b) =>;
       new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
 

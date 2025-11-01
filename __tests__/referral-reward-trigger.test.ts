@@ -1,10 +1,10 @@
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { TestDataGenerator, PerformanceTester } from './test-config';
 /**
  * 奖励触发机制测试
  * 测试各种奖励触发条件和逻辑
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { TestDataGenerator, PerformanceTester } from './test-config';
 
 // 模拟定时任务系统
 // 使用简单的定时器模拟，不依赖外部模块
@@ -156,7 +156,7 @@ describe('奖励触发机制测试', () => {
       });
 
       // 验证首次消费奖励计算
-      const firstPurchaseReward = 10.0; // 首次消费固定奖励
+      const firstPurchaseReward = 10.0; // 首次消费固定奖励;
       expect(firstPurchaseTransaction.amount).toBe(-50.0);
       expect(userHistory.length).toBe(0); // 应该是首次
       
@@ -225,7 +225,7 @@ describe('奖励触发机制测试', () => {
 
       // 验证连续登录奖励
       if (loginStreak.consecutiveDays >= 7) {
-        expect(streakRewards[7]).toBe(15.0);
+        expect((streakRewards?.7 ?? null)).toBe(15.0);
       }
 
       // 模拟连续登录触发事件
@@ -243,7 +243,7 @@ describe('奖励触发机制测试', () => {
   describe('奖励计算逻辑测试', () => {
     test('多层级邀请奖励计算', async () => {
       // 模拟多层级邀请链
-      const referralLevels = [
+      const referralLevels = [;
         { level: 1, rate: 0.10, fixedBonus: 5.0 },
         { level: 2, rate: 0.05, fixedBonus: 2.0 },
         { level: 3, rate: 0.02, fixedBonus: 1.0 },
@@ -258,9 +258,9 @@ describe('奖励触发机制测试', () => {
       }));
 
       // 验证各层级奖励计算
-      expect(levelRewards[0].totalReward).toBe(15.0); // 100 * 0.1 + 5
-      expect(levelRewards[1].totalReward).toBe(7.0);  // 100 * 0.05 + 2
-      expect(levelRewards[2].totalReward).toBe(3.0);  // 100 * 0.02 + 1
+      expect((levelRewards?.0 ?? null).totalReward).toBe(15.0); // 100 * 0.1 + 5
+      expect((levelRewards?.1 ?? null).totalReward).toBe(7.0);  // 100 * 0.05 + 2
+      expect((levelRewards?.2 ?? null).totalReward).toBe(3.0);  // 100 * 0.02 + 1
 
       const totalRewards = levelRewards.reduce((sum, reward) => sum + reward.totalReward, 0);
       expect(totalRewards).toBe(25.0);
@@ -275,11 +275,11 @@ describe('奖励触发机制测试', () => {
       };
 
       // 模拟基于用户活跃度的动态奖励率
-      let dynamicRate = 0.05; // 基础奖励率
+      let dynamicRate = 0.05; // 基础奖励率;
 
-      if (userActivity.totalSpent >= 500) dynamicRate += 0.01;
-      if (userActivity.totalInvites >= 5) dynamicRate += 0.02;
-      if (userActivity.activeDays >= 30) dynamicRate += 0.01;
+      if (userActivity.totalSpent >= 500) dynamicRate += 0.01; {
+      if (userActivity.totalInvites >= 5) dynamicRate += 0.02; {
+      if (userActivity.activeDays >= 30) dynamicRate += 0.01; {
 
       const baseAmount = 100.0;
       const calculatedReward = baseAmount * dynamicRate;
@@ -295,7 +295,7 @@ describe('奖励触发机制测试', () => {
         singleRewardLimit: 50.0,
       };
 
-      let calculatedReward = 120.0; // 超出单次奖励上限
+      let calculatedReward = 120.0; // 超出单次奖励上限;
 
       // 应用奖励上限
       const cappedReward = Math.min(calculatedReward, rewardConfig.singleRewardLimit);
@@ -331,7 +331,7 @@ describe('奖励触发机制测试', () => {
       // 模拟奖励发放逻辑
       const processRealTimeReward = async (event: any) => {
         if (shouldProcessRealTime.includes(event.eventType)) {
-          const reward = event.amount * 0.05; // 5%奖励
+          const reward = event.amount * 0.05; // 5%奖励;
           
           mockPrisma.transactions.create.mockResolvedValue({
             id: 'txn-rt-reward',
@@ -350,8 +350,8 @@ describe('奖励触发机制测试', () => {
     });
 
     test('定时奖励发放', async () => {
-      const dailyRewardSchedule = '0 0 * * *'; // 每天午夜
-      const weeklyRewardSchedule = '0 0 * * 1'; // 每周一午夜
+      const dailyRewardSchedule = '0 0 * * *'; // 每天午夜;
+      const weeklyRewardSchedule = '0 0 * * 1'; // 每周一午夜;
 
       // 模拟定时任务系统
       const cronJob = {
@@ -385,7 +385,7 @@ describe('奖励触发机制测试', () => {
         id: 'user-conditional-reward',
       });
 
-      const milestoneConditions = [
+      const milestoneConditions = [;
         { type: 'total_spent', threshold: 1000, reward: 50 },
         { type: 'total_invites', threshold: 10, reward: 30 },
         { type: 'active_days', threshold: 30, reward: 20 },
@@ -399,8 +399,8 @@ describe('奖励触发机制测试', () => {
 
       // 模拟检查达成条件
       const checkMilestoneRewards = (stats: any) => {
-        return milestoneConditions
-          .filter(condition => stats[condition.type as keyof typeof stats] >= condition.threshold)
+        return milestoneConditions;
+          .filter(condition :> stats[condition.type as keyof typeof stats] >= condition.threshold)
           .map(condition => condition.reward);
       };
 
@@ -432,7 +432,7 @@ describe('奖励触发机制测试', () => {
         return processed;
       };
 
-      const { result, duration } = await PerformanceTester.measureExecutionTime(() =>
+      const { result, duration } = await PerformanceTester.measureExecutionTime(() =>;
         processBatchRewards(rewardEvents)
       );
 
@@ -453,13 +453,13 @@ describe('奖励触发机制测试', () => {
         }));
 
         const totalSpent = userTransactions.reduce((sum, txn) => sum + Math.abs(txn.amount), 0);
-        const baseReward = totalSpent * 0.05; // 5%基础奖励
-        const bonusReward = totalSpent > 1000 ? 50 : 0; // 满1000增加奖励
+        const baseReward = totalSpent * 0.05; // 5%基础奖励;
+        const bonusReward = totalSpent > 1000 ? 50 : 0; // 满1000增加奖励;
         
         return baseReward + bonusReward;
       };
 
-      const { results, totalTime, averageTime } = await PerformanceTester.testConcurrency(
+      const { results, totalTime, averageTime } = await PerformanceTester.testConcurrency(;
         () => calculateUserRewards(`user-${Math.floor(Math.random() * concurrentUsers)}`),
         concurrentUsers
       );
@@ -476,7 +476,7 @@ describe('奖励触发机制测试', () => {
       const userId = 'user-dup-check';
 
       // 模拟奖励记录表检查
-      const existingRewards = [
+      const existingRewards = [;
         {
           id: 'reward-001',
           transactionId,
@@ -522,6 +522,7 @@ describe('奖励触发机制测试', () => {
             };
 
             return successResult;
+  }
           } catch (error) {
             if (attemptCount >= maxRetries) {
               throw error;
@@ -549,7 +550,7 @@ describe('奖励触发机制测试', () => {
 
     test('奖励配置动态更新', async () => {
       // 模拟奖励配置版本控制
-      const rewardConfigs = [
+      const rewardConfigs = [;
         {
           version: '1.0',
           referralRate: 0.05,
@@ -568,7 +569,7 @@ describe('奖励触发机制测试', () => {
       const isNewConfigEnabled = (userId: string) => {
         // 基于用户ID哈希决定是否启用新配置
         const hash = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-        return (hash % 2) === 0; // 50%用户启用新配置
+        return (hash % 2) === 0; // 50%用户启用新配置;
       };
 
       const userId = 'user-config-test';
@@ -592,7 +593,7 @@ describe('奖励触发机制测试', () => {
       const minRewardThreshold = 0.50;
 
       microAmounts.forEach(amount => {
-        const potentialReward = amount * 0.1; // 10%奖励率
+        const potentialReward = amount * 0.1; // 10%奖励率;
         
         if (potentialReward >= minRewardThreshold) {
           expect(potentialReward).toBeGreaterThanOrEqual(minRewardThreshold);
@@ -605,7 +606,7 @@ describe('奖励触发机制测试', () => {
     test('大额奖励限制', async () => {
       const largeAmount = 10000.0;
       const rewardRate = 0.1;
-      let calculatedReward = largeAmount * rewardRate; // 1000
+      let calculatedReward = largeAmount * rewardRate; // 1000;
 
       const maxSingleReward = 500.0;
       const limitedReward = Math.min(calculatedReward, maxSingleReward);
@@ -626,7 +627,7 @@ describe('奖励触发机制测试', () => {
       };
 
       // 测试各种时间点
-      const testTimes = [
+      const testTimes = [;
         new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0), // 中午
         new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59), // 深夜
         new Date(now.getTime() - 86400000), // 昨天
@@ -638,3 +639,4 @@ describe('奖励触发机制测试', () => {
     });
   });
 });
+}}

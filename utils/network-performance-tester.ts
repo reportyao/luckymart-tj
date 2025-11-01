@@ -1,7 +1,7 @@
-// network-performance-tester.ts - 网络性能测试工具
 import { translationCache } from '@/utils/translation-cache';
 import { retryManager } from '@/utils/network-retry';
 import { degradationManager } from '@/utils/request-degradation';
+// network-performance-tester.ts - 网络性能测试工具
 
 export interface NetworkPerformanceMetrics {
   // 基础性能指标
@@ -144,7 +144,7 @@ class NetworkPerformanceTester {
       retryEvents: [],
       degradationEvents: []
     };
-  }
+}
 
   /**
    * 执行完整的网络性能测试
@@ -300,7 +300,7 @@ class NetworkPerformanceTester {
     const cacheStartTime = performance.now();
     
     // 首次写入
-    const writeResult = await degradationManager.fetchWithDegradation(
+    const writeResult = await degradationManager.fetchWithDegradation(;
       cacheTestKey,
       async () => testData,
       {
@@ -314,7 +314,7 @@ class NetworkPerformanceTester {
     
     // 第二次读取（应该命中缓存）
     const cacheStartTime2 = performance.now();
-    const readResult = await degradationManager.fetchWithDegradation(
+    const readResult = await degradationManager.fetchWithDegradation(;
       cacheTestKey,
       async () => ({ ...testData, updated: true }),
       {
@@ -388,7 +388,7 @@ class NetworkPerformanceTester {
     console.log('[NetworkPerformanceTester] 运行重试机制性能测试...');
     
     // 测试重试成功率
-    const retryTestOperations = [
+    const retryTestOperations = [;
       // 成功的操作
       { shouldFail: false, delay: 100 },
       // 会失败一次的操作
@@ -403,6 +403,7 @@ class NetworkPerformanceTester {
           // 模拟失败
           await this.sleep(testOp.delay);
           throw new Error('Simulated network failure');
+  }
         }
         
         await this.sleep(testOp.delay);
@@ -432,7 +433,7 @@ class NetworkPerformanceTester {
     };
     
     try {
-      const result = await degradationManager.fetchWithDegradation(
+      const result = await degradationManager.fetchWithDegradation(;
         'degradation-test',
         networkFailOperation,
         {
@@ -465,7 +466,7 @@ class NetworkPerformanceTester {
     console.log('[NetworkPerformanceTester] 运行并发性能测试...');
     
     const concurrency = this.config.concurrentRequests;
-    const operations = Array.from({ length: concurrency }, (_, i) => 
+    const operations = Array.from({ length: concurrency }, (_, i) =>;
       this.performConcurrentOperation(`concurrent-${i}`)
     );
     
@@ -497,7 +498,7 @@ class NetworkPerformanceTester {
    */
   private async testCacheAccess(url: string, responseTime: number): Promise<void> {
     // 这里可以扩展更复杂的缓存测试逻辑
-    const isCacheHit = responseTime < 50; // 简单的启发式判断
+    const isCacheHit = responseTime < 50; // 简单的启发式判断;
     this.results.cacheHits.push({
       hit: isCacheHit,
       url,
@@ -547,7 +548,7 @@ class NetworkPerformanceTester {
     const totalResponseTime = successfulRequests.reduce((sum, r) => sum + r.responseTime, 0);
     const avgResponseTime = successfulRequests.length > 0 ? totalResponseTime / successfulRequests.length : 0;
     
-    const avgLatency = successfulRequests.length > 0 
+    const avgLatency = successfulRequests.length > 0;
       ? successfulRequests.reduce((sum, r) => sum + r.responseTime, 0) / successfulRequests.length 
       : 0;
     
@@ -560,13 +561,13 @@ class NetworkPerformanceTester {
     const totalRetries = retryEvents.length;
     const successfulRetries = retryEvents.filter(r => r.success).length;
     const retrySuccessRate = totalRetries > 0 ? successfulRetries / totalRetries : 1;
-    const avgRetryDelay = retryEvents.length > 0 
+    const avgRetryDelay = retryEvents.length > 0;
       ? retryEvents.reduce((sum, r) => sum + r.delay, 0) / retryEvents.length 
       : 0;
     
     // 翻译加载性能
     const successfulTranslations = translations.filter(t => t.success);
-    const avgTranslationLoadTime = successfulTranslations.length > 0
+    const avgTranslationLoadTime = successfulTranslations.length > 0;
       ? successfulTranslations.reduce((sum, t) => sum + t.loadTime, 0) / successfulTranslations.length
       : 0;
     
@@ -575,7 +576,7 @@ class NetworkPerformanceTester {
     
     // 降级性能
     const successfulDegradations = degradationEvents.filter(d => d.success).length;
-    const degradationSuccessRate = degradationEvents.length > 0 
+    const degradationSuccessRate = degradationEvents.length > 0;
       ? successfulDegradations / degradationEvents.length 
       : 1;
     
@@ -729,7 +730,7 @@ class NetworkPerformanceTester {
     // 将响应时间转换为得分 (响应时间越短得分越高)
     const responseTimeScore = Math.max(0, 100 - (metrics.responseTime / 50));
     
-    const score = (
+    const score = (;
       metrics.availability * weights.availability * 100 +
       metrics.reliability * weights.reliability * 100 +
       metrics.efficiency * weights.efficiency * 100 +
@@ -845,4 +846,4 @@ export async function runQuickNetworkTest(): Promise<NetworkPerformanceReport> {
 }
 
 export { NetworkPerformanceTester };
-export type { NetworkPerformanceReport, NetworkTestConfig };
+export type ;

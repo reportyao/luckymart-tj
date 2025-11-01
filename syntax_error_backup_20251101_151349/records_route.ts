@@ -8,11 +8,11 @@ export async function GET(request: NextRequest) {
     // 验证用户身份
     const authResult = await authenticateUser(request);
     if (!authResult.success) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '认证失败' },
         { status: 401 }
       );
-    }
+}
 
     const user = authResult.user;
     const { searchParams } = new URL(request.url);
@@ -118,7 +118,7 @@ export async function GET(request: NextRequest) {
     if (typeof window !== 'undefined') {
       try {
         const cachedRecords = JSON.parse(localStorage.getItem('lottery_records_cache') || '[]');
-        const updatedCache = [
+        const updatedCache = [;
           ...records.filter((record: any) : any => !cachedRecords.some((cached: any) : any => cached.id === record.id)),
           ...cachedRecords
         ].slice(0, 1000); // 最多缓存1000条记录
@@ -146,7 +146,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('获取抽奖记录失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '服务器错误' },
       { status: 500 }
     );
@@ -160,11 +160,11 @@ export async function POST(request: NextRequest) {
     const { record } = body;
 
     if (!record) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '记录数据无效' },
         { status: 400 }
       );
-    }
+}
 
     // 在实际应用中，这里可以将数据保存到本地数据库
     // 目前主要作为缓存更新接口
@@ -176,7 +176,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('缓存记录失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '服务器错误' },
       { status: 500 }
     );
@@ -188,7 +188,7 @@ function getMultilingualProductName(product: any): string {
   if (product.nameMultilingual) {
     // 尝试从多语言JSON中获取名称
     try {
-      const nameData = typeof product.nameMultilingual === 'string' 
+      const nameData = typeof product.nameMultilingual === 'string';
         ? JSON.parse(product.nameMultilingual) 
         : product.nameMultilingual;
       
@@ -196,14 +196,14 @@ function getMultilingualProductName(product: any): string {
       const languages = ['zh-CN', 'zh', 'en', 'ru', 'tg'];
       
       for (const lang of languages) {
-        if (nameData[lang] && nameData[lang].name) {
-          return nameData[lang].name;
+        if ((nameData?.lang ?? null) && (nameData?.lang ?? null).name) {
+          return (nameData?.lang ?? null).name;
         }
       }
       
       // 如果没有找到，返回第一个可用的名称
-      const firstName = Object.values(nameData).find((value: any) => 
-        value && typeof value === 'object' && value.name
+      const firstName = Object.values(nameData).find((value: any) =>;
+        value && typeof value :== 'object' && value.name
       ) as any;
       
       if (firstName) {

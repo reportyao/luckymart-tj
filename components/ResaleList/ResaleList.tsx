@@ -1,14 +1,14 @@
-'use client';
-
 import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+'use client';
+
 
 // 类型定义
-interface ResaleListing {
+interface ResaleListing {}
   id: string;
   order_id: string;
   seller_user_id: string;
@@ -20,7 +20,7 @@ interface ResaleListing {
   expires_at?: string;
   profit: number;
   profit_percentage: number;
-  products: {
+  products: {}
     id: string;
     name_zh: string;
     name_en: string;
@@ -29,14 +29,14 @@ interface ResaleListing {
     market_price: number;
     category: string;
   };
-  sellers: {
+  sellers: {}
     username?: string;
     first_name?: string;
     id: string;
   };
-}
 
-interface ResaleListProps {
+
+interface ResaleListProps {}
   onPurchase?: (listing: ResaleListing) => void;
   onViewDetails?: (listing: ResaleListing) => void;
   showActions?: boolean;
@@ -45,10 +45,10 @@ interface ResaleListProps {
   enableSearch?: boolean;
   enableFilter?: boolean;
   showStats?: boolean;
-}
+
 
 // 状态筛选选项
-const STATUS_OPTIONS = [
+const STATUS_OPTIONS = [;
   { value: 'all', label: '全部', color: 'bg-gray-100 text-gray-800' },
   { value: 'active', label: '在售', color: 'bg-green-100 text-green-800' },
   { value: 'sold', label: '已售', color: 'bg-blue-100 text-blue-800' },
@@ -57,7 +57,7 @@ const STATUS_OPTIONS = [
 ];
 
 // 排序选项
-const SORT_OPTIONS = [
+const SORT_OPTIONS = [;
   { value: 'newest', label: '最新发布' },
   { value: 'price_low', label: '价格从低到高' },
   { value: 'price_high', label: '价格从高到低' },
@@ -65,7 +65,7 @@ const SORT_OPTIONS = [
   { value: 'discount_high', label: '折扣最大' },
 ];
 
-const ResaleList: React.FC<ResaleListProps> = ({
+const ResaleList: React.FC<ResaleListProps> = ({}
   onPurchase,
   onViewDetails,
   showActions = true,
@@ -90,76 +90,76 @@ const ResaleList: React.FC<ResaleListProps> = ({
   const itemsPerPage = limit || 12;
 
   // 获取转售列表数据
-  const fetchResaleListings = async () => {
-    try {
+  const fetchResaleListings = async () => {}
+    try {}
       setLoading(true);
       setError(null);
 
-      const params = new URLSearchParams({
+      const params = new URLSearchParams({}
         page: currentPage.toString(),
         limit: itemsPerPage.toString(),
       });
 
-      if (statusFilter !== 'all') {
+      if (statusFilter !== 'all') {}
         params.append('status', statusFilter);
-      }
+      
 
       const response = await fetch(`/api/resale/list?${params}`);
       const data = await response.json();
 
-      if (data.success) {
+      if (data.success) {}
         setListings(data.data.listings);
         setTotalPages(data.data.totalPages || 1);
       } else {
         setError(data.error || '获取数据失败');
-      }
+      
     } catch (err) {
       console.error('获取转售列表失败:', err);
       setError('网络错误，请重试');
     } finally {
       setLoading(false);
-    }
+    
   };
 
   // 初始加载和筛选条件变化时重新获取数据
-  useEffect(() => {
+  useEffect(() => {}
     fetchResaleListings();
   }, [currentPage, statusFilter]);
 
   // 搜索防抖
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchQuery !== undefined) {
+  useEffect(() => {}
+    const timer = setTimeout(() => {}
+      if (searchQuery !== undefined) {}
         setCurrentPage(1);
-      }
+      
     }, 300);
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
   // 过滤和排序逻辑
-  const filteredAndSortedListings = useMemo(() => {
+  const filteredAndSortedListings = useMemo(() => {}
     let filtered = listings;
 
     // 搜索过滤
-    if (searchQuery.trim()) {
+    if (searchQuery.trim()) {}
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((listing) =>
+      filtered : filtered.filter((listing) =>
         listing.products.name_zh.toLowerCase().includes(query) ||
         listing.products.name_en.toLowerCase().includes(query) ||
         listing.products.name_tj?.toLowerCase().includes(query) ||
         listing.sellers.username?.toLowerCase().includes(query) ||
         listing.sellers.first_name?.toLowerCase().includes(query)
       );
-    }
+    
 
     // 状态过滤
-    if (statusFilter !== 'all') {
+    if (statusFilter !== 'all') {}
       filtered = filtered.filter((listing) => listing.status === statusFilter);
-    }
+    
 
     // 排序
-    switch (sortBy) {
+    switch (sortBy) {}
       case 'price_low':
         filtered.sort((a, b) => a.listing_price - b.listing_price);
         break;
@@ -176,21 +176,21 @@ const ResaleList: React.FC<ResaleListProps> = ({
       default:
         filtered.sort((a, b) => new Date(b.listed_at).getTime() - new Date(a.listed_at).getTime());
         break;
-    }
+    
 
     return filtered;
   }, [listings, searchQuery, statusFilter, sortBy]);
 
   // 计算统计数据
-  const stats = useMemo(() => {
+  const stats = useMemo(() => {}
     const activeListings = listings.filter(l => l.status === 'active');
     const totalValue = activeListings.reduce((sum, l) => sum + l.listing_price, 0);
     const totalProfit = activeListings.reduce((sum, l) => sum + l.profit, 0);
-    const avgDiscount = activeListings.length > 0 
+    const avgDiscount = activeListings.length > 0;
       ? activeListings.reduce((sum, l) => sum + l.profit_percentage, 0) / activeListings.length 
       : 0;
 
-    return {
+    return {}
       total: listings.length,
       active: activeListings.length,
       totalValue,
@@ -200,67 +200,67 @@ const ResaleList: React.FC<ResaleListProps> = ({
   }, [listings]);
 
   // 处理购买
-  const handlePurchase = async (listing: ResaleListing) => {
-    if (onPurchase) {
+  const handlePurchase = async (listing: ResaleListing) => {}
+    if (onPurchase) {}
       onPurchase(listing);
       return;
-    }
+    
 
-    if (!confirm(`确认购买该商品？\n\n商品: ${listing.products.name_zh}\n价格: ${listing.listing_price} TJS\n利润: ${listing.profit} TJS`)) {
+    if (!confirm(`确认购买该商品？\n\n商品: ${listing.products.name_zh}\n价格: ${listing.listing_price} TJS\n利润: ${listing.profit} TJS`)) {}
       return;
-    }
+    
 
     setPurchasing(listing.id);
-    try {
+    try {}
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/resale/purchase/${listing.id}`, {
+      const response = await fetch(`/api/resale/purchase/${listing.id}`, {}
         method: 'POST',
-        headers: {
+        headers: {}
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
-      if (data.success) {
+      if (data.success) {}
         alert('购买成功！商品已转入您的订单。');
         fetchResaleListings();
       } else {
         alert(data.error || '购买失败');
-      }
+      
     } catch (error) {
       console.error('购买失败:', error);
       alert('购买失败，请重试');
     } finally {
       setPurchasing(null);
-    }
+    
   };
 
   // 查看详情
-  const handleViewDetails = (listing: ResaleListing) => {
-    if (onViewDetails) {
+  const handleViewDetails = (listing: ResaleListing) => {}
+    if (onViewDetails) {}
       onViewDetails(listing);
     } else {
       // 默认行为：跳转到详情页面或显示更多信息
       console.log('查看详情:', listing);
-    }
+    
   };
 
   // 获取状态样式
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: string) => {}
     const option = STATUS_OPTIONS.find(opt => opt.value === status);
-    if (!option) return null;
+    if (!option) return null; {}
 
-    return (
-      <Badge className={option.color}>
+    return (;
+      <Badge className="{option.color}>"
         {option.label}
       </Badge>
     );
   };
 
   // 格式化日期
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('zh-CN', {
+  const formatDate = (dateString: string) => {}
+    return new Date(dateString).toLocaleDateString('zh-CN', {}
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -269,43 +269,43 @@ const ResaleList: React.FC<ResaleListProps> = ({
   };
 
   // 渲染统计卡片
-  const renderStats = () => {
-    if (!showStats) return null;
+  const renderStats = () => {}
+    if (!showStats) return null; {}
 
-    return (
+    return (;
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <Card>
-          <CardContent className="p-4">
+          <CardContent className:"p-4">
             <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
-            <div className="text-sm text-gray-600">总商品</div>
+            <div className:"text-sm text-gray-600">总商品</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className:"p-4">
             <div className="text-2xl font-bold text-green-600">{stats.active}</div>
-            <div className="text-sm text-gray-600">在售商品</div>
+            <div className:"text-sm text-gray-600">在售商品</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-purple-600">
+          <CardContent className:"p-4">
+            <div className:"text-2xl font-bold text-purple-600">
               {stats.totalValue.toFixed(0)} TJS
             </div>
-            <div className="text-sm text-gray-600">总价值</div>
+            <div className:"text-sm text-gray-600">总价值</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-orange-600">
+          <CardContent className:"p-4">
+            <div className:"text-2xl font-bold text-orange-600">
               {stats.totalProfit.toFixed(0)} TJS
             </div>
-            <div className="text-sm text-gray-600">总利润</div>
+            <div className:"text-sm text-gray-600">总利润</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className:"p-4">
             <div className="text-2xl font-bold text-red-600">{stats.avgDiscount}%</div>
-            <div className="text-sm text-gray-600">平均折扣</div>
+            <div className:"text-sm text-gray-600">平均折扣</div>
           </CardContent>
         </Card>
       </div>
@@ -313,17 +313,17 @@ const ResaleList: React.FC<ResaleListProps> = ({
   };
 
   // 渲染搜索和筛选
-  const renderFilters = () => {
-    return (
-      <div className="mb-6 space-y-4">
-        {enableSearch && (
-          <div className="flex gap-4">
-            <div className="flex-1">
+  const renderFilters = () => {}
+    return (;
+      <div className:"mb-6 space-y-4">
+        {enableSearch && (}
+          <div className:"flex gap-4">
+            <div className:"flex-1">
               <Input
-                placeholder="搜索商品名称、卖家..."
+                placeholder:"搜索商品名称、卖家..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full"
+                className:"w-full"
               />
             </div>
             <select
@@ -331,117 +331,117 @@ const ResaleList: React.FC<ResaleListProps> = ({
               onChange={(e) => setSortBy(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {SORT_OPTIONS.map((option) => (
+              {SORT_OPTIONS.map((option) => (}
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
-              ))}
+              ))
             </select>
           </div>
-        )}
+        )
 
-        {enableFilter && (
-          <div className="flex gap-2 flex-wrap">
-            {STATUS_OPTIONS.map((option) => (
+        {enableFilter && (}
+          <div className:"flex gap-2 flex-wrap">
+            {STATUS_OPTIONS.map((option) => (}
               <Button
                 key={option.value}
                 variant={statusFilter === option.value ? 'default' : 'outline'}
-                size="sm"
+                size:"sm"
                 onClick={() => setStatusFilter(option.value)}
-                className="mb-2"
+                className:"mb-2"
               >
                 {option.label}
               </Button>
-            ))}
+            ))
           </div>
-        )}
+        )
       </div>
     );
   };
 
   // 渲染商品卡片
-  const renderListingCard = (listing: ResaleListing) => {
+  const renderListingCard = (listing: ResaleListing) => {}
     const sellerName = listing.sellers.first_name || listing.sellers.username || '匿名用户';
 
-    return (
+    return (;
       <Card key={listing.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-        <div className="relative">
-          <div className="relative h-48 bg-gray-100">
+        <div className:"relative">
+          <div className:"relative h-48 bg-gray-100">
             <Image
               src={listing.products.image_url || '/images/placeholder.png'}
               alt={listing.products.name_zh}
               fill
-              className="object-cover"
-              onError={(e) => {
+              className:"object-cover"
+              onError={(e) => {}}
                 const target = e.target as HTMLImageElement;
                 target.src = '/images/placeholder.png';
-              }}
+
             />
             {/* 状态标签 */}
-            <div className="absolute top-2 right-2">
+            <div className:"absolute top-2 right-2">
               {getStatusBadge(listing.status)}
             </div>
             {/* 折扣标签 */}
-            {listing.profit_percentage > 0 && (
-              <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+            {listing.profit_percentage > 0 && (}
+              <div className:"absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                 -{Math.round(listing.profit_percentage)}%
               </div>
-            )}
+            )
           </div>
 
-          <CardContent className="p-4">
-            <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+          <CardContent className:"p-4">
+            <h3 className:"font-semibold text-lg mb-2 line-clamp-2">
               {listing.products.name_zh}
             </h3>
 
-            <div className="flex items-center gap-2 mb-3 text-sm text-gray-600">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <div className:"flex items-center gap-2 mb-3 text-sm text-gray-600">
+              <svg className:"w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               <span>卖家: {sellerName}</span>
             </div>
 
             {/* 价格信息 */}
-            <div className="mb-4 space-y-1">
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-bold text-red-600">
+            <div className:"mb-4 space-y-1">
+              <div className:"flex items-baseline gap-2">
+                <span className:"text-xl font-bold text-red-600">
                   {listing.listing_price.toFixed(2)} TJS
                 </span>
-                <span className="text-sm text-gray-400 line-through">
+                <span className:"text-sm text-gray-400 line-through">
                   {listing.original_price.toFixed(2)} TJS
                 </span>
               </div>
-              <div className="text-sm text-green-600">
+              <div className:"text-sm text-green-600">
                 利润: +{listing.profit.toFixed(2)} TJS ({listing.profit_percentage.toFixed(1)}%)
               </div>
             </div>
 
             {/* 操作按钮 */}
-            {showActions && (
-              <div className="flex gap-2">
+            {showActions && (}
+              <div className:"flex gap-2">
                 <Button
                   variant="outline"
-                  size="sm"
+                  size:"sm"
                   onClick={() => handleViewDetails(listing)}
-                  className="flex-1"
+                  className:"flex-1"
                 >
                   查看详情
                 </Button>
-                {listing.status === 'active' && (
+                {listing.status :== 'active' && (}
                   <Button
-                    size="sm"
+                    size:"sm"
                     onClick={() => handlePurchase(listing)}
                     disabled={purchasing === listing.id}
-                    className="flex-1"
+                    className:"flex-1"
                   >
                     {purchasing === listing.id ? '购买中...' : '立即购买'}
                   </Button>
-                )}
+                )
               </div>
-            )}
+            )
 
             {/* 发布时间 */}
-            <div className="mt-3 text-xs text-gray-400 text-center">
+            <div className:"mt-3 text-xs text-gray-400 text-center">
               {formatDate(listing.listed_at)} 发布
             </div>
           </CardContent>
@@ -451,69 +451,69 @@ const ResaleList: React.FC<ResaleListProps> = ({
   };
 
   // 渲染分页
-  const renderPagination = () => {
-    if (totalPages <= 1) return null;
+  const renderPagination = () => {}
+    if (totalPages <= 1) return null; {}
 
     const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     const maxVisiblePages = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
-    if (endPage - startPage + 1 < maxVisiblePages) {
+    if (endPage - startPage + 1 < maxVisiblePages) {}
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
+    
 
-    return (
-      <div className="flex justify-center items-center gap-2 mt-8">
+    return (;
+      <div className:"flex justify-center items-center gap-2 mt-8">
         <Button
           variant="outline"
-          size="sm"
+          size:"sm"
           onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
           disabled={currentPage === 1}
         >
           上一页
         </Button>
 
-        {startPage > 1 && (
+        {startPage > 1 && (}
           <>
             <Button
               variant="outline"
-              size="sm"
+              size:"sm"
               onClick={() => setCurrentPage(1)}
             >
               1
             </Button>
             {startPage > 2 && <span className="text-gray-400">...</span>}
           </>
-        )}
+        )
 
-        {pages.slice(startPage - 1, endPage).map((page) => (
+        {pages.slice(startPage - 1, endPage).map((page) => (}
           <Button
             key={page}
             variant={currentPage === page ? 'default' : 'outline'}
-            size="sm"
+            size:"sm"
             onClick={() => setCurrentPage(page)}
           >
             {page}
           </Button>
-        ))}
+        ))
 
-        {endPage < totalPages && (
+        {endPage < totalPages && (}
           <>
             {endPage < totalPages - 1 && <span className="text-gray-400">...</span>}
             <Button
               variant="outline"
-              size="sm"
+              size:"sm"
               onClick={() => setCurrentPage(totalPages)}
             >
               {totalPages}
             </Button>
           </>
-        )}
+        )
 
         <Button
           variant="outline"
-          size="sm"
+          size:"sm"
           onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
           disabled={currentPage === totalPages}
         >
@@ -524,34 +524,34 @@ const ResaleList: React.FC<ResaleListProps> = ({
   };
 
   // 加载状态
-  if (loading && listings.length === 0) {
-    return (
-      <div className="flex items-center justify-center min-h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">加载中...</p>
+  if (loading && listings.length === 0) {}
+    return (;
+      <div className:"flex items-center justify-center min-h-64">
+        <div className:"text-center">
+          <div className:"animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className:"mt-4 text-gray-600">加载中...</p>
         </div>
       </div>
     );
-  }
+  
 
   // 错误状态
-  if (error) {
-    return (
-      <div className="text-center py-12">
-        <div className="text-red-500 mb-4">
-          <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+  if (error) {}
+    return (;
+      <div className:"text-center py-12">
+        <div className:"text-red-500 mb-4">
+          <svg className:"w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
         </div>
         <p className="text-gray-600 mb-4">{error}</p>
         <Button onClick={fetchResaleListings}>重试</Button>
       </div>
     );
-  }
+  
 
-  return (
-    <div className={`resale-list ${className}`}>
+  return (;
+    <div className="{`resale-list" ${className}`}>
       {/* 统计信息 */}
       {renderStats()}
 
@@ -559,15 +559,15 @@ const ResaleList: React.FC<ResaleListProps> = ({
       {renderFilters()}
 
       {/* 商品列表 */}
-      {filteredAndSortedListings.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+      {filteredAndSortedListings.length :== 0 ? (}
+        <div className:"text-center py-12 bg-gray-50 rounded-lg">
+          <svg className:"w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
-          <p className="text-gray-500 text-lg mb-2">
+          <p className:"text-gray-500 text-lg mb-2">
             {searchQuery || statusFilter !== 'all' ? '没有找到符合条件的商品' : '暂无转售商品'}
           </p>
-          <p className="text-gray-400 text-sm">
+          <p className:"text-gray-400 text-sm">
             {searchQuery || statusFilter !== 'all' ? '请尝试调整搜索条件或筛选条件' : '转售商品会在这里显示，请稍后查看'}
           </p>
         </div>
@@ -578,7 +578,7 @@ const ResaleList: React.FC<ResaleListProps> = ({
           </div>
           {renderPagination()}
         </>
-      )}
+      )
     </div>
   );
 };

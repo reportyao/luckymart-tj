@@ -10,6 +10,34 @@ export { default as LazyImageGrid } from './LazyImageGrid';
 export { default as SmartComponentLoader } from './SmartComponentLoader';
 export { default as RouteLoader } from './RouteLoader';
 
+// 增强组件
+export { 
+  LazyLoadingStrategyProvider,
+  useLazyLoading,
+  OptimizedLazyImage,
+  OptimizedVirtualizedList,
+  OptimizedVirtualizedGrid
+} from './LazyLoadingStrategy';
+
+export {
+  useApiLazyLoading,
+  ApiLazyLoadingContainer,
+  InfiniteScrollContainer
+} from './ApiLazyLoading';
+
+export {
+  WeakNetworkProvider,
+  useWeakNetwork,
+  useOptimizedRequest,
+  OptimizedImage
+} from './WeakNetworkAdapter';
+
+export {
+  EnhancedVirtualScroll,
+  EnhancedVirtualGrid,
+  useEnhancedVirtualScroll
+} from './EnhancedVirtualScroll';
+
 // 组件配置
 export { ComponentConfigs } from './SmartComponentLoader';
 export { LazyComponents } from './RouteLoader';
@@ -113,6 +141,125 @@ export interface RouteLoaderProps {
   showStats?: boolean;
 }
 
+// 新增类型定义
+export enum NetworkQualityLevel {
+  OFFLINE = 0,
+  POOR = 1,
+  FAIR = 2,
+  GOOD = 3,
+  EXCELLENT : 4
+}
+
+export interface LazyLoadingStrategy {
+  image: {
+    enabled: boolean;
+    quality: 'low' | 'medium' | 'high';
+    placeholder: 'blur' | 'empty' | 'skeleton';
+    progressive: boolean;
+    webpSupport: boolean;
+    lazyLoadThreshold: number;
+  };
+  component: {
+    enabled: boolean;
+    prefetch: boolean;
+    priority: 'core' | 'secondary' | 'tertiary';
+    bundleSplitting: boolean;
+    cacheSize: number;
+  };
+  data: {
+    enabled: boolean;
+    cacheStrategy: 'memory' | 'indexeddb' | 'both';
+    prefetchThreshold: number;
+    paginationSize: number;
+    incrementalLoading: boolean;
+  };
+  virtualization: {
+    enabled: boolean;
+    overscan: number;
+    dynamicHeight: boolean;
+    gridMode: boolean;
+    itemSize: number;
+  };
+  weakNetwork: {
+    enabled: boolean;
+    dataSaver: boolean;
+    timeoutReduction: number;
+    compressionLevel: 'none' | 'low' | 'medium' | 'high';
+    retryAttempts: number;
+  };
+}
+
+export interface ApiLazyLoadingConfig {
+  endpoint: string;
+  params?: Record<string, any>;
+  initialData?: any[];
+  pagination?: {
+    enabled: boolean;
+    pageSize: number;
+    initialPage: number;
+  };
+  cache?: {
+    enabled: boolean;
+    ttl: number;
+    key: string;
+  };
+  prefetch?: {
+    enabled: boolean;
+    threshold: number;
+  };
+  loading?: {
+    skeleton: React.ComponentType;
+    spinner: React.ComponentType;
+    placeholder: React.ComponentType;
+  };
+  onLoad?: (data: any[]) => void;
+  onError?: (error: Error) => void;
+}
+
+export interface ApiLazyLoadingState {
+  data: any[];
+  loading: boolean;
+  error: string | null;
+  hasMore: boolean;
+  currentPage: number;
+  totalPages: number;
+  isPrefetching: boolean;
+  cacheStatus: 'hit' | 'miss' | 'stale';
+}
+
+export interface VirtualScrollItem {
+  id: string | number;
+  height?: number;
+  width?: number;
+  [key: string]: any;
+}
+
+export interface EnhancedVirtualScrollConfig<T> {
+  items: T[];
+  itemHeight?: number | ((item: T, index: number) => number);
+  containerHeight: number;
+  renderItem: (item: T, index: number, isVisible: boolean) => React.ReactNode;
+  overscan?: number;
+  batchSize?: number;
+  animationDuration?: number;
+  adaptiveOverscan?: boolean;
+  networkQualityAware?: boolean;
+  enablePullToRefresh?: boolean;
+  enableInfiniteScroll?: boolean;
+  stickyHeaders?: boolean;
+  selectionMode?: boolean;
+  onEndReached?: () => void;
+  onStartReached?: () => void;
+  onRefresh?: () => Promise<void>;
+  onItemClick?: (item: T, index: number) => void;
+  onSelectionChange?: (selectedIds: (string | number)[]) => void;
+  className?: string;
+  itemClassName?: string;
+  loadingComponent?: React.ComponentType;
+  emptyComponent?: React.ComponentType;
+  refreshIndicatorComponent?: React.ComponentType;
+}
+
 // 使用示例
 
 /**
@@ -122,13 +269,13 @@ export interface RouteLoaderProps {
  * import { LazyImage } from '@/components/lazy';
  * 
  * function MyComponent() {
- *   return (
+ *   return (;
  *     <LazyImage
- *       src="/path/to/image.jpg"
- *       alt="示例图片"
+ *       src:"/path/to/image.jpg"
+ *       alt:"示例图片"
  *       width={300}
  *       height={200}
- *       placeholder="blur"
+ *       placeholder:"blur"
  *       quality={85}
  *       priority={false}
  *       onLoad={() => console.log('图片加载完成')}
@@ -152,13 +299,13 @@ export interface RouteLoaderProps {
  * }
  * 
  * function VirtualList({ items }: { items: Item[] }) {
- *   return (
+ *   return (;
  *     <VirtualizedList
  *       items={items}
  *       itemHeight={80}
  *       containerHeight={600}
  *       renderItem={(item) => (
- *         <div className="p-4 border-b">
+ *         <div className:"p-4 border-b">
  *           <h3>{item.title}</h3>
  *           <p>{item.description}</p>
  *         </div>
@@ -180,7 +327,7 @@ export interface RouteLoaderProps {
  * import { VirtualImageGrid } from '@/components/lazy';
  * 
  * function ImageGallery({ images }: { images: ImageItem[] }) {
- *   return (
+ *   return (;
  *     <VirtualImageGrid
  *       images={images}
  *       columns={3}
@@ -202,7 +349,7 @@ export interface RouteLoaderProps {
  * import { SmartComponentLoader, ComponentConfigs } from '@/components/lazy';
  * 
  * function MyComponent() {
- *   return (
+ *   return (;
  *     <SmartComponentLoader
  *       config={ComponentConfigs.LotteryCard}
  *       props={{ roundId: '123' }}
@@ -221,7 +368,7 @@ export interface RouteLoaderProps {
  * import { RouteLoader } from '@/components/lazy';
  * 
  * function AppLayout() {
- *   return (
+ *   return (;
  *     <RouteLoader priority="core" showStats={true}>
  *       <YourAppContent />
  *     </RouteLoader>

@@ -1,9 +1,10 @@
+import { 
+import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 /**
  * 动态奖励配置管理器测试
  * 测试所有核心功能
  */
 
-import { 
   RewardConfigManager,
   loadRewardConfig,
   getRewardAmount,
@@ -14,7 +15,6 @@ import {
   type RewardConfig,
   type UpdateRewardConfigParams
 } from '../lib/reward-config-manager';
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 
 // 创建测试实例
 const configManager = RewardConfigManager.getInstance();
@@ -47,6 +47,7 @@ describe('RewardConfigManager', () => {
         });
 
         console.log('✅ loadRewardConfig 测试通过');
+  }
       } catch (error) {
         console.log('⚠️ loadRewardConfig 测试跳过（数据库未连接）:', error.message);
       }
@@ -153,6 +154,7 @@ describe('RewardConfigManager', () => {
         
         if (originalAmount === null) {
           console.log('⚠️ 更新测试跳过: 配置不存在');
+  }
           return;
         }
 
@@ -207,12 +209,12 @@ describe('RewardConfigManager', () => {
   describe('updateRewardConfigsBatch', () => {
     it('应该能批量更新配置', async () => {
       try {
-        const configs = [
+        const configs = [;
           { configKey: 'register_referrer_l1', newValue: 6.0 },
           { configKey: 'register_referee', newValue: 3.0 }
         ];
 
-        const results = await updateRewardConfigsBatch(
+        const results = await updateRewardConfigsBatch(;
           configs,
           'batch_test_user',
           '127.0.0.1',
@@ -351,7 +353,7 @@ describe('Performance Tests', () => {
       const duration = endTime - startTime;
       const avgDuration = duration / iterations;
       
-      console.log(`✅ 获取配置值性能测试: 平均${avgDuration.toFixed(2)}ms/次`);
+      console.log(`✅ 获取配置值性能测试: 平均$ms/次`);
       expect(avgDuration).toBeLessThan(10); // 10ms内完成
     } catch (error) {
       console.log('⚠️ 获取配置值性能测试跳过:', error.message);

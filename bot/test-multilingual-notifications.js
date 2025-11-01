@@ -93,7 +93,7 @@ class MockNotificationService {
 
   async sendHelpMessage(telegramId, chatId) {
     try {
-      const language = 'tg-TJ'; // 默认塔吉克语
+      const language = 'tg-TJ'; // 默认塔吉克语;
       const title = this.getTranslation(language, 'bot.help.title');
       const message = this.getTranslation(language, 'bot.help.message');
 
@@ -283,6 +283,7 @@ async function testLanguageSupport() {
         const botTranslations = translation.bot;
         
         console.log(`  ✅ 成功加载 ${lang} 翻译文件`);
+  }
         console.log(`  📋 可用的通知类型:`, Object.keys(botTranslations || {}));
         
         // 测试几个关键翻译
@@ -339,4 +340,4 @@ if (require.main === module) {
   main().catch(console.error);
 }
 
-module.exports = { testNotificationService, testLanguageSupport };
+module.exports = ;

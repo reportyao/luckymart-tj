@@ -33,6 +33,7 @@ function readTranslationFile(language: string, namespace: string): TranslationFi
   try {
     const content = fs.readFileSync(filePath, 'utf-8');
     return JSON.parse(content);
+  }
   } catch (error) {
     console.error(`Error reading ${language}/${namespace}.json:`, error);
     return null;
@@ -76,7 +77,7 @@ function extractPlaceholders(text: string): string[] {
     placeholders.push(...braceMatches.map(match => match.replace(/[{}]/g, '').trim()));
   }
   
-  return [...new Set(placeholders)]; // 去重
+  return [...new Set(placeholders)]; // 去重;
 }
 
 /**
@@ -130,11 +131,11 @@ function runTranslationIntegrityCheck(): TranslationIntegrityResult {
       allKeysByNamespace[namespace][language] = new Set(keys);
       
       // 初始化missingKeys结构
-      if (!result.missingKeys[language]) {
-        result.missingKeys[language] = {};
+      if (!result.(missingKeys?.language ?? null)) {
+        result.(missingKeys?.language ?? null) = {};
       }
-      if (!result.missingKeys[language][namespace]) {
-        result.missingKeys[language][namespace] = [];
+      if (!result.(missingKeys?.language ?? null)[namespace]) {
+        result.(missingKeys?.language ?? null)[namespace] = [];
       }
       
       // 计算完整性百分比
@@ -148,15 +149,15 @@ function runTranslationIntegrityCheck(): TranslationIntegrityResult {
           for (const key of baseKeys) {
             if (!keys.includes(key)) {
               missingCount++;
-              result.missingKeys[language][namespace].push(key);
+              result.(missingKeys?.language ?? null)[namespace].push(key);
             }
           }
         }
       }
       
       // 保存完整性数据
-      if (!result.completeness[language]) {
-        result.completeness[language] = {};
+      if (!result.(completeness?.language ?? null)) {
+        result.(completeness?.language ?? null) = {};
       }
       result.completeness[language][namespace] = totalKeys > 0 ? 
         Math.round(((totalKeys - missingCount) / totalKeys) * 100) : 0;
@@ -176,9 +177,9 @@ function runTranslationIntegrityCheck(): TranslationIntegrityResult {
     for (const key of allKeys) {
       const hasInAll = Object.values(keysByLanguage).every(keys => keys.has(key));
       if (!hasInAll) {
-        result.inconsistentKeys[key] = {};
+        result.(inconsistentKeys?.key ?? null) = {};
         for (const [language, keys] of Object.entries(keysByLanguage)) {
-          result.inconsistentKeys[key][language] = keys.has(key);
+          result.(inconsistentKeys?.key ?? null)[language] = keys.has(key);
         }
       }
     }
@@ -189,10 +190,10 @@ function runTranslationIntegrityCheck(): TranslationIntegrityResult {
       if (file) {
         const placeholders = analyzePlaceholders(file);
         if (Object.keys(placeholders).length > 0) {
-          if (!result.placeholders[namespace]) {
-            result.placeholders[namespace] = {};
+          if (!result.(placeholders?.namespace ?? null)) {
+            result.(placeholders?.namespace ?? null) = {};
           }
-          Object.assign(result.placeholders[namespace], placeholders);
+          Object.assign(result.(placeholders?.namespace ?? null), placeholders);
         }
       }
     }
@@ -266,6 +267,7 @@ describe('Translation Integrity Tests', () => {
           missingKeys.slice(0, 10).forEach(key => console.log(`  - ${key}`)); // 只显示前10个
           if (missingKeys.length > 10) {
             console.log(`  ... 还有 ${missingKeys.length - 10} 个缺失键`);
+  }
           }
         }
       }
@@ -384,7 +386,7 @@ describe('Translation Integrity Tests', () => {
         
         // 验证常见手势键
         const gestureKeys = extractKeys(commonFile.gesture);
-        const expectedGestureKeys = [
+        const expectedGestureKeys = [;
           'tap.short',
           'tap.long', 
           'tap.double',
@@ -409,7 +411,7 @@ describe('Translation Integrity Tests', () => {
   test('should check network-related translations', () => {
     console.log('🌐 开始检查网络请求相关翻译...');
     
-    const networkKeys = [
+    const networkKeys = [;
       'loading',
       'network_error',
       'connection_lost',
@@ -442,6 +444,7 @@ describe('Translation Integrity Tests', () => {
             
             if (exists) {
               console.log(`✅ ${language}: ${networkKey} 已翻译`);
+  }
             } else {
               console.log(`⚠️  ${language}: ${networkKey} 未翻译`);
             }
@@ -465,14 +468,14 @@ export function generateTranslationReport(): TranslationIntegrityResult {
   console.log('='.repeat(50));
   console.log(`总文件数: ${result.totalFiles}`);
   console.log(`缺失文件: ${result.missingFiles.length}`);
-  console.log(`翻译键不一致: ${Object.keys(result.inconsistentKeys).length}`);
-  console.log(`包含占位符的键: ${Object.keys(result.placeholders).reduce((acc, key) => acc + Object.keys(result.placeholders[key]).length, 0)}`);
+  console.log(`翻译键不一致: $`);
+  console.log(`包含占位符的键: $`);
   
   console.log('\n📊 各语言完整性统计:');
   for (const [language, namespaces] of Object.entries(result.completeness)) {
     const avgCompleteness = Object.values(namespaces).reduce((sum, val) => sum + val, 0) / Object.keys(namespaces).length;
-    console.log(`  ${language}: 平均 ${avgCompleteness.toFixed(1)}%`);
-  }
+    console.log(`  $: 平均 $%`);
+}
   
   return result;
 }

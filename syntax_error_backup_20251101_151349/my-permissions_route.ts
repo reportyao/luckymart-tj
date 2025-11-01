@@ -22,9 +22,10 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       console.error('获取权限失败:', error);
       return NextResponse.json({
+}
         success: false,
         error: '获取权限失败'
-      }, { status: 500 });
+      }, );
     }
   })(request);
 }

@@ -1,3 +1,5 @@
+import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
+import {
 /**
  * 多语言搜索和推荐功能测试套件
  * 
@@ -5,8 +7,6 @@
  * 验证搜索结果的排序、显示和建议功能
  */
 
-import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
-import {
   ProductMultilingualService,
   MultilingualHelper,
   type SupportedLanguage,
@@ -17,7 +17,7 @@ import {
 const SUPPORTED_LANGUAGES: SupportedLanguage[] = ['zh-CN', 'en-US', 'ru-RU', 'tg-TJ'];
 
 // 测试数据
-const MOCK_PRODUCTS = [
+const MOCK_PRODUCTS = [;
   {
     id: '1',
     nameMultilingual: {
@@ -185,7 +185,7 @@ describe('多语言搜索和推荐功能测试', () => {
       };
 
       if (products.length > 0) {
-        expect(products[0].name).toBe(expectedNames[language]);
+        expect((products?.0 ?? null).name).toBe((expectedNames?.language ?? null));
       }
     });
 
@@ -193,8 +193,8 @@ describe('多语言搜索和推荐功能测试', () => {
       const products = await ProductMultilingualService.getProductsByLanguage('zh-CN');
       
       if (products.length > 0) {
-        expect(products[0].description).toContain('智能手机');
-        expect(products[0].description).toContain('高性能处理器');
+        expect((products?.0 ?? null).description).toContain('智能手机');
+        expect((products?.0 ?? null).description).toContain('高性能处理器');
       }
     });
   });
@@ -209,7 +209,7 @@ describe('多语言搜索和推荐功能测试', () => {
       // 按价格从高到低排序（模拟）
       const sortedProducts = [...products].sort((a, b) => b.marketPrice - a.marketPrice);
       
-      expect(sortedProducts[0].marketPrice).toBeGreaterThanOrEqual(sortedProducts[1].marketPrice);
+      expect((sortedProducts?.0 ?? null).marketPrice).toBeGreaterThanOrEqual((sortedProducts?.1 ?? null).marketPrice);
       expect(sortedProducts[1].marketPrice).toBeGreaterThanOrEqual(sortedProducts[2]?.marketPrice || 0);
     });
 
@@ -235,7 +235,7 @@ describe('多语言搜索和推荐功能测试', () => {
       
       const suggestions = searchTerms.map((term) => {
         // 模拟搜索建议逻辑
-        const products = MOCK_PRODUCTS.filter((product) =>
+        const products = MOCK_PRODUCTS.filter((product) =>;
           Object.values(product.nameMultilingual).some((name) =>
             name.toLowerCase().includes(term.toLowerCase())
           )
@@ -259,14 +259,14 @@ describe('多语言搜索和推荐功能测试', () => {
     });
 
     test('应能支持模糊搜索', () => {
-      const testCases = [
+      const testCases = [;
         { search: 'pho', expected: 'phone' },
         { search: 'smrt', expected: 'smart' },
         { search: 'head', expected: 'headphones' },
       ];
 
       testCases.forEach((testCase) => {
-        const products = MOCK_PRODUCTS.filter((product) =>
+        const products = MOCK_PRODUCTS.filter((product) =>;
           Object.values(product.nameMultilingual).some((name) =>
             name.toLowerCase().includes(testCase.search.toLowerCase())
           )
@@ -282,7 +282,7 @@ describe('多语言搜索和推荐功能测试', () => {
       // 模拟：用中文关键词搜索，在其他语言中找到匹配项
       const chineseSearchTerm = '智能手机';
       
-      const matchedProducts = MOCK_PRODUCTS.filter((product) =>
+      const matchedProducts = MOCK_PRODUCTS.filter((product) =>;
         Object.entries(product.nameMultilingual).some(([lang, name]) => {
           if (lang === 'zh-CN') {
             return name === chineseSearchTerm;
@@ -296,7 +296,7 @@ describe('多语言搜索和推荐功能测试', () => {
       // 验证匹配的产品在所有语言中都有内容
       matchedProducts.forEach((product) => {
         SUPPORTED_LANGUAGES.forEach((lang) => {
-          expect(product.nameMultilingual[lang]).toBeDefined();
+          expect(product.(nameMultilingual?.lang ?? null)).toBeDefined();
           expect(product.nameMultilingual[lang]?.length).toBeGreaterThan(0);
         });
       });
@@ -305,14 +305,14 @@ describe('多语言搜索和推荐功能测试', () => {
     test('应能处理语言回退机制', () => {
       // 模拟缺失某种语言的情况
       const incompleteProduct = {
-        ...MOCK_PRODUCTS[0],
+        ...(MOCK_PRODUCTS?.0 ?? null),
         nameMultilingual: {
           'zh-CN': '智能手机',
           // 缺少其他语言
         } as MultilingualText,
       };
 
-      const extractedText = MultilingualHelper.extractText(
+      const extractedText = MultilingualHelper.extractText(;
         incompleteProduct.nameMultilingual,
         'en-US'
       );
@@ -440,7 +440,7 @@ describe('多语言搜索和推荐功能测试', () => {
 
   describe('搜索历史和推荐', () => {
     test('应能记录用户搜索历史', () => {
-      const searchHistory = [
+      const searchHistory = [;
         { term: 'smartphone', timestamp: new Date(), language: 'en-US' },
         { term: '智能手机', timestamp: new Date(), language: 'zh-CN' },
         { term: 'Смартфон', timestamp: new Date(), language: 'ru-RU' },
@@ -461,7 +461,7 @@ describe('多语言搜索和推荐功能测试', () => {
       const searchHistory = ['electronics', 'smartphone', 'headphones'];
       
       const recommendations = searchHistory.flatMap((term) => {
-        return MOCK_PRODUCTS.filter((product) =>
+        return MOCK_PRODUCTS.filter((product) =>;
           Object.values(product.nameMultilingual).some((name) =>
             name.toLowerCase().includes(term.toLowerCase())
           )
@@ -471,8 +471,8 @@ describe('多语言搜索和推荐功能测试', () => {
       expect(recommendations.length).toBeGreaterThan(0);
       
       // 去重
-      const uniqueRecommendations = recommendations.filter(
-        (product, index, self) => self.findIndex((p) => p.id === product.id) === index
+      const uniqueRecommendations = recommendations.filter(;
+        (product, index, self) :> self.findIndex((p) => p.id === product.id) === index
       );
       
       expect(uniqueRecommendations.length).toBeLessThanOrEqual(recommendations.length);

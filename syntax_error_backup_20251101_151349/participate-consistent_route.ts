@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { jwt } from 'jsonwebtoken';
-import { userService } from '@/lib/user-service';
 import { CacheConsistencyManager } from '@/lib/cache-consistency';
 import { TajikistanTimeUtils } from '@/lib/timezone-utils';
 import { cacheKeyBuilder } from '@/lib/redis-cache';
-import { cacheManager } from '@/lib/cache-manager';
 import { triggerImmediateDraw } from '@/lib/lottery';
 import { getLogger } from '@/lib/logger';
 import { API_BASE_URL } from '@/config/api-config';
@@ -20,7 +18,7 @@ export async function POST(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
+}
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
@@ -39,7 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 使用缓存一致性管理器处理夺宝参与
-    const result = await CacheConsistencyManager.transactionalUpdate(
+    const result = await CacheConsistencyManager.transactionalUpdate(;
       async () => {
         // 数据库操作逻辑
         return await prisma.$transaction(async (tx) => {
@@ -61,7 +59,7 @@ export async function POST(request: NextRequest) {
 
           // 2. 检查免费次数重置
           const tajikistanNow = TajikistanTimeUtils.getCurrentTime();
-          const isNewDay = TajikistanTimeUtils.getCurrentDateString() !== 
+          const isNewDay = TajikistanTimeUtils.getCurrentDateString() !==;
             user.lastFreeResetDate.toISOString().split('T')[0];
           
           let currentFreeCount = user.freeDailyCount;
@@ -359,6 +357,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
+  }
       success: true,
       data: {
         participationId: data.participation.id,
@@ -384,19 +383,19 @@ export async function POST(request: NextRequest) {
     });
     
     // 根据错误类型返回不同状态码
-    const statusCode = error.message.includes('份额不足') || 
+    const statusCode = error.message.includes('份额不足') ||;
                       error.message.includes('余额不足') ||
                       error.message.includes('免费次数已用完') ||
                       error.message.includes('期次已结束') ? 400 : 500;
     
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         error: '参与失败', 
         message: error.message,
         timestamp: new Date().toISOString(),
         requestId
       },
-      { status: statusCode }
+      
     );
   }
 }

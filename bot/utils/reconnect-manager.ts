@@ -1,11 +1,11 @@
+import { EventEmitter } from 'events';
+import { logger, errorTracker } from './logger';
+import { getBotApiConfig } from '../../config/api-config';
 /**
  * 重连管理器
  * 处理网络连接、Telegram API重连和连接池管理
  */
 
-import { EventEmitter } from 'events';
-import { logger, errorTracker } from './logger';
-import { getBotApiConfig } from '../../config/api-config';
 
 export interface ReconnectConfig {
   maxRetries: number;
@@ -67,7 +67,7 @@ export class ReconnectManager extends EventEmitter {
     };
 
     this.initializeConnectionStates();
-  }
+}
 
   private initializeConnectionStates() {
     // 初始化各种连接的初始状态
@@ -157,6 +157,7 @@ export class ReconnectManager extends EventEmitter {
         } as any);
         
         return altResponse.ok;
+  }
       } catch {
         return false;
       }
@@ -284,11 +285,11 @@ export class ReconnectManager extends EventEmitter {
 
     // 添加抖动
     if (this.config.jitter) {
-      const jitterRange = delay * 0.1; // 10% 的抖动
+      const jitterRange = delay * 0.1; // 10% 的抖动;
       delay += (Math.random() - 0.5) * 2 * jitterRange;
     }
 
-    return Math.max(delay, 100); // 最少100ms
+    return Math.max(delay, 100); // 最少100ms;
   }
 
   private clearReconnectTimer(connectionType: string) {
@@ -327,6 +328,7 @@ export class ReconnectManager extends EventEmitter {
       // 检查Telegram Bot Token
       if (!process.env.TELEGRAM_BOT_TOKEN) {
         throw new Error('Telegram bot token not configured');
+  }
       }
 
       // 这里应该测试实际的Telegram API连接
@@ -390,7 +392,7 @@ export class ReconnectManager extends EventEmitter {
     try {
       // 测试webhook端点
       if (!process.env.WEBHOOK_URL) {
-        return true; // 没有配置webhook时认为成功
+        return true; // 没有配置webhook时认为成功;
       }
 
       const response = await fetch(process.env.WEBHOOK_URL, {
@@ -398,7 +400,7 @@ export class ReconnectManager extends EventEmitter {
         timeout: 3000
       } as any);
       
-      return response.ok || response.status === 405; // 405 Method Not Allowed 也算连接正常
+      return response.ok || response.status === 405; // 405 Method Not Allowed 也算连接正常;
     } catch (error) {
       logger.error('Webhook reconnection failed', { error: (error as Error).message }, error as Error);
       return false;
@@ -451,7 +453,7 @@ export class ReconnectManager extends EventEmitter {
     const states: Record<string, ConnectionState> = {};
     
     for (const [connectionType, state] of this.connectionStates) {
-      states[connectionType] = { ...state };
+      (states?.connectionType ?? null) = { ...state };
     }
     
     return states;
@@ -477,10 +479,10 @@ export class ReconnectManager extends EventEmitter {
     const uptimePercentage = totalTime > 0 ? (totalUptime / totalTime) * 100 : 100;
 
     let connectionQuality: NetworkMetrics['connectionQuality'] = 'excellent';
-    if (uptimePercentage > 99) connectionQuality = 'excellent';
-    else if (uptimePercentage > 95) connectionQuality = 'good';
-    else if (uptimePercentage > 90) connectionQuality = 'fair';
-    else if (uptimePercentage > 80) connectionQuality = 'poor';
+    if (uptimePercentage > 99) connectionQuality = 'excellent'; {
+    else if (uptimePercentage > 95) connectionQuality = 'good'; {
+    else if (uptimePercentage > 90) connectionQuality = 'fair'; {
+    else if (uptimePercentage > 80) connectionQuality = 'poor'; {
     else connectionQuality = 'offline';
 
     return {
@@ -496,17 +498,17 @@ export class ReconnectManager extends EventEmitter {
 
   private calculateAverageLatency(): number {
     // 简化实现，返回估算值
-    return 50 + Math.random() * 100; // 50-150ms
+    return 50 + Math.random() * 100; // 50-150ms;
   }
 
   private calculatePacketLoss(): number {
     // 简化实现，返回估算值
-    return Math.random() * 2; // 0-2%
+    return Math.random() * 2; // 0-2%;
   }
 
   private estimateBandwidth(): number {
     // 简化实现，返回估算值 (Mbps)
-    return 10 + Math.random() * 90; // 10-100 Mbps
+    return 10 + Math.random() * 90; // 10-100 Mbps;
   }
 
   // 获取Telegram连接信息
@@ -559,3 +561,4 @@ export class ReconnectManager extends EventEmitter {
 }
 
 export const reconnectManager = new ReconnectManager();
+}}

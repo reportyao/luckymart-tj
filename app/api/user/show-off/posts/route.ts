@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { auth } from '@/lib/auth';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 export const GET = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
@@ -18,6 +15,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('posts_route.ts request failed', error as Error, {
       requestId,
@@ -34,16 +32,16 @@ async function handleGET(request: NextRequest) {
       try {
         const session = await auth();
         if (!session?.user) {
-          return NextResponse.json(
+          return NextResponse.json(;
             { success: false, error: '请先登录' },
             { status: 401 }
           );
-        }
+    }
 
         const { searchParams } = new URL(request.url);
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '20');
-        const status = searchParams.get('status'); // 可选：筛选特定状态
+        const status = searchParams.get('status'); // 可选：筛选特定状态;
 
         const skip = (page - 1) * limit;
 
@@ -56,7 +54,7 @@ async function handleGET(request: NextRequest) {
           where.status = status;
         }
 
-        const [posts, total] = await Promise.all([
+        const [posts, total] = await Promise.all([;
           prisma.showOffPosts.findMany({
             where,
             include: {
@@ -88,7 +86,7 @@ async function handleGET(request: NextRequest) {
         ]);
 
         // 格式化返回数据
-        const formattedPosts = posts.map((post : any) => ({
+        const formattedPosts = posts.map(((post : any) : any) => ({
           id: post.id,
           content: post.content,
           images: post.images,
@@ -144,7 +142,7 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取我的晒单列表失败:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '获取我的晒单列表失败' },
           { status: 500 }
         );

@@ -1,15 +1,12 @@
-// 管理员 - 提现审核
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+// 管理员 - 提现审核
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -30,6 +27,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('withdrawals_route.ts request failed', error as Error, {
       requestId,
@@ -43,7 +41,7 @@ async function handleGET(request: NextRequest) {
 
     // 获取提现申请列表
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         try {
 
         const { searchParams } = new URL(request.url);
@@ -56,10 +54,10 @@ async function handleGET(request: NextRequest) {
         const where: any = {};
         if (status && ['pending', 'processing', 'completed', 'rejected'].includes(status)) {
           where.status = status;
-        }
+    }
 
         // 获取提现列表和总数
-        const [withdrawals, total] = await Promise.all([
+        const [withdrawals, total] = await Promise.all([;
           prisma.withdrawRequests.findMany({
             where,
             include: {
@@ -105,7 +103,7 @@ async function handleGET(request: NextRequest) {
 
 // 审核提现申请
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     try {
 
     const body = await request.json();
@@ -117,7 +115,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '无效的参数'
       }, { status: 400 });
-    }
+}
 
     // 生成幂等性请求ID
     const idempotencyKey = `withdraw_review_${withdrawId}_${action}_${Date.now()}`;
@@ -192,7 +190,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 使用事务处理审核操作，并检查状态
-    const result = await prisma.$transaction(async (tx: any) => {
+    const result = await prisma.$transaction(async (tx: any: any) => {
       // 使用原子操作检查和更新状态，防止并发处理
       const updateResult = await tx.withdrawRequests.updateMany({
         where: {
@@ -264,7 +262,7 @@ export async function POST(request: NextRequest) {
       // 创建通知
       const notificationType = action === 'approve' ? 'withdraw_approved' : 'withdraw_rejected';
       const notificationTitle = action === 'approve' ? '提现申请已通过' : '提现申请被拒绝';
-      const notificationContent = action === 'approve' 
+      const notificationContent = action === 'approve';
         ? `您的提现申请已通过审核，金额: ${withdraw.amount} TJS`
         : `您的提现申请已被拒绝，金额: ${withdraw.amount} TJS${adminNote ? `，原因: ${adminNote}` : ''}`;
 
@@ -315,4 +313,6 @@ export async function POST(request: NextRequest) {
       }, { status: 500 });
     }
   })(request);
+}
+
 }

@@ -3,7 +3,6 @@ import { prisma } from '../../../../lib/prisma';
 import { authenticateUser } from '../../../../lib/auth';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
 export const GET = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `wins_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
@@ -16,6 +15,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('wins_route.ts request failed', error as Error, {
       requestId,
@@ -33,11 +33,11 @@ async function handleGET(request: NextRequest) {
         // 验证用户身份
         const authResult = await authenticateUser(request);
         if (!authResult.success) {
-          return NextResponse.json(
+          return NextResponse.json(;
             { success: false, error: '认证失败' },
             { status: 401 }
           );
-        }
+    }
 
         const user = authResult.user;
         const { searchParams } = new URL(request.url);
@@ -46,7 +46,7 @@ async function handleGET(request: NextRequest) {
         const page = parseInt(searchParams.get('page') || '1', 10);
         const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
         const offset = (page - 1) * limit;
-        const period = searchParams.get('period') || 'all'; // 'week', 'month', 'year', 'all'
+        const period = searchParams.get('period') || 'all'; // 'week', 'month', 'year', 'all';
 
         // 构建时间筛选条件
         let dateFilter: Date | undefined;
@@ -116,7 +116,7 @@ async function handleGET(request: NextRequest) {
         });
 
         // 转换数据格式
-        const wins = winningParticipations.map((participation : any) => {
+        const wins = winningParticipations.map(((participation : any) : any) => {
           const product = participation.round.product;
           const productName = getMultilingualProductName(product);
       
@@ -172,7 +172,7 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取中奖记录失败:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '服务器错误' },
           { status: 500 }
         );
@@ -185,18 +185,18 @@ export async function POST(request: NextRequest) {
     // 验证用户身份
     const authResult = await authenticateUser(request);
     if (!authResult.success) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '认证失败' },
         { status: 401 }
       );
-    }
+}
 
     const user = authResult.user;
     const body = await request.json();
     const { participationId, claimType = 'wallet' } = body;
 
     if (!participationId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '参与记录ID不能为空' },
         { status: 400 }
       );
@@ -219,7 +219,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!participation) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '中奖记录不存在或无权限' },
         { status: 404 }
       );
@@ -278,7 +278,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'申请领奖失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '服务器错误' },
       { status: 500 }
     );
@@ -296,8 +296,8 @@ function calculatePrize(product: any, sharesCount: number): { amount: number; ty
   const totalShares = product.totalShares;
   
   // 示例策略：固定奖金 + 比例奖金
-  const fixedPrize = 10; // 固定奖金 10 TJS
-  const percentagePrize = pricePerShare * sharesCount * 0.1; // 10% 的商品价值
+  const fixedPrize = 10; // 固定奖金 10 TJS;
+  const percentagePrize = pricePerShare * sharesCount * 0.1; // 10% 的商品价值;
   
   const totalPrize = fixedPrize + percentagePrize;
   
@@ -310,10 +310,10 @@ function calculatePrize(product: any, sharesCount: number): { amount: number; ty
 
 // 获取奖金档次的辅助函数
 function getPrizePeriod(prizeAmount: number, roundNumber: number): string {
-  if (prizeAmount >= 100) return 'jackpot'; // 大奖
-  if (prizeAmount >= 50) return 'major'; // 大奖
-  if (prizeAmount >= 20) return 'medium'; // 中奖
-  return 'minor'; // 小奖
+  if (prizeAmount >= 100) return 'jackpot'; // 大奖 {
+  if (prizeAmount >= 50) return 'major'; // 大奖 {
+  if (prizeAmount >= 20) return 'medium'; // 中奖 {
+  return 'minor'; // 小奖;
 }
 
 // 计算中奖统计数据的辅助函数
@@ -359,7 +359,7 @@ async function calculateWinStatistics(userId: string, period: string) {
   });
 
   const totalWins = wins.length;
-  const totalPrize = wins.reduce((sum: any,  win: any) => {
+  const totalPrize = wins.reduce((sum: any: any,   win: any: any) => {
     const prize = calculatePrize(win.round.product, win.sharesCount);
     return sum + prize.amount;
   }, 0);
@@ -374,7 +374,7 @@ async function calculateWinStatistics(userId: string, period: string) {
     minor: 0    // < 20
   };
 
-  wins.forEach((win : any) => {
+  wins.forEach(((win : any) : any) => {
     const prize = calculatePrize(win.round.product, win.sharesCount);
     const period = getPrizePeriod(prize.amount, win.round.roundNumber);
     prizeDistribution[period as keyof typeof prizeDistribution]++;
@@ -384,7 +384,7 @@ async function calculateWinStatistics(userId: string, period: string) {
     totalWins,
     totalPrize: parseFloat(totalPrize.toFixed(2)),
     averagePrize: parseFloat(averagePrize.toFixed(2)),
-    maxPrize: Math.max(...wins.map((win : any) => calculatePrize(win.round.product, win.sharesCount).amount), 0),
+    maxPrize: Math.max(...wins.map(((win : any) : any) => calculatePrize(win.round.product, win.sharesCount).amount), 0),
     prizeDistribution,
     period
   };
@@ -394,20 +394,20 @@ async function calculateWinStatistics(userId: string, period: string) {
 function getMultilingualProductName(product: any): string {
   if (product.nameMultilingual) {
     try {
-      const nameData = typeof product.nameMultilingual === 'string' 
+      const nameData = typeof product.nameMultilingual === 'string';
         ? JSON.parse(product.nameMultilingual) 
         : product.nameMultilingual;
       
       const languages = ['zh-CN', 'zh', 'en', 'ru', 'tg'];
       
       for (const lang of languages) {
-        if (nameData[lang] && nameData[lang].name) {
-          return nameData[lang].name;
+        if ((nameData?.lang ?? null) && (nameData?.lang ?? null).name) {
+          return (nameData?.lang ?? null).name;
         }
       }
       
-      const firstName = Object.values(nameData).find((value: any) => 
-        value && typeof value === 'object' && value.name
+      const firstName = Object.values(nameData).find((value: any) =>;
+        value && typeof value :== 'object' && value.name
       ) as any;
       
       if (firstName) {
@@ -420,3 +420,4 @@ function getMultilingualProductName(product: any): string {
 
   return product.nameZh || product.nameEn || product.nameRu || '未知商品';
 }
+}}}

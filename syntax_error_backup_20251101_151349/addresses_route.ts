@@ -1,8 +1,8 @@
-// 获取用户地址列表
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import type { ApiResponse, UserAddress } from '@/types';
+// 获取用户地址列表
 
 export async function GET(request: Request) {
   try {
@@ -13,17 +13,17 @@ export async function GET(request: Request) {
         success: false,
         error: '未授权访问'
       }, { status: 401 });
-    }
+}
 
     // 查询用户地址
-    const { data: addresses, error } = await supabaseAdmin
+    const { data: addresses, error } = await supabaseAdmin;
       .from('user_addresses')
       .select('*')
       .eq('userId', user.userId)
       .order('isDefault', { ascending: false })
       .order('createdAt', { ascending: false });
 
-    if (error) {throw error;}
+    if (error) {throw error;} {
 
     return NextResponse.json<ApiResponse<UserAddress[]>>({
       success: true,
@@ -33,6 +33,7 @@ export async function GET(request: Request) {
   } catch (error: any) {
     console.error('获取地址列表失败:', error);
     return NextResponse.json<ApiResponse>({
+  }
       success: false,
       error: error.message || '获取地址列表失败'
     }, { status: 500 });
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
         success: false,
         error: '未授权访问'
       }, { status: 401 });
-    }
+}
 
     const body = await request.json();
     const {
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
     }
 
     // 插入新地址
-    const { data: newAddress, error } = await supabaseAdmin
+    const { data: newAddress, error } = await supabaseAdmin;
       .from('user_addresses')
       .insert({
         userId: user.userId,
@@ -94,9 +95,10 @@ export async function POST(request: Request) {
       .select()
       .single();
 
-    if (error) {throw error;}
+    if (error) {throw error;} {
 
     return NextResponse.json<ApiResponse<UserAddress>>({
+  }
       success: true,
       data: newAddress,
       message: '地址添加成功'

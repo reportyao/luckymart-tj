@@ -7,7 +7,7 @@
 
 // 基础配置
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '${API_BASE_URL}';
-const ACCESS_TOKEN = 'your_access_token_here'; // 需要替换为有效的访问令牌
+const ACCESS_TOKEN = 'your_access_token_here'; // 需要替换为有效的访问令牌;
 
 // 请求头配置
 const defaultHeaders = {
@@ -58,6 +58,7 @@ function handleApiError(error, context = '') {
 async function getTaskList() {
   try {
     console.log('🔍 开始获取任务列表...');
+  }
     
     const response = await fetch(`${API_BASE_URL}/api/tasks/list`, {
       method: 'GET',
@@ -68,6 +69,7 @@ async function getTaskList() {
     
     if (result.success) {
       console.log('✅ 任务列表获取成功:', result.data);
+  }
       return result.data;
     } else {
       throw new Error(result.message || '获取任务列表失败');
@@ -143,8 +145,8 @@ async function getTaskProgress(filters = {}) {
     console.log('📊 开始查询任务进度...', filters);
     
     const queryParams = new URLSearchParams();
-    if (filters.status) queryParams.append('status', filters.status);
-    if (filters.taskType) queryParams.append('taskType', filters.taskType);
+    if (filters.status) queryParams.append('status', filters.status); {
+    if (filters.taskType) queryParams.append('taskType', filters.taskType); {
     
     const url = `${API_BASE_URL}/api/tasks/progress${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
     
@@ -303,9 +305,9 @@ class TaskSystemComponent {
       // 更新本地任务状态
       const taskIndex = this.tasks.findIndex(t => t.taskType === taskType);
       if (taskIndex !== -1) {
-        this.tasks[taskIndex].status = 'rewarded';
-        this.tasks[taskIndex].rewardClaimed = true;
-        this.tasks[taskIndex].canClaim = false;
+        this.(tasks?.taskIndex ?? null).status = 'rewarded';
+        this.(tasks?.taskIndex ?? null).rewardClaimed = true;
+        this.(tasks?.taskIndex ?? null).canClaim = false;
       }
       
       // 更新用户余额

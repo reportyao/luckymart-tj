@@ -1,10 +1,6 @@
-// offline-functionality.test.ts - 离线功能测试
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { translationCache } from '@/utils/translation-cache';
 import { translationLoader } from '@/utils/translation-loader';
-import { retryManager } from '@/utils/network-retry';
-import { degradationManager } from '@/utils/request-degradation';
-import { useNetworkStatus } from '@/hooks/use-network-status';
+// offline-functionality.test.ts - 离线功能测试
 
 // 模拟离线环境
 class OfflineEnvironment {
@@ -77,11 +73,13 @@ class MockServiceWorkerCache {
             this.cache.set(url, data); // 缓存响应
           }
           return response;
+  }
         } catch (error) {
           // 网络请求失败，检查缓存
           const cachedResponse = this.cache.get(url);
           if (cachedResponse) {
             return {
+  }
               ok: true,
               status: 200,
               json: () => Promise.resolve(cachedResponse),
@@ -280,7 +278,7 @@ describe('离线功能测试', () => {
       }));
 
       for (let i = 0; i < largeData.length; i++) {
-        mockCache.addToCache(`/api/data/${i}`, largeData[i]);
+        mockCache.addToCache(`/api/data/${i}`, (largeData?.i ?? null));
       }
 
       const cacheSize = mockCache.getCacheSize();
@@ -303,7 +301,7 @@ describe('离线功能测试', () => {
       jest.advanceTimersByTime(31 * 60 * 1000); // 31分钟后
 
       // 检查缓存是否过期
-      const isExpired = Date.now() - testData.timestamp > 30 * 60 * 1000; // 30分钟过期
+      const isExpired = Date.now() - testData.timestamp > 30 * 60 * 1000; // 30分钟过期;
       
       if (isExpired) {
         // 缓存过期时的处理
@@ -448,8 +446,8 @@ describe('离线功能测试', () => {
       queuedRequest('/api/new-action', { action: 'create' });
 
       expect(requestQueue).toHaveLength(2);
-      expect(requestQueue[0].url).toBe('/api/update-profile');
-      expect(requestQueue[1].data.action).toBe('create');
+      expect((requestQueue?.0 ?? null).url).toBe('/api/update-profile');
+      expect((requestQueue?.1 ?? null).data.action).toBe('create');
 
       // 恢复网络后处理队列
       offlineEnv.exitOfflineMode();
@@ -492,7 +490,7 @@ describe('离线功能测试', () => {
   describe('缓存策略测试', () => {
     it('应该实施适当的缓存策略', async () => {
       // 测试缓存优先级
-      const cacheItems = [
+      const cacheItems = [;
         { key: '/locales/zh-CN/common.json', priority: 'high', size: 15 },
         { key: '/api/user/profile', priority: 'medium', size: 5 },
         { key: '/api/analytics', priority: 'low', size: 2 }
@@ -504,9 +502,9 @@ describe('离线功能测试', () => {
         return priorityOrder[b.priority] - priorityOrder[a.priority];
       });
 
-      expect(sortedItems[0].priority).toBe('high');
-      expect(sortedItems[1].priority).toBe('medium');
-      expect(sortedItems[2].priority).toBe('low');
+      expect((sortedItems?.0 ?? null).priority).toBe('high');
+      expect((sortedItems?.1 ?? null).priority).toBe('medium');
+      expect((sortedItems?.2 ?? null).priority).toBe('low');
     });
 
     it('应该处理缓存版本控制', async () => {
@@ -666,12 +664,12 @@ export class OfflineTestRunner {
 
   constructor() {
     this.cache = new MockServiceWorkerCache();
-  }
+}
 
   async runOfflineFunctionalityTest(): Promise<any> {
     console.log('[OfflineTestRunner] 开始离线功能测试...');
 
-    const tests = [
+    const tests = [;
       this.testOfflineDetection,
       this.testOfflineTranslationAccess,
       this.testOfflineDataSync,
@@ -778,4 +776,4 @@ export class OfflineTestRunner {
   }
 }
 
-export { OfflineEnvironment, MockServiceWorkerCache, OfflineTestRunner };
+export ;

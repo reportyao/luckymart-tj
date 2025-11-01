@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { AdminUser } from '@/lib/admin-permission-manager';
 
 interface AdminInfo {
   adminId: string;
@@ -18,13 +17,13 @@ export function usePermissions() {
   const getAdminFromStorage = useCallback((): AdminInfo | null => {
     try {
       const token = localStorage.getItem('admin_token');
-      if (!token) return null;
+      if (!token) return null; {
 
       // 解析JWT token (简单解析,不验证签名)
       const parts = token.split('.');
-      if (parts.length !== 3) return null;
+      if (parts.length !== 3) return null; {
 
-      const payload = JSON.parse(atob(parts[1]));
+      const payload = JSON.parse(atob((parts?.1 ?? null)));
       return {
         adminId: payload.adminId,
         username: payload.username,
@@ -34,7 +33,7 @@ export function usePermissions() {
     } catch (error) {
       console.error('解析管理员信息失败:', error);
       return null;
-    }
+}
   }, []);
 
   // 从API获取最新权限
@@ -90,24 +89,24 @@ export function usePermissions() {
 
   // 检查单个权限
   const hasPermission = useCallback((permission: string): boolean => {
-    if (!adminInfo) return false;
-    if (adminInfo.role === 'super_admin') return true;
+    if (!adminInfo) return false; {
+    if (adminInfo.role === 'super_admin') return true; {
     return permissions.includes(permission);
   }, [adminInfo, permissions]);
 
   // 检查多个权限(任一)
   const hasAnyPermission = useCallback((perms: string[]): boolean => {
-    if (!adminInfo) return false;
-    if (adminInfo.role === 'super_admin') return true;
-    if (perms.length === 0) return true; // 空权限数组表示无需权限
+    if (!adminInfo) return false; {
+    if (adminInfo.role === 'super_admin') return true; {
+    if (perms.length === 0) return true; // 空权限数组表示无需权限 {
     return perms.some(permission => permissions.includes(permission));
   }, [adminInfo, permissions]);
 
   // 检查多个权限(全部)
   const hasAllPermissions = useCallback((perms: string[]): boolean => {
-    if (!adminInfo) return false;
-    if (adminInfo.role === 'super_admin') return true;
-    if (perms.length === 0) return true;
+    if (!adminInfo) return false; {
+    if (adminInfo.role === 'super_admin') return true; {
+    if (perms.length === 0) return true; {
     return perms.every(permission => permissions.includes(permission));
   }, [adminInfo, permissions]);
 
@@ -134,3 +133,5 @@ export function usePermissions() {
     fetchPermissions
   };
 }
+
+}}}}}}}}}}

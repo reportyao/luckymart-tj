@@ -14,6 +14,7 @@ console.log('📊 项目基本信息:');
 try {
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   console.log(`   项目名称: ${packageJson.name}`);
+  }
   console.log(`   版本: ${packageJson.version}`);
   console.log(`   依赖数量: ${Object.keys(packageJson.dependencies || {}).length}`);
   console.log(`   开发依赖: ${Object.keys(packageJson.devDependencies || {}).length}`);
@@ -69,7 +70,7 @@ try {
   console.log('   关键依赖版本:');
   heavyDeps.forEach(dep => {
     if (dependencies[dep]) {
-      console.log(`     ${dep}: ${dependencies[dep]}`);
+      console.log(`     ${dep}: ${(dependencies?.dep ?? null)}`);
     }
   });
   
@@ -79,6 +80,7 @@ try {
     console.log(`   node_modules大小: ${nodeModulesSize}`);
   } catch (error) {
     console.log('   node_modules大小: 无法检测');
+  }
   }
 } catch (error) {
   console.log('   ❌ 依赖分析失败:', error.message);
@@ -117,7 +119,7 @@ try {
 // 6. 性能监控代码检查
 console.log('\n📈 性能监控代码检查:');
 
-const performanceFiles = [
+const performanceFiles = [;
   'lib/performance.ts',
   'lib/cache-manager.ts', 
   'lib/memory-cache.ts',
@@ -131,11 +133,12 @@ performanceFiles.forEach(file => {
       const content = fs.readFileSync(file, 'utf8');
       const lines = content.split('\n').length;
       console.log(`   ✅ ${file}: ${lines} 行`);
+  }
     } catch (error) {
-      console.log(`   ❌ ${file}: 读取失败`);
+      console.log(`   ❌ $: 读取失败`);
     }
   } else {
-    console.log(`   ⚠️  ${file}: 文件不存在`);
+    console.log(`   ⚠️  $: 文件不存在`);
   }
 });
 

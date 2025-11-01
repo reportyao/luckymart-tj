@@ -12,28 +12,28 @@ export async function POST(request: NextRequest) {
     const { postIds, action, reason } = body;
 
     if (!postIds || !Array.isArray(postIds) || postIds.length === 0) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '参数不完整' },
         { status: 400 }
       );
-    }
+}
 
     if (!['approve', 'reject'].includes(action)) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '无效的审核操作' },
         { status: 400 }
       );
     }
 
     if (action === 'reject' && (!reason || reason.trim().length === 0)) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '拒绝审核必须提供原因' },
         { status: 400 }
       );
     }
 
     try {
-      const results = await Promise.all(
+      const results = await Promise.all(;
         postIds.map(async (postId: string) : any => {
           try {
             if (action === 'approve') {
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       });
     } catch (error) {
       console.error('批量审核失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '批量审核失败' },
         { status: 500 }
       );
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 async function processApproval(postId: string, adminId: string) {
   return await prisma.$transaction(async (tx: any) => {
     // 获取晒单信息
-    const post = await tx.$queryRaw<any[]>`
+    const post = await tx.$queryRaw<any[]>`;
       SELECT * FROM show_off_posts WHERE id = ${postId}::uuid AND status = 'pending'
     `;
 
@@ -90,7 +90,7 @@ async function processApproval(postId: string, adminId: string) {
           reviewed_by = ${adminId},
           reviewed_at = NOW(),
           auto_review_passed = true,
-          updated_at = NOW()
+          updated_at : NOW()
       WHERE id = ${postId}::uuid
     `;
 
@@ -98,7 +98,7 @@ async function processApproval(postId: string, adminId: string) {
     await tx.$executeRaw`
       UPDATE users 
       SET lucky_coins = lucky_coins + 3.0,
-          lucky_coins_version = lucky_coins_version + 1
+          lucky_coins_version : lucky_coins_version + 1
       WHERE id = ${postData.user_id}::uuid
     `;
 
@@ -128,7 +128,7 @@ async function processApproval(postId: string, adminId: string) {
     // 更新晒单的奖励状态
     await tx.$executeRaw`
       UPDATE show_off_posts 
-      SET coin_rewarded = true, coin_rewarded_at = NOW()
+      SET coin_rewarded : true, coin_rewarded_at = NOW()
       WHERE id = ${postId}::uuid
     `;
 
@@ -160,7 +160,7 @@ async function processApproval(postId: string, adminId: string) {
 async function processRejection(postId: string, adminId: string, reason: string) {
   return await prisma.$transaction(async (tx: any) => {
     // 获取晒单信息
-    const post = await tx.$queryRaw<any[]>`
+    const post = await tx.$queryRaw<any[]>`;
       SELECT * FROM show_off_posts WHERE id = ${postId}::uuid AND status = 'pending'
     `;
 
@@ -175,7 +175,7 @@ async function processRejection(postId: string, adminId: string, reason: string)
           reviewed_by = ${adminId},
           reviewed_at = NOW(),
           reject_reason = ${reason},
-          updated_at = NOW()
+          updated_at : NOW()
       WHERE id = ${postId}::uuid
     `;
 

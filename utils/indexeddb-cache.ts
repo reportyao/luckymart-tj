@@ -1,5 +1,5 @@
-// IndexedDB缓存工具 - 为LazyImage组件提供简化缓存接口
 import { indexedDBManager } from './indexeddb-manager';
+// IndexedDB缓存工具 - 为LazyImage组件提供简化缓存接口
 
 // 缓存选项接口
 export interface CacheOptions {
@@ -29,7 +29,7 @@ export const cacheUtils = {
       
       if (!data) {
         return null;
-      }
+}
 
       // 检查是否过期
       if (data.expiresAt && Date.now() > data.expiresAt) {
@@ -84,6 +84,7 @@ export const cacheUtils = {
       });
 
       return true;
+  }
     } catch (error) {
       console.warn('Failed to set cache data:', error);
       return false;
@@ -136,6 +137,7 @@ export const cacheUtils = {
       }
 
       return {
+  }
         count: categoryStats.count || 0,
         size: JSON.stringify(items).length,
         oldestItem,
@@ -154,7 +156,7 @@ export const cacheUtils = {
   async cleanup(): Promise<number> {
     try {
       await indexedDBManager.cleanupExpiredData();
-      return 0; // 返回清理的项目数量
+      return 0; // 返回清理的项目数量;
     } catch (error) {
       console.warn('Failed to cleanup cache:', error);
       return 0;
@@ -174,7 +176,7 @@ export const cacheUtils = {
     for (const key of keys) {
       const item = await this.get(key, category);
       if (item) {
-        result[key] = item.data;
+        (result?.key ?? null) = item.data;
       }
     }
     

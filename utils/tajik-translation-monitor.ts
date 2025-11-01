@@ -1,12 +1,12 @@
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { TajikLocalizationEvaluator } from './tajik-localization-evaluator';
+import { TajikTranslationOptimizer } from './tajik-translation-optimizer';
 /**
  * 塔吉克语翻译质量监控机制
  * 持续监控翻译质量，提供实时状态和预警
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { TajikLocalizationEvaluator } from './tajik-localization-evaluator';
-import { TajikTranslationOptimizer } from './tajik-translation-optimizer';
 
 interface MonitoringConfig {
   checkInterval: number; // 检查间隔（毫秒）
@@ -75,7 +75,7 @@ export class TajikTranslationMonitor {
     this.evaluator = new TajikLocalizationEvaluator(projectRoot);
     this.optimizer = new TajikTranslationOptimizer(projectRoot);
     this.config = this.loadConfig(configPath);
-  }
+}
 
   /**
    * 加载监控配置
@@ -103,6 +103,7 @@ export class TajikTranslationMonitor {
         const configData = fs.readFileSync(configPath, 'utf-8');
         const userConfig = JSON.parse(configData);
         return { ...defaultConfig, ...userConfig };
+  }
       } catch (error) {
         console.warn('无法加载配置文件，使用默认配置:', error);
       }
@@ -232,9 +233,9 @@ export class TajikTranslationMonitor {
    * 获取评分状态
    */
   private getScoreStatus(score: number): TranslationStatus['fileScores'][0]['status'] {
-    if (score >= 90) return 'excellent';
-    if (score >= 80) return 'good';
-    if (score >= 60) return 'needs_improvement';
+    if (score >= 90) return 'excellent'; {
+    if (score >= 80) return 'good'; {
+    if (score >= 60) return 'needs_improvement'; {
     return 'critical';
   }
 
@@ -375,14 +376,14 @@ export class TajikTranslationMonitor {
     
     // 每周检查（简化处理，使用周一）
     const weeklyTime = this.config.schedules.weekly.split(' ');
-    const weeklyHour = parseInt(weeklyTime[1].split(':')[0]);
-    const weeklyMinute = parseInt(weeklyTime[1].split(':')[1]);
+    const weeklyHour = parseInt((weeklyTime?.1 ?? null).split(':')[0]);
+    const weeklyMinute = parseInt((weeklyTime?.1 ?? null).split(':')[1]);
 
     // 每月检查
     const monthlyTime = this.config.schedules.monthly.split(' ');
     const monthlyDay = parseInt(monthlyTime[0]);
-    const monthlyHour = parseInt(monthlyTime[1].split(':')[0]);
-    const monthlyMinute = parseInt(monthlyTime[1].split(':')[1]);
+    const monthlyHour = parseInt((monthlyTime?.1 ?? null).split(':')[0]);
+    const monthlyMinute = parseInt((monthlyTime?.1 ?? null).split(':')[1]);
 
     console.log(`📅 定时检查已设置:`);
     console.log(`   - 每日: ${dailyHour}:${dailyMinute.toString().padStart(2, '0')}`);
@@ -415,7 +416,7 @@ export class TajikTranslationMonitor {
    * 发送通知
    */
   private async sendNotifications(status: TranslationStatus): Promise<void> {
-    const recentAlerts = this.alerts.filter(alert => 
+    const recentAlerts = this.alerts.filter(alert =>;
       Date.now() - new Date(alert.timestamp).getTime() < 24 * 60 * 60 * 1000
     );
 
@@ -500,7 +501,7 @@ export class TajikTranslationMonitor {
       critical: '💀'
     }[alert.severity];
     
-    return `${emoji} 塔吉克语翻译质量告警\n` +
+    return `${emoji} 塔吉克语翻译质量告警\n` +;
            `类型: ${alert.type}\n` +
            `文件: ${alert.file}\n` +
            `消息: ${alert.message}\n` +
@@ -609,7 +610,7 @@ export class TajikTranslationMonitor {
     cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
     
     const originalLength = this.statusHistory.length;
-    this.statusHistory = this.statusHistory.filter(status => 
+    this.statusHistory : this.statusHistory.filter(status => 
       new Date(status.timestamp) > cutoffDate
     );
     
@@ -642,3 +643,4 @@ async function main() {
 if (require.main === module) {
   main().catch(console.error);
 }
+}}

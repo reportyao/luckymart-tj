@@ -22,7 +22,7 @@ class SettingsCache {
 
   get(key: string): any | null {
     const item = this.cache.get(key);
-    if (!item) return null;
+    if (!item) return null; {
 
     const now = Date.now();
     
@@ -98,7 +98,7 @@ class SettingsCache {
   }
 }
 
-const settingsCache = new SettingsCache(50, 5 * 60 * 1000, 1000); // 最大50个条目，5分钟过期，最多1000次访问
+const settingsCache = new SettingsCache(50, 5 * 60 * 1000, 1000); // 最大50个条目，5分钟过期，最多1000次访问;
 
 // 获取缓存的系统设置
 async function getCachedSettings() {
@@ -113,7 +113,7 @@ function updateCache(settings: any) {
 // 从数据库获取所有设置
 async function getAllSettings() {
   const cached = await getCachedSettings();
-  if (cached) {return cached;}
+  if (cached) {return cached;} {
 
   const settings = await prisma.systemSettings.findMany();
   const settingsMap: any = {};
@@ -199,7 +199,7 @@ export async function POST(request: NextRequest) {
     // 基础设置
     if (data.siteName !== undefined) {
       updatePromises.push(updateSetting('site_name', data.siteName, 'string'));
-    }
+}
     if (typeof data.minRechargeAmount === 'number') {
       updatePromises.push(updateSetting('min_recharge_amount', data.minRechargeAmount, 'number'));
     }
@@ -300,3 +300,5 @@ export async function POST(request: NextRequest) {
     });
   })(request);
 }
+
+}}

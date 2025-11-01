@@ -1,10 +1,10 @@
+import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
+import { PrismaClient } from '@prisma/client';
+import { behaviorMonitor, DetectionResult } from '../lib/anti-fraud/behavior-monitor';
 /**
  * 行为监控系统的单元测试
  */
 
-import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
-import { PrismaClient } from '@prisma/client';
-import { behaviorMonitor, DetectionResult } from '../lib/anti-fraud/behavior-monitor';
 
 // 模拟PrismaClient
 const mockPrisma = {
@@ -71,7 +71,7 @@ describe('BehaviorMonitor', () => {
   describe('detectAbnormalInviteSpeed', () => {
     it('应该检测到24小时内邀请超过20人的用户', async () => {
       // 模拟数据
-      const mockInviteStats = [
+      const mockInviteStats = [;
         { referrer_user_id: 'user1', invite_count: 25 },
         { referrer_user_id: 'user2', invite_count: 30 }
       ];
@@ -82,15 +82,15 @@ describe('BehaviorMonitor', () => {
       const results = await monitor.detectAbnormalInviteSpeed();
       
       expect(results).toHaveLength(2);
-      expect(results[0].type).toBe('abnormal_invite_speed');
-      expect(results[0].riskScore).toBe(85);
-      expect(results[0].action).toBe('manual_review');
-      expect(results[0].details.inviteCount).toBe(25);
+      expect((results?.0 ?? null).type).toBe('abnormal_invite_speed');
+      expect((results?.0 ?? null).riskScore).toBe(85);
+      expect((results?.0 ?? null).action).toBe('manual_review');
+      expect((results?.0 ?? null).details.inviteCount).toBe(25);
       expect(mockPrisma.users.update).toHaveBeenCalledTimes(2);
     });
 
     it('应该跳过已经在审核中的用户', async () => {
-      const mockInviteStats = [
+      const mockInviteStats = [;
         { referrer_user_id: 'user1', invite_count: 25 }
       ];
       
@@ -106,14 +106,14 @@ describe('BehaviorMonitor', () => {
 
   describe('detectSuspiciousDevices', () => {
     it('应该检测到绑定4个或更多账号的设备', async () => {
-      const mockDeviceStats = [
+      const mockDeviceStats = [;
         { device_id: 'device1', account_count: 5 }
       ];
       
       mockPrisma.$queryRaw.mockResolvedValue(mockDeviceStats);
       mockPrisma.deviceBlacklist.findUnique.mockResolvedValue(null);
       
-      const mockDeviceUsers = [
+      const mockDeviceUsers = [;
         { userId: 'user1', User: { username: 'user1', telegramId: 12345 } },
         { userId: 'user2', User: { username: 'user2', telegramId: 67890 } }
       ];
@@ -123,14 +123,14 @@ describe('BehaviorMonitor', () => {
       const results = await monitor.detectSuspiciousDevices();
       
       expect(results).toHaveLength(1);
-      expect(results[0].type).toBe('suspicious_device');
-      expect(results[0].riskScore).toBe(75);
-      expect(results[0].action).toBe('require_verification');
-      expect(results[0].details.accountCount).toBe(5);
+      expect((results?.0 ?? null).type).toBe('suspicious_device');
+      expect((results?.0 ?? null).riskScore).toBe(75);
+      expect((results?.0 ?? null).action).toBe('require_verification');
+      expect((results?.0 ?? null).details.accountCount).toBe(5);
     });
 
     it('应该跳过已经在黑名单中的设备', async () => {
-      const mockDeviceStats = [
+      const mockDeviceStats = [;
         { device_id: 'device1', account_count: 5 }
       ];
       
@@ -146,7 +146,7 @@ describe('BehaviorMonitor', () => {
 
   describe('detectBatchRegistration', () => {
     it('应该检测到24小时内同一IP注册超过10个账号', async () => {
-      const mockIpStats = [
+      const mockIpStats = [;
         { ip_address: '192.168.1.100', registration_count: 15 }
       ];
       
@@ -156,23 +156,23 @@ describe('BehaviorMonitor', () => {
       const results = await monitor.detectBatchRegistration();
       
       expect(results).toHaveLength(1);
-      expect(results[0].type).toBe('batch_registration');
-      expect(results[0].riskScore).toBe(90);
-      expect(results[0].action).toBe('block');
-      expect(results[0].details.registrationCount).toBe(15);
+      expect((results?.0 ?? null).type).toBe('batch_registration');
+      expect((results?.0 ?? null).riskScore).toBe(90);
+      expect((results?.0 ?? null).action).toBe('block');
+      expect((results?.0 ?? null).details.registrationCount).toBe(15);
     });
   });
 
   describe('detectMutualReferralWashTrading', () => {
     it('应该检测到互相推荐的用户进行相似金额充值', async () => {
-      const mockMutualPairs = [
+      const mockMutualPairs = [;
         { user_a_id: 'user1', user_b_id: 'user2' }
       ];
       
       mockPrisma.$queryRaw.mockResolvedValue(mockMutualPairs);
       
       const now = new Date();
-      const mockTransactions = [
+      const mockTransactions = [;
         {
           id: 1,
           userId: 'user1',
@@ -194,15 +194,15 @@ describe('BehaviorMonitor', () => {
       const results = await monitor.detectMutualReferralWashTrading();
       
       expect(results).toHaveLength(1);
-      expect(results[0].type).toBe('mutual_referral_wash_trading');
-      expect(results[0].riskScore).toBe(95);
-      expect(results[0].action).toBe('manual_review');
+      expect((results?.0 ?? null).type).toBe('mutual_referral_wash_trading');
+      expect((results?.0 ?? null).riskScore).toBe(95);
+      expect((results?.0 ?? null).action).toBe('manual_review');
     });
   });
 
   describe('filterZombieAccounts', () => {
     it('应该检测到可信度评分低且无活跃行为的僵尸号', async () => {
-      const mockZombieAccounts = [
+      const mockZombieAccounts = [;
         {
           id: 'user1',
           telegramId: 12345,
@@ -214,7 +214,7 @@ describe('BehaviorMonitor', () => {
       
       mockPrisma.users.findMany.mockResolvedValue(mockZombieAccounts);
       
-      const mockActivity = [
+      const mockActivity = [;
         { transaction_count: 0, last_activity: null }
       ];
       
@@ -223,9 +223,9 @@ describe('BehaviorMonitor', () => {
       const results = await monitor.filterZombieAccounts();
       
       expect(results).toHaveLength(1);
-      expect(results[0].type).toBe('zombie_account');
-      expect(results[0].riskScore).toBe(70);
-      expect(results[0].action).toBe('flag');
+      expect((results?.0 ?? null).type).toBe('zombie_account');
+      expect((results?.0 ?? null).riskScore).toBe(70);
+      expect((results?.0 ?? null).action).toBe('flag');
     });
   });
 

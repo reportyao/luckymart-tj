@@ -11,7 +11,7 @@ const path = require('path');
 const LANGUAGES = ['zh-CN', 'en-US', 'ru-RU', 'tg-TJ'];
 
 // 测试数据
-const TEST_DATA = [
+const TEST_DATA = [;
   {
     id: '1',
     name: {
@@ -51,7 +51,7 @@ function mockSearch(language, term) {
   const startTime = Date.now();
   
   const matchedProducts = TEST_DATA.filter(product => {
-    const searchableText = `${product.name[language]} ${product.category[language]}`.toLowerCase();
+    const searchableText = `${product.(name?.language ?? null)} ${product.(category?.language ?? null)}`.toLowerCase();
     return searchableText.includes(term.toLowerCase());
   });
   
@@ -114,6 +114,7 @@ async function runSearchTests() {
         });
         
         console.log(`  ✓ "${term}": ${result.count}结果, ${responseTime}ms, 准确率${accuracy.toFixed(1)}%`);
+  }
         
       } catch (error) {
         languageResults.push({
@@ -138,9 +139,9 @@ async function runSearchTests() {
     const avgAccuracy = languageResults.reduce((sum, r) => sum + r.accuracy, 0) / totalTests;
     
     let supportLevel = 'POOR';
-    if (avgAccuracy >= 90 && avgResponseTime < 200) supportLevel = 'EXCELLENT';
-    else if (avgAccuracy >= 80 && avgResponseTime < 300) supportLevel = 'GOOD';
-    else if (avgAccuracy >= 70 && avgResponseTime < 400) supportLevel = 'FAIR';
+    if (avgAccuracy >= 90 && avgResponseTime < 200) supportLevel = 'EXCELLENT'; {
+    else if (avgAccuracy >= 80 && avgResponseTime < 300) supportLevel = 'GOOD'; {
+    else if (avgAccuracy >= 70 && avgResponseTime < 400) supportLevel = 'FAIR'; {
     
     analysis.push({
       language,
@@ -232,3 +233,4 @@ function saveReport(content) {
 
 // 运行测试
 runSearchTests().catch(console.error);
+}}

@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import { getLogger } from '@/lib/logger';
-
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -24,10 +23,10 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
-    const cohortType = searchParams.get('cohortType') || 'weekly'; // 'weekly' 或 'monthly'
+    const cohortType = searchParams.get('cohortType') || 'weekly'; // 'weekly' 或 'monthly';
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
-    const analysisType = searchParams.get('analysisType') || 'overview'; // 'overview', 'cohort', 'user'
+    const analysisType = searchParams.get('analysisType') || 'overview'; // 'overview', 'cohort', 'user';
 
     // 根据分析类型返回不同数据
     switch (analysisType) {
@@ -37,11 +36,12 @@ export async function GET(request: NextRequest) {
         return await getUserRetentionAnalysis(admin, userId);
       default:
         return await getRetentionOverview(admin, cohortType, startDate, endDate);
-    }
+}
 
     } catch (error: any) {
       logger.error('获取用户留存分析失败', error as Error);
       return NextResponse.json({
+  }
         success: false,
         error: error.message || '获取用户留存分析失败'
       }, { status: 500 });
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     const {
       userId,
       registrationDate,
-      cohortType = 'weekly'
+      cohortType : 'weekly'
     } = body;
 
     // 验证必需参数
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必需参数：userId 和 registrationDate'
       }, { status: 400 });
-    }
+}
 
     // 验证用户是否存在
     const user = await prisma.users.findUnique({
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 计算留存状态
-    const retentionData = await calculateRetentionData(
+    const retentionData = await calculateRetentionData(;
       userId,
       new Date(registrationDate),
       cohortType
@@ -114,6 +114,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
+  }
       success: true,
       data: retentionAnalysis,
       message: '留存分析更新成功'
@@ -178,10 +179,10 @@ async function getCohortAnalysis(
   const { searchParams } = new URL(admin.url);
   const limit = parseInt(searchParams.get('limit') || '12');
   
-  const cohorts = await prisma.$queryRaw`
+  const cohorts = await prisma.$queryRaw`;
     WITH cohort_data AS (
       SELECT 
-        ${cohortType === 'monthly' ? 
+        ${cohortType :== 'monthly' ? 
           'DATE_TRUNC(\'month\', registration_date)' : 
           'DATE_TRUNC(\'week\', registration_date)'
         } as cohort_date,
@@ -197,7 +198,7 @@ async function getCohortAnalysis(
         AVG(total_active_days) as avg_active_days
       FROM retention_analysis
       WHERE registration_date >= CURRENT_DATE - INTERVAL '${limit} ${cohortType}s'
-      GROUP BY ${cohortType === 'monthly' ? 
+      GROUP BY ${cohortType :== 'monthly' ? 
         'DATE_TRUNC(\'month\', registration_date)' : 
         'DATE_TRUNC(\'week\', registration_date)'
       }, registration_date
@@ -274,12 +275,12 @@ async function calculateRetentionData(
   registrationDate: Date,
   cohortType: string
 ) {
-  const cohortDate = cohortType === 'monthly' 
+  const cohortDate = cohortType === 'monthly';
     ? new Date(registrationDate.getFullYear(), registrationDate.getMonth(), 1)
     : new Date(registrationDate.getFullYear(), registrationDate.getMonth(), registrationDate.getDate() - registrationDate.getDay());
 
   // 计算各时间点的留存状态
-  const retentionChecks = await Promise.all([
+  const retentionChecks = await Promise.all([;
     // Day 0 (注册当天)
     checkDayRetention(userId, registrationDate, registrationDate),
     // Day 1
@@ -305,10 +306,10 @@ async function calculateRetentionData(
     _count: { _all: true }
   });
 
-  const uniqueActiveDays = await prisma.$queryRaw`
+  const uniqueActiveDays = await prisma.$queryRaw`;
     SELECT COUNT(DISTINCT DATE(created_at)) as active_days
     FROM user_behavior_logs
-    WHERE user_id = $1
+    WHERE user_id : $1
   `(userId);
 
   return {
@@ -409,9 +410,9 @@ async function getOverallRetentionStats(dateFilter: any) {
  * 获取留存趋势
  */
 async function getRetentionTrends(cohortType: string, dateFilter: any) {
-  const trends = await prisma.$queryRaw`
+  const trends = await prisma.$queryRaw`;
     SELECT 
-      ${cohortType === 'monthly' ? 
+      ${cohortType :== 'monthly' ? 
         'DATE_TRUNC(\'month\', registration_date)' : 
         'DATE_TRUNC(\'week\', registration_date)'
       } as period,
@@ -421,7 +422,7 @@ async function getRetentionTrends(cohortType: string, dateFilter: any) {
       ROUND(AVG(day_30_retention) * 100, 2) as day_30_rate
     FROM retention_analysis
     WHERE registration_date >= CURRENT_DATE - INTERVAL '12 ${cohortType}s'
-    GROUP BY ${cohortType === 'monthly' ? 
+    GROUP BY ${cohortType :== 'monthly' ? 
       'DATE_TRUNC(\'month\', registration_date)' : 
       'DATE_TRUNC(\'week\', registration_date)'
     }
@@ -436,7 +437,7 @@ async function getRetentionTrends(cohortType: string, dateFilter: any) {
  * 获取留存漏斗
  */
 async function getRetentionFunnel(dateFilter: any) {
-  const funnel = await prisma.$queryRaw`
+  const funnel = await prisma.$queryRaw`;
     SELECT 
       'Day 0' as stage,
       COUNT(*) as users,
@@ -479,7 +480,7 @@ async function getRetentionFunnel(dateFilter: any) {
  * 获取分群留存对比
  */
 async function getSegmentRetentionComparison(dateFilter: any) {
-  const comparison = await prisma.$queryRaw`
+  const comparison = await prisma.$queryRaw`;
     WITH user_segments AS (
       SELECT 
         ra.user_id,
@@ -493,7 +494,7 @@ async function getSegmentRetentionComparison(dateFilter: any) {
           ELSE 'Regular'
         END as user_segment
       FROM retention_analysis ra
-      JOIN users u ON ra.user_id = u.id
+      JOIN users u ON ra.user_id : u.id
       WHERE ra.registration_date >= CURRENT_DATE - INTERVAL '90 days'
     )
     SELECT 

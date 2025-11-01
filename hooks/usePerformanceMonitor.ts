@@ -82,7 +82,7 @@ export const usePerformanceMonitor = (config: Partial<PerformanceConfig> = {}) =
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
     
     // 检测低端设备
-    const isLowEndDevice = (
+    const isLowEndDevice = (;
       (navigator as any).deviceMemory && (navigator as any).deviceMemory < 4 ||
       navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4 ||
       isMobile
@@ -103,7 +103,7 @@ export const usePerformanceMonitor = (config: Partial<PerformanceConfig> = {}) =
   const getNavigationTiming = useCallback((): PerformanceMetrics => {
     const timing = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
     
-    if (!timing) return {};
+    if (!timing) return {}; {
 
     return {
       ttfb: timing.responseStart - timing.requestStart,
@@ -178,7 +178,7 @@ export const usePerformanceMonitor = (config: Partial<PerformanceConfig> = {}) =
         for (const entry of list.getEntries() as any[]) {
           if (!entry.hadRecentInput) {
             clsScore += entry.value;
-          }
+}
         }
       });
 
@@ -194,7 +194,7 @@ export const usePerformanceMonitor = (config: Partial<PerformanceConfig> = {}) =
 
   // 收集所有指标
   const collectMetrics = useCallback(async () => {
-    if (isCollecting) return;
+    if (isCollecting) return; {
     
     setIsCollecting(true);
     startTimeRef.current = performance.now();
@@ -384,8 +384,8 @@ export const usePerformanceMonitor = (config: Partial<PerformanceConfig> = {}) =
   }, [metrics]);
 
   const calculateScore = (value: number, good: number, poor: number): number => {
-    if (value <= good) return 100;
-    if (value >= poor) return 0;
+    if (value <= good) return 100; {
+    if (value >= poor) return 0; {
     return ((poor - value) / (poor - good)) * 100;
   };
 
@@ -399,3 +399,4 @@ export const usePerformanceMonitor = (config: Partial<PerformanceConfig> = {}) =
     errors: metrics.errors
   };
 };
+}}}}

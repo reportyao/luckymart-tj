@@ -8,7 +8,6 @@ import { withRateLimit, lotteryRateLimit } from '@/lib/rate-limit-middleware';
 import { triggerImmediateDraw } from '@/lib/lottery';
 import { withErrorHandling } from '@/lib/middleware';
 import { respond } from '@/lib/responses';
-import { CommonErrors } from '@/lib/errors';
 
 const handleLotteryParticipation = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
@@ -29,7 +28,7 @@ const handleLotteryParticipation = withErrorHandling(async (request: NextRequest
   // 验证用户身份 - 使用更安全的方法
   const user = getUserFromRequest(request);
   if (!user?.userId) {
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.customError('UNAUTHORIZED', '未授权访问').toJSON(),
       { status: 401 }
     );
@@ -42,7 +41,7 @@ const handleLotteryParticipation = withErrorHandling(async (request: NextRequest
 
   // 参数验证
   if (!roundId || !quantity) {
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.validationError('参数不完整：roundId和quantity都是必需的').toJSON(),
       { status: 400 }
     );
@@ -50,7 +49,7 @@ const handleLotteryParticipation = withErrorHandling(async (request: NextRequest
 
   // 验证数量范围
   if (typeof quantity !== 'number' || quantity < 1 || quantity > 100) {
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.validationError('数量必须在1-100之间').toJSON(),
       { status: 400 }
     );
@@ -253,7 +252,7 @@ const handleLotteryParticipation = withErrorHandling(async (request: NextRequest
       executionTime: Date.now() - startTime
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.success(result, '抽奖参与成功！').toJSON()
     );
 
@@ -284,29 +283,29 @@ const handleLotteryParticipation = withErrorHandling(async (request: NextRequest
 
     // 根据错误类型返回不同状态码和统一响应格式
     if (error.message.includes('幸运币余额不足')) {
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('INSUFFICIENT_BALANCE', '幸运币余额不足').toJSON(),
         { status: 400 }
       );
     } else if (error.message.includes('夺宝期次不存在')) {
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('NOT_FOUND', '抽奖期次不存在').toJSON(),
         { status: 404 }
       );
     } else if (error.message.includes('份额不足')) {
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('INSUFFICIENT_STOCK', error.message).toJSON(),
         { status: 400 }
       );
     } else if (error.message.includes('未授权')) {
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('UNAUTHORIZED', '未授权访问').toJSON(),
         { status: 401 }
       );
     }
 
     // 默认服务器错误
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.customError('INTERNAL_ERROR', '抽奖参与失败').toJSON(),
       { status: 500 }
     );
@@ -351,4 +350,4 @@ const processRequest = withRateLimit(handleLotteryParticipation, lotteryRateLimi
 }));
 
 // 导出主处理函数
-export { processRequest as POST };
+export ;

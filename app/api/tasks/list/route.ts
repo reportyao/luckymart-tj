@@ -29,16 +29,16 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     });
 
     if (!userRecord) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.notFound('用户不存在'),
         { status: 404 }
       );
-    }
+}
 
     const userLanguage = userRecord.preferredLanguage || 'tg-TJ';
 
     // 获取用户任务进度状态
-    const taskStatus = await prisma.$queryRawUnsafe(`
+    const taskStatus = await prisma.$queryRawUnsafe(`;
       SELECT 
         task_id,
         task_type,
@@ -70,11 +70,11 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       const nameMultilingual = task.name_multilingual || {};
       const descriptionMultilingual = task.description_multilingual || {};
       
-      const taskName = nameMultilingual[userLanguage] || 
+      const taskName = nameMultilingual[userLanguage] ||;
                       nameMultilingual['en-US'] || 
                       task.task_type;
                       
-      const taskDescription = descriptionMultilingual[userLanguage] || 
+      const taskDescription = descriptionMultilingual[userLanguage] ||;
                              descriptionMultilingual['en-US'] || 
                              task.task_type;
 
@@ -82,19 +82,19 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       let currentStatus = task.status;
       if (currentStatus === 'pending') {
         // 调用数据库函数检查完成状态
-        const completionCheck = await prisma.$queryRaw`
+        const completionCheck = await prisma.$queryRaw`;
           SELECT update_user_task_progress(${userId}, ${task.task_type}) as result
         `;
         
         // 重新获取更新后的状态
-        const updatedStatus = await prisma.$queryRaw`
+        const updatedStatus = await prisma.$queryRaw`;
           SELECT status FROM user_task_progress 
           WHERE user_id = ${userId} 
           AND task_id = ${task.task_id}
         `;
         
         if (updatedStatus.length > 0) {
-          currentStatus = updatedStatus[0].status;
+          currentStatus = (updatedStatus?.0 ?? null).status;
         }
       }
 
@@ -123,14 +123,14 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     // 统计任务进度
     const stats = {
       total: tasks.length,
-      pending: tasks.filter((task : any) => task.status === 'pending').length,
-      completed: tasks.filter((task : any) => task.status === 'completed').length,
-      rewarded: tasks.filter((task : any) => task.status === 'rewarded').length,
+      pending: tasks.filter(((task : any) : any) => task.status === 'pending').length,
+      completed: tasks.filter(((task : any) : any) => task.status === 'completed').length,
+      rewarded: tasks.filter(((task : any) : any) => task.status === 'rewarded').length,
       completionRate: 0,
       totalRewardClaimed: tasks
-        .filter(task => task.status === 'rewarded')
+        .filter(task :> task.status === 'rewarded')
         .reduce((sum, task) => sum + task.reward.amount, 0),
-      totalPossibleReward: tasks.reduce((sum: any,  task: any) => sum + task.reward.amount, 0)
+      totalPossibleReward: tasks.reduce((sum: any: any,   task: any: any) => sum + task.reward.amount, 0)
     };
     
     if (stats.total > 0) {
@@ -170,7 +170,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       method: 'GET'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('获取任务列表失败，请稍后重试'),
       { status: 500 }
     );

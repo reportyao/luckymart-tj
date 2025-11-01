@@ -1,20 +1,19 @@
-// WithdrawForm 组件测试
 import { describe, test, expect } from '@jest/globals';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import WithdrawForm from '../WithdrawForm';
-import type { WithdrawFormData } from '../WithdrawForm';
+// WithdrawForm 组件测试
 
 // 模拟 react-i18next
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
-      const translations: Record<string, string> = {
+jest.mock('react-i18next', () => ({}
+  useTranslation: () => ({}
+    t: (key: string) => {}
+      const translations: Record<string, string> = {}
         'wallet:title': '钱包',
         'wallet:withdraw': '提现'
       };
       return translations[key] || key;
-    }
+    
   })
 }));
 
@@ -22,7 +21,7 @@ jest.mock('react-i18next', () => ({
 global.fetch = jest.fn();
 
 // 测试工具函数
-const createMockUser = () => ({
+const createMockUser = () => ({}
   id: '1',
   telegramId: '123456789',
   username: 'testuser',
@@ -42,15 +41,15 @@ const createMockUser = () => ({
   balance: 1000
 });
 
-describe('WithdrawForm', () => {
+describe('WithdrawForm', () => {}
   const mockOnSubmit = jest.fn();
   
-  beforeEach(() => {
+  beforeEach(() => {}
     mockOnSubmit.mockClear();
     (fetch as jest.Mock).mockClear();
   });
 
-  test('应该正确渲染提现表单', () => {
+  test('应该正确渲染提现表单', () => {}
     render(
       <WithdrawForm
         balance={1000}
@@ -66,7 +65,7 @@ describe('WithdrawForm', () => {
     expect(screen.getByLabelText(/支付密码/)).toBeInTheDocument();
   });
 
-  test('应该验证必填字段', async () => {
+  test('应该验证必填字段', async () => {}
     const user = userEvent.setup();
     render(
       <WithdrawForm
@@ -79,14 +78,14 @@ describe('WithdrawForm', () => {
     // 尝试提交空表单
     await user.click(screen.getByRole('button', { name: /提交提现申请/ }));
 
-    await waitFor(() => {
+    await waitFor(() => {}
       expect(screen.getByText(/请输入有效的提现金额/)).toBeInTheDocument();
     });
 
     expect(mockOnSubmit).not.toHaveBeenCalled();
   });
 
-  test('应该验证余额不足', async () => {
+  test('应该验证余额不足', async () => {}
     const user = userEvent.setup();
     render(
       <WithdrawForm
@@ -122,14 +121,14 @@ describe('WithdrawForm', () => {
     // 尝试提交
     await user.click(screen.getByRole('button', { name: /提交提现申请/ }));
 
-    await waitFor(() => {
+    await waitFor(() => {}
       expect(screen.getByText(/余额不足/)).toBeInTheDocument();
     });
 
     expect(mockOnSubmit).not.toHaveBeenCalled();
   });
 
-  test('应该正确计算手续费', () => {
+  test('应该正确计算手续费', () => {}
     render(
       <WithdrawForm
         balance={1000}
@@ -145,7 +144,7 @@ describe('WithdrawForm', () => {
     expect(screen.getByText('实际到账: 95.00 TJS')).toBeInTheDocument();
   });
 
-  test('应该正确处理提现方式切换', async () => {
+  test('应该正确处理提现方式切换', async () => {}
     const user = userEvent.setup();
     render(
       <WithdrawForm
@@ -166,11 +165,11 @@ describe('WithdrawForm', () => {
     expect(screen.getByLabelText(/开户银行/)).toBeInTheDocument();
   });
 
-  test('应该正确提交表单', async () => {
+  test('应该正确提交表单', async () => {}
     const user = userEvent.setup();
-    (fetch as jest.Mock).mockResolvedValueOnce({
+    (fetch as jest.Mock).mockResolvedValueOnce({}
       ok: true,
-      json: () => Promise.resolve({ success: true, data: { id: '123' } })
+  json: () => true, data: { id: '123' } }): Promise.resolve({ success
     });
 
     render(
@@ -205,11 +204,11 @@ describe('WithdrawForm', () => {
     // 提交表单
     await user.click(screen.getByRole('button', { name: /提交提现申请/ }));
 
-    await waitFor(() => {
-      expect(mockOnSubmit).toHaveBeenCalledWith({
+    await waitFor(() => {}
+      expect(mockOnSubmit).toHaveBeenCalledWith({}
         amount: '100',
         method: 'alif_mobi',
-        accountInfo: {
+        accountInfo: {}
           accountName: '测试用户',
           accountNumber: '+992900000000'
         },
@@ -218,7 +217,7 @@ describe('WithdrawForm', () => {
     });
   });
 
-  test('应该显示加载状态', async () => {
+  test('应该显示加载状态', async () => {}
     const user = userEvent.setup();
     (fetch as jest.Mock).mockImplementationOnce(
       () => new Promise(resolve => setTimeout(resolve, 1000))
@@ -243,12 +242,12 @@ describe('WithdrawForm', () => {
     expect(screen.getByText('提交中...')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /提交提现申请/ })).toBeDisabled();
 
-    await waitFor(() => {
+    await waitFor(() => {}
       expect(screen.getByText('提交提现申请')).toBeInTheDocument();
     });
   });
 
-  test('应该自定义提现参数', () => {
+  test('应该自定义提现参数', () => {}
     render(
       <WithdrawForm
         balance={2000}

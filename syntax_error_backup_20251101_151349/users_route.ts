@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import QueryOptimizer from '@/lib/query-optimizer';
 import { validateReferralCodeFormat } from '@/lib/auth';
 import { rewardTrigger } from '@/lib/reward-trigger-manager';
@@ -42,6 +41,7 @@ export async function GET(request: NextRequest) {
     } catch (error: any) {
       console.error('Get users error:', error);
       return NextResponse.json({
+}
         success: false,
         error: error.message || '获取用户列表失败'
       }, { status: 500 });
@@ -76,10 +76,10 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必需参数：telegramId 和 firstName'
       }, { status: 400 });
-    }
+}
 
     // 验证邀请码（如果提供）
-    let referrerUserId = null;
+    let referrerUserId: string | number = null;
     if (referralCode) {
       const validation = validateReferralCodeFormat(referralCode);
       if (!validation.isValid) {
@@ -146,6 +146,7 @@ export async function POST(request: NextRequest) {
       }
 
       return user;
+  }
     });
 
     // 4. 触发注册奖励

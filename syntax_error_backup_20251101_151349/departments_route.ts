@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       const departments = await prisma.orgDepartments.findMany({
         orderBy: {
           sortOrder: 'asc'
-        }
+}
       });
 
       return NextResponse.json({
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     } catch (error) {
       console.error('获取部门列表失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '服务器错误' },
         { status: 500 }
       );
@@ -44,11 +44,11 @@ export async function POST(request: NextRequest) {
 
       // 验证必填字段
       if (!name) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '部门名称不能为空' },
           { status: 400 }
         );
-      }
+}
 
       // 检查名称是否已存在
       const existing = await prisma.orgDepartments.findUnique({
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (existing) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '部门名称已存在' },
           { status: 400 }
         );
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
       console.error('创建部门失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '服务器错误' },
         { status: 500 }
       );

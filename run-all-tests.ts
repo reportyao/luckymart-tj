@@ -1,11 +1,11 @@
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 /**
  * 测试运行器和覆盖率统计工具
  * 统一运行所有测试并生成详细的测试报告
  */
 
-import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
 
 interface TestResult {
   suite: string;
@@ -55,7 +55,7 @@ class TestRunner {
   private async runUnitTests() {
     console.log('📋 运行单元测试...');
 
-    const unitTestSuites = [
+    const unitTestSuites = [;
       { name: 'JWT认证系统', pattern: '__tests__/auth.test.ts' },
       { name: 'VRF开奖算法', pattern: '__tests__/lottery-algorithm.test.ts' },
       { name: '数据库锁机制', pattern: '__tests__/database-lock.test.ts' },
@@ -75,7 +75,7 @@ class TestRunner {
   private async runIntegrationTests() {
     console.log('🔗 运行集成测试...');
 
-    const integrationSuites = [
+    const integrationSuites = [;
       { name: '数据库事务控制', pattern: '__tests__/database-transactions.test.ts' },
       { name: '缓存系统集成', pattern: 'test/cache-system.test.ts' },
       { name: 'N+1查询优化', pattern: 'test-n-plus-one-fixes.ts' }
@@ -91,7 +91,7 @@ class TestRunner {
   private async runPerformanceTests() {
     console.log('⚡ 运行性能测试...');
 
-    const performanceSuites = [
+    const performanceSuites = [;
       { name: '缓存性能测试', command: 'npm run test:cache' },
       { name: 'N+1查询性能', command: 'npm run test:performance' },
       { name: '性能基准测试', command: 'npm run benchmark' }
@@ -118,6 +118,7 @@ class TestRunner {
       const duration = Number(endTime - startTime) / 1000000;
 
       console.log(`    ✅ 通过 (${duration.toFixed(2)}ms)`);
+  }
 
       // 解析测试结果（简化版）
       this.results.push({
@@ -219,6 +220,7 @@ class TestRunner {
       if (fs.existsSync(coveragePath)) {
         const coverageData = JSON.parse(fs.readFileSync(coveragePath, 'utf8'));
         console.log('    ✅ 覆盖率报告已生成');
+  }
         
         // 合并覆盖率数据到结果中
         this.results = this.results.map(result => ({
@@ -335,7 +337,7 @@ class TestRunner {
   }
 
   private generateMarkdownReport(report: any) {
-    const mdContent = `# LuckyMart TJ 测试报告
+    const mdContent = `# LuckyMart TJ 测试报告;
 
 生成时间: ${report.timestamp}
 

@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 
-const withReadPermission = AdminPermissionManager.createPermissionMiddleware([
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read
 ]);
 
-const withWritePermission = AdminPermissionManager.createPermissionMiddleware([
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read // 风控规则暂用stats:read
 ]);
 
 // 模拟风控规则数据
-const mockRiskRules = [
+const mockRiskRules = [;
   {
     id: 'RR001',
     name: '异常登录检测',
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
 
     if (category && category !== 'all') {
       filteredRules = filteredRules.filter((rule : any) => rule.category === category);
-    }
+}
 
     if (isActive !== null && isActive !== 'all') {
       const active = isActive === 'active';
@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('获取风控规则失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '获取数据失败' },
       { status: 500 }
     );
@@ -120,11 +120,11 @@ export async function POST(request: NextRequest) {
     const { name, description, category, riskType, condition, threshold, action, isActive } = body;
 
     if (!name || !description || !riskType || !condition || threshold === undefined) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少必需参数' },
         { status: 400 }
       );
-    }
+}
 
     const now = new Date().toISOString();
     const newRule = {
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('创建风控规则失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '创建失败' },
       { status: 500 }
     );
@@ -167,22 +167,22 @@ export async function PATCH(request: NextRequest) {
     const { ruleId, updates } = body;
 
     if (!ruleId || !updates) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少必需参数' },
         { status: 400 }
       );
-    }
+}
 
     const ruleIndex = mockRiskRules.findIndex(rule => rule.id === ruleId);
     if (ruleIndex === -1) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '规则不存在' },
         { status: 404 }
       );
     }
 
     const updatedRule = {
-      ...mockRiskRules[ruleIndex],
+      ...(mockRiskRules?.ruleIndex ?? null),
       ...updates,
       lastModified: new Date().toISOString()
     };
@@ -196,7 +196,7 @@ export async function PATCH(request: NextRequest) {
     });
   } catch (error) {
     console.error('更新风控规则失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '更新失败' },
       { status: 500 }
     );
@@ -211,15 +211,15 @@ export async function DELETE(request: NextRequest) {
     const ruleId = searchParams.get('ruleId');
 
     if (!ruleId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少规则ID' },
         { status: 400 }
       );
-    }
+}
 
     const ruleIndex = mockRiskRules.findIndex(rule => rule.id === ruleId);
     if (ruleIndex === -1) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '规则不存在' },
         { status: 404 }
       );
@@ -233,7 +233,7 @@ export async function DELETE(request: NextRequest) {
     });
   } catch (error) {
     console.error('删除风控规则失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '删除失败' },
       { status: 500 }
     );

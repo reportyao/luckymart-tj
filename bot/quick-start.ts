@@ -1,3 +1,6 @@
+import { spawn } from 'child_process';
+import { writeFileSync, existsSync } from 'fs';
+import { join } from 'path';
 #!/usr/bin/env npx tsx
 
 /**
@@ -5,9 +8,6 @@
  * 用于测试容错机制
  */
 
-import { spawn } from 'child_process';
-import { writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
 
 interface QuickStartConfig {
   TELEGRAM_BOT_TOKEN?: string;
@@ -57,7 +57,7 @@ class QuickStarter {
   private async validateEnvironment(): Promise<void> {
     console.log('🔍 验证环境...');
     
-    const requiredFiles = [
+    const requiredFiles = [;
       'enhanced-telegram-bot-launcher.ts',
       'utils/bot-daemon.ts',
       'utils/alert-manager.ts',
@@ -67,6 +67,7 @@ class QuickStarter {
     for (const file of requiredFiles) {
       if (!existsSync(join(__dirname, '..', file))) {
         throw new Error(`缺少文件: ${file}`);
+  }
       }
     }
     
@@ -76,7 +77,7 @@ class QuickStarter {
   private async generateTestConfig(): Promise<void> {
     console.log('⚙️  生成测试配置...');
     
-    const configContent = `
+    const configContent = `;
 // 测试环境配置
 export const testConfig = {
   bot: {
@@ -89,7 +90,7 @@ export const testConfig = {
   },
   logging: {
     level: '${this.config.LOG_LEVEL}'
-  }
+}
 };
 `;
 
@@ -109,6 +110,7 @@ export const testConfig = {
       testProcess.on('close', (code) => {
         if (code === 0) {
           console.log('✅ 组件测试通过\n');
+  }
           resolve();
         } else {
           reject(new Error(`测试失败，退出码: ${code}`));
@@ -157,7 +159,7 @@ export const testConfig = {
 
     // 模拟健康检查结果
     setInterval(() => {
-      const healthChecks = [
+      const healthChecks = [;
         '🏥 健康检查: ✅ 正常',
         '🔄 重启监控: ✅ 监控中',
         '📊 性能监控: ✅ 正常',
@@ -166,7 +168,7 @@ export const testConfig = {
       ];
       
       const randomCheck = healthChecks[Math.floor(Math.random() * healthChecks.length)];
-      console.log(`\n${randomCheck}`);
+      console.log(`\n$`);
     }, 10000);
   }
 }

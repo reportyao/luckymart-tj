@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFromRequest } from '@/lib/auth';
 import QueryOptimizer from '@/lib/query-optimizer';
-
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
         success: false,
         error: '管理员权限验证失败'
       }, { status: 403 });
-    }
+}
 
     // 检查统计查看权限
     const hasPermission = admin.permissions.includes('stats:read') || admin.role === 'super_admin';
@@ -52,8 +52,9 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     console.error('Stats API error:', error);
     return NextResponse.json({
+  }
       success: false,
       error: error.message || 'Failed to fetch stats'
-    }, { status: 500 });
+    }, );
   }
 }

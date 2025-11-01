@@ -1,4 +1,3 @@
-// 更新和删除地址
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
@@ -6,10 +5,10 @@ import { withErrorHandling } from '@/lib/middleware';
 import { getLogger } from '@/lib/logger';
 import { respond } from '@/lib/responses';
 import { ErrorFactory } from '@/lib/errors';
-import type { ApiResponse, UserAddress } from '@/types';
+// 更新和删除地址
 
 // 更新地址
-export const PUT = withErrorHandling(async (
+export const PUT = withErrorHandling(async (;
   request: NextRequest,
   { params }: { params: { id: string } }
 ) => {
@@ -29,11 +28,11 @@ export const PUT = withErrorHandling(async (
     const user = getUserFromRequest(request);
     if (!user?.userId) {
       logger.warn('未授权访问更新地址', { requestId, addressId, user });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('UNAUTHORIZED', '未授权访问').toJSON(),
         { status: 401 }
       );
-    }
+}
 
     const body = await request.json();
     const {
@@ -47,7 +46,7 @@ export const PUT = withErrorHandling(async (
     } = body;
 
     // 验证地址归属
-    const { data: existingAddress, error: checkError } = await supabaseAdmin
+    const { data: existingAddress, error: checkError } = await supabaseAdmin;
       .from('user_addresses')
       .select('*')
       .eq('id', addressId)
@@ -61,7 +60,7 @@ export const PUT = withErrorHandling(async (
         userId: user.userId,
         checkError: checkError?.message 
       });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('NOT_FOUND', '地址不存在或无权操作').toJSON(),
         { status: 404 }
       );
@@ -69,7 +68,7 @@ export const PUT = withErrorHandling(async (
 
     // 如果设置为默认地址，先取消其他默认地址
     if (isDefault && !existingAddress.isDefault) {
-      const { error: updateError } = await supabaseAdmin
+      const { error: updateError } = await supabaseAdmin;
         .from('user_addresses')
         .update({ isDefault: false })
         .eq('userId', user.userId);
@@ -84,7 +83,7 @@ export const PUT = withErrorHandling(async (
     }
 
     // 更新地址
-    const { data: updatedAddress, error } = await supabaseAdmin
+    const { data: updatedAddress, error } = await supabaseAdmin;
       .from('user_addresses')
       .update({
         recipientName,
@@ -112,7 +111,8 @@ export const PUT = withErrorHandling(async (
       updatedFields: Object.keys(body)
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
+  }
       respond.success(updatedAddress, '地址更新成功').toJSON()
     );
 
@@ -123,7 +123,7 @@ export const PUT = withErrorHandling(async (
 });
 
 // 删除地址
-export const DELETE = withErrorHandling(async (
+export const DELETE = withErrorHandling(async (;
   request: NextRequest,
   { params }: { params: { id: string } }
 ) => {
@@ -143,14 +143,15 @@ export const DELETE = withErrorHandling(async (
     const user = getUserFromRequest(request);
     if (!user?.userId) {
       logger.warn('未授权访问删除地址', { requestId, addressId, user });
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         respond.customError('UNAUTHORIZED', '未授权访问').toJSON(),
         { status: 401 }
       );
     }
 
     // 验证地址归属
-    const { data: existingAddress, error: checkError } = await supabaseAdmin
+    const { data: existingAddress, error: checkError } = await supabaseAdmin;
       .from('user_addresses')
       .select('*')
       .eq('id', addressId)
@@ -164,14 +165,14 @@ export const DELETE = withErrorHandling(async (
         userId: user.userId,
         checkError: checkError?.message 
       });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('NOT_FOUND', '地址不存在或无权操作').toJSON(),
         { status: 404 }
       );
     }
 
     // 删除地址
-    const { error } = await supabaseAdmin
+    const { error } = await supabaseAdmin;
       .from('user_addresses')
       .delete()
       .eq('id', addressId);
@@ -187,12 +188,12 @@ export const DELETE = withErrorHandling(async (
       userId: user.userId
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.success(null, '地址删除成功').toJSON()
     );
 
   } catch (error) {
-    logger.error('删除地址失败', error as Error, { requestId, addressId });
+    logger.error('删除地址失败', error as Error, );
     throw error;
   }
 });

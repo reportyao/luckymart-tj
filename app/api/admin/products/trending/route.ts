@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -28,6 +25,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('trending_route.ts request failed', error as Error, {
       requestId,
@@ -41,7 +39,7 @@ async function handleGET(request: NextRequest) {
 
     // GET - 获取热销趋势数据
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         try {
 
         const { searchParams } = new URL(request.url);
@@ -50,13 +48,13 @@ async function handleGET(request: NextRequest) {
         const endDate = searchParams.get('endDate');
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '20');
-        const rankType = searchParams.get('rankType') || 'popularity'; // 'sales', 'popularity', 'search'
+        const rankType = searchParams.get('rankType') || 'popularity'; // 'sales', 'popularity', 'search';
 
         // 构建查询条件
         const where: any = {};
         if (productId) {
           where.product_id = productId;
-        }
+    }
         if (startDate && endDate) {
           where.date = {
             gte: new Date(startDate),
@@ -79,7 +77,7 @@ async function handleGET(request: NextRequest) {
         }
 
         // 获取分页数据
-        const [trendingData, totalCount] = await Promise.all([
+        const [trendingData, totalCount] = await Promise.all([;
           prisma.productTrending.findMany({
             where,
             orderBy,
@@ -173,7 +171,7 @@ async function handleGET(request: NextRequest) {
         });
 
         // 转换数据格式
-        const formattedData = trendingData.map((item : any) => ({
+        const formattedData = trendingData.map(((item : any) : any) => ({
           id: item.id,
           productId: item.product_id,
           productName: {
@@ -197,7 +195,7 @@ async function handleGET(request: NextRequest) {
         }));
 
         // 转换排行榜数据格式
-        const formattedTopProducts = topProducts.map((item : any) => ({
+        const formattedTopProducts = topProducts.map(((item : any) : any) => ({
           id: item.id,
           productId: item.product_id,
           productName: {
@@ -266,7 +264,7 @@ async function handleGET(request: NextRequest) {
 
 // POST - 创建或更新热销趋势数据
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     try {
 
     const body = await request.json();
@@ -288,7 +286,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必填字段：productId, date'
       }, { status: 400 });
-    }
+}
 
     // 检查商品是否存在
     const product = await prisma.products.findUnique({
@@ -366,7 +364,7 @@ export async function POST(request: NextRequest) {
 
 // PUT - 批量更新排行榜数据
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     try {
 
     const body = await request.json();
@@ -377,7 +375,7 @@ export async function PUT(request: NextRequest) {
         success: false,
         error: '缺少必要数据：date, rankings'
       }, { status: 400 });
-    }
+}
 
     const results = [];
     const targetDate = new Date(date);
@@ -456,7 +454,7 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    const successCount = results.filter((r : any) => r.success).length;
+    const successCount = results.filter(((r : any) : any) => r.success).length;
 
     return NextResponse.json({
       success: true,
@@ -482,4 +480,5 @@ export async function PUT(request: NextRequest) {
       }, { status: 500 });
     }
   })(request);
+}
 }

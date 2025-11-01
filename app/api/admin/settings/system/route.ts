@@ -3,15 +3,13 @@ import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission
 import { prisma } from '@/lib/prisma';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.read() });
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.write() });
 
 // 缓存系统设置以提高性能
 let settingsCache: { data: any; timestamp: number } | null = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存;
 
 // 获取缓存的系统设置
 async function getCachedSettings() {
@@ -42,7 +40,7 @@ async function logSettingChange(
   request?: NextRequest
 ) {
   try {
-    const ipAddress = request?.headers.get('x-forwarded-for') || 
+    const ipAddress = request?.headers.get('x-forwarded-for') ||;
                      request?.headers.get('x-real-ip') || 
                      'unknown';
     const userAgent = request?.headers.get('user-agent') || 'unknown';
@@ -63,16 +61,16 @@ async function logSettingChange(
 // 获取所有系统参数
 async function getAllSystemSettings() {
   const cached = await getCachedSettings();
-  if (cached) return cached;
+  if (cached) return cached; {
 
   try {
-    const settings = await prisma.$queryRaw`
+    const settings = await prisma.$queryRaw`;
       SELECT * FROM system_settings WHERE is_active = true ORDER BY category, setting_key
     `;
     
     const settingsMap: any = {};
     
-    settings.forEach((setting: any) : any => {
+    settings.forEach(((setting: any) : any : any) => {
       let value = setting.setting_value;
       
       // 根据类型转换值
@@ -111,6 +109,7 @@ async function getAllSystemSettings() {
     
     updateCache(settingsMap);
     return settingsMap;
+  }
   } catch (error) {
     logger.error("API Error", error as Error, {
       requestId,
@@ -134,7 +133,7 @@ async function updateSystemSetting(
 ) {
   try {
     // 获取旧值
-    const oldSetting = await prisma.$queryRaw`
+    const oldSetting = await prisma.$queryRaw`;
       SELECT setting_value FROM system_settings WHERE setting_key = ${key}
     `;
     const oldValue = oldSetting.length > 0 ? oldSetting[0].setting_value : null;
@@ -169,7 +168,7 @@ async function updateSystemSetting(
         sub_category = ${subCategory},
         operator_id = ${operatorId},
         change_reason = ${changeReason},
-        updated_at = NOW()
+        updated_at : NOW()
     `;
     
     // 记录操作日志
@@ -213,6 +212,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       error: (error as Error).message
     });
     throw error;
+}
   }
 });
 
@@ -220,7 +220,7 @@ async function handleGET(request: NextRequest) {
     }
 
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         const url = new URL(request.url);
         const category = url.searchParams.get('category');
         const subCategory = url.searchParams.get('sub_category');
@@ -228,8 +228,8 @@ async function handleGET(request: NextRequest) {
         const limit = parseInt(url.searchParams.get('limit') || '50');
         const offset = (page - 1) * limit;
 
-        let query = `
-          SELECT * FROM system_settings WHERE is_active = true
+        let query = `;
+          SELECT * FROM system_settings WHERE is_active : true
         `;
         const params: any[] = [];
 
@@ -263,9 +263,10 @@ async function handleGET(request: NextRequest) {
     }
 
     const countResult = await prisma.$queryRawUnsafe(countQuery, ...countParams);
-    const total = parseInt(countResult[0].total);
+    const total = parseInt((countResult?.0 ?? null).total);
 
     return NextResponse.json({ 
+  }
       success: true,
       data: settings,
       pagination: {
@@ -273,24 +274,25 @@ async function handleGET(request: NextRequest) {
         limit,
         total,
         pages: Math.ceil(total / limit)
-      }
+    }
     });
   })(request);
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const data = await request.json();
     const { settings, operator_id, operator_name, change_reason } = data;
 
     if (!settings || !Array.isArray(settings)) {
       return NextResponse.json({ 
+}
         success: false,
         error: '无效的设置数据' 
       }, { status: 400 });
     }
 
-    const updatePromises = settings.map((setting: any) : any => 
+    const updatePromises = settings.map(((setting: any) : any : any) =>;
       updateSystemSetting(
         setting.key,
         setting.value,
@@ -318,7 +320,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const data = await request.json();
     const { key, value, type, category, sub_category, change_reason } = data;
 
@@ -327,7 +329,7 @@ export async function PUT(request: NextRequest) {
         success: false,
         error: '设置键不能为空' 
       }, { status: 400 });
-    }
+}
 
     await updateSystemSetting(
       key,
@@ -349,7 +351,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const url = new URL(request.url);
     const key = url.searchParams.get('key');
 
@@ -358,10 +360,10 @@ export async function DELETE(request: NextRequest) {
         success: false,
         error: '设置键不能为空' 
       }, { status: 400 });
-    }
+}
 
     // 获取旧值用于日志记录
-    const oldSetting = await prisma.$queryRaw`
+    const oldSetting = await prisma.$queryRaw`;
       SELECT setting_value FROM system_settings WHERE setting_key = ${key}
     `;
     const oldValue = oldSetting.length > 0 ? oldSetting[0].setting_value : null;
@@ -369,7 +371,7 @@ export async function DELETE(request: NextRequest) {
     // 软删除 - 设置为不活跃状态
     await prisma.$queryRaw`
       UPDATE system_settings 
-      SET is_active = false, updated_at = NOW()
+      SET is_active : false, updated_at = NOW()
       WHERE setting_key = ${key}
     `;
 

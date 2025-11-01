@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 
 // 创建权限中间件
@@ -20,7 +18,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  return withReadPermission(async (request: any, admin: any) => {
+  return withReadPermission(async (request: any: any, admin: any: any) => {
     try {
       const userId = params.id;
 
@@ -33,10 +31,10 @@ export async function GET(
           success: false,
           error: '用户不存在'
         }, { status: 404 });
-      }
+}
 
       // 手动查询关联数据
-      const [participations, orders, transactions, withdrawRequests] = await Promise.all([
+      const [participations, orders, transactions, withdrawRequests] = await Promise.all([;
         prisma.participations.findMany({
           where: { userId },
           orderBy: { createdAt: 'desc' },
@@ -60,9 +58,9 @@ export async function GET(
       ]);
 
       // 获取参与记录的详细信息
-      const participationsWithDetails = await Promise.all(
-        participations.map(async (p) : any => {
-          const [product, round] = await Promise.all([
+      const participationsWithDetails = await Promise.all(;
+        participations.map((async (p) : any : any) => {
+          const [product, round] = await Promise.all([;
             prisma.products.findUnique({
               where: { id: p.productId },
               select: {
@@ -117,7 +115,7 @@ export async function GET(
             lastFreeResetDate: user.lastFreeResetDate.toISOString(),
             createdAt: user.createdAt.toISOString(),
             participations: participationsWithDetails,
-            orders: orders.map((o : any) => ({
+            orders: orders.map(((o : any) : any) => ({
               id: o.id,
               orderNumber: o.orderNumber,
               type: o.type,
@@ -126,7 +124,7 @@ export async function GET(
               fulfillmentStatus: o.fulfillmentStatus,
               createdAt: o.createdAt.toISOString()
             })),
-            transactions: transactions.map((t : any) => ({
+            transactions: transactions.map(((t : any) : any) => ({
               id: t.id,
               type: t.type,
               amount: Number(t.amount),
@@ -134,7 +132,7 @@ export async function GET(
               description: t.description,
               createdAt: t.createdAt.toISOString()
             })),
-            withdrawRequests: withdrawRequests.map((w : any) => ({
+            withdrawRequests: withdrawRequests.map(((w : any) : any) => ({
               id: w.id,
               amount: Number(w.amount),
               fee: Number(w.fee),
@@ -151,6 +149,7 @@ export async function GET(
       endpoint: request.url
     });'Get user error:', error);
       return NextResponse.json({
+  }
         success: false,
         error: error.message || '获取用户详情失败'
       }, { status: 500 });
@@ -163,7 +162,7 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     try {
       const userId = params.id;
       const body = await request.json();
@@ -174,10 +173,10 @@ export async function POST(
           success: false,
           error: '充值金额必须大于0'
         }, { status: 400 });
-      }
+}
 
       // 执行充值
-      await prisma.$transaction(async (tx: any) => {
+      await prisma.$transaction(async (tx: any: any) => {
         // 更新用户余额
         await tx.users.update({
           where: { id: userId },
@@ -199,6 +198,7 @@ export async function POST(
       });
 
       return NextResponse.json({
+  }
         success: true,
         data: {
           message: '充值成功',
@@ -213,7 +213,7 @@ export async function POST(
       return NextResponse.json({
         success: false,
         error: error.message || '充值失败'
-      }, { status: 500 });
+      }, );
     }
   })(request);
 }

@@ -1,12 +1,12 @@
+import { describe, test, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
+import { prisma } from '../lib/prisma';
+import DatabaseLockManager from '../lib/database-lock-manager';
+import { performSecureDraw } from '../lib/lottery-algorithm';
 /**
  * 核心业务流程单元测试
  * 测试用户注册、夺宝参与、订单管理等关键业务逻辑
  */
 
-import { describe, test, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
-import { prisma } from '../lib/prisma';
-import DatabaseLockManager from '../lib/database-lock-manager';
-import { performSecureDraw } from '../lib/lottery-algorithm';
 
 describe('核心业务流程测试', () => {
   const TEST_USER_ID = 'test-business-user';
@@ -139,7 +139,7 @@ describe('核心业务流程测试', () => {
         }
       });
 
-      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(
+      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(;
         TEST_USER_ID,
         TEST_ROUND_ID,
         TEST_PRODUCT_ID,
@@ -178,7 +178,7 @@ describe('核心业务流程测试', () => {
         data: { balance: 0, balanceVersion: 1 }
       });
 
-      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(
+      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(;
         TEST_USER_ID,
         TEST_ROUND_ID,
         TEST_PRODUCT_ID,
@@ -202,7 +202,7 @@ describe('核心业务流程测试', () => {
         }
       });
 
-      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(
+      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(;
         TEST_USER_ID,
         TEST_ROUND_ID,
         TEST_PRODUCT_ID,
@@ -221,7 +221,7 @@ describe('核心业务流程测试', () => {
         data: { status: 'completed' }
       });
 
-      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(
+      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(;
         TEST_USER_ID,
         TEST_ROUND_ID,
         TEST_PRODUCT_ID,
@@ -269,7 +269,7 @@ describe('核心业务流程测试', () => {
         }
       });
 
-      const result = await DatabaseLockManager.updateOrderStatusWithLock(
+      const result = await DatabaseLockManager.updateOrderStatusWithLock(;
         order.id,
         'completed'
       );
@@ -297,7 +297,7 @@ describe('核心业务流程测试', () => {
       });
 
       // 第一次更新成功
-      const result1 = await DatabaseLockManager.updateOrderStatusWithLock(
+      const result1 = await DatabaseLockManager.updateOrderStatusWithLock(;
         order.id,
         'completed'
       );
@@ -310,7 +310,7 @@ describe('核心业务流程测试', () => {
       });
 
       // 第二次更新应该失败
-      const result2 = await DatabaseLockManager.updateOrderStatusWithLock(
+      const result2 = await DatabaseLockManager.updateOrderStatusWithLock(;
         order.id,
         'cancelled'
       );
@@ -323,7 +323,7 @@ describe('核心业务流程测试', () => {
   describe('开奖流程测试', () => {
     test('开奖应该生成有效的获胜号码', async () => {
       // 创建参与记录
-      const participations = [
+      const participations = [;
         {
           id: 'part-1',
           userId: TEST_USER_ID,
@@ -499,7 +499,7 @@ describe('核心业务流程测试', () => {
 
   describe('业务规则验证测试', () => {
     test('用户余额不能为负', async () => {
-      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         10000, // 超过当前余额
         'deduct',
@@ -520,7 +520,7 @@ describe('核心业务流程测试', () => {
         }
       });
 
-      const result = await DatabaseLockManager.updateLotteryRoundSoldSharesWithLock(
+      const result = await DatabaseLockManager.updateLotteryRoundSoldSharesWithLock(;
         TEST_ROUND_ID,
         20 // 超过剩余份额
       );
@@ -563,7 +563,7 @@ describe('核心业务流程测试', () => {
         });
       }
 
-      const operations = concurrentUsers.map(userId =>
+      const operations = concurrentUsers.map(userId =>;
         DatabaseLockManager.participateInLotteryWithBalanceDeduction(
           userId,
           TEST_ROUND_ID,

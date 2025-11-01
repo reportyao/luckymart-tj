@@ -5,8 +5,6 @@ import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { createTranslation } from '@/lib/createTranslation';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const prisma = new PrismaClient();
 
@@ -25,6 +23,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('admins_route.ts request failed', error as Error, {
       requestId,
@@ -55,7 +54,7 @@ async function handleGET(request: NextRequest) {
               lastLogin: true,
               createdAt: true
               // 不返回密码哈希
-            }
+    }
           });
 
           return NextResponse.json({
@@ -70,7 +69,8 @@ async function handleGET(request: NextRequest) {
         });'获取管理员列表失败:', error);
           // 使用国际化错误消息
           const { t } = await createTranslation(request, 'api-errors');
-          return NextResponse.json(
+          return NextResponse.json(;
+  }
             { success: false, error: t('errors.serverError') },
             { status: 500 }
           );

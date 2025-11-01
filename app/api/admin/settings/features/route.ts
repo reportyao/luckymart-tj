@@ -3,15 +3,13 @@ import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission
 import { prisma } from '@/lib/prisma';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.features.read() });
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.features.write() });
 
 // 缓存功能开关以提高性能
 let featuresCache: { data: any; timestamp: number } | null = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存;
 
 // 获取缓存的功能开关
 async function getCachedFeatures() {
@@ -38,15 +36,16 @@ function clearCache() {
 // 获取所有功能开关
 async function getAllFeatureFlags() {
   const cached = await getCachedFeatures();
-  if (cached) return cached;
+  if (cached) return cached; {
 
   try {
-    const flags = await prisma.$queryRaw`
+    const flags = await prisma.$queryRaw`;
       SELECT * FROM feature_flags WHERE is_active = true ORDER BY category, priority DESC, flag_name
     `;
     
     updateCache(flags);
     return flags;
+  }
   } catch (error) {
     logger.error("API Error", error as Error, {
       requestId,
@@ -59,7 +58,7 @@ async function getAllFeatureFlags() {
 // 创建功能开关
 async function createFeatureFlag(data: any, operatorId: string) {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       INSERT INTO feature_flags (
         flag_name, flag_key, name_zh, name_en, name_ru,
         description_zh, description_en, description_ru,
@@ -96,7 +95,7 @@ async function createFeatureFlag(data: any, operatorId: string) {
 // 更新功能开关
 async function updateFeatureFlag(id: string, data: any, operatorId: string) {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       UPDATE feature_flags SET
         flag_name = ${data.flag_name},
         flag_key = ${data.flag_key},
@@ -126,7 +125,7 @@ async function updateFeatureFlag(id: string, data: any, operatorId: string) {
         priority = ${data.priority},
         operator_id = ${operatorId},
         change_reason = ${data.change_reason},
-        updated_at = NOW()
+        updated_at : NOW()
       WHERE id = ${id}
       RETURNING *
     `;
@@ -145,12 +144,12 @@ async function updateFeatureFlag(id: string, data: any, operatorId: string) {
 // 删除功能开关（软删除）
 async function deleteFeatureFlag(id: string, operatorId: string) {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       UPDATE feature_flags SET
         is_active = false,
         operator_id = ${operatorId},
         change_reason = '软删除功能开关',
-        updated_at = NOW()
+        updated_at : NOW()
       WHERE id = ${id}
       RETURNING *
     `;
@@ -169,12 +168,12 @@ async function deleteFeatureFlag(id: string, operatorId: string) {
 // 切换功能开关状态
 async function toggleFeatureFlag(id: string, enabled: boolean, operatorId: string, reason?: string) {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       UPDATE feature_flags SET
         is_enabled = ${enabled},
         operator_id = ${operatorId},
         change_reason = ${reason || (enabled ? '启用功能' : '禁用功能')},
-        updated_at = NOW()
+        updated_at : NOW()
       WHERE id = ${id}
       RETURNING *
     `;
@@ -205,6 +204,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       error: (error as Error).message
     });
     throw error;
+}
   }
 });
 
@@ -212,7 +212,7 @@ async function handleGET(request: NextRequest) {
     }
 
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         const url = new URL(request.url);
         const category = url.searchParams.get('category');
         const isEnabled = url.searchParams.get('is_enabled');
@@ -275,9 +275,10 @@ async function handleGET(request: NextRequest) {
     }
 
     const countResult = await prisma.$queryRawUnsafe(countQuery, ...countParams);
-    const total = parseInt(countResult[0].total);
+    const total = parseInt((countResult?.0 ?? null).total);
 
     return NextResponse.json({ 
+  }
       success: true,
       data: flags,
       pagination: {
@@ -285,18 +286,19 @@ async function handleGET(request: NextRequest) {
         limit,
         total,
         pages: Math.ceil(total / limit)
-      }
+    }
     });
   })(request);
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const data = await request.json();
 
     // 验证必填字段
     if (!data.flag_name || !data.flag_key || !data.category) {
       return NextResponse.json({ 
+}
         success: false,
         error: '缺少必填字段：flag_name, flag_key, category' 
       }, { status: 400 });
@@ -306,6 +308,7 @@ export async function POST(request: NextRequest) {
     if (data.rollout_percentage !== undefined) {
       if (data.rollout_percentage < 0 || data.rollout_percentage > 100) {
         return NextResponse.json({ 
+  }
           success: false,
           error: '推出百分比必须在0-100之间' 
         }, { status: 400 });
@@ -323,7 +326,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const data = await request.json();
     const { id } = data;
 
@@ -332,7 +335,7 @@ export async function PUT(request: NextRequest) {
         success: false,
         error: '缺少功能开关ID' 
       }, { status: 400 });
-    }
+}
 
     const flag = await updateFeatureFlag(id, data, admin.username);
 
@@ -345,7 +348,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const url = new URL(request.url);
     const id = url.searchParams.get('id');
 
@@ -354,7 +357,7 @@ export async function DELETE(request: NextRequest) {
         success: false,
         error: '缺少功能开关ID' 
       }, { status: 400 });
-    }
+}
 
     await deleteFeatureFlag(id, admin.username);
 
@@ -367,7 +370,7 @@ export async function DELETE(request: NextRequest) {
 
 // PATCH方法用于快速切换功能开关状态
 export async function PATCH(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const data = await request.json();
     const { id, enabled, reason } = data;
 
@@ -376,13 +379,13 @@ export async function PATCH(request: NextRequest) {
         success: false,
         error: '缺少必需参数：id, enabled' 
       }, { status: 400 });
-    }
+}
 
     const flag = await toggleFeatureFlag(id, enabled, admin.username, reason);
 
     return NextResponse.json({
       success: true,
-      message: `功能开关${enabled ? '启用' : '禁用'}成功`,
+      message: `功能开关$成功`,
       data: flag
     });
   })(request);

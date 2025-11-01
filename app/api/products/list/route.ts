@@ -6,7 +6,7 @@ import { getMonitor } from '../../../../lib/monitoring';
 import { respond } from '../../../../lib/responses';
 
 // 模拟商品数据
-const mockProducts = [
+const mockProducts = [;
   {
     id: '1',
     name: 'iPhone 15 Pro Max',
@@ -175,14 +175,14 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
     const language = searchParams.get('language') || 'zh';
 
     // 根据语言返回商品数据
-    const products = mockProducts.map((product : any) => {
+    const products = mockProducts.map(((product : any) : any) => {
       const localizedProduct = { ...product };
       
       // 根据语言选择商品名称
       const nameKey = `name_${language}` as keyof typeof product;
       if (typeof product[nameKey] === 'string') {
-        localizedProduct.name = product[nameKey] as string;
-      }
+        localizedProduct.name = (product?.nameKey ?? null) as string;
+}
 
       return localizedProduct;
     });
@@ -200,7 +200,8 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
     // 记录监控指标
     monitor.recordRequest(req, 200);
 
-    return NextResponse.json(
+    return NextResponse.json(;
+  }
       respond.success({ products }, requestId).toJSON(),
       { status: 200 }
     );

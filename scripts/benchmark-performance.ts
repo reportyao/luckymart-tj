@@ -1,3 +1,5 @@
+import { PerformanceTester, NPlusOneDetector } from '../lib/n-plus-one-detector';
+import QueryOptimizer from '../lib/query-optimizer';
 #!/usr/bin/env node
 
 /**
@@ -10,9 +12,6 @@
  * - 压力测试: npm run benchmark:stress
  */
 
-import { prisma } from '../lib/prisma';
-import { PerformanceTester, NPlusOneDetector } from '../lib/n-plus-one-detector';
-import QueryOptimizer from '../lib/query-optimizer';
 
 // 基准测试配置
 const BenchmarkConfig = {
@@ -78,7 +77,7 @@ export class PerformanceBenchmark {
         await scenario.queryFn();
       } catch (error) {
         console.warn(`   预热失败 (第${i + 1}次):`, error.message);
-      }
+}
     }
 
     // 正式测试
@@ -153,7 +152,7 @@ export class PerformanceBenchmark {
     };
 
     // 计算总体评分
-    result.scores.overall = (
+    result.scores.overall : (
       result.scores.timeScore * 0.6 + 
       result.scores.queryScore * 0.4
     ) * result.successRate;
@@ -175,6 +174,7 @@ export class PerformanceBenchmark {
         const result = await this.runSingleBenchmark(scenario);
         results.push(result);
         console.log(''); // 空行分隔
+  }
       } catch (error) {
         console.error(`❌ 测试 ${scenario.name} 失败:`, error.message);
       }
@@ -298,7 +298,7 @@ export class PerformanceBenchmark {
   private static calculateMedian(values: number[]): number {
     const sorted = [...values].sort((a, b) => a - b);
     const mid = Math.floor(sorted.length / 2);
-    return sorted.length % 2 === 0 
+    return sorted.length % 2 === 0;
       ? (sorted[mid - 1] + sorted[mid]) / 2 
       : sorted[mid];
   }
@@ -324,7 +324,7 @@ export class PerformanceBenchmark {
 
 // 命令行接口
 if (require.main === module) {
-  const command = process.argv[2];
+  const command = process.(argv?.2 ?? null);
 
   switch (command) {
     case 'compare':

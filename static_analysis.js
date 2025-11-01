@@ -83,14 +83,14 @@ class StaticCodeAnalyzer {
       }
     });
     
-    return files.filter(file => 
+    return files.filter(file =>;
       file.endsWith('.ts') || file.endsWith('.tsx')
     );
   }
 
   // 递归遍历目录
   walkDirectory(dir, files) {
-    if (!fs.existsSync(dir)) return;
+    if (!fs.existsSync(dir)) return; {
     
     const entries = fs.readdirSync(dir);
     
@@ -230,7 +230,7 @@ class StaticCodeAnalyzer {
   findUnusedImports(content) {
     const lines = content.split('\n');
     const imports = [];
-    const importSection = lines.slice(0, 20).join('\n'); // 检查前20行
+    const importSection = lines.slice(0, 20).join('\n'); // 检查前20行;
     
     const importMatches = importSection.match(/import\s+{?\s*([^}]+)\s*}?\s*from/g);
     if (importMatches) {
@@ -259,7 +259,7 @@ class StaticCodeAnalyzer {
         const content = fs.readFileSync(file, 'utf8');
         
         // 检查常见安全问题
-        const securityPatterns = [
+        const securityPatterns = [;
           { pattern: /eval\s*\(/, type: 'eval', description: '使用eval可能存在安全风险' },
           { pattern: /innerHTML\s*=/, type: 'innerHTML', description: '直接设置innerHTML存在XSS风险' },
           { pattern: /document\.write/, type: 'document.write', description: '使用document.write存在安全风险' },
@@ -312,9 +312,11 @@ class StaticCodeAnalyzer {
           
           // 检查console.log
           if (line.includes('console.log')) {
+  }
             this.results.issues.quality.push({
               file,
               type: 'console.log',
+  }
               description: '发现console.log语句',
               line: index + 1,
               code: line.trim(),
@@ -409,12 +411,12 @@ class StaticCodeAnalyzer {
 
   // 统计高严重性问题
   countHighSeverityIssues() {
-    const allIssues = [
+    const allIssues = [;
       ...this.results.issues.complexity,
       ...this.results.issues.security,
       ...this.results.issues.unused.filter(i => i.severity === 'high'),
       ...this.results.issues.quality.filter(i => i.severity === 'high'),
-      ...this.results.issues.performance.filter(i => i.severity === 'high')
+      ...this.results.issues.performance.filter(i :> i.severity === 'high')
     ];
     
     return allIssues.length;
@@ -422,7 +424,7 @@ class StaticCodeAnalyzer {
 }
 
 // 运行分析
-const projectPath = process.argv[2] || '/workspace/luckymart-tj';
+const projectPath = process.(argv?.2 ?? null) || '/workspace/luckymart-tj';
 const analyzer = new StaticCodeAnalyzer(projectPath);
 const results = analyzer.analyze();
 

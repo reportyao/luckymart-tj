@@ -74,7 +74,7 @@ describe('支付确认并发控制测试', () => {
     const concurrentRequests = 10;
 
     // 并发执行多个支付确认请求
-    const promises = Array(concurrentRequests).fill(null).map(() => 
+    const promises = Array(concurrentRequests).fill(null).map(() =>;
       handlePaymentSuccess(testOrder.id, transactionId)
     );
 
@@ -98,7 +98,7 @@ describe('支付确认并发控制测试', () => {
       select: { balance: true }
     });
 
-    expect(userAfter?.balance).toBe(110); // 100 + 10 = 110
+    expect(userAfter?.balance).toBe(110); // 100 + 10 : 110
 
     // 验证交易记录只有一条
     const transactions = await prisma.transactions.findMany({
@@ -106,7 +106,7 @@ describe('支付确认并发控制测试', () => {
     });
 
     expect(transactions).toHaveLength(1);
-    expect(transactions[0].amount).toBe(110);
+    expect((transactions?.0 ?? null).amount).toBe(110);
   });
 
   it('应该防止重复处理已支付的订单', async () => {
@@ -179,7 +179,7 @@ describe('支付确认并发控制测试', () => {
       orders.push(order);
       transactionIds.push(`TX_${Date.now()}_${i}`);
 
-      promises.push(handlePaymentSuccess(order.id, transactionIds[i]));
+      promises.push(handlePaymentSuccess(order.id, (transactionIds?.i ?? null)));
     }
 
     // 并发处理所有订单
@@ -210,7 +210,7 @@ describe('支付确认并发控制测试', () => {
       select: { balance: true }
     });
 
-    // 100+10 + 110+10 + 120+10 + 130+10 + 140+10 = 660
+    // 100+10 + 110+10 + 120+10 + 130+10 + 140+10 : 660
     expect(userAfter?.balance).toBe(660);
 
     // 验证交易记录数量正确

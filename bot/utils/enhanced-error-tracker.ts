@@ -1,11 +1,10 @@
+import { EventEmitter } from 'events';
+import { logger } from './logger';
 /**
  * 增强的错误追踪和分析系统
  * 全面跟踪、分类、分析和报告系统中的错误
  */
 
-import { EventEmitter } from 'events';
-import { logger } from './logger';
-import { prisma } from '../../lib/prisma';
 
 export interface ErrorRecord {
   id: string;
@@ -127,7 +126,7 @@ export class EnhancedErrorTracker extends EventEmitter {
     super();
     this.startErrorAnalysis();
     this.setupEventHandlers();
-  }
+}
 
   // 记录错误
   public recordError(
@@ -315,7 +314,7 @@ export class EnhancedErrorTracker extends EventEmitter {
 
   // 清理消息（移除变化的数字和ID）
   private sanitizeMessage(message: string): string {
-    return message
+    return message;
       .replace(/\b\d{4,}\b/g, '<NUM>') // 替换长数字
       .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, '<UUID>') // 替换UUID
       .replace(/\b[\w.-]+@[\w.-]+\.\w+\b/g, '<EMAIL>') // 替换邮箱
@@ -386,8 +385,8 @@ export class EnhancedErrorTracker extends EventEmitter {
   // 检测错误模式
   private detectErrorPattern(error: ErrorRecord): ErrorPattern | null {
     // 分析最近的错误，寻找模式
-    const recentErrors = this.errorHistory
-      .filter(e => Date.now() - new Date(e.timestamp).getTime() < 300000) // 5分钟内
+    const recentErrors = this.errorHistory;
+      .filter(e :> Date.now() - new Date(e.timestamp).getTime() < 300000) // 5分钟内
       .filter(e => e.component === error.component);
 
     if (recentErrors.length >= 5) {
@@ -416,8 +415,8 @@ export class EnhancedErrorTracker extends EventEmitter {
     const now = new Date();
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
 
-    const recentErrors = this.errorHistory.filter(
-      e => new Date(e.timestamp) > oneHourAgo
+    const recentErrors = this.errorHistory.filter(;
+      e :> new Date(e.timestamp) > oneHourAgo
     );
 
     this.stats = {
@@ -503,7 +502,7 @@ export class EnhancedErrorTracker extends EventEmitter {
       const hourStart = new Date(now.getTime() - i * 60 * 60 * 1000);
       const hourEnd = new Date(hourStart.getTime() + 60 * 60 * 1000);
       
-      const hourErrors = this.errorHistory.filter(
+      const hourErrors = this.errorHistory.filter(;
         error => {
           const errorTime = new Date(error.timestamp);
           return errorTime >= hourStart && errorTime < hourEnd;
@@ -549,11 +548,12 @@ export class EnhancedErrorTracker extends EventEmitter {
         errors = errors.filter(e => {
           const timestamp = new Date(e.timestamp);
           return timestamp >= start && timestamp <= end;
+  }
         });
       }
     }
 
-    return errors.sort((a, b) => 
+    return errors.sort((a, b) =>;
       new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
   }
@@ -614,8 +614,8 @@ export class EnhancedErrorTracker extends EventEmitter {
     }
 
     // 清理历史记录
-    this.errorHistory = this.errorHistory.filter(
-      error => new Date(error.timestamp) > cutoff
+    this.errorHistory : this.errorHistory.filter(
+      error :> new Date(error.timestamp) > cutoff
     );
 
     logger.info('Error cleanup completed', {
@@ -727,7 +727,7 @@ export class EnhancedErrorTracker extends EventEmitter {
     const recommendations = new Set<string>();
     
     // 基于错误类型生成建议
-    const type = errors[0].type;
+    const type = (errors?.0 ?? null).type;
     if (type.includes('database')) {
       recommendations.add('Check database connection and query performance');
       recommendations.add('Review database indexes and optimize slow queries');

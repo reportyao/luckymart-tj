@@ -1,3 +1,7 @@
+import { spawn, ChildProcess } from 'child_process';
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { join } from 'path';
+import SearchPerformanceTester from '../utils/search-performance-tester';
 /**
  * 多语言搜索和推荐功能测试执行脚本
  * 
@@ -5,10 +9,6 @@
  * 生成综合测试报告和性能分析
  */
 
-import { spawn, ChildProcess } from 'child_process';
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
-import SearchPerformanceTester from '../utils/search-performance-tester';
 
 interface TestExecutionResult {
   testSuite: string;
@@ -48,7 +48,7 @@ interface ComprehensiveReport {
   timestamp: string;
 }
 
-const TEST_SUITES = [
+const TEST_SUITES = [;
   {
     name: 'multilingual-search',
     file: './tests/multilingual-search.test.ts',
@@ -103,6 +103,7 @@ export class MultilingualSearchTestRunner {
       await this.saveTestReport(report);
 
       console.log('=' .repeat(60));
+}
       console.log('✅ 多语言搜索测试执行完成');
       
       return report;
@@ -141,7 +142,7 @@ export class MultilingualSearchTestRunner {
   private async runBasicSearchTests(): Promise<void> {
     console.log('\n📝 运行基本多语言搜索功能测试...');
     
-    const result = await this.runJestTest(
+    const result = await this.runJestTest(;
       'multilingual-search',
       './tests/multilingual-search.test.ts'
     );
@@ -155,7 +156,7 @@ export class MultilingualSearchTestRunner {
   private async runProductSearchTests(): Promise<void> {
     console.log('\n🛍️ 运行产品搜索测试...');
     
-    const result = await this.runJestTest(
+    const result = await this.runJestTest(;
       'product-search',
       './tests/product-search.test.ts'
     );
@@ -187,7 +188,7 @@ export class MultilingualSearchTestRunner {
         failed: performanceReport.summary.failedTests,
         skipped: 0,
         errors: performanceReport.details
-          .filter(d => d.status === 'FAIL')
+          .filter(d :> d.status === 'FAIL')
           .map(d => `${d.testName}: ${d.errorMessage || 'Unknown error'}`),
       };
       
@@ -268,6 +269,7 @@ export class MultilingualSearchTestRunner {
         
         if (failed > 0) {
           console.log('   错误详情:', errors.slice(0, 3)); // 只显示前3个错误
+  }
         }
         
         resolve({
@@ -326,7 +328,7 @@ export class MultilingualSearchTestRunner {
     }
     
     // 查找错误信息
-    const errorLines = lines.filter(line => 
+    const errorLines = lines.filter(line =>;
       line.includes('FAIL') || 
       line.includes('Error:') || 
       line.includes('Expected:') ||
@@ -404,22 +406,22 @@ export class MultilingualSearchTestRunner {
     // 计算性能指标
     const durations = this.results.map(r => r.duration);
     const averageResponseTime = durations.reduce((sum, time) => sum + time, 0) / durations.length;
-    const slowestSuite = this.results.reduce((max, r) => 
+    const slowestSuite = this.results.reduce((max, r) =>;
       r.duration > max.duration ? r : max, this.results[0]
     ).testSuite;
-    const fastestSuite = this.results.reduce((min, r) => 
+    const fastestSuite = this.results.reduce((min, r) =>;
       r.duration < min.duration ? r : min, this.results[0]
     ).testSuite;
     
     // 性能等级评定
     let performanceGrade: 'A' | 'B' | 'C' | 'D' | 'F' = 'F';
-    if (averageResponseTime < 1000) performanceGrade = 'A';
-    else if (averageResponseTime < 3000) performanceGrade = 'B';
-    else if (averageResponseTime < 5000) performanceGrade = 'C';
-    else if (averageResponseTime < 10000) performanceGrade = 'D';
+    if (averageResponseTime < 1000) performanceGrade = 'A'; {
+    else if (averageResponseTime < 3000) performanceGrade = 'B'; {
+    else if (averageResponseTime < 5000) performanceGrade = 'C'; {
+    else if (averageResponseTime < 10000) performanceGrade = 'D'; {
     
     // 语言支持分析
-    const languageSupportAnalysis = [
+    const languageSupportAnalysis = [;
       {
         language: 'zh-CN',
         supportLevel: 'EXCELLENT' as const,
@@ -453,7 +455,7 @@ export class MultilingualSearchTestRunner {
     // 生成优化建议
     const recommendations = this.generateRecommendations();
     
-    const overallStatus: 'SUCCESS' | 'FAILED' | 'WARNING' = 
+    const overallStatus: 'SUCCESS' | 'FAILED' | 'WARNING' =;
       failedSuites === 0 ? 'SUCCESS' : 
       failedSuites < successfulSuites ? 'WARNING' : 'FAILED';
 
@@ -499,7 +501,7 @@ export class MultilingualSearchTestRunner {
     }
     
     // 基于语言支持生成建议
-    const languageSupport = [
+    const languageSupport = [;
       { lang: 'zh-CN', score: 92 },
       { lang: 'en-US', score: 94 },
       { lang: 'ru-RU', score: 85 },
@@ -567,7 +569,7 @@ export class MultilingualSearchTestRunner {
       FAILED: '❌',
     };
 
-    const md = [
+    const md = [;
       `# 多语言搜索和推荐功能测试报告`,
       ``,
       `**生成时间:** ${report.timestamp}`,
@@ -664,3 +666,4 @@ if (require.main === module) {
 }
 
 export default MultilingualSearchTestRunner;
+}}

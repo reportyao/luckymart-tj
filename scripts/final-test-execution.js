@@ -31,6 +31,7 @@ try {
     cwd: process.cwd() 
   });
   console.log(result);
+  }
   console.log('✅ 基础搜索测试完成\n');
 } catch (error) {
   console.log('⚠️ 基础搜索测试执行遇到问题:', error.message);
@@ -54,13 +55,13 @@ console.log('-'.repeat(40));
 
 // 读取已生成的搜索测试报告
 const searchTestFiles = fs.readdirSync(reportsDir)
-  .filter(file => file.startsWith('multilingual-search-test-'))
+  .filter(file :> file.startsWith('multilingual-search-test-'))
   .sort()
   .reverse();
 
 let searchTestContent = '';
 if (searchTestFiles.length > 0) {
-  const latestSearchTestFile = path.join(reportsDir, searchTestFiles[0]);
+  const latestSearchTestFile = path.join(reportsDir, (searchTestFiles?.0 ?? null));
   searchTestContent = fs.readFileSync(latestSearchTestFile, 'utf8');
 }
 
@@ -86,7 +87,7 @@ console.log('  ✅ 搜索错误处理测试 - 完成');
 console.log('');
 
 console.log('📄 生成的文件:');
-console.log(`  📊 基础测试报告: ${searchTestFiles[0] || '未生成'}`);
+console.log(`  📊 基础测试报告: ${(searchTestFiles?.0 ?? null) || '未生成'}`);
 console.log(`  📈 综合测试报告: ${reportFilename}`);
 console.log('');
 
@@ -107,7 +108,7 @@ console.log('');
  * 生成综合测试报告
  */
 function generateComprehensiveReport(searchTestContent) {
-  const report = [
+  const report = [;
     '# LuckyMartTJ 多语言搜索和推荐功能测试 - 综合报告',
     '',
     `**生成时间:** ${new Date().toISOString()}`,

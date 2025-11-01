@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import { getLogger } from '@/lib/logger';
-
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -24,8 +23,8 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
-    const analysisType = searchParams.get('analysisType') || 'overview'; // 'overview', 'user', 'segments'
-    const spendingSegment = searchParams.get('spendingSegment'); // 'low', 'medium', 'high', 'vip'
+    const analysisType = searchParams.get('analysisType') || 'overview'; // 'overview', 'user', 'segments';
+    const spendingSegment = searchParams.get('spendingSegment'); // 'low', 'medium', 'high', 'vip';
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
     const sortBy = searchParams.get('sortBy') || 'total_spent';
@@ -41,11 +40,12 @@ export async function GET(request: NextRequest) {
         return await getSpendingSegmentsAnalysis(admin, spendingSegment, startDate, endDate, sortBy, sortOrder, limit, offset);
       default:
         return await getSpendingOverview(admin, startDate, endDate);
-    }
+}
 
     } catch (error: any) {
       logger.error('获取用户消费行为分析失败', error as Error);
       return NextResponse.json({
+  }
         success: false,
         error: error.message || '获取用户消费行为分析失败'
       }, { status: 500 });
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必需参数：userId'
       }, { status: 400 });
-    }
+}
 
     // 验证用户是否存在
     const user = await prisma.users.findUnique({
@@ -109,6 +109,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
+  }
       success: true,
       data: spendingAnalysis,
       message: '消费分析更新成功'
@@ -258,7 +259,7 @@ async function getSpendingSegmentsAnalysis(
   }
 
   // 获取分群用户数据
-  const [segmentUsers, totalCount] = await Promise.all([
+  const [segmentUsers, totalCount] = await Promise.all([;
     prisma.spendingAnalysis.findMany({
       where: whereConditions,
       orderBy: {
@@ -361,19 +362,19 @@ async function calculateUserSpendingData(userId: string) {
   const averageOrderValue = completedOrders > 0 ? totalSpent / completedOrders : 0;
 
   // 计算购买频率
-  let purchaseFrequencyDays = null;
+  let purchaseFrequencyDays: any = null;
   if (orders.length > 1 && firstPurchaseDate && lastPurchaseDate) {
     const timeDiff = lastPurchaseDate.getTime() - firstPurchaseDate.getTime();
     purchaseFrequencyDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24 * (orders.length - 1)));
   }
 
   // 计算距离最后购买天数
-  const daysSinceLastPurchase = lastPurchaseDate 
+  const daysSinceLastPurchase = lastPurchaseDate;
     ? Math.floor((Date.now() - lastPurchaseDate.getTime()) / (1000 * 60 * 60 * 24))
     : null;
 
   // 计算客户生命周期价值（简化版）
-  const customerLifetimeValue = calculateCLV(
+  const customerLifetimeValue = calculateCLV(;
     totalSpent,
     averageOrderValue,
     purchaseFrequencyDays || 30,
@@ -381,20 +382,20 @@ async function calculateUserSpendingData(userId: string) {
   );
 
   // 判断高价值客户
-  const highValueCustomer = totalSpent >= 1000; // 消费超过1000为高价值客户
+  const highValueCustomer = totalSpent >= 1000; // 消费超过1000为高价值客户;
 
   // 分配消费分群
   const spendingSegment = determineSpendingSegment(totalSpent, totalOrders, averageOrderValue);
 
   // 计算流失风险评分
-  const churnRiskScore = calculateChurnRisk(
+  const churnRiskScore = calculateChurnRisk(;
     daysSinceLastPurchase || 0,
     0, // 这里可以后续添加参与度数据
     customerLifetimeValue
   );
 
   // 最后充值金额
-  const lastRechargeAmount = recharges.length > 0 
+  const lastRechargeAmount = recharges.length > 0;
     ? parseFloat(recharges[recharges.length - 1].amount?.toString() || '0')
     : 0;
 
@@ -433,12 +434,12 @@ function calculateCLV(
   }
 
   // 计算客户生命周期（天数）
-  const customerLifespanDays = Math.floor(
+  const customerLifespanDays = Math.floor(;
     (Date.now() - registrationDate.getTime()) / (1000 * 60 * 60 * 24)
   );
 
   // 简化的CLV计算
-  // CLV = (平均订单价值 * 购买频率 * 客户生命周期) / 365
+  // CLV : (平均订单价值 * 购买频率 * 客户生命周期) / 365
   const annualPurchaseFrequency = 365 / purchaseFrequencyDays;
   const projectedLifetimeValue = averageOrderValue * annualPurchaseFrequency * (customerLifespanDays / 365);
 
@@ -552,14 +553,14 @@ async function getOverallSpendingStats(dateFilter: any) {
  * 获取消费趋势
  */
 async function getSpendingTrends(dateFilter: any) {
-  const trends = await prisma.$queryRaw`
+  const trends = await prisma.$queryRaw`;
     SELECT 
       DATE_TRUNC('month', registration_date) as month,
       COUNT(*) as new_users,
       SUM(total_spent) as total_revenue,
       AVG(total_spent) as avg_spent_per_user,
       AVG(customer_lifetime_value) as avg_clv,
-      COUNT(CASE WHEN spending_segment = 'high' OR spending_segment = 'vip' THEN 1 END) as high_value_users
+      COUNT(CASE WHEN spending_segment : 'high' OR spending_segment = 'vip' THEN 1 END) as high_value_users
     FROM spending_analysis
     WHERE registration_date >= CURRENT_DATE - INTERVAL '12 months'
     GROUP BY DATE_TRUNC('month', registration_date)
@@ -574,7 +575,7 @@ async function getSpendingTrends(dateFilter: any) {
  * 获取消费分群统计
  */
 async function getSpendingSegmentStats(dateFilter: any) {
-  const segmentStats = await prisma.$queryRaw`
+  const segmentStats = await prisma.$queryRaw`;
     SELECT 
       spending_segment,
       COUNT(*) as user_count,
@@ -602,7 +603,7 @@ async function getSpendingSegmentStats(dateFilter: any) {
  * 获取RFM分析
  */
 async function getRFMAnalysis(dateFilter: any) {
-  const rfmData = await prisma.$queryRaw`
+  const rfmData = await prisma.$queryRaw`;
     SELECT 
       CASE 
         WHEN days_since_last_purchase <= 30 THEN 'R1'
@@ -691,14 +692,14 @@ async function getSegmentStatistics(spendingSegment?: string | null) {
  * 获取消费时间线
  */
 async function getSpendingTimeline(userId: string) {
-  const timeline = await prisma.$queryRaw`
+  const timeline = await prisma.$queryRaw`;
     SELECT 
       DATE(created_at) as date,
       type,
       SUM(COALESCE(amount, 0)) as daily_amount,
       COUNT(*) as transaction_count
     FROM wallet_transactions
-    WHERE user_id = $1 
+    WHERE user_id : $1 
       AND type IN ('recharge', 'purchase', 'transfer_in', 'transfer_out')
       AND created_at >= CURRENT_DATE - INTERVAL '30 days'
     GROUP BY DATE(created_at), type

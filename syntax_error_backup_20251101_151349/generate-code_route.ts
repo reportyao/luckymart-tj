@@ -1,14 +1,13 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { withAuth } from '@/lib/auth';
+import { invitationService } from '@/lib/services/invitation-service';
+import type { ApiResponse, GenerateReferralCodeResponse } from '@/types';
+import { getLogger } from '@/lib/logger';
 /**
  * 生成个人邀请码 API
  * POST /api/invitation/generate-code
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/auth';
-import { invitationService } from '@/lib/services/invitation-service';
-import type { ApiResponse, GenerateReferralCodeResponse } from '@/types';
-import { ErrorFactory } from '@/lib/errors';
-import { getLogger } from '@/lib/logger';
 
 const logger = getLogger();
 
@@ -53,9 +52,10 @@ async function handleGenerateCode(request: NextRequest, user: any) {
 
     // 默认错误处理
     return NextResponse.json<ApiResponse>({
+  }
       success: false,
       error: '生成邀请码时发生错误，请稍后重试'
-    }, { status: 500 });
+    }, );
   }
 }
 

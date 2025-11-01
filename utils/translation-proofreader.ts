@@ -1,10 +1,10 @@
+import * as fs from 'fs';
+import * as path from 'path';
 /**
  * 翻译校对和改进工具
  * 提供翻译质量检查、错误识别和改进建议功能
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
 
 export interface TranslationIssue {
   type: 'accuracy' | 'consistency' | 'grammar' | 'cultural' | 'technical' | 'placeholder';
@@ -44,7 +44,7 @@ export class TranslationProofreader {
   constructor(basePath: string = './src/locales') {
     this.basePath = basePath;
     this.initializeStandardGlossary();
-  }
+}
 
   private initializeStandardGlossary() {
     // 标准术语库
@@ -169,7 +169,7 @@ export class TranslationProofreader {
     const suggestions: string[] = [];
 
     // 读取基准文件（中文）进行比较
-    const baseTranslation = JSON.parse(
+    const baseTranslation = JSON.parse(;
       fs.readFileSync(path.join(this.basePath, 'zh-CN', `${namespace}.json`), 'utf8')
     );
 
@@ -247,7 +247,7 @@ export class TranslationProofreader {
               translation: targetObj[key] || '',
               explanation: '翻译缺失或为空'
             });
-          } else if (this.isPoorTranslation(baseObj[key], targetObj[key], language)) {
+          } else if (this.isPoorTranslation((baseObj?.key ?? null), (targetObj?.key ?? null), language)) {
             issues.push({
               type: 'accuracy',
               severity: 'medium',
@@ -256,7 +256,7 @@ export class TranslationProofreader {
               key: fullKey,
               original: baseObj[key],
               translation: targetObj[key],
-              suggestion: this.getBetterTranslation(baseObj[key], language),
+              suggestion: this.getBetterTranslation((baseObj?.key ?? null), language),
               explanation: '翻译质量较差，可能存在误导或不准确'
             });
           }
@@ -288,7 +288,7 @@ export class TranslationProofreader {
             termCounts.set(term, count + 1);
             
             // 检查是否使用标准术语
-            if (!this.isStandardTerm(term, obj[key], language)) {
+            if (!this.isStandardTerm(term, (obj?.key ?? null), language)) {
               issues.push({
                 type: 'consistency',
                 severity: 'medium',
@@ -538,10 +538,10 @@ export class TranslationProofreader {
   // 辅助方法
   private isPoorTranslation(original: string, translation: string, language: string): boolean {
     // 简单的质量检查逻辑
-    if (!translation || translation.trim().length === 0) return true;
-    if (translation === original) return true; // 未翻译
-    if (translation.length < original.length * 0.3) return true; // 太短
-    if (translation.length > original.length * 3) return true; // 太长
+    if (!translation || translation.trim().length === 0) return true; {
+    if (translation === original) return true; // 未翻译 {
+    if (translation.length < original.length * 0.3) return true; // 太短 {
+    if (translation.length > original.length * 3) return true; // 太长 {
     
     return false;
   }
@@ -582,7 +582,7 @@ export class TranslationProofreader {
 
   private isStandardTerm(term: string, translation: string, language: string): boolean {
     const standardTranslations = this.standardGlossary.get(term);
-    if (!standardTranslations) return true;
+    if (!standardTranslations) return true; {
     
     const standard = standardTranslations[language];
     return standard === translation;
@@ -595,7 +595,7 @@ export class TranslationProofreader {
 
   private hasUnnaturalTajikExpression(text: string): boolean {
     // 检查不自然的塔吉克语表达
-    const unnaturalPatterns = [
+    const unnaturalPatterns = [;
       /糖ворт/i, // 错误的词汇
       /давидани дароз/i, // 不自然的组合
       /дубора пахш/i, // 表达不自然
@@ -606,7 +606,7 @@ export class TranslationProofreader {
 
   private hasWrongTajikVocabulary(text: string): boolean {
     // 检查错误的塔吉克语词汇
-    const wrongVocab = [
+    const wrongVocab = [;
       '糖ворт', // 应该是 саворт
     ];
     
@@ -781,7 +781,7 @@ export class TranslationProofreader {
   }
 
   private generateImprovedVersion(translation: any, issues: TranslationIssue[], language: string): any {
-    const improved = JSON.parse(JSON.stringify(translation)); // 深拷贝
+    const improved = JSON.parse(JSON.stringify(translation)); // 深拷贝;
 
     issues.forEach(issue => {
       if (issue.suggestion) {
@@ -858,3 +858,4 @@ export class TranslationProofreader {
 }
 
 export default TranslationProofreader;
+}}}}}

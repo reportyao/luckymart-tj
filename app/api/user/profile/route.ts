@@ -17,6 +17,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('profile_route.ts request failed', error as Error, {
       requestId,
@@ -36,6 +37,7 @@ export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
+}
     }
 
     const token = authHeader.substring(7);
@@ -48,6 +50,7 @@ export async function GET(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json<ApiResponse>({
+  }
         success: false,
         error: '用户不存在'
       }, { status: 404 });
@@ -78,7 +81,7 @@ export async function GET(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'Get profile error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '获取用户信息失败', message: error.message },
       { status: 500 }
     );
@@ -90,7 +93,7 @@ export async function PUT(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
+}
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
@@ -117,7 +120,7 @@ export async function PUT(request: NextRequest) {
       success: true,
       data: {
         language: updatedUser.language,
-        message: messages[language] || messages.zh
+        message: (messages?.language ?? null) || messages.zh
       }
     });
 
@@ -126,9 +129,9 @@ export async function PUT(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'Update profile error:', error);
-    return NextResponse.json(
-      { error: '更新失败', message: error.message },
-      { status: 500 }
+    return NextResponse.json(;
+      ,
+      
     );
   }
 }

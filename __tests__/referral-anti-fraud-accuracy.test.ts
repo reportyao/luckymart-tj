@@ -1,11 +1,11 @@
+import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
+import { PrismaClient } from '@prisma/client';
+import { TestDataGenerator, testConfig } from './test-config';
 /**
  * 推荐系统防作弊准确性测试
  * 测试设备限制、循环推荐、批量注册等边界条件
  */
 
-import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
-import { PrismaClient } from '@prisma/client';
-import { TestDataGenerator, testConfig } from './test-config';
 
 describe('推荐系统防作弊准确性测试', () => {
   let prisma: PrismaClient;
@@ -78,7 +78,7 @@ describe('推荐系统防作弊准确性测试', () => {
           });
 
           // 检查设备重复率
-          const deviceLimit = 3; // 最多允许3个用户使用同一设备
+          const deviceLimit = 3; // 最多允许3个用户使用同一设备;
           if (existingUsers.length >= deviceLimit) {
             return {
               isBlocked: true,
@@ -98,9 +98,9 @@ describe('推荐系统防作弊准确性测试', () => {
       }
 
       // 前3个应该通过，第4个会被阻止
-      expect(results[0].isBlocked).toBe(false);
-      expect(results[1].isBlocked).toBe(false);
-      expect(results[2].isBlocked).toBe(false);
+      expect((results?.0 ?? null).isBlocked).toBe(false);
+      expect((results?.1 ?? null).isBlocked).toBe(false);
+      expect((results?.2 ?? null).isBlocked).toBe(false);
 
       console.log(`设备 ${deviceId} 注册检测结果:`, results);
     });
@@ -134,7 +134,7 @@ describe('推荐系统防作弊准确性测试', () => {
             take: 5
           });
 
-          const hasDeviceChange = previousDevices.some(check => 
+          const hasDeviceChange = previousDevices.some(check =>;
             check.deviceId !== newDeviceId
           );
 
@@ -158,7 +158,7 @@ describe('推荐系统防作弊准确性测试', () => {
     });
 
     test('虚拟设备检测', async () => {
-      const suspiciousDeviceIds = [
+      const suspiciousDeviceIds = [;
         'fraud-test-vm-1', // 模拟虚拟机
         'fraud-test-vm-2',
         'emulator-123',     // 模拟器
@@ -168,7 +168,7 @@ describe('推荐系统防作弊准确性测试', () => {
 
       const fraudDetector = {
         detectVirtualDevice: async (deviceId: string) => {
-          const virtualDevicePatterns = [
+          const virtualDevicePatterns = [;
             /^fraud-test-vm-/,
             /^emulator-/,
             /^test-device-/,
@@ -177,7 +177,7 @@ describe('推荐系统防作弊准确性测试', () => {
             /emulator/i,
           ];
 
-          const isVirtual = virtualDevicePatterns.some(pattern => 
+          const isVirtual = virtualDevicePatterns.some(pattern =>;
             pattern.test(deviceId)
           );
 
@@ -237,7 +237,7 @@ describe('推荐系统防作弊准确性测试', () => {
         detectCircularReferral: async (referrerId: string, refereeId: string) => {
           // 检查是否存在循环
           const checkCircular = async (currentUserId: string, targetUserId: string, depth: number = 0): Promise<boolean> => {
-            if (depth > 10) return false; // 防止无限递归
+            if (depth > 10) return false; // 防止无限递归 {
 
             const relationships = await prisma.referralRelationships.findMany({
               where: { referrerUserId: currentUserId },
@@ -246,7 +246,7 @@ describe('推荐系统防作弊准确性测试', () => {
 
             for (const relationship of relationships) {
               if (relationship.refereeUserId === targetUserId) {
-                return true; // 发现循环
+                return true; // 发现循环;
               }
               
               if (await checkCircular(relationship.refereeUserId, targetUserId, depth + 1)) {
@@ -294,7 +294,7 @@ describe('推荐系统防作弊准确性测试', () => {
       });
 
       // 创建推荐关系链
-      const relationships = [
+      const relationships = [;
         { referrer: 'A', referee: 'B' },
         { referrer: 'B', referee: 'C' },
         { referrer: 'C', referee: 'D' },
@@ -361,8 +361,8 @@ describe('推荐系统防作弊准确性测试', () => {
 
   describe('批量注册检测', () => {
     test('短时间内大量注册检测', async () => {
-      const registrationWindow = 60000; // 1分钟窗口
-      const maxRegistrations = 5; // 最多5个注册
+      const registrationWindow = 60000; // 1分钟窗口;
+      const maxRegistrations = 5; // 最多5个注册;
       const telegramIds = Array(10).fill(0).map((_, i) => `batch_telegram_${i}`);
       
       const fraudDetector = {
@@ -371,7 +371,7 @@ describe('推荐系统防作弊准确性测试', () => {
           
           for (let i = 0; i < telegramIds.length; i++) {
             const userId = `fraud-test-user-batch-${i}`;
-            const registrationTime = new Date(Date.now() - (telegramIds.length - i - 1) * 5000); // 每5秒一个
+            const registrationTime = new Date(Date.now() - (telegramIds.length - i - 1) * 5000); // 每5秒一个;
 
             await prisma.users.create({
               data: testDataGenerator.generateUser({
@@ -392,7 +392,7 @@ describe('推荐系统防作弊准确性测试', () => {
           const now = new Date();
           const windowStart = new Date(now.getTime() - windowMs);
           
-          const recentRegistrations = registrations.filter(reg => 
+          const recentRegistrations = registrations.filter(reg =>;
             reg.registrationTime >= windowStart
           );
 
@@ -547,7 +547,7 @@ describe('推荐系统防作弊准确性测试', () => {
     });
 
     test('代理/VPN检测', async () => {
-      const suspiciousIPs = [
+      const suspiciousIPs = [;
         '10.0.0.1',      // 私有IP范围
         '172.16.0.1',    // 私有IP范围  
         '192.168.1.1',   // 私有IP范围
@@ -557,7 +557,7 @@ describe('推荐系统防作弊准确性测试', () => {
 
       const fraudDetector = {
         detectProxyVPN: async (ipAddress: string) => {
-          const proxyRanges = [
+          const proxyRanges = [;
             { start: '10.0.0.0', end: '10.255.255.255' },
             { start: '172.16.0.0', end: '172.31.255.255' },
             { start: '192.168.0.0', end: '192.168.255.255' },
@@ -567,7 +567,7 @@ describe('推荐系统防作弊准确性测试', () => {
 
           const isProxyIP = proxyRanges.some(range => {
             // 简化的IP范围检查（实际应该使用更精确的IP库）
-            return ipAddress.startsWith(range.start.split('.')[0] + '.') ||
+            return ipAddress.startsWith(range.start.split('.')[0] + '.') ||;
                    ipAddress.startsWith(range.start.split('.')[0] + '.' + range.start.split('.')[1] + '.');
           });
 
@@ -736,3 +736,4 @@ describe('推荐系统防作弊准确性测试', () => {
     });
   });
 });
+}

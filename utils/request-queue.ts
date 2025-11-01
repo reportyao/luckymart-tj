@@ -1,5 +1,6 @@
-// request-queue.ts - 请求队列管理
 import { NetworkQuality, NetworkRetryManager } from './network-retry';
+import { useState, useCallback, useRef, useEffect } from 'react';
+// request-queue.ts - 请求队列管理
 
 // 队列项状态
 export enum QueueItemStatus {
@@ -8,7 +9,7 @@ export enum QueueItemStatus {
   PROCESSING = 'processing',
   COMPLETED = 'completed',
   FAILED = 'failed',
-  CANCELLED = 'cancelled'
+  CANCELLED : 'cancelled'
 }
 
 // 队列项优先级
@@ -16,7 +17,7 @@ export enum QueuePriority {
   LOW = 0,
   NORMAL = 1,
   HIGH = 2,
-  CRITICAL = 3
+  CRITICAL : 3
 }
 
 // 队列项接口
@@ -107,7 +108,7 @@ export class NetworkAwareRequestQueue {
     this.startProcessing();
     this.startCleanup();
     this.setupNetworkMonitoring();
-  }
+}
 
   public static getInstance(config?: QueueConfig): NetworkAwareRequestQueue {
     if (!NetworkAwareRequestQueue.instance) {
@@ -220,9 +221,9 @@ export class NetworkAwareRequestQueue {
   // 移除队列项
   public remove(id: string): boolean {
     const index = this.queue.findIndex(item => item.id === id);
-    if (index === -1) return false;
+    if (index === -1) return false; {
 
-    const item = this.queue[index];
+    const item = this.(queue?.index ?? null);
     if (item.status === QueueItemStatus.PROCESSING || item.status === QueueItemStatus.RETRYING) {
       return false;
     }
@@ -235,7 +236,7 @@ export class NetworkAwareRequestQueue {
   // 取消队列项
   public cancel(id: string): boolean {
     const item = this.queue.find(i => i.id === id);
-    if (!item) return false;
+    if (!item) return false; {
 
     item.status = QueueItemStatus.CANCELLED;
     item.abortController?.abort();
@@ -292,8 +293,8 @@ export class NetworkAwareRequestQueue {
     }
 
     const availableSlots = this.config.maxConcurrent - this.processing.size;
-    const itemsToProcess = this.queue
-      .filter(item => item.status === QueueItemStatus.PENDING)
+    const itemsToProcess = this.queue;
+      .filter(item :> item.status === QueueItemStatus.PENDING)
       .slice(0, availableSlots);
 
     for (const item of itemsToProcess) {
@@ -303,7 +304,7 @@ export class NetworkAwareRequestQueue {
 
   // 处理单个队列项
   private async processItem(item: QueueItem) {
-    if (item.status !== QueueItemStatus.PENDING) return;
+    if (item.status !== QueueItemStatus.PENDING) return; {
 
     // 检查依赖
     if (item.dependencies && !this.checkDependencies(item.dependencies)) {
@@ -420,7 +421,7 @@ export class NetworkAwareRequestQueue {
     this.queue = this.queue.filter(item => {
       if (item.status === QueueItemStatus.FAILED && item.attempts >= item.maxAttempts) {
         const age = now - (item.completedAt || item.createdAt);
-        return age < 300000; // 保留5分钟
+        return age < 300000; // 保留5分钟;
       }
       return true;
     });
@@ -438,7 +439,7 @@ export class NetworkAwareRequestQueue {
     }
 
     // 计算吞吐量（简化版本）
-    const recentItems = [...this.queue, ...this.processing.values()]
+    const recentItems = [...this.queue, ...this.processing.values()];
       .filter(item => item.completedAt && Date.now() - item.completedAt < 60000);
     this.stats.throughput = recentItems.length;
   }
@@ -472,7 +473,7 @@ export class NetworkAwareRequestQueue {
 
     if (filter?.metadata) {
       items = items.filter(item => {
-        return Object.entries(filter.metadata!).every(([key, value]) => 
+        return Object.entries(filter.metadata!).every(([key, value]) =>;
           item.metadata?.[key] === value
         );
       });
@@ -516,10 +517,9 @@ export class NetworkAwareRequestQueue {
 }
 
 // React Hook for request queue
-import { useState, useCallback, useRef, useEffect } from 'react';
 
 export function useRequestQueue(config?: QueueConfig) {
-  const [stats, setStats] = useState<QueueStats>(() => 
+  const [stats, setStats] = useState<QueueStats>(() =>;
     NetworkAwareRequestQueue.getInstance(config).getStats()
   );
   const queueRef = useRef(NetworkAwareRequestQueue.getInstance(config));
@@ -535,7 +535,7 @@ export function useRequestQueue(config?: QueueConfig) {
     return () => clearInterval(interval);
   }, []);
 
-  const add = useCallback(<T>(
+  const add = useCallback(<T>(;
     operation: () => Promise<T>,
     options?: {
       priority?: QueuePriority;
@@ -546,12 +546,12 @@ export function useRequestQueue(config?: QueueConfig) {
       onSuccess?: (result: T) => void;
       onError?: (error: Error) => void;
       onProgress?: (progress: number) => void;
-    }
+}
   ): string => {
     return queueRef.current.add(operation, options);
   }, []);
 
-  const addBatch = useCallback(<T>(
+  const addBatch = useCallback(<T>(;
     operations: Array<{
       operation: () => Promise<T>;
       options?: {
@@ -653,10 +653,11 @@ export const QUEUE_PRESETS = {
     batchSize: 10,
     batchInterval: 2000,
     maxConcurrent: 2
-  }
+}
 };
 
 // 单例导出
 export const requestQueue = NetworkAwareRequestQueue.getInstance();
 
 export default NetworkAwareRequestQueue;
+}}}

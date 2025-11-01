@@ -1,16 +1,16 @@
+import { Telegraf, Markup } from 'telegraf';
+import { RewardNotifier } from '../utils/../services/reward-notifier';
+import { NotificationType, Language } from '../utils/../utils/notification-templates';
+import { logger } from '../utils/logger';
 /**
  * 奖励通知系统测试脚本
  * 测试Telegram Bot奖励通知功能
  */
 
-import { Telegraf, Markup } from 'telegraf';
-import { RewardNotifier } from '../utils/../services/reward-notifier';
-import { NotificationType, Language } from '../utils/../utils/notification-templates';
-import { logger } from '../utils/logger';
 
 // 模拟Bot配置
 const TEST_BOT_TOKEN = process.env.TEST_TELEGRAM_BOT_TOKEN || 'your_bot_token_here';
-const TEST_USER_ID = parseInt(process.env.TEST_USER_ID || '123456789'); // 替换为实际的测试用户ID
+const TEST_USER_ID = parseInt(process.env.TEST_USER_ID || '123456789'); // 替换为实际的测试用户ID;
 
 interface TestResult {
   testName: string;
@@ -41,7 +41,7 @@ class RewardNotificationTester {
 
     // 处理回调按钮
     this.bot.action(/^notification_(.+)$/, (ctx) => {
-      ctx.answerCbQuery(`收到动作: ${ctx.match[1]}`);
+      ctx.answerCbQuery(`收到动作: ${ctx.(match?.1 ?? null)}`);
     });
 
     // 错误处理
@@ -130,7 +130,7 @@ class RewardNotificationTester {
     try {
       logger.info('测试: ' + testName);
       
-      const result = await this.rewardNotifier.sendRegistrationReward(
+      const result = await this.rewardNotifier.sendRegistrationReward(;
         TEST_USER_ID,
         'TestUser',
         { language: Language.RU }
@@ -145,6 +145,7 @@ class RewardNotificationTester {
         logger.info('✅ ' + testName + ' - 成功');
       } else {
         throw new Error(result.error);
+  }
       }
     } catch (error) {
       this.testResults.push({
@@ -167,7 +168,7 @@ class RewardNotificationTester {
     try {
       logger.info('测试: ' + testName);
       
-      const result = await this.rewardNotifier.sendFirstLotteryReward(
+      const result = await this.rewardNotifier.sendFirstLotteryReward(;
         TEST_USER_ID,
         'TestUser',
         { language: Language.RU }
@@ -204,7 +205,7 @@ class RewardNotificationTester {
     try {
       logger.info('测试: ' + testName);
       
-      const result = await this.rewardNotifier.sendFirstRechargeReward(
+      const result = await this.rewardNotifier.sendFirstRechargeReward(;
         TEST_USER_ID,
         'TestUser',
         100, // 充值100
@@ -243,7 +244,7 @@ class RewardNotificationTester {
     try {
       logger.info('测试: ' + testName);
       
-      const result = await this.rewardNotifier.sendCashbackReward(
+      const result = await this.rewardNotifier.sendCashbackReward(;
         TEST_USER_ID,
         'TestUser',
         200, // 购买200
@@ -282,7 +283,7 @@ class RewardNotificationTester {
     try {
       logger.info('测试: ' + testName);
       
-      const notifications = [
+      const notifications = [;
         {
           userId: TEST_USER_ID,
           type: NotificationType.REGISTRATION_REWARD,
@@ -408,7 +409,7 @@ class RewardNotificationTester {
     try {
       logger.info('测试: ' + testName);
       
-      const richMessage = this.rewardNotifier['generateRichMessage'](
+      const richMessage = this.rewardNotifier['generateRichMessage'](;
         NotificationType.REGISTRATION_REWARD,
         Language.RU,
         {
@@ -463,7 +464,7 @@ class RewardNotificationTester {
       logger.info('测试: ' + testName);
       
       // 测试无效用户ID
-      const result = await this.rewardNotifier.sendRegistrationReward(
+      const result = await this.rewardNotifier.sendRegistrationReward(;
         -1, // 无效用户ID
         'InvalidUser',
         { language: Language.RU }
@@ -564,4 +565,4 @@ if (require.main === module) {
   main();
 }
 
-export { RewardNotificationTester };
+export ;

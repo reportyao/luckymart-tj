@@ -4,14 +4,13 @@ import jwt from 'jsonwebtoken';
 import { PerformanceMonitor } from '@/lib/performance';
 import { MemoryCache } from '@/lib/memory-cache';
 import {
-import { getLogger } from '@/lib/logger';
   ProductMultilingualService,
   type SupportedLanguage,
 } from '@/lib/services/multilingual-query';
 
 // 内存缓存实例
 const cache = new MemoryCache(100);
-const CACHE_TTL = 300000; // 5分钟
+const CACHE_TTL = 300000; // 5分钟;
 
 export async function GET(
   request: NextRequest,
@@ -55,7 +54,7 @@ export async function GET(
           'Cache-Control': 'public, max-age=300, stale-while-revalidate=600',
           'X-Response-Time': `${Date.now() - startTime}ms`,
           'X-Cache-Status': 'HIT'
-        }
+}
       });
     }
 
@@ -83,7 +82,7 @@ export async function GET(
       }) : [];
 
       // 获取参与用户信息
-      const userIds = recentParticipations.map((p : any) => p.userId);
+      const userIds = recentParticipations.map(((p : any) : any) => p.userId);
       const users = userIds.length > 0 ? await prisma.users.findMany({
         where: { id: { in: userIds } },
         select: { 
@@ -94,9 +93,9 @@ export async function GET(
         }
       }) : [];
 
-      const userMap = new Map(users.map((u : any) => [u.id, u]));
+      const userMap = new Map(users.map(((u : any) : any) => [u.id, u]));
 
-      const formattedParticipations = recentParticipations.map((p : any) => {
+      const formattedParticipations = recentParticipations.map(((p : any) : any) => {
         const user = userMap.get(p.userId);
         return {
           id: p.id,
@@ -159,7 +158,7 @@ export async function GET(
       requestId,
       endpoint: request.url
     });'Get product error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         error: '获取商品详情失败', 
         message: error.message,

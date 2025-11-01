@@ -5,8 +5,6 @@ import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { createTranslation } from '@/lib/createTranslation';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const prisma = new PrismaClient();
 
@@ -25,6 +23,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('departments_route.ts request failed', error as Error, {
       requestId,
@@ -43,7 +42,7 @@ async function handleGET(request: NextRequest) {
           const departments = await prisma.orgDepartments.findMany({
             orderBy: {
               sortOrder: 'asc'
-            }
+    }
           });
 
           return NextResponse.json({
@@ -57,7 +56,8 @@ async function handleGET(request: NextRequest) {
           endpoint: request.url
         });'获取部门列表失败:', error);
           const { t } = await createTranslation(request, 'api-errors');
-          return NextResponse.json(
+          return NextResponse.json(;
+  }
             { success: false, error: t('errors.serverError') },
             { status: 500 }
           );
@@ -74,11 +74,11 @@ export async function POST(request: NextRequest) {
 
       // 验证必填字段
       if (!name) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '部门名称不能为空' },
           { status: 400 }
         );
-      }
+}
 
       // 检查名称是否已存在
       const existing = await prisma.orgDepartments.findUnique({
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (existing) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '部门名称已存在' },
           { status: 400 }
         );
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
       endpoint: request.url
     });'创建部门失败:', error);
       const { t } = await createTranslation(request, 'api-errors');
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: t('errors.serverError') },
         { status: 500 }
       );

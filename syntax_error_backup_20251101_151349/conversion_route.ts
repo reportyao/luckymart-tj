@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -30,7 +29,7 @@ export async function GET(request: NextRequest) {
     const where: any = {};
     if (productId) {
       where.product_id = productId;
-    }
+}
     if (startDate && endDate) {
       where.date = {
         gte: new Date(startDate),
@@ -39,7 +38,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 获取分页数据
-    const [conversionData, totalCount] = await Promise.all([
+    const [conversionData, totalCount] = await Promise.all([;
       prisma.conversionFunnel.findMany({
         where,
         orderBy: { date: 'desc' },
@@ -188,6 +187,7 @@ export async function GET(request: NextRequest) {
     } catch (error: any) {
       console.error('获取转化漏斗数据失败:', error);
       return NextResponse.json({
+  }
         success: false,
         error: '获取转化漏斗数据失败'
       }, { status: 500 });
@@ -218,7 +218,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必填字段：productId, date'
       }, { status: 400 });
-    }
+}
 
     // 检查商品是否存在
     const product = await prisma.products.findUnique({
@@ -285,6 +285,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
+  }
       success: true,
       data: {
         conversionData: {
@@ -311,7 +312,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: false,
         error: '保存转化漏斗数据失败'
-      }, { status: 500 });
+      }, );
     }
   })(request);
 }

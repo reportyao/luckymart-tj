@@ -1,9 +1,8 @@
-// 转售状态查询API
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
-import { getLogger } from '@/lib/logger';
+// 转售状态查询API
 
 export async function GET(
   request: Request,
@@ -17,12 +16,12 @@ export async function GET(
         success: false,
         error: '未授权访问'
       }, { status: 401 });
-    }
+}
 
     const listingId = params.id;
 
     // 获取转售商品详细信息
-    const { data: listing } = await supabaseAdmin
+    const { data: listing } = await supabaseAdmin;
       .from('resale_listings')
       .select(`
         *,
@@ -90,6 +89,7 @@ export async function GET(
       endpoint: request.url
     });'查询转售状态失败:', error);
     return NextResponse.json<ApiResponse>({
+  }
       success: false,
       error: error.message || '查询转售状态失败'
     }, { status: 500 });
@@ -155,5 +155,5 @@ function getMysteryBuyerInfo(buyerId: string) {
     'platform_buyer_5': { username: '本地数码爱好者', avatar: '/images/bot-avatar-5.png' }
   };
 
-  return buyers[buyerId] || { username: '神秘买家', avatar: '/images/default-avatar.png' };
+  return (buyers?.buyerId ?? null) || ;
 }

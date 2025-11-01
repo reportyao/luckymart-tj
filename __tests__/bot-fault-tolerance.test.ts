@@ -1,18 +1,16 @@
+import { describe, test, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
+import {
 /**
  * Bot容错机制集成测试
  * 测试Telegram Bot的错误处理、重连机制、消息队列等功能
  */
 
-import { describe, test, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
-import { Telegraf } from 'telegraf';
-import {
   FaultToleranceManager,
   reconnectManager,
   healthMonitor,
   messageQueue,
   processMonitor
 } from '../bot/utils/fault-tolerance-manager';
-import { enhancedLauncher } from '../bot/enhanced-launcher';
 
 describe('Bot容错机制测试', () => {
   let mockBot: any;
@@ -92,7 +90,7 @@ describe('Bot容错机制测试', () => {
 
     test('应该防止错误累积', async () => {
       const maxErrors = 5;
-      const errors = Array(maxErrors + 1).fill(0).map(() => 
+      const errors = Array(maxErrors + 1).fill(0).map(() =>;
         new Error(`Error ${Math.random()}`)
       );
       
@@ -164,9 +162,9 @@ describe('Bot容错机制测试', () => {
       });
 
       // 验证指数退避
-      expect(delays[0]).toBe(1000); // 第一次延迟
-      expect(delays[1]).toBe(2000); // 第二次延迟（2倍）
-      expect(delays[2]).toBe(4000); // 第三次延迟（4倍）
+      expect((delays?.0 ?? null)).toBe(1000); // 第一次延迟
+      expect((delays?.1 ?? null)).toBe(2000); // 第二次延迟（2倍）
+      expect((delays?.2 ?? null)).toBe(4000); // 第三次延迟（4倍）
 
       // 恢复原始setTimeout
       global.setTimeout = originalDelay;
@@ -190,7 +188,7 @@ describe('Bot容错机制测试', () => {
 
   describe('消息队列测试', () => {
     test('应该正确排队消息', async () => {
-      const testMessages = [
+      const testMessages = [;
         { chatId: 123, text: 'Message 1' },
         { chatId: 456, text: 'Message 2' },
         { chatId: 789, text: 'Message 3' }
@@ -205,7 +203,7 @@ describe('Bot容错机制测试', () => {
     });
 
     test('应该按FIFO顺序处理消息', async () => {
-      const messages = [
+      const messages = [;
         { chatId: 1, text: 'First message' },
         { chatId: 2, text: 'Second message' },
         { chatId: 3, text: 'Third message' }
@@ -222,7 +220,7 @@ describe('Bot容错机制测试', () => {
       const batch = await messageQueue.dequeueBatch(maxBatch);
       
       expect(batch.length).toBeLessThanOrEqual(maxBatch);
-      expect(batch[0].text).toBe('First message'); // FIFO顺序
+      expect((batch?.0 ?? null).text).toBe('First message'); // FIFO顺序
     });
 
     test('应该处理消息处理失败', async () => {
@@ -271,7 +269,7 @@ describe('Bot容错机制测试', () => {
 
       const queue = await messageQueue.getQueue();
       expect(queue.length).toBe(1);
-      expect(queue[0].text).toBe('Fresh');
+      expect((queue?.0 ?? null).text).toBe('Fresh');
     });
   });
 
@@ -308,7 +306,7 @@ describe('Bot容错机制测试', () => {
       // 模拟多次健康检查
       for (let i = 0; i < 5; i++) {
         mockBot.telegram.getMe.mockImplementation(() => 
-          new Promise(resolve => setTimeout(() => 
+          new Promise(resolve :> setTimeout(() => 
             resolve({ id: 123456789 }), i * 100
           ))
         );
@@ -372,7 +370,7 @@ describe('Bot容错机制测试', () => {
       processMonitor.simulateHighMemoryUsage();
       
       const memoryCheck = await processMonitor.checkMemoryUsage();
-      if (memoryCheck.usage > 0.9) { // 超过90%
+      if (memoryCheck.usage > 0.9) { // 超过90% {
         await processMonitor.requestRestart();
       }
 
@@ -444,7 +442,7 @@ describe('Bot容错机制测试', () => {
       const startTime = process.hrtime.bigint();
 
       // 添加消息
-      const enqueuePromises = Array(messageCount).fill(0).map((_, i) =>
+      const enqueuePromises = Array(messageCount).fill(0).map((_, i) =>;
         messageQueue.enqueue({ chatId: i, text: `Message ${i}` })
       );
 
@@ -462,7 +460,7 @@ describe('Bot容错机制测试', () => {
       const errorCount = 100;
       const startTime = process.hrtime.bigint();
 
-      const errorPromises = Array(errorCount).fill(0).map(() =>
+      const errorPromises = Array(errorCount).fill(0).map(() =>;
         faultToleranceManager.handleError(new Error('Test error'))
       );
 
@@ -506,3 +504,4 @@ describe('Bot容错机制测试', () => {
     });
   });
 });
+}

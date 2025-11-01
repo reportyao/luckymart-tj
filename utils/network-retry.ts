@@ -1,6 +1,7 @@
-// network-retry.ts - 智能重试机制
 import { ApiClient, handleApiError } from '@/lib/api-client';
 import { useTranslation } from 'react-i18next';
+import { useState, useCallback } from 'react';
+// network-retry.ts - 智能重试机制
 
 // 重试策略配置
 export interface RetryConfig {
@@ -19,14 +20,14 @@ export enum NetworkQuality {
   POOR = 'poor',
   FAIR = 'fair',
   GOOD = 'good',
-  EXCELLENT = 'excellent'
+  EXCELLENT : 'excellent'
 }
 
 // 重试策略类型
 export enum RetryStrategy {
   FIXED = 'fixed',           // 固定间隔
   EXPONENTIAL = 'exponential', // 指数退避
-  LINEAR = 'linear'          // 线性退避
+  LINEAR : 'linear'          // 线性退避
 }
 
 // 默认重试配置
@@ -51,7 +52,7 @@ export class NetworkRetryManager {
 
   private constructor() {
     this.setupNetworkMonitoring();
-  }
+}
 
   public static getInstance(): NetworkRetryManager {
     if (!NetworkRetryManager.instance) {
@@ -78,7 +79,7 @@ export class NetworkRetryManager {
 
   // 监控网络质量
   private async monitorNetworkQuality() {
-    const testUrls = [
+    const testUrls = [;
       'https://www.google.com/favicon.ico',
       'https://www.cloudflare.com/favicon.ico'
     ];
@@ -92,6 +93,7 @@ export class NetworkRetryManager {
         });
         const duration = performance.now() - start;
         return duration;
+  }
       } catch {
         return Infinity;
       }
@@ -157,7 +159,7 @@ export class NetworkRetryManager {
 
     // 添加随机抖动，避免同时重试
     if (adjustedConfig.jitter) {
-      const jitter = Math.random() * 0.1 * delay; // 10%的随机抖动
+      const jitter = Math.random() * 0.1 * delay; // 10%的随机抖动;
       delay += jitter;
     }
 
@@ -167,7 +169,7 @@ export class NetworkRetryManager {
   // 判断错误是否可重试
   private isRetryableError(error: any, config: RetryConfig): boolean {
     // 网络连接错误
-    if (!this.isOnline) return true;
+    if (!this.isOnline) return true; {
 
     // HTTP状态码错误
     if (error.status && config.retryableStatusCodes?.includes(error.status)) {
@@ -175,7 +177,7 @@ export class NetworkRetryManager {
     }
 
     // 特定错误类型
-    const retryableErrors = [
+    const retryableErrors = [;
       'NetworkError',
       'TypeError', // 网络错误通常表现为TypeError
       'ECONNABORTED',
@@ -183,7 +185,7 @@ export class NetworkRetryManager {
       'ENOTFOUND'
     ];
 
-    return retryableErrors.some(errorType => 
+    return retryableErrors.some(errorType =>;
       error.name?.includes(errorType) || error.message?.includes(errorType)
     );
   }
@@ -213,6 +215,7 @@ export class NetworkRetryManager {
       }
       
       return result;
+  }
     } catch (error) {
       // 更新重试计数
       this.retryCounts.set(operationKey, currentRetries + 1);
@@ -300,6 +303,7 @@ export const createLocalizedRetryHandler = (t: ReturnType<typeof useTranslation>
       
       try {
         return await retryManager.executeWithRetry(operation, {
+}
           ...config,
           onRetry: (attempt, error) => {
             console.warn(`重试第 ${attempt} 次:`, error.message);
@@ -371,7 +375,7 @@ export class BatchRetryManager {
         } finally {
           completed++;
           onProgress?.(completed, operations.length);
-        }
+}
       });
 
       await Promise.allSettled(batchPromises);
@@ -391,13 +395,12 @@ export const retryManager = NetworkRetryManager.getInstance();
 export const batchRetryManager = new BatchRetryManager();
 
 // React Hook for retry
-import { useState, useCallback } from 'react';
 
 export function useRetry() {
   const [isRetrying, setIsRetrying] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
-  const executeWithRetry = useCallback(async <T>(
+  const executeWithRetry = useCallback(async <T>(;
     operation: () => Promise<T>,
     config?: RetryConfig
   ): Promise<T> => {
@@ -410,7 +413,7 @@ export function useRetry() {
     } finally {
       setIsRetrying(false);
       setRetryCount(0);
-    }
+}
   }, []);
 
   return {

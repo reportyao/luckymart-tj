@@ -1,11 +1,11 @@
+import { PrismaClient } from '@prisma/client';
+import { performance } from 'perf_hooks';
 #!/usr/bin/env node
 /**
  * 数据库并发性能测试
  * 测试数据库在高并发场景下的表现
  */
 
-import { PrismaClient } from '@prisma/client';
-import { performance } from 'perf_hooks';
 
 interface DatabaseTestResult {
   testName: string;
@@ -73,7 +73,7 @@ class DatabaseStressTester {
     }
     
     // 批量插入用户（使用原生SQL以提高性能）
-    const values = users.map((user, i) => 
+    const values = users.map((user, i) =>;
       `(${user.telegramId}, '${user.username}', '${user.firstName}', '${user.lastName}', ${user.balance}, ${user.freeTimes}, ${user.isActive})`
     ).join(', ');
     
@@ -125,7 +125,7 @@ class DatabaseStressTester {
       concurrentUsers: 30,
       operationsPerUser: 50,
       operationFn: async (userId) => {
-        const randomAmount = Math.floor(Math.random() * 1000) - 500; // -500 to 500
+        const randomAmount = Math.floor(Math.random() * 1000) - 500; // -500 to 500;
         return this.prisma.user.update({
           where: { id: userId },
           data: { 
@@ -240,7 +240,7 @@ class DatabaseStressTester {
     const duration = endTime - startTime;
 
     const totalOperations = concurrentUsers * operationsPerUser;
-    const avgResponseTime = responseTimes.length > 0 
+    const avgResponseTime = responseTimes.length > 0;
       ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length 
       : 0;
 
@@ -316,7 +316,7 @@ class DatabaseStressTester {
     const totalFailures = this.results.reduce((sum, r) => sum + r.failedOperations, 0);
     const totalDeadlocks = this.results.reduce((sum, r) => sum + r.deadlockCount, 0);
 
-    let report = `
+    let report = `;
 # 数据库压力测试报告
 
 ## 📊 总体指标

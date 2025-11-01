@@ -62,7 +62,7 @@ describe('Show-off System API Tests', () => {
   describe('Hotness API', () => {
     describe('GET /api/admin/show-off/hotness', () => {
       test('should return hotness ranking', async () => {
-        const mockPosts = [
+        const mockPosts = [;
           {
             id: 'post-1',
             content: 'Test post 1',
@@ -128,7 +128,7 @@ describe('Show-off System API Tests', () => {
       });
 
       test('should recalculate hotness for all posts', async () => {
-        const mockPosts = [
+        const mockPosts = [;
           {
             id: 'post-1',
             likesCount: 50,
@@ -169,7 +169,7 @@ describe('Show-off System API Tests', () => {
   describe('Content Quality API', () => {
     describe('GET /api/admin/show-off/content-quality', () => {
       test('should return content quality analysis', async () => {
-        const mockPosts = [
+        const mockPosts = [;
           {
             id: 'post-1',
             content: 'Good quality content with detailed description',
@@ -196,21 +196,21 @@ describe('Show-off System API Tests', () => {
           
           // Content length (20 points)
           const contentLength = post.content?.length || 0;
-          if (contentLength > 100) score += 20;
-          else if (contentLength > 50) score += 15;
+          if (contentLength > 100) score += 20; {
+          else if (contentLength > 50) score += 15; {
           
           // Image count (30 points)
           const imageCount = post.images?.length || 0;
-          if (imageCount >= 3) score += 30;
-          else if (imageCount >= 2) score += 20;
+          if (imageCount >= 3) score += 30; {
+          else if (imageCount >= 2) score += 20; {
           
           // Engagement (30 points)
           const engagement = (post.likesCount || 0) + (post.commentsCount || 0) * 2;
-          if (engagement > 50) score += 30;
+          if (engagement > 50) score += 30; {
           
           // User reputation (20 points)
           const userPostCount = post.user?._count?.showOffPosts || 0;
-          if (userPostCount > 10) score += 20;
+          if (userPostCount > 10) score += 20; {
           
           return Math.min(score, 100);
         };
@@ -269,7 +269,7 @@ describe('Show-off System API Tests', () => {
   describe('Recommendations API', () => {
     describe('GET /api/admin/show-off/recommendations', () => {
       test('should return recommendations list', async () => {
-        const mockRecommendations = [
+        const mockRecommendations = [;
           {
             id: 'rec-1',
             position: 'homepage',
@@ -396,7 +396,7 @@ describe('Show-off System API Tests', () => {
           telegramUsername: 'testuser_tg',
         };
 
-        const mockPosts = [
+        const mockPosts = [;
           {
             id: 'post-1',
             content: 'Post 1',
@@ -464,3 +464,5 @@ describe('Show-off System API Tests', () => {
     });
   });
 });
+
+}}}}}}

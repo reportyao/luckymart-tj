@@ -1,3 +1,7 @@
+import { EventEmitter } from 'events';
+import { spawn } from 'child_process';
+import { logger, errorTracker } from './logger';
+import { BotDaemonConfig, BotProcess, BotMetrics } from './daemon-types';
 #!/usr/bin/env node
 
 /**
@@ -5,10 +9,6 @@
  * 独立监控和管理Bot进程，确保Bot异常时能够自动重启
  */
 
-import { EventEmitter } from 'events';
-import { spawn } from 'child_process';
-import { logger, errorTracker } from './logger';
-import { BotDaemonConfig, BotProcess, BotMetrics } from './daemon-types';
 
 export class BotDaemon extends EventEmitter {
   private config: BotDaemonConfig;
@@ -38,7 +38,7 @@ export class BotDaemon extends EventEmitter {
     };
 
     this.setupEventHandlers();
-  }
+}
 
   private setupEventHandlers() {
     // 监听退出信号
@@ -225,7 +225,7 @@ export class BotDaemon extends EventEmitter {
   }
 
   private shouldRestartOnError(output: string): boolean {
-    const criticalErrors = [
+    const criticalErrors = [;
       'ECONNREFUSED',
       'ECONNRESET',
       'Database connection failed',
@@ -267,7 +267,7 @@ export class BotDaemon extends EventEmitter {
       return;
     }
 
-    const timeSinceLastRestart = this.lastRestartTime 
+    const timeSinceLastRestart = this.lastRestartTime;
       ? Date.now() - this.lastRestartTime.getTime()
       : Infinity;
 
@@ -512,7 +512,7 @@ export class BotDaemon extends EventEmitter {
   private calculateStability(): number {
     // 基于重启次数和运行时间计算稳定性
     const uptime = this.getDaemonUptime();
-    const restartPenalty = this.restartCount * 300000; // 每次重启扣5分钟
+    const restartPenalty = this.restartCount * 300000; // 每次重启扣5分钟;
     const effectiveUptime = uptime - restartPenalty;
     return Math.max(0, Math.min(100, (effectiveUptime / uptime) * 100));
   }
@@ -642,6 +642,6 @@ if (require.main === module) {
     } catch (error) {
       logger.error('Failed to start daemon', { error: (error as Error).message }, error as Error);
       process.exit(1);
-    }
+}
   })();
 }

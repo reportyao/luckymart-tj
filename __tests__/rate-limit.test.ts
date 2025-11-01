@@ -1,13 +1,13 @@
-/**
- * 速率限制系统测试
- * 验证不同限流策略和API保护的有效性
- */
-
 import { describe, test, expect, beforeAll, afterAll, jest } from '@jest/globals';
 import Redis from 'ioredis';
 import { RateLimitManager, RATE_LIMIT_PRESETS, createCompositeIdentifier } from '@/lib/rate-limit';
 import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
 import { getLogger } from '@/lib/logger';
+/**
+ * 速率限制系统测试
+ * 验证不同限流策略和API保护的有效性
+ */
+
 
 // Mock Redis
 jest.mock('ioredis');
@@ -332,7 +332,7 @@ describe('Rate Limit System Tests', () => {
       const requests = 100;
 
       // Send multiple concurrent requests
-      const promises = Array.from({ length: requests }, () => 
+      const promises = Array.from({ length: requests }, () =>;
         testManager.check(identifier, endpoint)
       );
 
@@ -365,8 +365,8 @@ describe('Rate Limit System Tests', () => {
     });
 
     test('should handle malformed requests', async () => {
-      const identifier = ''; // Empty identifier
-      const endpoint = '';   // Empty endpoint
+      const identifier = ''; // Empty identifier;
+      const endpoint = '';   // Empty endpoint;
 
       const result = await manager.check(identifier, endpoint);
       
@@ -449,7 +449,7 @@ export function generateTestMetrics(count: number) {
       resetTime: Date.now() + Math.random() * 3600000,
       responseTime: Math.random() * 1000
     });
-  }
+}
   
   return metrics;
 }

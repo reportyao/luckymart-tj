@@ -1,3 +1,5 @@
+import { UserInfoService } from './services/user-info-service';
+import { Telegraf } from 'telegraf';
 #!/usr/bin/env node
 
 /**
@@ -5,8 +7,6 @@
  * 验证服务基本功能是否正常工作
  */
 
-import { UserInfoService } from './services/user-info-service';
-import { Telegraf } from 'telegraf';
 
 console.log('🧪 用户信息服务功能测试');
 console.log('==========================================\n');
@@ -22,6 +22,7 @@ async function runBasicTests() {
     }
 
     console.log('✅ Bot Token已配置');
+  }
 
     // 创建Bot实例
     const bot = new Telegraf(BOT_TOKEN);
@@ -41,6 +42,7 @@ async function runBasicTests() {
       console.log(`   - 统计时间: ${stats.timestamp.toISOString()}`);
     } catch (error) {
       console.log('❌ 服务统计获取失败:', (error as Error).message);
+  }
     }
 
     // 测试缓存管理功能
@@ -48,6 +50,7 @@ async function runBasicTests() {
     try {
       userInfoService.cleanupExpiredCache();
       console.log('✅ 缓存清理功能正常');
+  }
     } catch (error) {
       console.log('❌ 缓存清理失败:', (error as Error).message);
     }
@@ -75,6 +78,7 @@ async function runBasicTests() {
 
         // 测试验证用户功能
         console.log('\n🔍 测试用户验证功能...');
+  }
         const validation = await userInfoService.validateUser(testUserId);
         console.log('✅ 用户验证结果:');
         console.log(`   - 是否有效: ${validation.isValid}`);

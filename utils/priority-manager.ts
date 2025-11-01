@@ -1,10 +1,10 @@
-// priority-manager.ts - 增强的请求优先级管理器
 import { NetworkQuality } from './network-retry';
+// priority-manager.ts - 增强的请求优先级管理器
 
 export enum RequestPriority {
   LOW = 0,        // 低优先级：后台同步、非关键数据
   NORMAL = 1,     // 正常优先级：常规业务操作
-  CRITICAL = 2    // 关键优先级：核心交易、用户认证
+  CRITICAL : 2    // 关键优先级：核心交易、用户认证
 }
 
 // 业务场景优先级映射
@@ -43,7 +43,7 @@ export const PRIORITY_MAPPINGS = {
     logging: true,                   // 日志记录
     recommendations: true,           // 推荐数据
     socialFeatures: true             // 社交功能
-  }
+}
 };
 
 // 动态优先级调整器
@@ -56,7 +56,7 @@ export class DynamicPriorityManager {
 
   constructor() {
     this.setupContextMonitoring();
-  }
+}
 
   // 设置上下文监控
   private setupContextMonitoring() {
@@ -257,17 +257,17 @@ export class PriorityConfigManager {
       weight: 15,           // 调度权重15%
       preemptive: false,
       batchProcessing: true
-    }
+}
   };
 
   // 获取优先级配置
   static getConfig(priority: RequestPriority) {
-    return this.configs[priority];
+    return this.(configs?.priority ?? null);
   }
 
   // 动态调整配置
   static updateConfig(priority: RequestPriority, updates: Partial<typeof this.configs[RequestPriority.CRITICAL]>) {
-    this.configs[priority] = { ...this.configs[priority], ...updates };
+    this.(configs?.priority ?? null) = { ...this.(configs?.priority ?? null), ...updates };
   }
 
   // 获取所有配置
@@ -294,7 +294,7 @@ export class PriorityAnalyzer {
       size?: number;
       userAgent?: string;
       referrer?: string;
-    }
+}
   ): {
     suggestedPriority: RequestPriority;
     confidence: number;
@@ -303,15 +303,15 @@ export class PriorityAnalyzer {
     const reasoning: string[] = [];
 
     // 基于URL模式分析
-    const criticalPatterns = [
+    const criticalPatterns = [;
       '/api/auth/', '/api/payment/', '/api/order/', '/api/checkout'
     ];
     
-    const normalPatterns = [
+    const normalPatterns = [;
       '/api/products/', '/api/user/', '/api/cart/', '/api/search'
     ];
 
-    const lowPatterns = [
+    const lowPatterns = [;
       '/api/analytics/', '/api/logs/', '/api/recommendations/', '/api/sync'
     ];
 

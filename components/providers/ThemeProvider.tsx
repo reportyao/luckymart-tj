@@ -1,3 +1,6 @@
+import React, { createContext, useContext, useEffect } from 'react';
+import { useTelegram } from '@/contexts/TelegramContext';
+import { ThemeMode } from '@/types/telegram';
 /**
  * Telegram Theme Provider
  * 为主题切换和Telegram样式提供统一管理
@@ -5,36 +8,33 @@
 
 'use client';
 
-import React, { createContext, useContext, useEffect } from 'react';
-import { useTelegram } from '@/contexts/TelegramContext';
-import { ThemeMode } from '@/types/telegram';
 
-interface ThemeProviderProps {
+interface ThemeProviderProps {}
   children: React.ReactNode;
-}
 
-interface ThemeContextType {
+
+interface ThemeContextType {}
   theme: 'light' | 'dark';
   colors: Record<string, string>;
   isTelegramTheme: boolean;
-}
+
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
-export const useTheme = () => {
+export const useTheme = () => {}
   const context = useContext(ThemeContext);
-  if (!context) {
+  if (!context) {}
     throw new Error('useTheme must be used within ThemeProvider');
-  }
+
   return context;
 };
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {}
   const { theme, themeMode } = useTelegram();
 
   // 更新CSS变量
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
+  useEffect(() => {}
+    if (typeof document === 'undefined') return; {}
 
     const root = document.documentElement;
     
@@ -56,20 +56,20 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     root.classList.add(theme.mode === ThemeMode.DARK ? 'dark' : 'light');
 
     // Telegram主题特殊处理
-    if (theme.isTelegramTheme) {
+    if (theme.isTelegramTheme) {}
       root.classList.add('telegram-theme');
     } else {
       root.classList.remove('telegram-theme');
-    }
+
   }, [theme]);
 
-  const contextValue: ThemeContextType = {
+  const contextValue: ThemeContextType = {}
     theme: theme.mode === ThemeMode.DARK ? 'dark' : 'light',
     colors: theme.colors,
     isTelegramTheme: theme.isTelegramTheme,
   };
 
-  return (
+  return (;
     <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>

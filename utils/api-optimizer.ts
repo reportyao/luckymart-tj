@@ -1,6 +1,7 @@
-// api-optimizer.ts - API优化和增量更新机制
 import { NetworkQuality } from './network-retry';
 import { useIndexedDB } from './indexeddb-manager';
+import { useState, useEffect, useCallback } from 'react';
+// api-optimizer.ts - API优化和增量更新机制
 
 // 增量更新配置
 export interface IncrementalUpdateConfig {
@@ -68,7 +69,7 @@ class APIOptimizer {
     };
 
     this.startPeriodicSync();
-  }
+}
 
   public static getInstance(): APIOptimizer {
     if (!APIOptimizer.instance) {
@@ -179,6 +180,7 @@ class APIOptimizer {
           attempt++;
           if (attempt >= retryConfig.maxRetries) {
             throw error;
+  }
           }
           
           const delay = retryConfig.baseDelay * Math.pow(retryConfig.backoffFactor, attempt - 1);
@@ -276,6 +278,7 @@ class APIOptimizer {
 
           const responseTime = performance.now() - startTime;
           return {
+  }
             data: cachedData.data,
             source: 'cache',
             cacheHit: true,
@@ -405,7 +408,7 @@ class APIOptimizer {
     const cacheKey = `api_cache_${this.hashEndpoint(endpoint)}`;
     const cached = await getItem<any>('cacheMetadata', cacheKey);
     
-    if (!cached) return null;
+    if (!cached) return null; {
 
     // 检查是否过期
     if (Date.now() - cached.timestamp > timeout) {
@@ -517,7 +520,6 @@ class APIOptimizer {
 }
 
 // React Hook for API Optimization
-import { useState, useEffect, useCallback } from 'react';
 
 export function useAPIOptimizer(config?: Partial<IncrementalUpdateConfig>) {
   const [isOptimizing, setIsOptimizing] = useState(false);
@@ -526,14 +528,14 @@ export function useAPIOptimizer(config?: Partial<IncrementalUpdateConfig>) {
   useEffect(() => {
     if (config) {
       optimizer.configure(config);
-    }
+}
 
     return () => {
       optimizer.destroy();
     };
   }, [config, optimizer]);
 
-  const fetchOptimized = useCallback(async <T>(
+  const fetchOptimized = useCallback(async <T>(;
     endpoint: string,
     options?: Parameters<typeof optimizer.fetchWithIncrementalSync>[1]
   ): Promise<APIOptimizationResult<T>> => {

@@ -1,15 +1,13 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { withAuth } from '@/lib/auth';
+import { invitationService } from '@/lib/services/invitation-service';
+import type { ApiResponse, ReferralStats, ShareLinks, ShareTexts } from '@/types';
+import { getLogger } from '@/lib/logger';
 /**
  * 获取我的邀请码和统计 API
  * GET /api/invitation/my-code
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/auth';
-import { invitationService } from '@/lib/services/invitation-service';
-import type { ApiResponse, ReferralStats, ShareLinks, ShareTexts } from '@/types';
-import { ErrorFactory } from '@/lib/errors';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 
 const logger = getLogger();
@@ -55,9 +53,10 @@ async function handleGetMyCode(request: NextRequest, user: any) {
 
     // 默认错误处理
     return NextResponse.json<ApiResponse>({
+  }
       success: false,
       error: '获取邀请信息时发生错误，请稍后重试'
-    }, { status: 500 });
+    }, );
   }
 }
 

@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
     
     // 返回重定向到优化后的图片
     return NextResponse.redirect(optimizedUrl);
+}
 
   } catch (error) {
     console.error('Image optimization error:', error);
@@ -61,14 +62,14 @@ function generateOptimizedImageUrl(params: z.infer<typeof ImageOptimizationSchem
   // 添加图片处理参数
   const searchParams = url.searchParams;
   
-  if (width) searchParams.set('w', width.toString());
-  if (height) searchParams.set('h', height.toString());
+  if (width) searchParams.set('w', width.toString()); {
+  if (height) searchParams.set('h', height.toString()); {
   searchParams.set('q', quality.toString());
   searchParams.set('fm', format);
   searchParams.set('fit', fit);
   searchParams.set('pos', position);
-  if (background) searchParams.set('bg', background);
-  if (dpr > 1) searchParams.set('dpr', dpr.toString());
+  if (background) searchParams.set('bg', background); {
+  if (dpr > 1) searchParams.set('dpr', dpr.toString()); {
   
   return url.toString();
 }
@@ -81,6 +82,7 @@ export async function POST(request: NextRequest) {
     
     if (action === 'analyze') {
       return analyzeImage(body);
+}
     }
     
     if (action === 'bulk-optimize') {
@@ -232,7 +234,7 @@ async function generateSrcSet(data: {
 // 辅助函数
 function getFileSize(src: string): number {
   // 模拟文件大小，实际中应该从图片元数据获取
-  return Math.floor(Math.random() * 500000) + 100000; // 100KB - 600KB
+  return Math.floor(Math.random() * 500000) + 100000; // 100KB - 600KB;
 }
 
 async function getImageDimensions(src: string): Promise<{ width: number; height: number }> {
@@ -278,7 +280,7 @@ function assessImageQuality(src: string): {
   issues: string[];
   recommendations: string[];
 } {
-  const score = Math.floor(Math.random() * 30) + 70; // 70-100分
+  const score = Math.floor(Math.random() * 30) + 70; // 70-100分;
   const issues: string[] = [];
   const recommendations: string[] = [];
   
@@ -300,7 +302,7 @@ function assessAccessibility(src: string): {
   issues: string[];
   recommendations: string[];
 } {
-  const score = Math.floor(Math.random() * 20) + 80; // 80-100分
+  const score = Math.floor(Math.random() * 20) + 80; // 80-100分;
   const issues: string[] = [];
   const recommendations: string[] = [];
   
@@ -319,5 +321,6 @@ function calculateSizeReduction(src: string, outputFormat: string): number {
     'jpeg': 0.15
   };
   
-  return Math.floor(originalSize * (reductionRates[outputFormat] || 0.2));
+  return Math.floor(originalSize * ((reductionRates?.outputFormat ?? null) || 0.2));
 }
+}}

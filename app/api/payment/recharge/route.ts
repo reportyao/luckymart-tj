@@ -9,7 +9,6 @@ import { withRateLimit, rechargeRateLimit } from '@/lib/rate-limit-middleware';
 import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
 import { withErrorHandling } from '@/lib/middleware';
 import { respond } from '@/lib/responses';
-import { CommonErrors } from '@/lib/errors';
 
 // 首充奖励配置
 const FIRST_RECHARGE_REWARDS = {
@@ -128,6 +127,7 @@ async function checkAndGrantFirstRechargeReward(
     });
 
     return result;
+  }
   } catch (error: any) {
     logger.error('发放首充奖励失败', error, {
       userId,
@@ -151,7 +151,7 @@ const handleRechargeRequest = withErrorHandling(async (request: NextRequest) => 
 
   const authHeader = request.headers.get('authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.customError('UNAUTHORIZED', '未授权').toJSON(),
       { status: 401 }
     );
@@ -174,7 +174,7 @@ const handleRechargeRequest = withErrorHandling(async (request: NextRequest) => 
   const { packageId, paymentMethod } = body;
 
   if (!packageId || !paymentMethod) {
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.validationError('参数不完整：packageId和paymentMethod都是必需的').toJSON(),
       { status: 400 }
     );
@@ -182,12 +182,12 @@ const handleRechargeRequest = withErrorHandling(async (request: NextRequest) => 
 
     // 获取系统验证配置
     try {
-      const { data: settings } = await supabaseAdmin
+      const { data: settings } = await supabaseAdmin;
         .from('system_validation_settings')
         .select('*');
       
       if (settings) {
-        const config = settings.reduce((acc: any,  setting: any) => {
+        const config = settings.reduce((acc: any: any,   setting: any: any) => {
           acc[setting.setting_key] = setting.parsed_value;
           return acc;
         }, {} as any);
@@ -260,7 +260,7 @@ const handleRechargeRequest = withErrorHandling(async (request: NextRequest) => 
         coins: pkg.coins + pkg.bonusCoins
       });
 
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.success(responseData, '充值成功（模拟支付）').toJSON()
       );
     }
@@ -308,7 +308,7 @@ const handleRechargeRequest = withErrorHandling(async (request: NextRequest) => 
       amount: pkg.price
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.success(responseData).toJSON()
     );
 
@@ -337,7 +337,7 @@ const handleRechargeRequest = withErrorHandling(async (request: NextRequest) => 
     });
 
     // 统一错误处理，不暴露敏感信息
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.customError('INTERNAL_ERROR', '创建充值订单失败').toJSON(),
       { status: 500 }
     );
@@ -356,7 +356,7 @@ const processRequest = withRateLimit(handleRechargeRequest, rechargeRateLimit({
       resetTime: result.resetTime
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: '充值操作过于频繁，请稍后再试',
@@ -395,7 +395,7 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
       entityId: orderId,
       operationType: 'payment_success',
       status: 'completed'
-    }
+}
   });
 
   if (existingRequest) {
@@ -598,7 +598,7 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
     // 检查并自动发放首充奖励
     try {
       const rechargeAmount = parseFloat(order.totalAmount.toString());
-      const firstRechargeResult = await checkAndGrantFirstRechargeReward(
+      const firstRechargeResult = await checkAndGrantFirstRechargeReward(;
         order.userId,
         rechargeAmount,
         orderId
@@ -654,7 +654,7 @@ async function handlePaymentSuccess(orderId: string, transactionId: string) {
         }
       });
     } catch (logError) {
-      logger.warn('更新处理日志失败', logError as Error, { processingLogId: processingLog.id });
+      logger.warn('更新处理日志失败', logError as Error, );
     }
   }
 }

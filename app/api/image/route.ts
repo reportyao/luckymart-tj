@@ -3,8 +3,6 @@ import { z } from 'zod';
 import { API_BASE_URL } from '@/config/api-config';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 // 图片优化参数验证
 const ImageOptimizationSchema = z.object({
@@ -29,6 +27,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('image_route.ts request failed', error as Error, {
       requestId,
@@ -63,6 +62,7 @@ async function handleGET(request: NextRequest) {
     
         // 返回重定向到优化后的图片
         return NextResponse.redirect(optimizedUrl);
+  }
 
 }
     logger.error("API Error", error as Error, {
@@ -89,14 +89,14 @@ function generateOptimizedImageUrl(params: z.infer<typeof ImageOptimizationSchem
   // 添加图片处理参数
   const searchParams = url.searchParams;
   
-  if (width) searchParams.set('w', width.toString());
-  if (height) searchParams.set('h', height.toString());
+  if (width) searchParams.set('w', width.toString()); {
+  if (height) searchParams.set('h', height.toString()); {
   searchParams.set('q', quality.toString());
   searchParams.set('fm', format);
   searchParams.set('fit', fit);
   searchParams.set('pos', position);
-  if (background) searchParams.set('bg', background);
-  if (dpr > 1) searchParams.set('dpr', dpr.toString());
+  if (background) searchParams.set('bg', background); {
+  if (dpr > 1) searchParams.set('dpr', dpr.toString()); {
   
   return url.toString();
 }
@@ -109,6 +109,7 @@ export async function POST(request: NextRequest) {
     
     if (action === 'analyze') {
       return analyzeImage(body);
+  }
     }
     
     if (action === 'bulk-optimize') {
@@ -180,7 +181,7 @@ async function bulkOptimizeImages(data: {
 }) {
   const { images, outputFormat = 'webp' } = data;
   
-  const optimizedImages = images.map((image : any) => ({
+  const optimizedImages = images.map(((image : any) : any) => ({
     original: image.src,
     optimized: generateOptimizedImageUrl({
       src: image.src,
@@ -201,7 +202,7 @@ async function bulkOptimizeImages(data: {
     data: {
       totalImages: images.length,
       optimizedImages,
-      totalSizeReduction: optimizedImages.reduce((sum: any,  img: any) => sum + img.estimatedSizeReduction, 0)
+      totalSizeReduction: optimizedImages.reduce((sum: any: any,   img: any: any) => sum + img.estimatedSizeReduction, 0)
     }
   });
 }
@@ -217,8 +218,8 @@ async function generateSrcSet(data: {
   
   const srcSet: Record<string, string> = {};
   
-  formats.forEach((format : any) => {
-    const urlSet = sizes.map((size : any) => {
+  formats.forEach(((format : any) : any) => {
+    const urlSet = sizes.map(((size : any) : any) => {
       const url = generateOptimizedImageUrl({
         src,
         width: size,
@@ -255,7 +256,7 @@ async function generateSrcSet(data: {
         mobile: '320px, 640px',
         tablet: '768px, 1024px',
         desktop: '1280px, 1536px'
-      }
+    }
     }
   });
 }
@@ -263,7 +264,7 @@ async function generateSrcSet(data: {
 // 辅助函数
 function getFileSize(src: string): number {
   // 模拟文件大小，实际中应该从图片元数据获取
-  return Math.floor(Math.random() * 500000) + 100000; // 100KB - 600KB
+  return Math.floor(Math.random() * 500000) + 100000; // 100KB - 600KB;
 }
 
 async function getImageDimensions(src: string): Promise<{ width: number; height: number }> {
@@ -309,7 +310,7 @@ function assessImageQuality(src: string): {
   issues: string[];
   recommendations: string[];
 } {
-  const score = Math.floor(Math.random() * 30) + 70; // 70-100分
+  const score = Math.floor(Math.random() * 30) + 70; // 70-100分;
   const issues: string[] = [];
   const recommendations: string[] = [];
   
@@ -331,7 +332,7 @@ function assessAccessibility(src: string): {
   issues: string[];
   recommendations: string[];
 } {
-  const score = Math.floor(Math.random() * 20) + 80; // 80-100分
+  const score = Math.floor(Math.random() * 20) + 80; // 80-100分;
   const issues: string[] = [];
   const recommendations: string[] = [];
   
@@ -350,5 +351,6 @@ function calculateSizeReduction(src: string, outputFormat: string): number {
     'jpeg': 0.15
   };
   
-  return Math.floor(originalSize * (reductionRates[outputFormat] || 0.2));
+  return Math.floor(originalSize * ((reductionRates?.outputFormat ?? null) || 0.2));
 }
+}}

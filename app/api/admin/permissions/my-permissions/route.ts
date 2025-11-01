@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { respond } from '@/lib/responses';
 
 export const GET = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
@@ -16,6 +15,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('my-permissions_route.ts request failed', error as Error, {
       requestId,
@@ -53,9 +53,10 @@ export async function GET(request: NextRequest) {
       endpoint: request.url
     });'获取权限失败:', error);
       return NextResponse.json({
+}
         success: false,
         error: '获取权限失败'
-      }, { status: 500 });
+      }, );
     }
   })(request);
 }

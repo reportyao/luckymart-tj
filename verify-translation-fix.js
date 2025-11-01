@@ -8,7 +8,7 @@ const path = require('path');
 console.log('🔍 开始验证塔吉克语翻译修复...\n');
 
 // 检查的文件路径
-const files = [
+const files = [;
   'src/locales/tg-TJ/auth.json',
   'src/locales/tg-TJ/wallet.json', 
   'src/locales/tg-TJ/task.json'
@@ -32,6 +32,7 @@ files.forEach(filePath => {
     const translations = JSON.parse(content);
     
     console.log(`📁 检查文件: ${filePath}`);
+  }
     
     let fileKeys = 0;
     let fileChineseKeys = 0;

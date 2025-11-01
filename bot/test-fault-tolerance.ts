@@ -1,3 +1,9 @@
+import { logger, errorTracker } from './utils/logger';
+import { healthMonitor } from './utils/health-monitor';
+import { MessageQueue } from './utils/message-queue';
+import { processMonitor } from './utils/process-monitor';
+import { reconnectManager } from './utils/reconnect-manager';
+import { faultToleranceManager } from './utils/fault-tolerance-manager';
 #!/usr/bin/env node
 
 /**
@@ -5,12 +11,6 @@
  * 用于测试各个组件的功能和集成
  */
 
-import { logger, errorTracker } from './utils/logger';
-import { healthMonitor } from './utils/health-monitor';
-import { MessageQueue } from './utils/message-queue';
-import { processMonitor } from './utils/process-monitor';
-import { reconnectManager } from './utils/reconnect-manager';
-import { faultToleranceManager } from './utils/fault-tolerance-manager';
 
 class FaultToleranceTester {
   private results: Map<string, boolean> = new Map();
@@ -60,6 +60,7 @@ class FaultToleranceTester {
       // 测试错误统计
       const errorStats = errorTracker.getErrorStats();
       console.log('  ✅ 错误统计:', errorStats);
+  }
       
       this.results.set('logger', true);
       console.log('  ✅ 日志系统测试通过\n');
@@ -120,13 +121,14 @@ class FaultToleranceTester {
       // 获取队列统计
       const stats = await queue.getStats();
       console.log('  📊 队列统计:', {
+  }
         processed: stats.processed,
         queueLength: stats.queueLength,
         successRate: `${stats.successRate.toFixed(1)}%`
       });
       
       // 测试批量消息
-      const batchIds = await queue.batchAddMessages([
+      const batchIds = await queue.batchAddMessages([;
         { type: 'notification', payload: { title: 'Test 1' } },
         { type: 'notification', payload: { title: 'Test 2' } }
       ]);
@@ -362,6 +364,7 @@ class IntegrationTester {
       console.log('  ❌ 模拟错误处理...');
       try {
         throw new Error('Simulated error for testing');
+  }
       } catch (error) {
         logger.error('Integration test error', { test: true }, error as Error);
         errorTracker.recordError('integration_test_error', error as Error);

@@ -1,26 +1,24 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 
 // 初始化管理员账号 - 仅供首次设置使用，增加IP白名单限制
 export async function POST(request: Request) {
   try {
     // 检查请求来源IP
-    const clientIP = request.headers.get('x-forwarded-for') || 
+    const clientIP = request.headers.get('x-forwarded-for') ||;
                      request.headers.get('x-real-ip') || 
                      'unknown';
     
     // 只允许特定IP访问（默认localhost）
     const allowedIPs = process.env.ALLOWED_INIT_IPS?.split(',') || ['127.0.0.1'];
     if (!allowedIPs.includes(clientIP)) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '无权访问此端点' }, 
         { status: 403 }
       );
-    }
+}
 
     // 检查是否已存在管理员
     const existing = await prisma.admins.findFirst({
@@ -64,7 +62,7 @@ export async function POST(request: Request) {
       endpoint: request.url
     });'创建管理员失败:', error);
     // 统一错误处理，不暴露敏感信息
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '创建管理员账号失败' }, 
       { status: 500 }
     );

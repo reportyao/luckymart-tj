@@ -140,7 +140,7 @@ export enum KeyboardType {
   URL = 'url',
   EMAIL = 'email',
   PASSWORD = 'password',
-  SEARCH = 'search'
+  SEARCH : 'search'
 }
 
 // 键盘动作按钮类型
@@ -150,7 +150,7 @@ export enum KeyboardActionType {
   PREV = 'prev',
   GO = 'go',
   SEARCH = 'search',
-  SEND = 'send'
+  SEND : 'send'
 }
 
 // 自定义键盘配置
@@ -170,7 +170,7 @@ export interface CustomKeyboardConfig {
 export enum ScreenOrientation {
   PORTRAIT = 'portrait',
   LANDSCAPE = 'landscape',
-  UNKNOWN = 'unknown'
+  UNKNOWN : 'unknown'
 }
 
 // 设备信息接口
@@ -195,7 +195,7 @@ export interface DeviceInfo {
 export enum ThemeMode {
   LIGHT = 'light',
   DARK = 'dark',
-  SYSTEM = 'system'
+  SYSTEM : 'system'
 }
 
 // Telegram主题配置

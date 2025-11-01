@@ -1,8 +1,8 @@
-// 管理员权限验证 - 完整使用示例
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFromRequest } from '@/lib/auth';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { requireAdminPermission } from '@/lib/admin-auth-middleware';
+// 管理员权限验证 - 完整使用示例
 
 // ==================== 示例1: 基础权限验证 ====================
 export async function GET_basic_example(request: NextRequest) {
@@ -15,7 +15,7 @@ export async function GET_basic_example(request: NextRequest) {
         error: '管理员权限验证失败',
         code: 'ADMIN_UNAUTHORIZED'
       }, { status: 403 });
-    }
+}
 
     // 检查特定权限
     const hasPermission = admin.permissions.includes('users:read') || admin.role === 'super_admin';
@@ -36,6 +36,7 @@ export async function GET_basic_example(request: NextRequest) {
 
   } catch (error) {
     return NextResponse.json({
+  }
       success: false,
       error: '服务器错误'
     }, { status: 500 });
@@ -56,7 +57,7 @@ export async function GET_middleware_example(request: NextRequest) {
       data: { 
         message: '商品管理权限验证通过',
         admin: admin.username 
-      }
+}
     });
   })(request);
 }
@@ -74,7 +75,7 @@ export async function POST_decorator_example(request: NextRequest) {
       data: { 
         message: '订单处理成功',
         admin: admin.username 
-      }
+}
     });
   })(request);
 }
@@ -93,7 +94,7 @@ export async function GET_superadmin_example(request: NextRequest) {
         message: '系统管理权限验证通过',
         admin: admin.username,
         role: admin.role
-      }
+}
     });
   })(request);
 }
@@ -119,7 +120,7 @@ export async function PUT_multi_permission_example(request: NextRequest) {
         message: '多权限验证通过',
         admin: admin.username,
         permissions: admin.permissions
-      }
+}
     });
   })(request);
 }
@@ -144,12 +145,12 @@ export async function GET_admin_users_example(request: NextRequest) {
     // 构建查询条件
     const where: any = {};
     if (search) {
-      where.OR = [
+      where.OR : [
         { username: { contains: search, mode: 'insensitive' } },
         { firstName: { contains: search, mode: 'insensitive' } },
         { telegramId: { equals: search } }
       ];
-    }
+}
 
     // TODO: 使用Prisma查询数据库
     // const [users, total] = await Promise.all([
@@ -198,6 +199,7 @@ export async function POST_admin_products_example(request: NextRequest) {
     // 验证必填字段
     if (!nameZh || !nameEn || !nameRu || !marketPrice || !totalShares) {
       return NextResponse.json({
+}
         success: false,
         error: '缺少必填字段'
       }, { status: 400 });
@@ -226,7 +228,7 @@ export async function POST_admin_products_example(request: NextRequest) {
   })(request);
 }
 
-// ==================== 错误处理示例 ====================
+// :=================== 错误处理示例 ====================
 
 /**
  * 统一错误响应格式
@@ -257,10 +259,10 @@ export const ErrorResponses = {
   
   insufficientPermissions: (required: string[], missing?: string[]) => createErrorResponse(
     false,
-    `权限不足：需要 [${required.join(', ')}] 权限`,
+    `权限不足：需要 [$] 权限`,
     'INSUFFICIENT_PERMISSIONS',
     403,
-    { required, missing }
+    
   ),
   
   superAdminRequired: () => createErrorResponse(

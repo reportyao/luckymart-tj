@@ -1,3 +1,6 @@
+import { runUXTests } from '../tests/user-experience.test';
+import { runAccessibilityTests } from '../tests/accessibility.test';
+import { getUXMetrics, getOptimizationSuggestions } from '../utils/ux-evaluator';
 #!/usr/bin/env node
 
 /**
@@ -6,9 +9,6 @@
  * 运行所有用户体验和无障碍测试，生成综合报告
  */
 
-import { runUXTests } from '../tests/user-experience.test';
-import { runAccessibilityTests } from '../tests/accessibility.test';
-import { getUXMetrics, getOptimizationSuggestions } from '../utils/ux-evaluator';
 
 interface TestExecutionReport {
   timestamp: string;
@@ -75,6 +75,7 @@ async function runComprehensiveUXTests(): Promise<TestExecutionReport> {
   try {
     // 1. 运行用户体验测试
     console.log('🎯 第一阶段：用户体验测试');
+  }
     console.log('-'.repeat(40));
     const uxReport = await runUXTests();
     
@@ -173,7 +174,7 @@ function generateExecutiveSummary(uxReport: any, accessibilityReport: any, optim
   }
 
   // 确定严重问题
-  const criticalIssues: string[] = [
+  const criticalIssues: string[] = [;
     ...uxReport.criticalIssues.slice(0, 3),
     ...accessibilityReport.criticalIssues.slice(0, 3)
   ];
@@ -188,7 +189,7 @@ function generateExecutiveSummary(uxReport: any, accessibilityReport: any, optim
   }
 
   // 确定战略建议
-  const strategicRecommendations: string[] = [
+  const strategicRecommendations: string[] = [;
     '实施持续的用户体验监控',
     '建立定期无障碍测试流程',
     '优化移动端用户体验',
@@ -300,4 +301,4 @@ if (require.main === module) {
     });
 }
 
-export { runComprehensiveUXTests, type TestExecutionReport };
+export ;

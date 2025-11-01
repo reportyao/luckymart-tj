@@ -27,11 +27,11 @@ export async function GET(request: NextRequest) {
         method: 'GET'
       });
       
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
-    }
+}
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
         method: 'GET'
       });
       
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
         method: 'GET'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.notFound('用户不存在'),
         { status: 404 }
       );
@@ -72,8 +72,8 @@ export async function GET(request: NextRequest) {
 
     // 获取查询参数
     const { searchParams } = new URL(request.url);
-    const period = searchParams.get('period') || '7'; // 默认7天
-    const month = searchParams.get('month'); // 可选：获取整月数据
+    const period = searchParams.get('period') || '7'; // 默认7天;
+    const month = searchParams.get('month'); // 可选：获取整月数据;
 
     let startDate: Date;
     let endDate: Date;
@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
       endDate = new Date(year, monthNum, 0); // 月末
     } else {
       // 获取指定天数的日历数据
-      const days = Math.min(Math.max(parseInt(period), 1), 30); // 限制1-30天
+      const days = Math.min(Math.max(parseInt(period), 1), 30); // 限制1-30天;
       startDate = new Date();
       startDate.setDate(startDate.getDate() - (days - 1));
       endDate = new Date();
@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
       });
 
       // 计算这一天的理论奖励（基于连续天数）
-      let theoreticalReward = null;
+      let theoreticalReward: any = null;
       if (checkInRecord) {
         theoreticalReward = CHECK_IN_REWARDS[checkInRecord.consecutiveDays - 1] || 0;
       }
@@ -202,7 +202,7 @@ export async function GET(request: NextRequest) {
       method: 'GET'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('获取签到日历失败，请稍后重试'),
       { status: 500 }
     );
@@ -244,6 +244,7 @@ async function getConsecutiveDays(userId: string): Promise<number> {
     }
 
     return consecutive;
+  }
   } catch (error) {
     logger.error('计算连续签到天数失败', error as Error, { userId });
     return 0;
@@ -266,6 +267,7 @@ async function getMaxStreak(userId: string): Promise<number> {
 
     if (checkIns.length === 0) {
       return 0;
+  }
     }
 
     let maxStreak = 0;
@@ -293,7 +295,7 @@ async function getMaxStreak(userId: string): Promise<number> {
 
     return maxStreak;
   } catch (error) {
-    logger.error('获取最大连续签到天数失败', error as Error, { userId });
+    logger.error('获取最大连续签到天数失败', error as Error, );
     return 0;
   }
 }

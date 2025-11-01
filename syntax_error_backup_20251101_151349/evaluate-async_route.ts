@@ -11,11 +11,11 @@ export async function POST(request: NextRequest) {
 
     // 验证必填参数
     if (!userId || !actionType || !contextData) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '缺少必要参数: userId, actionType, contextData' },
         { status: 400 }
       );
-    }
+}
 
     // 生成请求ID用于追踪
     const requestId = crypto.randomUUID();
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('风险评估API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '风险评估服务暂时不可用',
         message: '系统正在处理其他请求，请稍后重试',
@@ -130,7 +130,8 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId');
 
     if (!requestId && !userId) {
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         { error: '需要提供 requestId 或 userId 参数' },
         { status: 400 }
       );
@@ -156,9 +157,9 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('查询评估状态错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '无法获取评估状态' },
-      { status: 500 }
+      
     );
   }
 }

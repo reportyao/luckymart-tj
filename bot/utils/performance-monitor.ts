@@ -1,10 +1,10 @@
+import { EventEmitter } from 'events';
+import { logger } from './logger';
 /**
  * 性能监控和分析系统
  * 实时监控系统性能，收集指标，并提供分析报告
  */
 
-import { EventEmitter } from 'events';
-import { logger } from './logger';
 
 export interface PerformanceMetrics {
   timestamp: string;
@@ -154,7 +154,7 @@ export class PerformanceMonitor extends EventEmitter {
   constructor() {
     super();
     this.setupDefaultAlertRules();
-  }
+}
 
   // 启动性能监控
   public startMonitoring(intervalMs: number = 10000): void {
@@ -277,7 +277,7 @@ export class PerformanceMonitor extends EventEmitter {
         const endTime = Date.now();
         const userTime = endUsage.user;
         const systemTime = endUsage.system;
-        const totalTime = (endTime - startTime) * 1000; // 转换为微秒
+        const totalTime = (endTime - startTime) * 1000; // 转换为微秒;
 
         const cpuPercent = ((userTime + systemTime) / totalTime) * 100;
         resolve(Math.min(cpuPercent, 100)); // 限制在0-100%
@@ -328,13 +328,13 @@ export class PerformanceMonitor extends EventEmitter {
         timeout: 5000 
       } as any);
       const end = process.hrtime.bigint();
-      const latency = Number(end - start) / 1000000; // 转换为毫秒
+      const latency = Number(end - start) / 1000000; // 转换为毫秒;
 
       let connectionQuality: NetworkMetrics['connectionQuality'] = 'good';
-      if (latency < 50) connectionQuality = 'excellent';
-      else if (latency < 100) connectionQuality = 'good';
-      else if (latency < 200) connectionQuality = 'fair';
-      else if (latency < 500) connectionQuality = 'poor';
+      if (latency < 50) connectionQuality = 'excellent'; {
+      else if (latency < 100) connectionQuality = 'good'; {
+      else if (latency < 200) connectionQuality = 'fair'; {
+      else if (latency < 500) connectionQuality = 'poor'; {
       else connectionQuality = 'offline';
 
       return {
@@ -349,6 +349,7 @@ export class PerformanceMonitor extends EventEmitter {
       };
     } catch (error) {
       return {
+  }
         bytesSent: 0,
         bytesReceived: 0,
         packetsSent: 0,
@@ -416,19 +417,19 @@ export class PerformanceMonitor extends EventEmitter {
   // 计算事件循环利用率
   private calculateEventLoopUtilization(): number {
     // 简化实现，实际可以使用 perf_hooks
-    return 0.8; // 假设80%利用率
+    return 0.8; // 假设80%利用率;
   }
 
   // 获取tick频率
   private getTickFrequency(): number {
     // 简化实现
-    return 60; // 假设每秒60次
+    return 60; // 假设每秒60次;
   }
 
   // 获取内存碎片化率
   private getMemoryFragmentation(): number {
     const memUsage = process.memoryUsage();
-    if (memUsage.heapTotal === 0) return 0;
+    if (memUsage.heapTotal === 0) return 0; {
     return ((memUsage.heapUsed / memUsage.heapTotal) * 100);
   }
 
@@ -603,7 +604,7 @@ export class PerformanceMonitor extends EventEmitter {
 
   // 获取告警历史
   public getAlerts(limit?: number): PerformanceAlert[] {
-    const alerts = [...this.alerts].sort((a, b) => 
+    const alerts = [...this.alerts].sort((a, b) =>;
       new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
 
@@ -742,7 +743,7 @@ export class PerformanceMonitor extends EventEmitter {
   }
 
   private percentile(values: number[], p: number): number {
-    if (values.length === 0) return 0;
+    if (values.length === 0) return 0; {
     const sorted = [...values].sort((a, b) => a - b);
     const index = Math.ceil((p / 100) * sorted.length) - 1;
     return sorted[Math.max(0, index)];
@@ -766,8 +767,8 @@ export class PerformanceMonitor extends EventEmitter {
   }
 
   private calculateHeapGrowth(history: PerformanceMetrics[]): number {
-    if (history.length < 2) return 0;
-    const first = history[0].system.memory.heapUsed;
+    if (history.length < 2) return 0; {
+    const first = (history?.0 ?? null).system.memory.heapUsed;
     const last = history[history.length - 1].system.memory.heapUsed;
     return last - first;
   }
@@ -804,3 +805,4 @@ interface AlertRule {
 
 // 单例性能监控器
 export const performanceMonitor = new PerformanceMonitor();
+}}}}}}

@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 
-const withReadPermission = AdminPermissionManager.createPermissionMiddleware([
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read
 ]);
 
-const withWritePermission = AdminPermissionManager.createPermissionMiddleware([
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read
 ]);
 
 // 模拟风险用户数据
-const mockRiskUsers = [
+const mockRiskUsers = [;
   {
     id: 'U1001',
     userName: '张三',
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
 
     if (riskLevel && riskLevel !== 'all') {
       filteredUsers = filteredUsers.filter((user : any) => user.riskLevel === riskLevel);
-    }
+}
 
     if (accountStatus && accountStatus !== 'all') {
       filteredUsers = filteredUsers.filter((user : any) => user.accountStatus === accountStatus);
@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('获取风险用户失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '获取数据失败' },
       { status: 500 }
     );
@@ -125,15 +125,15 @@ export async function PATCH(request: NextRequest) {
     const { userId, action } = body;
 
     if (!userId || !action) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少必需参数' },
         { status: 400 }
       );
-    }
+}
 
     const userIndex = mockRiskUsers.findIndex(user => user.id === userId);
     if (userIndex === -1) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '用户不存在' },
         { status: 404 }
       );
@@ -154,13 +154,13 @@ export async function PATCH(request: NextRequest) {
         newStatus = 'banned';
         break;
       default:
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '无效的操作' },
           { status: 400 }
         );
     }
 
-    mockRiskUsers[userIndex].accountStatus = newStatus;
+    (mockRiskUsers?.userIndex ?? null).accountStatus = newStatus;
 
     return NextResponse.json({
       success: true,
@@ -169,7 +169,7 @@ export async function PATCH(request: NextRequest) {
     });
   } catch (error) {
     console.error('更新用户状态失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '更新失败' },
       { status: 500 }
     );

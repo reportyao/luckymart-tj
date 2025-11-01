@@ -1,12 +1,10 @@
-// 购买转售商品 - 使用数据库事务确保完整性
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { generateOrderNumber } from '@/lib/utils';
 import type { ApiResponse } from '@/types';
 import { randomUUID } from 'crypto';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+// 购买转售商品 - 使用数据库事务确保完整性
 
 
 export async function POST(
@@ -27,7 +25,7 @@ export async function POST(
         success: false,
         error: '未授权访问'
       }, { status: 401 });
-    }
+}
 
     const listingId = params.id;
     logger.info("API Log", { requestId, data: `[${requestId}] 处理商品ID: ${listingId}` });`[${requestId}] 处理商品ID: ${listingId}`);
@@ -46,7 +44,7 @@ export async function POST(
     logger.info("API Log", { requestId, data: `[${requestId}] 生成订单号: ${orderNumber}` });`[${requestId}] 生成订单号: ${orderNumber}`);
 
     // 调用数据库事务函数处理整个购买流程
-    const { data: result, error: transactionError } = await supabaseAdmin
+    const { data: result, error: transactionError } = await supabaseAdmin;
       .rpc('process_resale_purchase_atomic', {
         p_listing_id: listingId,
         p_buyer_user_id: user.userId,
@@ -71,7 +69,7 @@ export async function POST(
       if (transactionError.message?.includes('转售商品不存在')) {
         errorMessage = '转售商品不存在或已售出';
         statusCode = 404;
-      } else if (transactionError.message?.includes('商品已售出') || 
+      } else if (transactionError.message?.includes('商品已售出') ||  {
                  transactionError.message?.includes('商品已被购买')) {
         errorMessage = '商品已被购买，请选择其他商品';
         statusCode = 409;
@@ -81,7 +79,7 @@ export async function POST(
       } else if (transactionError.message?.includes('不能购买自己的')) {
         errorMessage = transactionError.message;
         statusCode = 400;
-      } else if (transactionError.message?.includes('用户不存在') || 
+      } else if (transactionError.message?.includes('用户不存在') ||  {
                  transactionError.message?.includes('关联订单') ||
                  transactionError.message?.includes('商品不存在')) {
         errorMessage = '数据异常，请联系客服';
@@ -184,12 +182,12 @@ export async function GET(
         success: false,
         error: '未授权访问'
       }, { status: 401 });
-    }
+}
 
     const listingId = params.id;
 
     // 查询转售商品信息
-    const { data: listing, error: listingError } = await supabaseAdmin
+    const { data: listing, error: listingError } = await supabaseAdmin;
       .from('resale_listings')
       .select(`
         id,
@@ -256,3 +254,4 @@ export async function GET(
     }, { status: 500 });
   }
 }
+}}

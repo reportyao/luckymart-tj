@@ -3,7 +3,6 @@ import { prisma } from '@/lib/prisma';
 import { withAuth } from '@/lib/auth';
 import { ApiResponse } from '@/lib/api-response';
 import { getLogger } from '@/lib/logger';
-import { DatabaseLockManager } from '@/lib/database-lock-manager';
 
 const logger = getLogger();
 
@@ -23,11 +22,11 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         method: 'GET'
       });
       
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
-    }
+}
 
     requestLogger.info('开始获取用户双货币余额', { userId: user.userId }, {
       endpoint: '/api/wallet/balance',
@@ -35,7 +34,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     });
 
     // 使用专用函数获取用户双货币余额信息，确保数据一致性
-    const walletBalanceInfo = await prisma.$queryRaw`
+    const walletBalanceInfo = await prisma.$queryRaw`;
       SELECT * FROM get_user_wallet_balance(${user.userId}::uuid)
     `;
 
@@ -46,7 +45,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         method: 'GET'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.notFound('用户不存在'),
         { status: 404 }
       );
@@ -107,7 +106,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       method: 'GET'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('获取余额失败，请稍后重试'),
       { status: 500 }
     );

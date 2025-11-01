@@ -237,7 +237,7 @@ class SimpleUserInfoService {
 
   // 缓存管理方法
   clearUserCache(telegramId: string): void {
-    const cacheKeys = [
+    const cacheKeys = [;
       `user_info_${telegramId}`,
       `user_chat_${telegramId}`,
       `user_validation_${telegramId}`,
@@ -314,6 +314,7 @@ async function runIndependentTests() {
       const testError = new Error('Test error');
       const userInfoError = new UserInfoError('Test user info error', testError);
       console.log('✅ UserInfoError类正常工作:');
+  }
       console.log(`   - 错误消息: ${userInfoError.message}`);
       console.log(`   - 错误原因: ${userInfoError.cause?.message}`);
       console.log(`   - 错误名称: ${userInfoError.name}`);

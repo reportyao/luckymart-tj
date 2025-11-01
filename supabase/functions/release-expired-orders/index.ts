@@ -71,6 +71,7 @@ class SupabaseQueryBuilder {
 
       const responseData = method === 'GET' ? await response.json() : await response.json();
       return { data: responseData, error: null };
+  }
     } catch (error) {
       return { data: null, error };
     }
@@ -127,7 +128,7 @@ async function releaseExpiredOrderAtomically(
 
   try {
     // 1. 验证订单状态并获取原始状态
-    const { data: order, error: orderError } = await client
+    const { data: order, error: orderError } = await client;
       .from('orders')
       .select('*')
       .eq('id', orderId)
@@ -137,6 +138,7 @@ async function releaseExpiredOrderAtomically(
 
     if (orderError || !order) {
       return { 
+  }
         success: false, 
         error: `订单不存在或状态不正确: ${orderError?.message || '订单已处理'}` 
       };
@@ -148,14 +150,14 @@ async function releaseExpiredOrderAtomically(
     console.log(`[ReleaseExpiredOrders] 找到过期订单: ${order.order_number}, 产品: ${order.product_id}`);
 
     // 2. 使用乐观锁更新订单状态为过期
-    const { data: updatedOrder, error: updateOrderError } = await client
+    const { data: updatedOrder, error: updateOrderError } = await client;
       .from('orders')
       .update({
         status: 'expired',
         payment_status: 'cancelled',
         fulfillment_status: 'cancelled',
         updated_at: new Date().toISOString(),
-        notes: (order.notes || '') + `\n[系统] 订单超时已过期 - ${new Date().toISOString()}`
+        notes: (order.notes || '') + `\(n?.系统 ?? null) 订单超时已过期 - ${new Date().toISOString()}`
       })
       .eq('id', orderId)
       .eq('payment_status', 'pending') // 防止并发修改
@@ -175,7 +177,7 @@ async function releaseExpiredOrderAtomically(
 
     // 3. 如果有产品ID，则释放库存
     if (order.product_id && order.quantity) {
-      const { data: product, error: productError } = await client
+      const { data: product, error: productError } = await client;
         .from('products')
         .select('stock, name_zh')
         .eq('id', order.product_id)
@@ -192,7 +194,7 @@ async function releaseExpiredOrderAtomically(
         originalStock = product.stock;
         const newStock = product.stock + order.quantity;
         
-        const { data: updatedProduct, error: updateStockError } = await client
+        const { data: updatedProduct, error: updateStockError } = await client;
           .from('products')
           .update({
             stock: newStock,
@@ -216,6 +218,7 @@ async function releaseExpiredOrderAtomically(
             .eq('id', orderId);
 
           throw new Error(`释放库存失败: ${updateStockError?.message}`);
+  }
         }
 
         stockReleased = true;
@@ -234,7 +237,7 @@ async function releaseExpiredOrderAtomically(
 
     // 4. 如果有夺宝期次ID，释放期次的已售份额
     if (order.round_id && order.quantity) {
-      const { data: round, error: roundError } = await client
+      const { data: round, error: roundError } = await client;
         .from('lottery_rounds')
         .select('sold_shares, round_number')
         .eq('id', order.round_id)
@@ -251,7 +254,7 @@ async function releaseExpiredOrderAtomically(
         originalSoldShares = round.sold_shares;
         const newSoldShares = Math.max(0, round.sold_shares - order.quantity);
         
-        const { data: updatedRound, error: updateRoundError } = await client
+        const { data: updatedRound, error: updateRoundError } = await client;
           .from('lottery_rounds')
           .update({
             sold_shares: newSoldShares,
@@ -425,7 +428,7 @@ Deno.serve(async (_req) => {
     const timeoutThreshold = new Date(Date.now() - ORDER_TIMEOUT_MINUTES * 60 * 1000);
 
     // 1. 查找需要释放的超时订单
-    const { data: expiredOrders, error: queryError } = await supabase
+    const { data: expiredOrders, error: queryError } = await supabase;
       .from('orders')
       .select(`
         id,
@@ -456,7 +459,7 @@ Deno.serve(async (_req) => {
 
     if (!expiredOrders || expiredOrders.length === 0) {
       console.log('[ReleaseExpiredOrders] 没有找到需要释放的过期订单');
-      return new Response(
+      return new Response(;
         JSON.stringify({
           success: true,
           message: '没有需要处理的过期订单',
@@ -545,7 +548,7 @@ Deno.serve(async (_req) => {
     await logAuditEvent('batch_processing_completed', summary);
 
     // 4. 返回处理结果
-    return new Response(
+    return new Response(;
       JSON.stringify({
         success: true,
         message: `成功释放 ${successCount} 个过期订单`,
@@ -566,7 +569,7 @@ Deno.serve(async (_req) => {
       timestamp: new Date().toISOString()
     });
 
-    return new Response(
+    return new Response(;
       JSON.stringify({
         success: false,
         error: errorMessage,
@@ -574,7 +577,7 @@ Deno.serve(async (_req) => {
       }),
       {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: 
       }
     );
   }

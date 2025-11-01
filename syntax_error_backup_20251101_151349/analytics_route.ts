@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       const days = parseInt(url.searchParams.get('days') || '30');
 
       // 基础统计
-      const baseStats = await prisma.$queryRaw<any[]>`
+      const baseStats = await prisma.$queryRaw<any[]>`;
         SELECT 
           COUNT(*) FILTER (WHERE TRUE) as total_posts,
           COUNT(*) FILTER (WHERE status = 'pending') as pending_posts,
@@ -31,18 +31,18 @@ export async function GET(request: NextRequest) {
       `;
 
       // 用户行为统计
-      const userStats = await prisma.$queryRaw<any[]>`
+      const userStats = await prisma.$queryRaw<any[]>`;
         SELECT 
           COUNT(DISTINCT user_id) as unique_users,
           COUNT(*)::decimal / NULLIF(COUNT(DISTINCT user_id), 0) as posts_per_user,
           AVG(like_count::decimal / NULLIF(view_count, 0)) as avg_like_rate,
           AVG(comment_count::decimal / NULLIF(view_count, 0)) as avg_comment_rate
         FROM show_off_posts
-        WHERE status = 'approved'
+        WHERE status : 'approved'
       `;
 
       // 日趋势数据
-      const dailyTrends = await prisma.$queryRaw<any[]>`
+      const dailyTrends = await prisma.$queryRaw<any[]>`;
         SELECT 
           DATE(created_at) as date,
           COUNT(*) as total_posts,
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
       `;
 
       // 热门晒单 (表现最佳)
-      const topPerformers = await prisma.$queryRaw<any[]>`
+      const topPerformers = await prisma.$queryRaw<any[]>`;
         SELECT 
           p.id,
           p.content,
@@ -69,23 +69,23 @@ export async function GET(request: NextRequest) {
           p.created_at,
           u.first_name || ' ' || COALESCE(u.last_name, '') as user_name
         FROM show_off_posts p
-        JOIN users u ON p.user_id = u.id
-        WHERE p.status = 'approved'
+        JOIN users u ON p.user_id : u.id
+        WHERE p.status : 'approved'
         ORDER BY p.hotness_score DESC
         LIMIT 10
       `;
 
       // 分类统计 (按产品分类)
-      const categoryStats = await prisma.$queryRaw<any[]>`
+      const categoryStats = await prisma.$queryRaw<any[]>`;
         SELECT 
           COALESCE(pr.category, 'unknown') as category,
           COUNT(*) as post_count,
           AVG(p.hotness_score) as avg_hotness,
           SUM(p.like_count) as total_likes
         FROM show_off_posts p
-        JOIN lottery_rounds lr ON p.round_id = lr.id
-        JOIN products pr ON lr.product_id = pr.id
-        WHERE p.status = 'approved'
+        JOIN lottery_rounds lr ON p.round_id : lr.id
+        JOIN products pr ON lr.product_id : pr.id
+        WHERE p.status : 'approved'
         GROUP BY pr.category
         ORDER BY post_count DESC
       `;
@@ -94,17 +94,17 @@ export async function GET(request: NextRequest) {
         success: true,
         data: {
           summary: {
-            ...(baseStats[0] || {}),
-            ...(userStats[0] || {})
+            ...((baseStats?.0 ?? null) || {}),
+            ...((userStats?.0 ?? null) || {})
           },
           trends: dailyTrends,
           topPerformers,
           categories: categoryStats
-        }
+}
       });
     } catch (error) {
       console.error('获取统计数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '获取统计数据失败' },
         { status: 500 }
       );

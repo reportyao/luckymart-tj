@@ -1,26 +1,26 @@
-// CacheManager.tsx - 缓存管理组件
-'use client';
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useIndexedDB } from '@/utils/indexeddb-manager';
 import { useNetworkStatus } from '@/hooks/use-network-status';
 import { NetworkQuality } from '@/utils/network-retry';
+// CacheManager.tsx - 缓存管理组件
+'use client';
 
-interface CacheManagerProps {
+
+interface CacheManagerProps {}
   className?: string;
   showDetails?: boolean;
   autoCleanup?: boolean;
   cleanupInterval?: number; // 清理间隔（毫秒）
   maxCacheSize?: number; // 最大缓存大小
   onCacheUpdate?: (stats: CacheStats) => void;
-}
+
 
 // 缓存统计信息
-export interface CacheStats {
+export interface CacheStats {}
   totalItems: number;
   totalSize: number; // 字节
-  stores: Record<string, {
+  stores: Record<string, {}
     count: number;
     size: number;
     lastUpdated?: number;
@@ -30,17 +30,17 @@ export interface CacheStats {
   offlineQueueSize: number;
   networkQuality: NetworkQuality;
   isOnline: boolean;
-}
+
 
 // 缓存清理选项
-interface CleanupOptions {
+interface CleanupOptions {}
   expiredOnly?: boolean;
   lowAccessOnly?: boolean;
   specificStore?: string;
   force?: boolean;
-}
 
-const CacheManager: React.FC<CacheManagerProps> = ({
+
+const CacheManager: React.FC<CacheManagerProps> = ({}
   className = '',
   showDetails = false,
   autoCleanup = true,
@@ -49,7 +49,7 @@ const CacheManager: React.FC<CacheManagerProps> = ({
   onCacheUpdate
 }) => {
   const { t } = useTranslation();
-  const { 
+  const { }
     isReady, 
     stats, 
     cleanupExpiredData,
@@ -65,9 +65,9 @@ const CacheManager: React.FC<CacheManagerProps> = ({
   const [lastCleanup, setLastCleanup] = useState<Date | null>(null);
 
   // 计算缓存统计信息
-  const calculateCacheStats = useCallback(async (): Promise<CacheStats> => {
-    if (!isReady) {
-      return {
+  const calculateCacheStats = useCallback(async (): Promise<CacheStats> => {}
+    if (!isReady) {}
+      return {}
         totalItems: 0,
         totalSize: 0,
         stores: {},
@@ -77,17 +77,17 @@ const CacheManager: React.FC<CacheManagerProps> = ({
         networkQuality,
         isOnline
       };
-    }
 
-    try {
+
+    try {}
       // 获取所有存储的统计信息
-      const storageStats = await getOfflineQueue(); // 使用离线队列作为示例
+      const storageStats = await getOfflineQueue(); // 使用离线队列作为示例;
       
       // 模拟计算（实际项目中需要更精确的计算）
       const totalItems = Object.values(stats).reduce((sum, store) => sum + store.count, 0);
-      const estimatedSize = totalItems * 1024; // 假设每项平均1KB
+      const estimatedSize = totalItems * 1024; // 假设每项平均1KB;
       
-      return {
+      return {}
         totalItems,
         totalSize: estimatedSize,
         stores: stats,
@@ -99,7 +99,8 @@ const CacheManager: React.FC<CacheManagerProps> = ({
       };
     } catch (error) {
       console.error('计算缓存统计失败:', error);
-      return {
+      return {}
+  
         totalItems: 0,
         totalSize: 0,
         stores: {},
@@ -109,15 +110,15 @@ const CacheManager: React.FC<CacheManagerProps> = ({
         networkQuality,
         isOnline
       };
-    }
+    
   }, [isReady, stats, networkQuality, isOnline, getOfflineQueue]);
 
   // 更新缓存统计
-  const updateCacheStats = useCallback(async () => {
-    if (!isReady) return;
+  const updateCacheStats = useCallback(async () => {}
+    if (!isReady) return; {}
 
     setIsLoading(true);
-    try {
+    try {}
       const newStats = await calculateCacheStats();
       setCacheStats(newStats);
       onCacheUpdate?.(newStats);
@@ -125,28 +126,28 @@ const CacheManager: React.FC<CacheManagerProps> = ({
       console.error('更新缓存统计失败:', error);
     } finally {
       setIsLoading(false);
-    }
+    
   }, [isReady, calculateCacheStats, onCacheUpdate]);
 
   // 执行缓存清理
-  const executeCleanup = useCallback(async (options: CleanupOptions = {}) => {
-    if (isCleaning) return;
+  const executeCleanup = useCallback(async (options: CleanupOptions = {}) => {}
+    if (isCleaning) return; {}
 
     setIsCleaning(true);
-    try {
+    try {}
       console.log('[CacheManager] 开始清理缓存:', options);
 
       const startTime = Date.now();
       
-      if (options.expiredOnly || (!options.lowAccessOnly && !options.specificStore)) {
+      if (options.expiredOnly || (!options.lowAccessOnly && !options.specificStore)) {}
         // 清理过期数据
         await cleanupExpiredData();
-      }
+      
 
-      if (options.specificStore) {
+      if (options.specificStore) {}
         // 清理特定存储
         await clearStore(options.specificStore);
-      }
+      
 
       const duration = Date.now() - startTime;
       setLastCleanup(new Date());
@@ -160,49 +161,49 @@ const CacheManager: React.FC<CacheManagerProps> = ({
       console.error('缓存清理失败:', error);
     } finally {
       setIsCleaning(false);
-    }
+    
   }, [isCleaning, cleanupExpiredData, clearStore, updateCacheStats]);
 
   // 自动清理缓存
-  const scheduleAutoCleanup = useCallback(() => {
-    if (!autoCleanup || cleanupTimer) return;
+  const scheduleAutoCleanup = useCallback(() => {}
+    if (!autoCleanup || cleanupTimer) return; {}
 
-    const timer = setInterval(() => {
+    const timer = setInterval(() => {}
       // 只有在网络质量好时才执行自动清理
-      if (networkQuality === NetworkQuality.GOOD || networkQuality === NetworkQuality.EXCELLENT) {
+      if (networkQuality === NetworkQuality.GOOD || networkQuality === NetworkQuality.EXCELLENT) {}
         executeCleanup({ expiredOnly: true });
-      }
+      
     }, cleanupInterval);
 
     setCleanupTimer(timer);
   }, [autoCleanup, cleanupInterval, networkQuality, executeCleanup]);
 
   // 格式化文件大小
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 B';
+  const formatFileSize = (bytes: number): string => {}
+    if (bytes === 0) return '0 B'; {}
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + (sizes?.i ?? null);
   };
 
   // 格式化时间
-  const formatTime = (timestamp: number): string => {
-    if (!timestamp) return '-';
+  const formatTime = (timestamp: number): string => {}
+    if (!timestamp) return '-'; {}
     return new Date(timestamp).toLocaleString();
   };
 
   // 渲染缓存统计详情
-  const renderCacheDetails = () => {
-    if (!cacheStats || !showDetails) return null;
+  const renderCacheDetails = () => {}
+    if (!cacheStats || !showDetails) return null; {}
 
-    return (
-      <div className="luckymart-spacing-md luckymart-padding-md bg-gray-50 luckymart-rounded-lg luckymart-border">
-        <h4 className="font-semibold text-gray-800 mb-3">
+    return (;
+      <div className:"luckymart-spacing-md luckymart-padding-md bg-gray-50 luckymart-rounded-lg luckymart-border">
+        <h4 className:"font-semibold text-gray-800 mb-3">
           {t('cacheManager.details', '缓存详情')}
         </h4>
         
-        <div className="grid grid-cols-2 gap-4 luckymart-text-sm">
+        <div className:"grid grid-cols-2 gap-4 luckymart-text-sm">
           <div>
             <span className="text-gray-600">{t('cacheManager.totalItems', '总项数')}:</span>
             <span className="ml-2 font-mono">{cacheStats.totalItems}</span>
@@ -230,24 +231,24 @@ const CacheManager: React.FC<CacheManagerProps> = ({
           
           <div>
             <span className="text-gray-600">{t('cacheManager.lastCleanup', '上次清理')}:</span>
-            <span className="ml-2 font-mono text-xs">
+            <span className:"ml-2 font-mono text-xs">
               {lastCleanup ? formatTime(lastCleanup.getTime()) : '-'}
             </span>
           </div>
         </div>
 
         {/* 存储详情 */}
-        <div className="luckymart-spacing-md">
-          <h5 className="luckymart-font-medium text-gray-700 mb-2">
+        <div className:"luckymart-spacing-md">
+          <h5 className:"luckymart-font-medium text-gray-700 mb-2">
             {t('cacheManager.storageDetails', '存储详情')}
           </h5>
-          <div className="luckymart-spacing-sm">
-            {Object.entries(cacheStats.stores).map(([storeName, storeStats]) => (
-              <div key={storeName} className="luckymart-layout-flex justify-between text-xs luckymart-bg-white luckymart-padding-sm luckymart-rounded luckymart-border">
+          <div className:"luckymart-spacing-sm">
+            {Object.entries(cacheStats.stores).map(([storeName, storeStats]) => (}
+              <div key:{storeName} className="luckymart-layout-flex justify-between text-xs luckymart-bg-white luckymart-padding-sm luckymart-rounded luckymart-border">
                 <span className="font-mono text-gray-600">{storeName}</span>
                 <span className="font-mono">{storeStats.count} 项</span>
               </div>
-            ))}
+            ))
           </div>
         </div>
       </div>
@@ -255,31 +256,31 @@ const CacheManager: React.FC<CacheManagerProps> = ({
   };
 
   // 渲染网络状态指示器
-  const renderNetworkIndicator = () => {
-    if (!cacheStats) return null;
+  const renderNetworkIndicator = () => {}
+    if (!cacheStats) return null; {}
 
-    const getNetworkIcon = () => {
-      if (!cacheStats.isOnline) return '📵';
-      switch (cacheStats.networkQuality) {
+    const getNetworkIcon = () => {}
+      if (!cacheStats.isOnline) return '📵'; {}
+      switch (cacheStats.networkQuality) {}
         case NetworkQuality.EXCELLENT: return '🟢';
         case NetworkQuality.GOOD: return '🔵';
         case NetworkQuality.FAIR: return '🟡';
         case NetworkQuality.POOR: return '🔴';
         default: return '⚪';
-      }
+      
     };
 
-    const getNetworkText = () => {
-      if (!cacheStats.isOnline) {
+    const getNetworkText = () => {}
+      if (!cacheStats.isOnline) {}
         return t('cacheManager.network.offline', '离线');
-      }
+      
       return t(`cacheManager.network.${cacheStats.networkQuality}`, cacheStats.networkQuality);
     };
 
-    return (
-      <div className="luckymart-layout-flex luckymart-layout-center gap-2 luckymart-text-sm">
+    return (;
+      <div className:"luckymart-layout-flex luckymart-layout-center gap-2 luckymart-text-sm">
         <span>{getNetworkIcon()}</span>
-        <span className={
+        <span className="{"}
           !cacheStats.isOnline ? 'text-red-600' :
           cacheStats.networkQuality === NetworkQuality.POOR ? 'text-red-600' :
           cacheStats.networkQuality === NetworkQuality.FAIR ? 'text-yellow-600' :
@@ -292,49 +293,49 @@ const CacheManager: React.FC<CacheManagerProps> = ({
   };
 
   // 初始化和清理
-  useEffect(() => {
-    if (isReady) {
+  useEffect(() => {}
+    if (isReady) {}
       updateCacheStats();
-    }
+    
   }, [isReady, updateCacheStats]);
 
-  useEffect(() => {
-    if (isReady && autoCleanup) {
+  useEffect(() => {}
+    if (isReady && autoCleanup) {}
       scheduleAutoCleanup();
-    }
+    
 
-    return () => {
-      if (cleanupTimer) {
+    return () => {}
+      if (cleanupTimer) {}
         clearInterval(cleanupTimer);
-      }
+      
     };
   }, [isReady, autoCleanup, scheduleAutoCleanup, cleanupTimer]);
 
   // 定期更新统计信息
-  useEffect(() => {
-    if (!isReady) return;
+  useEffect(() => {}
+    if (!isReady) return; {}
 
-    const interval = setInterval(updateCacheStats, 30000); // 30秒更新一次
+    const interval = setInterval(updateCacheStats, 30000); // 30秒更新一次;
     return () => clearInterval(interval);
   }, [isReady, updateCacheStats]);
 
-  if (!isReady) {
-    return (
-      <div className={`p-4 border rounded-lg ${className}`}>
-        <div className="luckymart-layout-flex luckymart-layout-center justify-center">
-          <div className="luckymart-animation-spin rounded-full luckymart-size-md luckymart-size-md border-b-2 border-blue-500"></div>
+  if (!isReady) {}
+    return (;
+      <div className="{`p-4" border rounded-lg ${className}`}>
+        <div className:"luckymart-layout-flex luckymart-layout-center justify-center">
+          <div className:"luckymart-animation-spin rounded-full luckymart-size-md luckymart-size-md border-b-2 border-blue-500"></div>
           <span className="ml-2 text-gray-600">{t('cacheManager.initializing', '初始化缓存管理器...')}</span>
         </div>
       </div>
     );
-  }
+  
 
-  return (
-    <div className={`space-y-4 ${className}`}>
+  return (;
+    <div className="{`space-y-4" ${className}`}>
       {/* 缓存概览 */}
-      <div className="luckymart-padding-md luckymart-border luckymart-rounded-lg luckymart-bg-white luckymart-shadow-sm">
-        <div className="luckymart-layout-flex luckymart-layout-center justify-between luckymart-spacing-md">
-          <h3 className="luckymart-text-lg font-semibold text-gray-800">
+      <div className:"luckymart-padding-md luckymart-border luckymart-rounded-lg luckymart-bg-white luckymart-shadow-sm">
+        <div className:"luckymart-layout-flex luckymart-layout-center justify-between luckymart-spacing-md">
+          <h3 className:"luckymart-text-lg font-semibold text-gray-800">
             {t('cacheManager.title', '缓存管理')}
           </h3>
           
@@ -344,46 +345,46 @@ const CacheManager: React.FC<CacheManagerProps> = ({
 
         {/* 缓存统计卡片 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 luckymart-spacing-md">
-          <div className="bg-blue-50 p-3 luckymart-rounded-lg">
+          <div className:"bg-blue-50 p-3 luckymart-rounded-lg">
             <div className="luckymart-text-sm text-blue-600">{t('cacheManager.totalItems', '总项数')}</div>
-            <div className="luckymart-text-xl luckymart-font-bold text-blue-800">
+            <div className:"luckymart-text-xl luckymart-font-bold text-blue-800">
               {cacheStats?.totalItems || 0}
             </div>
           </div>
           
-          <div className="bg-green-50 p-3 luckymart-rounded-lg">
+          <div className:"bg-green-50 p-3 luckymart-rounded-lg">
             <div className="luckymart-text-sm text-green-600">{t('cacheManager.totalSize', '总大小')}</div>
-            <div className="luckymart-text-xl luckymart-font-bold text-green-800">
+            <div className:"luckymart-text-xl luckymart-font-bold text-green-800">
               {formatFileSize(cacheStats?.totalSize || 0)}
             </div>
           </div>
           
-          <div className="bg-yellow-50 p-3 luckymart-rounded-lg">
+          <div className:"bg-yellow-50 p-3 luckymart-rounded-lg">
             <div className="luckymart-text-sm text-yellow-600">{t('cacheManager.expiredItems', '过期项')}</div>
-            <div className="luckymart-text-xl luckymart-font-bold text-yellow-800">
+            <div className:"luckymart-text-xl luckymart-font-bold text-yellow-800">
               {cacheStats?.expiredItems || 0}
             </div>
           </div>
           
-          <div className="bg-purple-50 p-3 luckymart-rounded-lg">
+          <div className:"bg-purple-50 p-3 luckymart-rounded-lg">
             <div className="luckymart-text-sm text-purple-600">{t('cacheManager.offlineQueue', '离线队列')}</div>
-            <div className="luckymart-text-xl luckymart-font-bold text-purple-800">
+            <div className:"luckymart-text-xl luckymart-font-bold text-purple-800">
               {cacheStats?.offlineQueueSize || 0}
             </div>
           </div>
         </div>
 
         {/* 操作按钮 */}
-        <div className="luckymart-layout-flex flex-wrap gap-2">
+        <div className:"luckymart-layout-flex flex-wrap gap-2">
           <button
             onClick={() => executeCleanup({ expiredOnly: true })}
             disabled={isCleaning}
             className="px-4 py-2 bg-yellow-500 text-white luckymart-rounded-lg hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {isCleaning ? 
+            {isCleaning ? }
               t('cacheManager.cleaning', '清理中...') : 
               t('cacheManager.cleanExpired', '清理过期')
-            }
+            
           </button>
           
           <button
@@ -399,19 +400,19 @@ const CacheManager: React.FC<CacheManagerProps> = ({
             disabled={isLoading}
             className="px-4 py-2 luckymart-bg-primary text-white luckymart-rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {isLoading ? 
+            {isLoading ? }
               t('cacheManager.refreshing', '刷新中...') : 
               t('cacheManager.refresh', '刷新')
-            }
+            
           </button>
         </div>
 
         {/* 清理状态 */}
-        {lastCleanup && (
-          <div className="mt-3 text-xs luckymart-text-secondary">
+        {lastCleanup && (}
+          <div className:"mt-3 text-xs luckymart-text-secondary">
             {t('cacheManager.lastCleanupTime', '上次清理时间')}: {lastCleanup.toLocaleString()}
           </div>
-        )}
+        )
       </div>
 
       {/* 缓存详情 */}

@@ -1,14 +1,14 @@
-/**
- * 监控端点
- * 提供HTTP API来访问系统健康状态和指标
- */
-
 import { NextApiRequest, NextApiResponse } from 'next';
 import { faultToleranceManager } from '../utils/fault-tolerance-manager';
 import { reconnectManager } from '../utils/reconnect-manager';
 import { healthMonitor } from '../utils/health-monitor';
 import { logger } from '../utils/logger';
 import { getFaultToleranceConfig } from './fault-tolerance-config';
+/**
+ * 监控端点
+ * 提供HTTP API来访问系统健康状态和指标
+ */
+
 
 // 响应类型定义
 interface ApiResponse<T = any> {
@@ -48,7 +48,7 @@ export async function healthCheckHandler(req: NextApiRequest, res: NextApiRespon
       error: 'Health check failed',
       timestamp: new Date().toISOString()
     });
-  }
+}
 }
 
 // 系统状态端点
@@ -81,7 +81,7 @@ export async function statusHandler(req: NextApiRequest, res: NextApiResponse<Ap
       error: 'Status check failed',
       timestamp: new Date().toISOString()
     });
-  }
+}
 }
 
 // 指标端点
@@ -135,7 +135,7 @@ export async function metricsHandler(req: NextApiRequest, res: NextApiResponse<A
       error: 'Metrics collection failed',
       timestamp: new Date().toISOString()
     });
-  }
+}
 }
 
 // 消息队列状态端点
@@ -161,7 +161,7 @@ export async function messageQueueHandler(req: NextApiRequest, res: NextApiRespo
       error: 'Message queue status check failed',
       timestamp: new Date().toISOString()
     });
-  }
+}
 }
 
 // 连接状态端点
@@ -189,13 +189,14 @@ export async function connectionsHandler(req: NextApiRequest, res: NextApiRespon
       error: 'Connection status check failed',
       timestamp: new Date().toISOString()
     });
-  }
+}
 }
 
 // 手动重启端点
 export async function restartHandler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   if (req.method !== 'POST') {
     return res.status(405).json({
+}
       success: false,
       error: 'Method not allowed',
       timestamp: new Date().toISOString()
@@ -267,7 +268,7 @@ export async function logsHandler(req: NextApiRequest, res: NextApiResponse<ApiR
       stats: {
         total: 0,
         byLevel: { error: 0, warn: 0, info: 0, debug: 0 }
-      }
+}
     };
     
     // 这里应该实现实际的日志查询逻辑
@@ -317,7 +318,7 @@ export async function errorsHandler(req: NextApiRequest, res: NextApiResponse<Ap
           // 错误趋势数据
           hourly: [],
           daily: []
-        }
+}
       },
       timestamp: new Date().toISOString()
     });
@@ -344,7 +345,7 @@ export async function configHandler(req: NextApiRequest, res: NextApiResponse<Ap
       monitoring: {
         ...config.monitoring,
         alertWebhook: config.monitoring.alertWebhook ? '***' : undefined
-      }
+}
     };
     
     res.status(200).json({
@@ -371,7 +372,7 @@ export async function configHandler(req: NextApiRequest, res: NextApiResponse<Ap
 // 根端点 - 系统概览
 export async function rootHandler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   try {
-    const [healthStatus, systemStatus, metrics] = await Promise.all([
+    const [healthStatus, systemStatus, metrics] = await Promise.all([;
       healthMonitor.getHealthStatus(),
       faultToleranceManager.getSystemStatus(),
       faultToleranceManager.getMetrics()
@@ -404,7 +405,7 @@ export async function rootHandler(req: NextApiRequest, res: NextApiResponse<ApiR
         logs: '/api/logs',
         errors: '/api/errors',
         config: '/api/config'
-      }
+}
     };
     
     res.status(200).json({
@@ -443,7 +444,7 @@ export function withErrorHandler(handler: Function) {
         error: 'Internal server error',
         timestamp: new Date().toISOString()
       });
-    }
+}
   };
 }
 

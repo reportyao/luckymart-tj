@@ -1,11 +1,10 @@
+import { performance } from 'perf_hooks';
 #!/usr/bin/env node
 /**
  * LuckyMartTJ 全面压力测试套件
  * 测试范围：并发请求、支付流程、推荐系统、防欺诈、缓存系统、Telegram认证、Rate Limiting
  */
 
-import { createHash } from 'crypto';
-import { performance } from 'perf_hooks';
 
 interface TestResult {
   name: string;
@@ -57,7 +56,7 @@ class StressTestRunner {
     const endTime = performance.now();
     const duration = endTime - startTime;
 
-    const avgResponseTime = responseTimes.length > 0 
+    const avgResponseTime = responseTimes.length > 0;
       ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length 
       : 0;
 
@@ -140,7 +139,7 @@ class StressTestRunner {
     console.log('\n🔄 === 并发请求测试 ===');
     
     // 测试核心API端点
-    const endpoints = [
+    const endpoints = [;
       { path: '/api/monitoring/health', concurrent: 100, requests: 1000 },
       { path: '/api/referral/my-code', concurrent: 50, requests: 500 },
       { path: '/api/admin/reward-config', concurrent: 30, requests: 300 },
@@ -164,7 +163,7 @@ class StressTestRunner {
   async testPaymentFlow(): Promise<void> {
     console.log('\n💳 === 支付流程测试 ===');
     
-    const paymentTests = [
+    const paymentTests = [;
       {
         name: '支付确认接口',
         url: '/api/payment/confirm',
@@ -218,7 +217,7 @@ class StressTestRunner {
   async testReferralSystem(): Promise<void> {
     console.log('\n👥 === 推荐系统测试 ===');
     
-    const referralTests = [
+    const referralTests = [;
       {
         name: '推荐关系查询',
         url: '/api/referral/list',
@@ -267,7 +266,7 @@ class StressTestRunner {
   async testAntiFraudSystem(): Promise<void> {
     console.log('\n🛡️ === 防欺诈系统测试 ===');
     
-    const fraudTests = [
+    const fraudTests = [;
       {
         name: '设备指纹检测',
         url: '/api/anti-fraud/device-check',
@@ -321,7 +320,7 @@ class StressTestRunner {
   async testCacheSystem(): Promise<void> {
     console.log('\n💾 === 缓存系统测试 ===');
     
-    const cacheTests = [
+    const cacheTests = [;
       {
         name: '热点数据查询',
         url: '/api/referral/my-code',
@@ -360,7 +359,7 @@ class StressTestRunner {
   async testTelegramAuth(): Promise<void> {
     console.log('\n📱 === Telegram认证测试 ===');
     
-    const authTests = [
+    const authTests = [;
       {
         name: 'WebApp数据验证',
         url: '/api/auth/telegram-webapp',
@@ -411,7 +410,7 @@ class StressTestRunner {
     console.log('\n🚦 === Rate Limiting测试 ===');
     
     // 测试恶意攻击场景 - 快速连续请求
-    const rateLimitTests = [
+    const rateLimitTests = [;
       {
         name: '快速请求攻击测试',
         url: '/api/monitoring/health',
@@ -479,7 +478,7 @@ class StressTestRunner {
     const avgThroughput = this.results.reduce((sum, r) => sum + r.throughput, 0) / this.results.length;
     const avgResponseTime = this.results.reduce((sum, r) => sum + r.avgResponseTime, 0) / this.results.length;
 
-    let report = `
+    let report = `;
 # LuckyMartTJ 全面压力测试报告
 
 ## 📊 总体指标

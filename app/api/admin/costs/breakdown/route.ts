@@ -2,12 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getLogger } from '@/lib/logger';
 import { ErrorHandler } from '@/lib/errors';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 // 类型定义
 interface CostBreakdownData {
@@ -72,6 +70,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('breakdown_route.ts request failed', error as Error, {
       requestId,
@@ -95,14 +94,14 @@ async function handleGET(request: NextRequest) {
         const startDate = searchParams.get('startDate');
         const endDate = searchParams.get('endDate');
 
-        let query = supabase
+        let query = supabase;
           .from('cost_breakdown')
           .select('*')
           .order('breakdown_date', { ascending: false });
 
         if (breakdownType) {
           query = query.eq('breakdown_type', breakdownType);
-        }
+    }
 
         if (userType) {
           query = query.eq('user_type', userType);
@@ -115,7 +114,7 @@ async function handleGET(request: NextRequest) {
         if (breakdownDate) {
           query = query.eq('breakdown_date', breakdownDate);
         } else if (startDate && endDate) {
-          query = query
+          query : query
             .gte('breakdown_date', startDate)
             .lte('breakdown_date', endDate);
         } else {
@@ -221,6 +220,7 @@ async function handleGET(request: NextRequest) {
 
       } catch (error) {
         return ErrorHandler.handleApiError(error, '获取成本细分统计数据');
+  }
       }
       })(request);
 }
@@ -245,15 +245,15 @@ export async function POST(request: NextRequest) {
       breakdownType,
       userType = null,
       timeDimension = null,
-      date = new Date().toISOString().split('T')[0]
+      date : new Date().toISOString().split('T')[0]
     } = body;
 
     if (!breakdownType) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: 'breakdownType 为必填参数' },
         { status: 400 }
       );
-    }
+}
 
     const results = [];
 
@@ -269,28 +269,28 @@ export async function POST(request: NextRequest) {
         // 根据用户类型计算相关成本
         if (type === 'new_user') {
           // 新用户：新手任务 + 签到 + 首充奖励
-          const { data: taskData } = await supabase
+          const { data: taskData } = await supabase;
             .from('user_task_progress')
             .select('user_id')
             .eq('status', 'claimed')
             .gte('created_at', `${date}T00:00:00`)
             .lt('created_at', `${date}T23:59:59`);
 
-          const { data: checkinData } = await supabase
+          const { data: checkinData } = await supabase;
             .from('check_in_records')
             .select('user_id')
             .eq('status', 'claimed')
             .gte('created_at', `${date}T00:00:00`)
             .lt('created_at', `${date}T23:59:59`);
 
-          const { data: firstChargeData } = await supabase
+          const { data: firstChargeData } = await supabase;
             .from('first_recharge_rewards')
             .select('user_id, reward_amount')
             .eq('status', 'claimed')
             .gte('created_at', `${date}T00:00:00`)
             .lt('created_at', `${date}T23:59:59`);
 
-          userCount = new Set([
+          userCount : new Set([
             ...(taskData?.map((d: any) => d.user_id) || []),
             ...(checkinData?.map((d: any) => d.user_id) || [])
           ]).size;
@@ -300,7 +300,7 @@ export async function POST(request: NextRequest) {
         } 
         else if (type === 'active_user') {
           // 活跃用户：抽奖 + 邀请奖励
-          const { data: lotteryData } = await supabase
+          const { data: lotteryData } = await supabase;
             .from('participations')
             .select('user_id, cost')
             .gte('created_at', `${date}T00:00:00`)
@@ -319,7 +319,7 @@ export async function POST(request: NextRequest) {
         transactionCount = Math.floor(userCount * 1.2); // 估算交易数量
 
         // 插入数据
-        const { data, error } = await supabase
+        const { data, error } = await supabase;
           .from('cost_breakdown')
           .insert({
             breakdown_type: 'user_type',
@@ -345,7 +345,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json(
+    return NextResponse.json(;
+  }
       ErrorHandler.createSuccessResponse({
         data: results,
         message: '成本细分数据计算完成'

@@ -1,3 +1,8 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import jwt from 'jsonwebtoken';
+import { withAuth } from '@/lib/auth';
+import { getLogger } from '@/lib/logger';
 /**
  * 首充奖励系统API
  * 
@@ -6,13 +11,6 @@
  * 奖励比例：20%/25%/30%/35%
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import jwt from 'jsonwebtoken';
-import { withAuth } from '@/lib/auth';
-import { getLogger } from '@/lib/logger';
-import { validationEngine } from '@/lib/validation';
-import { supabaseAdmin } from '@/lib/supabase';
 
 // 首充奖励配置
 const FIRST_RECHARGE_REWARDS = {
@@ -50,6 +48,7 @@ async function checkFirstRechargeEligibility(userId: string): Promise<{
   } catch (error) {
     console.error('检查首充资格失败:', error);
     return {
+  }
       isEligible: false,
       hasFirstRecharge: false,
       error: '检查首充资格失败'
@@ -85,6 +84,7 @@ async function getFirstRechargeStatus(userId: string) {
     }));
 
     return {
+  }
       hasFirstRecharge: false,
       isEligible: true,
       availableRewards,
@@ -124,6 +124,7 @@ async function grantFirstRechargeReward(
     const rewardConfig = FIRST_RECHARGE_REWARDS[rechargeAmount as RechargeAmount];
     if (!rewardConfig) {
       return { 
+  }
         success: false, 
         error: `未找到充值金额${rechargeAmount}的奖励配置` 
       };
@@ -158,7 +159,7 @@ async function grantFirstRechargeReward(
       });
 
       // 3. 使用安全的钱包更新函数增加用户余额
-      const balanceUpdateResult = await tx.$executeRaw`
+      const balanceUpdateResult = await tx.$executeRaw`;
         SELECT * FROM update_user_balance_with_optimistic_lock(
           ${userId}::uuid,
           ${rewardConfig.reward}::decimal,
@@ -210,7 +211,7 @@ async function grantFirstRechargeReward(
       return {
         success: true,
         rewardAmount: rewardConfig.reward,
-        newBalance: balanceUpdateResult[0].new_balance
+        newBalance: (balanceUpdateResult?.0 ?? null).new_balance
       };
     });
 
@@ -254,7 +255,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       meta: {
         requestId,
         timestamp: new Date().toISOString()
-      }
+}
     });
 
   } catch (error: any) {
@@ -264,7 +265,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       error: error.message
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: {
@@ -299,13 +300,13 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
 
     // 参数验证
     if (!orderId || !rechargeAmount) {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: {
             code: 'INVALID_PARAMETERS',
             message: '缺少必要参数：orderId和rechargeAmount都是必需的'
-          }
+}
         },
         { status: 400 }
       );
@@ -314,7 +315,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     // 验证充值金额是否为支持的档位
     const validAmounts = Object.keys(FIRST_RECHARGE_REWARDS).map(Number);
     if (!validAmounts.includes(rechargeAmount)) {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: {
@@ -337,7 +338,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     });
 
     if (!order) {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: {
@@ -352,7 +353,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     // 验证订单金额与请求金额一致
     const orderAmount = Number(order.totalAmount);
     if (orderAmount !== rechargeAmount) {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: {
@@ -367,7 +368,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     // 检查用户是否满足首充条件
     const eligibility = await checkFirstRechargeEligibility(user.userId);
     if (!eligibility.isEligible) {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: {
@@ -380,14 +381,14 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 发放奖励
-    const rewardResult = await grantFirstRechargeReward(
+    const rewardResult = await grantFirstRechargeReward(;
       user.userId, 
       rechargeAmount, 
       orderId
     );
 
     if (!rewardResult.success) {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: {
@@ -427,7 +428,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       error: error.message
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: {
@@ -460,7 +461,7 @@ export const GET_REWARD_HISTORY = withAuth(async (request: NextRequest, user: an
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    const [rewards, total] = await Promise.all([
+    const [rewards, total] = await Promise.all([;
       prisma.firstRechargeRewards.findMany({
         where: { userId: user.userId },
         orderBy: { createdAt: 'desc' },
@@ -481,7 +482,7 @@ export const GET_REWARD_HISTORY = withAuth(async (request: NextRequest, user: an
           limit,
           total,
           totalPages: Math.ceil(total / limit)
-        }
+}
       },
       meta: {
         requestId,
@@ -496,7 +497,7 @@ export const GET_REWARD_HISTORY = withAuth(async (request: NextRequest, user: an
       error: error.message
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: {
@@ -505,7 +506,7 @@ export const GET_REWARD_HISTORY = withAuth(async (request: NextRequest, user: an
           details: error.message
         }
       },
-      { status: 500 }
+      
     );
   }
 });

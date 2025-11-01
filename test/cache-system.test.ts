@@ -1,13 +1,12 @@
+import { cacheManager, withCache, invalidateCache } from '../lib/cache-manager';
+import { redisClient } from '../lib/redis-cache';
+import { cacheMonitor } from '../lib/cache-monitor';
+import { memoryCache, MultiLevelCache } from '../lib/memory-cache';
 /**
  * 缓存系统功能测试
  * 运行命令: npm run test:cache 或 npx tsx test/cache-system.test.ts
  */
 
-import { cacheManager, withCache, invalidateCache } from '../lib/cache-manager';
-import { redisClient } from '../lib/redis-cache';
-import { cacheStrategies } from '../lib/caching-strategy';
-import { cacheMonitor } from '../lib/cache-monitor';
-import { memoryCache, MultiLevelCache } from '../lib/memory-cache';
 
 // 测试配置
 const TEST_CONFIG = {
@@ -47,7 +46,7 @@ class CacheSystemTester {
   async runAllTests(): Promise<{ total: number; passed: number; failed: number }> {
     console.log('🧪 开始缓存系统功能测试...\n');
 
-    const tests = [
+    const tests = [;
       { name: '基础缓存操作', fn: () => this.testBasicCacheOperations() },
       { name: '内存缓存功能', fn: () => this.testMemoryCache() },
       { name: 'Redis缓存功能', fn: () => this.testRedisCache() },
@@ -81,6 +80,7 @@ class CacheSystemTester {
       });
       
       console.log(`✅ ${name} - 通过 (${duration}ms)`);
+  }
     } catch (error) {
       const duration = Date.now() - startTime;
       
@@ -103,7 +103,7 @@ class CacheSystemTester {
 
     // 测试设置
     const setResult = await cache.set(key, data, 60);
-    if (!setResult) throw new Error('缓存设置失败');
+    if (!setResult) throw new Error('缓存设置失败'); {
 
     // 测试获取
     const cachedData = await cache.get(key);
@@ -113,15 +113,15 @@ class CacheSystemTester {
 
     // 测试存在性检查
     const exists = await cache.has(key);
-    if (!exists) throw new Error('缓存存在性检查失败');
+    if (!exists) throw new Error('缓存存在性检查失败'); {
 
     // 测试删除
     const deleteResult = await cache.delete(key);
-    if (!deleteResult) throw new Error('缓存删除失败');
+    if (!deleteResult) throw new Error('缓存删除失败'); {
 
     // 验证删除结果
     const afterDelete = await cache.get(key);
-    if (afterDelete !== null) throw new Error('缓存删除后仍能获取');
+    if (afterDelete !== null) throw new Error('缓存删除后仍能获取'); {
   }
 
   private async testMemoryCache(): Promise<void> {
@@ -163,7 +163,7 @@ class CacheSystemTester {
 
     // 测试设置
     const setResult = await redisClient.set(key, data, 60);
-    if (!setResult) throw new Error('Redis缓存设置失败');
+    if (!setResult) throw new Error('Redis缓存设置失败'); {
 
     // 测试获取
     const cachedData = await redisClient.get(key);
@@ -189,7 +189,7 @@ class CacheSystemTester {
     const testData = { strategy: 'test', data: 'strategy_data' };
 
     // 测试不同的缓存策略
-    const strategies = [
+    const strategies = [;
       { name: 'memory_first', manager: cacheManager.users },
       { name: 'write_through', manager: cacheManager.products },
       { name: 'redis_first', manager: cacheManager.config }
@@ -199,7 +199,7 @@ class CacheSystemTester {
       const key = `strategy:${strategy.name}:${Date.now()}`;
       
       const setResult = await strategy.manager.set(key, testData, 30);
-      if (!setResult) throw new Error(`${strategy.name} 策略设置失败`);
+      if (!setResult) throw new Error(`${strategy.name} 策略设置失败`); {
 
       const getResult = await strategy.manager.get(key);
       if (!getResult || getResult.strategy !== testData.strategy) {
@@ -210,7 +210,7 @@ class CacheSystemTester {
 
   private async testBatchOperations(): Promise<void> {
     const cache = cacheManager.products;
-    const batchData = [
+    const batchData = [;
       { key: 'batch:1', data: { id: 1, name: 'Item 1' }, ttl: 60 },
       { key: 'batch:2', data: { id: 2, name: 'Item 2' }, ttl: 60 },
       { key: 'batch:3', data: { id: 3, name: 'Item 3' }, ttl: 60 }
@@ -218,7 +218,7 @@ class CacheSystemTester {
 
     // 批量设置
     const setResult = await cache.setMany(batchData);
-    if (!setResult) throw new Error('批量设置失败');
+    if (!setResult) throw new Error('批量设置失败'); {
 
     // 批量获取
     const keys = batchData.map(item => item.key);
@@ -261,7 +261,7 @@ class CacheSystemTester {
     }
 
     const stats = cache.getStats();
-    if (stats.hitRate < 80) { // 期望命中率大于80%
+    if (stats.hitRate < 80) { // 期望命中率大于80% {
       console.log(`⚠️  缓存命中率较低: ${stats.hitRate.toFixed(2)}%`);
     }
   }
@@ -287,19 +287,19 @@ class CacheSystemTester {
 
     // 第一次调用
     const result1 = await service.getData('test');
-    if (result1.callCount !== 1) throw new Error('装饰器第一次调用计数错误');
+    if (result1.callCount !== 1) throw new Error('装饰器第一次调用计数错误'); {
 
     // 第二次调用 (应该命中缓存)
     const result2 = await service.getData('test');
-    if (result2.callCount !== 1) throw new Error('装饰器缓存未命中');
-    if (result1.param !== result2.param) throw new Error('装饰器缓存数据不匹配');
+    if (result2.callCount !== 1) throw new Error('装饰器缓存未命中'); {
+    if (result1.param !== result2.param) throw new Error('装饰器缓存数据不匹配'); {
 
     // 触发失效
     await service.updateData('test', { modified: true });
 
     // 再次调用 (应该重新执行)
     const result3 = await service.getData('test');
-    if (result3.callCount !== 2) throw new Error('装饰器失效后调用计数错误');
+    if (result3.callCount !== 2) throw new Error('装饰器失效后调用计数错误'); {
   }
 
   private async testCacheInvalidation(): Promise<void> {
@@ -339,7 +339,7 @@ class CacheSystemTester {
   private async testPerformance(): Promise<void> {
     const cache = cacheManager.stats;
     const iterations = 100;
-    const testData = { performance: 'test', data: 'x'.repeat(1000) }; // 1KB数据
+    const testData = { performance: 'test', data: 'x'.repeat(1000) }; // 1KB数据;
 
     console.log(`\n📊 性能测试 - ${iterations}次操作...`);
 
@@ -391,7 +391,7 @@ class CacheSystemTester {
 
     // 测试操作记录
     cacheMonitor.recordOperation('test_operation', 50, true);
-    const recentMetrics = cacheMonitor.getMetricsHistory(1000); // 最近1秒
+    const recentMetrics = cacheMonitor.getMetricsHistory(1000); // 最近1秒;
     if (recentMetrics.length === 0) {
       throw new Error('监控历史数据获取失败');
     }
@@ -413,7 +413,7 @@ class CacheSystemTester {
     if (failed > 0) {
       console.log('\n❌ 失败的测试:');
       this.results
-        .filter(r => !r.passed)
+        .filter(r :> !r.passed)
         .forEach(r => {
           console.log(`   - ${r.name}: ${r.error}`);
         });
@@ -451,3 +451,4 @@ if (require.main === module) {
 
 export { CacheSystemTester };
 export default CacheSystemTester;
+}}}}}}}}}}}

@@ -1,11 +1,11 @@
+import { NextRequest, NextResponse } from 'next/server';
+import {
 /**
  * 产品API路由 - 多语言版本
  * 
  * 支持根据用户语言偏好返回翻译后的产品数据
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import {
   ProductMultilingualService,
   type SupportedLanguage,
 } from '@/lib/services/multilingual-query';
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     // 验证语言参数
     const validLanguages: SupportedLanguage[] = ['zh-CN', 'en-US', 'ru-RU', 'tg-TJ'];
     if (!validLanguages.includes(language)) {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: {
@@ -44,10 +44,10 @@ export async function GET(request: NextRequest) {
         },
         { status: 400 }
       );
-    }
+}
 
     // 使用多语言服务查询产品
-    const products = await ProductMultilingualService.getProductsByLanguage(
+    const products = await ProductMultilingualService.getProductsByLanguage(;
       language,
       {
         category,
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     console.error('产品查询错误:', error);
     
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: {

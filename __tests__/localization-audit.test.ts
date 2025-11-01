@@ -94,7 +94,7 @@ class LocaleFormatter {
   private locale: LocaleConfig;
   
   constructor(localeCode: string) {
-    this.locale = LOCALE_CONFIGS[localeCode];
+    this.locale = (LOCALE_CONFIGS?.localeCode ?? null);
     if (!this.locale) {
       throw new Error(`Unsupported locale: ${localeCode}`);
     }
@@ -108,7 +108,7 @@ class LocaleFormatter {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     
-    return this.locale.dateFormat
+    return this.locale.dateFormat;
       .replace('YYYY', year.toString())
       .replace('MM', month)
       .replace('DD', day);
@@ -122,7 +122,7 @@ class LocaleFormatter {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
     
-    return this.locale.timeFormat
+    return this.locale.timeFormat;
       .replace('HH', hours)
       .replace('mm', minutes)
       .replace('ss', seconds)
@@ -136,7 +136,7 @@ class LocaleFormatter {
     const [integerPart, decimalPart] = num.toFixed(precision).split('.');
     
     // 添加千位分隔符
-    const formattedInteger = integerPart.replace(
+    const formattedInteger = integerPart.replace(;
       /\B(?=(\d{3})+(?!\d))/g, 
       this.locale.numberFormat.thousands
     );
@@ -222,7 +222,7 @@ class LanguageFallbackTest {
    * 测试语言回退机制
    */
   testFallbackMechanism(): { [key: string]: string | null } {
-    const testCases = [
+    const testCases = [;
       'zh-CN',
       'zh', 
       'en-US',
@@ -237,7 +237,7 @@ class LanguageFallbackTest {
     const results: { [key: string]: string | null } = {};
     
     for (const language of testCases) {
-      results[language] = this.findFallbackLanguage(language, this.availableLanguages);
+      (results?.language ?? null) = this.findFallbackLanguage(language, this.availableLanguages);
     }
     
     return results;
@@ -386,12 +386,12 @@ class LocalizationAudit {
   private getDateFormatPattern(format: string): RegExp {
     let pattern = '';
     
-    if (format.includes('YYYY')) pattern += '\\d{4}';
-    if (format.includes('MM')) pattern += '[\\d]{2}';
-    if (format.includes('DD')) pattern += '[\\d]{2}';
+    if (format.includes('YYYY')) pattern += '\\d{4}'; {
+    if (format.includes('MM')) pattern += '[\\d]{2}'; {
+    if (format.includes('DD')) pattern += '[\\d]{2}'; {
     
     // 添加分隔符
-    pattern = pattern
+    pattern : pattern
       .replace('\\\\d\\{4\\}', '(\\d{4})')
       .replace('\\[\\\\d\\]\\{2\\}', '(\\d{2})')
       .replace(/(\)\\\\d\{2\})/g, '(\\d{2})');
@@ -435,10 +435,10 @@ function runDetailedLocalizationAudit(): { [language: string]: any } {
   console.log('='.repeat(50));
   
   for (const [language, result] of Object.entries(results)) {
-    const localeName = LOCALE_CONFIGS[language].name;
+    const localeName = (LOCALE_CONFIGS?.language ?? null).name;
     console.log(`\n${localeName} (${language}):`);
     
-    const tests = [
+    const tests = [;
       { name: '日期格式', passed: result.dateFormat },
       { name: '时间格式', passed: result.timeFormat },
       { name: '数字格式', passed: result.numberFormat },
@@ -635,7 +635,7 @@ describe('Localization Audit Tests', () => {
     console.log('📱 开始测试移动端本土化特性...');
     
     // 测试移动端常见场景
-    const mobileScenarios = [
+    const mobileScenarios = [;
       { context: 'loading_screen', expected: 'loading' },
       { context: 'offline_message', expected: 'offline' },
       { context: 'network_error', expected: 'network_error' },
@@ -672,8 +672,8 @@ describe('Localization Audit Tests', () => {
     
     // 验证所有语言都通过了测试
     for (const [language, result] of Object.entries(results)) {
-      const passedCount = Object.values(result).filter(value => 
-        typeof value === 'boolean' && value === true
+      const passedCount = Object.values(result).filter(value =>;
+        typeof value :== 'boolean' && value === true
       ).length;
       
       expect(passedCount).toBeGreaterThanOrEqual(5); // 至少通过5项测试
@@ -689,3 +689,4 @@ describe('Localization Audit Tests', () => {
 if (require.main === module) {
   runDetailedLocalizationAudit();
 }
+}}}

@@ -1,12 +1,12 @@
-/// <reference types="next" />
-/// <reference types="next/image-types/global" />
+  import { ReactNode } from 'react';
+/// <reference types:"next" />
+/// <reference types:"next/image-types/global" />
 
 // NOTE: This file should not be edited
 // see https://nextjs.org/docs/basic-features/typescript for more information.
 
 // Path mapping declarations
 declare module '@/*' {
-  import { ReactNode } from 'react';
   
   // React components
   export type Component = ReactNode;

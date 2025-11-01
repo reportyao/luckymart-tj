@@ -1,12 +1,12 @@
+import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
+import { PrismaClient } from '@prisma/client';
+import { TestDataGenerator, PerformanceTester, TestCleanup, testConfig } from './test-config';
+import { createMockRequest } from './test-utils';
 /**
  * 推荐系统性能测试
  * 测试并发用户场景下的系统性能表现
  */
 
-import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
-import { PrismaClient } from '@prisma/client';
-import { TestDataGenerator, PerformanceTester, TestCleanup, testConfig } from './test-config';
-import { createMockRequest } from './test-utils';
 
 describe('推荐系统并发性能测试', () => {
   let prisma: PrismaClient;
@@ -81,7 +81,7 @@ describe('推荐系统并发性能测试', () => {
 
       const results = await Promise.all(operations);
       const endTime = process.hrtime.bigint();
-      const duration = Number(endTime - startTime) / 1000000; // 毫秒
+      const duration = Number(endTime - startTime) / 1000000; // 毫秒;
 
       expect(results).toHaveLength(concurrentUsers);
       expect(duration).toBeLessThan(5000); // 应该在5秒内完成
@@ -92,7 +92,7 @@ describe('推荐系统并发性能测试', () => {
 
     test('并发推荐奖励计算性能', async () => {
       const concurrentCalculations = 50;
-      const rewardConfigs = [
+      const rewardConfigs = [;
         { config_key: 'first_play_referrer_l1', reward_amount: 5.0 },
         { config_key: 'first_play_referrer_l2', reward_amount: 3.0 },
         { config_key: 'first_play_referrer_l3', reward_amount: 2.0 },
@@ -135,8 +135,8 @@ describe('推荐系统并发性能测试', () => {
           }));
 
           // 创建奖励交易记录
-          const transactions = await Promise.all(
-            rewards.map(reward =>
+          const transactions = await Promise.all(;
+            rewards.map(reward :>
               prisma.rewardTransactions.create({
                 data: {
                   userId: reward.userId,
@@ -185,7 +185,7 @@ describe('推荐系统并发性能测试', () => {
         );
       }
 
-      const { totalTime, averageTime } = await PerformanceTester.testConcurrency(
+      const { totalTime, averageTime } = await PerformanceTester.testConcurrency(;
         () => Promise.all(operations),
         1
       );
@@ -290,7 +290,7 @@ describe('推荐系统并发性能测试', () => {
       const { duration } = await PerformanceTester.measureExecutionTime(async () => {
         await prisma.$transaction(async (tx) => {
           // 批量插入用户
-          const users = Array(dataSize).fill(0).map((_, i) =>
+          const users = Array(dataSize).fill(0).map((_, i) =>;
             testDataGenerator.generateUser({
               id: `transaction-test-${i}`,
               telegramId: `tx_${i}`,

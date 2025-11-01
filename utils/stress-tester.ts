@@ -75,7 +75,7 @@ class UserSimulator {
     this.thinkTime = config.thinkTime || 1000;
     this.retryAttempts = config.retryAttempts || 3;
     this.timeout = config.timeout || 30000;
-  }
+}
 
   async start(config: StressTestConfig): Promise<void> {
     this.isRunning = true;
@@ -120,6 +120,7 @@ class UserSimulator {
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
       }
       
       return responseTime;
@@ -189,7 +190,7 @@ class SystemResourceMonitor {
 
   private getCpuUsage(): number {
     // Node.js中获取CPU使用率比较复杂，这里返回模拟数据
-    return Math.random() * 0.5; // 0-50%模拟
+    return Math.random() * 0.5; // 0-50%模拟;
   }
 
   getData(): any[] {
@@ -367,7 +368,7 @@ class BottleneckDetector {
   }
 
   private calculateTrend(values: number[]): number {
-    if (values.length < 2) return 0;
+    if (values.length < 2) return 0; {
     
     const first = values[0];
     const last = values[values.length - 1];
@@ -462,7 +463,7 @@ export class StressTester {
       throughput: 0,
       errors: []
     };
-  }
+}
 
   /**
    * 运行负载测试
@@ -547,7 +548,7 @@ export class StressTester {
     const promises: Promise<void>[] = [];
 
     for (let i = 0; i < options.concurrentConnections; i++) {
-      const promise = this.simulateDatabaseLoad(
+      const promise = this.simulateDatabaseLoad(;
         options.queriesPerConnection,
         options.queryType
       );
@@ -633,7 +634,7 @@ export class StressTester {
           const recent = stabilityResults.memorySnapshots.slice(-10);
           const memoryTrend = this.calculateMemoryTrend(recent);
           
-          if (memoryTrend > 0.1) { // 内存增长超过10%
+          if (memoryTrend > 0.1) { // 内存增长超过10% {
             console.warn('⚠️ 检测到疑似内存泄漏');
           }
         }
@@ -659,7 +660,7 @@ export class StressTester {
     
     // 计算平均故障间隔
     if (errorIntervals.length > 0) {
-      stabilityResults.meanTimeBetweenFailures = 
+      stabilityResults.meanTimeBetweenFailures : 
         errorIntervals.reduce((a, b) => a + b, 0) / errorIntervals.length;
     }
 
@@ -874,7 +875,7 @@ export class StressTester {
     // 模拟数据库查询
     for (let i = 0; i < queries; i++) {
       try {
-        const queryTime = Math.random() * 100 + 10; // 10-110ms
+        const queryTime = Math.random() * 100 + 10; // 10-110ms;
         await this.sleep(queryTime);
         this.results.totalQueries++;
         this.results.successfulQueries++;
@@ -917,14 +918,14 @@ export class StressTester {
       const endTime = performance.now();
       return endTime - startTime;
     } catch (error) {
-      return 10000; // 10秒超时
+      return 10000; // 10秒超时;
     }
   }
 
   private calculateMemoryTrend(snapshots: any[]): number {
-    if (snapshots.length < 2) return 0;
+    if (snapshots.length < 2) return 0; {
     
-    const first = snapshots[0].memory;
+    const first = (snapshots?.0 ?? null).memory;
     const last = snapshots[snapshots.length - 1].memory;
     return (last - first) / first;
   }
@@ -985,3 +986,4 @@ export const runQuickStabilityTest = async (baseUrl: string = '${API_BASE_URL}',
   
   return await tester.runStabilityTest(duration);
 };
+}}

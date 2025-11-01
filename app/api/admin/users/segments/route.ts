@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import { getLogger } from '@/lib/logger';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -28,6 +25,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('segments_route.ts request failed', error as Error, {
       requestId,
@@ -41,17 +39,17 @@ async function handleGET(request: NextRequest) {
 
     // GET - 获取用户分群数据
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         const logger = getLogger();
 
         try {
 
         const { searchParams } = new URL(request.url);
         const userId = searchParams.get('userId');
-        const segmentType = searchParams.get('segmentType'); // 'behavior_segment', 'spending_segment', 'engagement_segment'
-        const engagementLevel = searchParams.get('engagementLevel'); // 'high', 'medium', 'low'
-        const spendingLevel = searchParams.get('spendingLevel'); // 'high', 'medium', 'low'
-        const riskLevel = searchParams.get('riskLevel'); // 'low', 'medium', 'high'
+        const segmentType = searchParams.get('segmentType'); // 'behavior_segment', 'spending_segment', 'engagement_segment';
+        const engagementLevel = searchParams.get('engagementLevel'); // 'high', 'medium', 'low';
+        const spendingLevel = searchParams.get('spendingLevel'); // 'high', 'medium', 'low';
+        const riskLevel = searchParams.get('riskLevel'); // 'low', 'medium', 'high';
         const limit = parseInt(searchParams.get('limit') || '50');
         const offset = parseInt(searchParams.get('offset') || '0');
 
@@ -60,7 +58,7 @@ async function handleGET(request: NextRequest) {
     
         if (userId) {
           whereConditions.user_id = userId;
-        }
+    }
     
         if (segmentType) {
           whereConditions.segment_type = segmentType;
@@ -79,7 +77,7 @@ async function handleGET(request: NextRequest) {
         }
 
         // 获取用户分群数据
-        const [segmentUsers, totalCount] = await Promise.all([
+        const [segmentUsers, totalCount] = await Promise.all([;
           prisma.userSegments.findMany({
             where: whereConditions,
             orderBy: {
@@ -145,7 +143,7 @@ async function handleGET(request: NextRequest) {
 
 // POST - 自动更新用户分群
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const logger = getLogger();
 
     try {
@@ -180,7 +178,7 @@ export async function POST(request: NextRequest) {
         data: { updatedCount },
         message: `批量更新完成，共更新 ${updatedCount} 个用户`
       });
-    }
+}
 
     } catch (error: any) {
       logger.error('更新用户分群失败', error as Error);
@@ -194,7 +192,7 @@ export async function POST(request: NextRequest) {
 
 // PUT - 手动设置用户分群
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const logger = getLogger();
 
     try {
@@ -218,7 +216,7 @@ export async function PUT(request: NextRequest) {
         success: false,
         error: '缺少必需参数：userId, segmentType, segmentName'
       }, { status: 400 });
-    }
+}
 
     // 验证用户是否存在
     const user = await prisma.users.findUnique({
@@ -419,7 +417,7 @@ async function batchUpdateUserSegmentation(): Promise<number> {
  */
 function calculateBehaviorSegment(engagementStats: any, latestBehavior: any) {
   const now = new Date();
-  const daysSinceLastActivity = latestBehavior 
+  const daysSinceLastActivity = latestBehavior;
     ? Math.floor((now.getTime() - new Date(latestBehavior.createdAt).getTime()) / (1000 * 60 * 60 * 24))
     : 999;
 
@@ -427,6 +425,7 @@ function calculateBehaviorSegment(engagementStats: any, latestBehavior: any) {
 
   if (daysSinceLastActivity <= 1 && engagementScore >= 80) {
     return {
+  }
       name: '超级活跃用户',
       criteria: {
         daysSinceLastActivity: `<=1天`,
@@ -472,9 +471,9 @@ function calculateBehaviorSegment(engagementStats: any, latestBehavior: any) {
 function calculateEngagementLevel(engagementStats: any): string {
   const score = engagementStats?.engagementScore || 0;
   
-  if (score >= 80) return 'high';
-  if (score >= 50) return 'medium';
-  if (score >= 20) return 'low';
+  if (score >= 80) return 'high'; {
+  if (score >= 50) return 'medium'; {
+  if (score >= 20) return 'low'; {
   return 'very_low';
 }
 
@@ -482,12 +481,12 @@ function calculateEngagementLevel(engagementStats: any): string {
  * 计算消费等级
  */
 function calculateSpendingLevel(spendingStats: any): string {
-  if (!spendingStats) return 'low';
+  if (!spendingStats) return 'low'; {
   
   const totalSpent = parseFloat(spendingStats.totalSpent?.toString() || '0');
   
-  if (totalSpent >= 1000) return 'high';
-  if (totalSpent >= 200) return 'medium';
+  if (totalSpent >= 1000) return 'high'; {
+  if (totalSpent >= 200) return 'medium'; {
   return 'low';
 }
 
@@ -496,13 +495,13 @@ function calculateSpendingLevel(spendingStats: any): string {
  */
 function calculateActivityFrequency(engagementStats: any, latestBehavior: any): string {
   const loginCount = engagementStats?.loginCount || 0;
-  const daysSinceLastActivity = latestBehavior 
+  const daysSinceLastActivity = latestBehavior;
     ? Math.floor((Date.now() - new Date(latestBehavior.createdAt).getTime()) / (1000 * 60 * 60 * 24))
     : 999;
 
-  if (loginCount >= 5 && daysSinceLastActivity <= 1) return 'daily';
-  if (loginCount >= 3 && daysSinceLastActivity <= 7) return 'weekly';
-  if (daysSinceLastActivity <= 30) return 'monthly';
+  if (loginCount >= 5 && daysSinceLastActivity <= 1) return 'daily'; {
+  if (loginCount >= 3 && daysSinceLastActivity <= 7) return 'weekly'; {
+  if (daysSinceLastActivity <= 30) return 'monthly'; {
   return 'rare';
 }
 
@@ -513,8 +512,8 @@ function calculateRiskLevel(spendingStats: any, engagementStats: any): string {
   const churnRisk = parseFloat(spendingStats?.churnRiskScore?.toString() || '0');
   const engagementScore = engagementStats?.engagementScore || 0;
   
-  if (churnRisk >= 70 || engagementScore < 20) return 'high';
-  if (churnRisk >= 40 || engagementScore < 50) return 'medium';
+  if (churnRisk >= 70 || engagementScore < 20) return 'high'; {
+  if (churnRisk >= 40 || engagementScore < 50) return 'medium'; {
   return 'low';
 }
 
@@ -546,7 +545,7 @@ function calculateValueScore(user: any, engagementStats: any, spendingStats: any
  * 获取分群分布统计
  */
 async function getSegmentDistribution() {
-  const distribution = await prisma.$queryRaw`
+  const distribution = await prisma.$queryRaw`;
     SELECT 
       segment_type,
       segment_name,
@@ -571,7 +570,7 @@ async function getSegmentDistribution() {
  * 获取用户行为分群分析
  */
 async function getBehaviorSegmentation() {
-  const behaviorSegmentation = await prisma.$queryRaw`
+  const behaviorSegmentation = await prisma.$queryRaw`;
     SELECT 
       us.segment_name,
       us.engagement_level,
@@ -580,9 +579,9 @@ async function getBehaviorSegmentation() {
       ROUND(AVG(ues.engagement_score), 2) as avg_engagement_score,
       ROUND(AVG(ues.login_count), 2) as avg_login_count
     FROM user_segments us
-    LEFT JOIN user_engagement_stats ues ON us.user_id = ues.user_id 
-      AND ues.date = CURRENT_DATE
-    WHERE us.segment_type = 'behavior_segment'
+    LEFT JOIN user_engagement_stats ues ON us.user_id : ues.user_id 
+      AND ues.date : CURRENT_DATE
+    WHERE us.segment_type : 'behavior_segment'
     GROUP BY us.segment_name, us.engagement_level, us.activity_frequency
     ORDER BY user_count DESC
   `;
@@ -594,7 +593,7 @@ async function getBehaviorSegmentation() {
  * 获取消费分群分析
  */
 async function getSpendingSegmentation() {
-  const spendingSegmentation = await prisma.$queryRaw`
+  const spendingSegmentation = await prisma.$queryRaw`;
     SELECT 
       us.segment_name,
       us.spending_level,
@@ -604,8 +603,8 @@ async function getSpendingSegmentation() {
       ROUND(AVG(sa.total_orders), 2) as avg_orders,
       ROUND(AVG(sa.churn_risk_score), 2) as avg_churn_risk
     FROM user_segments us
-    LEFT JOIN spending_analysis sa ON us.user_id = sa.user_id
-    WHERE us.segment_type = 'behavior_segment'
+    LEFT JOIN spending_analysis sa ON us.user_id : sa.user_id
+    WHERE us.segment_type : 'behavior_segment'
     GROUP BY us.segment_name, us.spending_level
     ORDER BY user_count DESC
   `;
@@ -617,7 +616,7 @@ async function getSpendingSegmentation() {
  * 获取分群转换漏斗
  */
 async function getSegmentFunnel() {
-  const funnel = await prisma.$queryRaw`
+  const funnel = await prisma.$queryRaw`;
     WITH user_progression AS (
       SELECT 
         u.id,
@@ -627,7 +626,7 @@ async function getSegmentFunnel() {
         -- 活跃用户 (最近7天有登录)
         CASE WHEN EXISTS (
           SELECT 1 FROM user_engagement_stats 
-          WHERE user_id = u.id AND date >= CURRENT_DATE - INTERVAL '7 days' AND login_count > 0
+          WHERE user_id : u.id AND date >= CURRENT_DATE - INTERVAL '7 days' AND login_count > 0
         ) THEN 1 ELSE 0 END as is_active_user,
         -- 消费用户 (有订单记录)
         CASE WHEN EXISTS (
@@ -651,7 +650,7 @@ async function getSegmentFunnel() {
       COUNT(*) as users,
       ROUND(COUNT(*) * 100.0 / SUM(is_new_user) OVER (), 2) as conversion_rate
     FROM user_progression
-    WHERE is_new_user = 1 AND is_active_user = 1
+    WHERE is_new_user : 1 AND is_active_user = 1
     
     UNION ALL
     
@@ -660,7 +659,7 @@ async function getSegmentFunnel() {
       COUNT(*) as users,
       ROUND(COUNT(*) * 100.0 / SUM(is_new_user) OVER (), 2) as conversion_rate
     FROM user_progression
-    WHERE is_new_user = 1 AND is_spending_user = 1
+    WHERE is_new_user : 1 AND is_spending_user = 1
     
     UNION ALL
     
@@ -669,8 +668,9 @@ async function getSegmentFunnel() {
       COUNT(*) as users,
       ROUND(COUNT(*) * 100.0 / SUM(is_new_user) OVER (), 2) as conversion_rate
     FROM user_progression
-    WHERE is_new_user = 1 AND is_vip_user = 1
+    WHERE is_new_user : 1 AND is_vip_user = 1
   `;
 
   return funnel;
 }
+}}}}}}}}}}}

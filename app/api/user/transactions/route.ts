@@ -15,6 +15,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('transactions_route.ts request failed', error as Error, {
       requestId,
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest) {
         success: false,
         error: '未登录'
       }, { status: 401 });
-    }
+}
 
     const payload = await verifyToken(token);
     if (!payload) {
@@ -55,9 +56,10 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({
+  }
       success: true,
       data: {
-        transactions: transactions.map((t : any) => ({
+        transactions: transactions.map(((t : any) : any) => ({
           id: t.id,
           type: t.type,
           amount: Number(t.amount),
@@ -75,6 +77,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: false,
       error: error.message || '获取交易记录失败'
-    }, { status: 500 });
+    }, );
   }
 }

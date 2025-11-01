@@ -7,7 +7,7 @@ console.log('=== Redis缓存与数据库不同步修复验证 ===\n');
 const fs = require('fs');
 const path = require('path');
 
-const requiredFiles = [
+const requiredFiles = [;
   'lib/cache-consistency.ts',
   'lib/user-service.ts',
   'app/api/user/profile-fixed/route.ts',
@@ -23,7 +23,7 @@ requiredFiles.forEach(file => {
   const filePath = path.join(__dirname, file);
   const exists = fs.existsSync(filePath);
   console.log(`   ${exists ? '✅' : '❌'} ${file}`);
-  if (!exists) allFilesExist = false;
+  if (!exists) allFilesExist = false; {
 });
 
 console.log('\n2. 验证代码结构:');
@@ -38,6 +38,7 @@ try {
   const hasDecorator = cacheConsistencyContent.includes('withCacheConsistency');
 
   console.log(`   ${hasTransactionalUpdate ? '✅' : '❌'} 事务性更新功能`);
+  }
   console.log(`   ${hasInvalidateAndReload ? '✅' : '❌'} 缓存失效重载功能`);
   console.log(`   ${hasWriteThrough ? '✅' : '❌'} 写入穿透功能`);
   console.log(`   ${hasCheckConsistency ? '✅' : '❌'} 一致性检查功能`);
@@ -85,7 +86,7 @@ try {
 }
 
 console.log('\n4. 检查API路由更新:');
-const apiRoutes = [
+const apiRoutes = [;
   'app/api/user/profile-fixed/route.ts',
   'app/api/user/addresses-consistent/route.ts',
   'app/api/lottery/participate-consistent/route.ts'
@@ -99,6 +100,7 @@ apiRoutes.forEach(route => {
     const hasLogging = content.includes('logger');
     
     console.log(`   ${route}:`);
+  }
     console.log(`     ${usesUserService ? '✅' : '❌'} 使用用户服务`);
     console.log(`     ${usesCacheConsistency ? '✅' : '❌'} 使用缓存一致性管理`);
     console.log(`     ${hasLogging ? '✅' : '❌'} 包含日志记录`);

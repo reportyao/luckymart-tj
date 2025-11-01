@@ -3,15 +3,13 @@ import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission
 import { prisma } from '@/lib/prisma';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.operations.read() });
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.operations.write() });
 
 // 缓存运营配置以提高性能
 let operationCache: { data: any; timestamp: number } | null = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存;
 
 // 获取缓存的运营配置
 async function getCachedOperationConfigs() {
@@ -38,15 +36,16 @@ function clearCache() {
 // 获取所有运营配置
 async function getAllOperationConfigs() {
   const cached = await getCachedOperationConfigs();
-  if (cached) return cached;
+  if (cached) return cached; {
 
   try {
-    const configs = await prisma.$queryRaw`
+    const configs = await prisma.$queryRaw`;
       SELECT * FROM operation_configs WHERE is_active = true ORDER BY category, priority DESC, config_name
     `;
     
     updateCache(configs);
     return configs;
+  }
   } catch (error) {
     logger.error("API Error", error as Error, {
       requestId,
@@ -59,7 +58,7 @@ async function getAllOperationConfigs() {
 // 创建运营配置
 async function createOperationConfig(data: any, operatorId: string) {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       INSERT INTO operation_configs (
         config_name, category, name_zh, name_en, name_ru,
         description_zh, description_en, description_ru,
@@ -98,7 +97,7 @@ async function createOperationConfig(data: any, operatorId: string) {
 // 更新运营配置
 async function updateOperationConfig(id: string, data: any, operatorId: string) {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       UPDATE operation_configs SET
         config_name = ${data.config_name},
         category = ${data.category},
@@ -131,7 +130,7 @@ async function updateOperationConfig(id: string, data: any, operatorId: string) 
         priority = ${data.priority},
         operator_id = ${operatorId},
         change_reason = ${data.change_reason},
-        updated_at = NOW()
+        updated_at : NOW()
       WHERE id = ${id}
       RETURNING *
     `;
@@ -150,12 +149,12 @@ async function updateOperationConfig(id: string, data: any, operatorId: string) 
 // 删除运营配置（软删除）
 async function deleteOperationConfig(id: string, operatorId: string) {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       UPDATE operation_configs SET
         is_active = false,
         operator_id = ${operatorId},
         change_reason = '软删除运营配置',
-        updated_at = NOW()
+        updated_at : NOW()
       WHERE id = ${id}
       RETURNING *
     `;
@@ -183,7 +182,7 @@ async function validatePromoCode(promoCode: string, excludeId?: string) {
     }
     
     const result = await prisma.$queryRawUnsafe(query, ...params);
-    return parseInt(result[0].count) === 0;
+    return parseInt((result?.0 ?? null).count) === 0;
   } catch (error) {
     logger.error("API Error", error as Error, {
       requestId,
@@ -208,6 +207,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       error: (error as Error).message
     });
     throw error;
+}
   }
 });
 
@@ -215,7 +215,7 @@ async function handleGET(request: NextRequest) {
     }
 
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         const url = new URL(request.url);
         const category = url.searchParams.get('category');
         const promoCode = url.searchParams.get('promo_code');
@@ -267,9 +267,10 @@ async function handleGET(request: NextRequest) {
     }
 
     const countResult = await prisma.$queryRawUnsafe(countQuery, ...countParams);
-    const total = parseInt(countResult[0].total);
+    const total = parseInt((countResult?.0 ?? null).total);
 
     return NextResponse.json({ 
+  }
       success: true,
       data: configs,
       pagination: {
@@ -277,18 +278,19 @@ async function handleGET(request: NextRequest) {
         limit,
         total,
         pages: Math.ceil(total / limit)
-      }
+    }
     });
   })(request);
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const data = await request.json();
 
     // 验证必填字段
     if (!data.config_name || !data.category) {
       return NextResponse.json({ 
+}
         success: false,
         error: '缺少必填字段：config_name, category' 
       }, { status: 400 });
@@ -299,6 +301,7 @@ export async function POST(request: NextRequest) {
       const isUnique = await validatePromoCode(data.promo_code);
       if (!isUnique) {
         return NextResponse.json({ 
+  }
           success: false,
           error: '促销代码已存在' 
         }, { status: 400 });
@@ -347,7 +350,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const data = await request.json();
     const { id } = data;
 
@@ -356,7 +359,7 @@ export async function PUT(request: NextRequest) {
         success: false,
         error: '缺少运营配置ID' 
       }, { status: 400 });
-    }
+}
 
     // 验证促销代码唯一性（排除当前记录）
     if (data.promo_code) {
@@ -411,7 +414,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const url = new URL(request.url);
     const id = url.searchParams.get('id');
 
@@ -420,7 +423,7 @@ export async function DELETE(request: NextRequest) {
         success: false,
         error: '缺少运营配置ID' 
       }, { status: 400 });
-    }
+}
 
     await deleteOperationConfig(id, admin.username);
 
@@ -433,7 +436,7 @@ export async function DELETE(request: NextRequest) {
 
 // 验证促销代码的专用接口
 export async function OPTIONS(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
+  return withReadPermission(async (request: any: any, admin: any: any) => {
     const url = new URL(request.url);
     const promoCode = url.searchParams.get('code');
     const excludeId = url.searchParams.get('exclude_id');
@@ -443,7 +446,7 @@ export async function OPTIONS(request: NextRequest) {
         success: false,
         error: '缺少促销代码参数' 
       }, { status: 400 });
-    }
+}
 
     const isUnique = await validatePromoCode(promoCode, excludeId || undefined);
 

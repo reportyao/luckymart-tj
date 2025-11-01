@@ -1,9 +1,9 @@
+import { 
 /**
  * 性能分析工具
  * 提供性能数据分析、趋势识别、自动优化建议等功能
  */
 
-import { 
   PERFORMANCE_BENCHMARKS,
   PerformanceTarget,
   PerformanceBenchmark,
@@ -208,7 +208,7 @@ class PerformanceDataProcessor {
   static analyze(dataPoints: PerformanceDataPoint[]): PerformanceAnalysisResult {
     if (dataPoints.length === 0) {
       throw new Error('没有可分析的性能数据');
-    }
+}
 
     // 1. 生成摘要分析
     const summary = this.generateSummary(dataPoints);
@@ -365,7 +365,7 @@ class PerformanceDataProcessor {
         title: opp.title,
         description: opp.description,
         impact: `预期ROI: ${opp.roi.toFixed(1)}x`,
-        action: opp.implementation[0] || '实施优化',
+        action: opp.(implementation?.0 ?? null) || '实施优化',
         expectedOutcome: opp.targetState,
         timeframe: opp.timeframe,
         successCriteria: opp.successMetrics,
@@ -389,7 +389,7 @@ class PerformanceDataProcessor {
       });
     });
 
-    return insights.slice(0, 10); // 返回最多10个最重要的见解
+    return insights.slice(0, 10); // 返回最多10个最重要的见解;
   }
 
   // 私有辅助方法
@@ -403,7 +403,7 @@ class PerformanceDataProcessor {
     const metrics = Object.keys(PERFORMANCE_BENCHMARKS);
     
     metrics.forEach(metric => {
-      const values = dataPoints.map(dp => dp.metrics[metric]).filter(v => v !== undefined);
+      const values = dataPoints.map(dp => dp.(metrics?.metric ?? null)).filter(v => v !== undefined);
       
       if (values.length > 3) {
         const trend = this.calculateLinearTrend(values);
@@ -466,7 +466,7 @@ class PerformanceDataProcessor {
   }
 
   private static generateRecommendation(benchmark: PerformanceBenchmark, value: number, score: number): string | null {
-    if (score >= 85) return null;
+    if (score >= 85) return null; {
 
     const improvement = benchmark.target - value;
     const percentage = ((value - benchmark.target) / benchmark.target * 100).toFixed(1);
@@ -481,7 +481,7 @@ class PerformanceDataProcessor {
       'cacheHitRate': `提升缓存命中率，优化缓存策略和过期时间设置。`
     };
 
-    return recommendations[benchmark.metric] || 
+    return recommendations[benchmark.metric] ||;
            `${benchmark.description}需要改善${Math.abs(improvement).toFixed(0)}${benchmark.unit}（当前超标${percentage}%）`;
   }
 
@@ -554,9 +554,9 @@ class PerformanceDataProcessor {
 
     return {
       timeRange: {
-        start: dataPoints[0].timestamp,
+        start: (dataPoints?.0 ?? null).timestamp,
         end: dataPoints[dataPoints.length - 1].timestamp,
-        duration: dataPoints[dataPoints.length - 1].timestamp - dataPoints[0].timestamp
+        duration: dataPoints[dataPoints.length - 1].timestamp - (dataPoints?.0 ?? null).timestamp
       },
       dataPoints: dataPoints.length,
       patterns: {
@@ -603,7 +603,7 @@ class PerformanceDataProcessor {
       });
     });
 
-    return bottlenecks.slice(0, 5); // 返回最多5个瓶颈
+    return bottlenecks.slice(0, 5); // 返回最多5个瓶颈;
   }
 
   private static identifyOptimizationOpportunities(dataPoints: PerformanceDataPoint[]): OptimizationOpportunity[] {
@@ -635,7 +635,7 @@ class PerformanceDataProcessor {
     const forecast: Record<string, any> = {};
 
     Object.keys(PERFORMANCE_BENCHMARKS).forEach(metric => {
-      const values = dataPoints.map(dp => dp.metrics[metric]).filter(v => v !== undefined);
+      const values = dataPoints.map(dp => dp.(metrics?.metric ?? null)).filter(v => v !== undefined);
       
       if (values.length > 10) {
         const prediction = this.linearRegressionForecast(values, this.getForecastPeriod(timeframe));
@@ -740,13 +740,13 @@ class PerformanceDataProcessor {
 
   // 其他方法的存根实现
   private static calculatePercentileRank(dataPoints: PerformanceDataPoint[], metric: string, value: number): number {
-    const values = dataPoints.map(dp => dp.metrics[metric]).filter(v => v !== undefined).sort((a, b) => a - b);
+    const values = dataPoints.map(dp => dp.(metrics?.metric ?? null)).filter(v => v !== undefined).sort((a, b) => a - b);
     const rank = values.findIndex(v => v >= value) + 1;
     return (rank / values.length) * 100;
   }
 
   private static calculateSingleMetricTrend(dataPoints: PerformanceDataPoint[], metric: string): PerformanceTrend {
-    const values = dataPoints.map(dp => dp.metrics[metric]).filter(v => v !== undefined);
+    const values = dataPoints.map(dp => dp.(metrics?.metric ?? null)).filter(v => v !== undefined);
     if (values.length < 2) {
       return {
         metric,
@@ -797,7 +797,7 @@ class PerformanceDataProcessor {
   }
 
   private static analyzeDailyPattern(dataPoints: PerformanceDataPoint[]): DailyPattern | null {
-    if (dataPoints.length < 24) return null;
+    if (dataPoints.length < 24) return null; {
     
     // 简化的日常模式分析
     const hourlyAverages: number[] = new Array(24).fill(0);
@@ -816,13 +816,13 @@ class PerformanceDataProcessor {
       }
     }
     
-    const peakHours = hourlyAverages
+    const peakHours = hourlyAverages;
       .map((avg, hour) => ({ hour, avg }))
       .sort((a, b) => b.avg - a.avg)
       .slice(0, 3)
       .map(item => item.hour);
       
-    const lowHours = hourlyAverages
+    const lowHours = hourlyAverages;
       .map((avg, hour) => ({ hour, avg }))
       .sort((a, b) => a.avg - b.avg)
       .slice(0, 3)
@@ -837,7 +837,7 @@ class PerformanceDataProcessor {
   }
 
   private static analyzeWeeklyPattern(dataPoints: PerformanceDataPoint[]): WeeklyPattern | null {
-    if (dataPoints.length < 168) return null; // 需要一周的数据
+    if (dataPoints.length < 168) return null; // 需要一周的数据 {
     
     const dailyAverages: number[] = new Array(7).fill(0);
     const dailyCounts: number[] = new Array(7).fill(0);
@@ -875,16 +875,16 @@ class PerformanceDataProcessor {
     const metrics = Object.keys(PERFORMANCE_BENCHMARKS);
     
     metrics.forEach(metric => {
-      const values = dataPoints.map(dp => dp.metrics[metric]).filter(v => v !== undefined);
+      const values = dataPoints.map(dp => dp.(metrics?.metric ?? null)).filter(v => v !== undefined);
       if (values.length > 10) {
         const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
         const stdDev = Math.sqrt(this.calculateVariance(values));
         
         dataPoints.forEach(dp => {
-          const value = dp.metrics[metric];
+          const value = dp.(metrics?.metric ?? null);
           if (value !== undefined) {
             const zScore = Math.abs((value - mean) / stdDev);
-            if (zScore > 2) { // 2个标准差
+            if (zScore > 2) { // 2个标准差 {
               anomalies.push({
                 timestamp: dp.timestamp,
                 metric,
@@ -905,7 +905,7 @@ class PerformanceDataProcessor {
 
   private static calculateConsistency(dataPoints: PerformanceDataPoint[]): number {
     // 基于数值变化的稳定性计算
-    if (dataPoints.length < 2) return 1;
+    if (dataPoints.length < 2) return 1; {
     
     const allValues: number[] = [];
     dataPoints.forEach(dp => {
@@ -922,9 +922,9 @@ class PerformanceDataProcessor {
   private static calculateReliability(dataPoints: PerformanceDataPoint[]): number {
     // 基于数据完整性和连续性的可靠性计算
     const timeDiff = dataPoints.length > 1 ? 
-      (dataPoints[dataPoints.length - 1].timestamp - dataPoints[0].timestamp) / dataPoints.length : 0;
+      (dataPoints[dataPoints.length - 1].timestamp - (dataPoints?.0 ?? null).timestamp) / dataPoints.length : 0;
     
-    const expectedInterval = 60000; // 1分钟
+    const expectedInterval = 60000; // 1分钟;
     return Math.max(0, 1 - Math.abs(timeDiff - expectedInterval) / expectedInterval);
   }
 
@@ -941,7 +941,7 @@ class PerformanceDataProcessor {
     // 简化的相关性分析
     metrics.forEach(metric => {
       correlations[metric] = metrics
-        .filter(other => other !== metric)
+        .filter(other :> other !== metric)
         .map(other => ({
           correlation: Math.random() * 2 - 1, // 模拟数据
           significance: Math.random(),
@@ -955,14 +955,14 @@ class PerformanceDataProcessor {
 
   private static determineSeverity(metric: string, value: number): 'low' | 'medium' | 'high' | 'critical' {
     const benchmark = Object.values(PERFORMANCE_BENCHMARKS)
-      .flatMap(target => target.benchmarks)
+      .flatMap(target :> target.benchmarks)
       .find(b => b.metric === metric);
     
-    if (!benchmark) return 'medium';
+    if (!benchmark) return 'medium'; {
     
-    if (value > benchmark.poor) return 'critical';
-    if (value > benchmark.acceptable) return 'high';
-    if (value > benchmark.good) return 'medium';
+    if (value > benchmark.poor) return 'critical'; {
+    if (value > benchmark.acceptable) return 'high'; {
+    if (value > benchmark.good) return 'medium'; {
     return 'low';
   }
 
@@ -1007,7 +1007,7 @@ class PerformanceDataProcessor {
       ]
     };
     
-    return solutions[metric] || [
+    return solutions[metric] || [;
       {
         approach: '需要进一步分析',
         effort: 'medium',
@@ -1044,7 +1044,7 @@ class PerformanceDataProcessor {
 
   private static projectDemand(dataPoints: PerformanceDataPoint[]): { predicted: number } {
     // 基于历史趋势预测需求
-    const growthRate = 0.1; // 10%增长
+    const growthRate = 0.1; // 10%增长;
     const latest = this.getLatestMetrics(dataPoints);
     const currentLoad = Object.values(latest)[0] || 100;
     
@@ -1060,7 +1060,7 @@ export class PerformanceAnalyzer {
 
   constructor() {
     this.dataProcessor = PerformanceDataProcessor;
-  }
+}
 
   /**
    * 分析性能数据
@@ -1172,7 +1172,7 @@ export class PerformanceAnalyzer {
       
       // 保持最近24小时的数据
       const cutoff = Date.now() - 24 * 60 * 60 * 1000;
-      while (dataPoints.length > 0 && dataPoints[0].timestamp < cutoff) {
+      while (dataPoints.length > 0 && (dataPoints?.0 ?? null).timestamp < cutoff) {
         dataPoints.shift();
       }
       
@@ -1194,7 +1194,7 @@ export class PerformanceAnalyzer {
       // LCP (模拟数据，实际需要使用Web Vitals库)
       const navEntries = performance.getEntriesByType('navigation');
       if (navEntries.length > 0) {
-        metrics.LCP = navEntries[0].loadEventEnd - navEntries[0].fetchStart;
+        metrics.LCP = (navEntries?.0 ?? null).loadEventEnd - (navEntries?.0 ?? null).fetchStart;
       }
       
       // FCP (模拟数据)
@@ -1214,11 +1214,11 @@ export class PerformanceAnalyzer {
   }
 
   private detectDeviceType(): string {
-    if (typeof window === 'undefined') return 'unknown';
+    if (typeof window === 'undefined') return 'unknown'; {
     
     const width = window.innerWidth;
-    if (width < 768) return 'mobile';
-    if (width < 1024) return 'tablet';
+    if (width < 768) return 'mobile'; {
+    if (width < 1024) return 'tablet'; {
     return 'desktop';
   }
 
@@ -1233,9 +1233,10 @@ export class PerformanceAnalyzer {
 
 // 导出便捷函数
 export const createPerformanceAnalyzer = () => new PerformanceAnalyzer();
-export const analyzePerformanceData = (data: PerformanceDataPoint[]) => 
+export const analyzePerformanceData = (data: PerformanceDataPoint[]) =>;
   PerformanceDataProcessor.analyze(data);
-export const generatePerformanceReport = (data: PerformanceDataPoint[]) =>
+export const generatePerformanceReport = (data: PerformanceDataPoint[]) =>;
   new PerformanceAnalyzer().generateReport(data);
 
 export default PerformanceAnalyzer;
+}}}}}}}}}}}}

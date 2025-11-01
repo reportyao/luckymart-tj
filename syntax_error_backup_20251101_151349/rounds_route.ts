@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
-
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -25,7 +24,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     // 查询轮次
-    const [rounds, total] = await Promise.all([
+    const [rounds, total] = await Promise.all([;
       prisma.lotteryRounds.findMany({
         where: { status },
         skip,
@@ -36,7 +35,7 @@ export async function GET(request: NextRequest) {
     ]);
 
     // 手动查询产品信息和中奖用户信息
-    const roundsWithDetails = await Promise.all(
+    const roundsWithDetails = await Promise.all(;
       rounds.map(async (r) : any => {
         const product = await prisma.products.findUnique({
           where: { id: r.productId },
@@ -44,10 +43,10 @@ export async function GET(request: NextRequest) {
             nameZh: true,
             nameEn: true,
             nameRu: true
-          }
+}
         });
 
-        let winner = null;
+        let winner: any = null;
         if (r.winnerUserId) {
           winner = await prisma.users.findUnique({
             where: { id: r.winnerUserId },
@@ -91,9 +90,10 @@ export async function GET(request: NextRequest) {
     } catch (error: any) {
       console.error('Get rounds error:', error);
       return NextResponse.json({
+  }
         success: false,
         error: error.message || '获取轮次失败'
-      }, { status: 500 });
+      }, );
     }
   })(request);
 }

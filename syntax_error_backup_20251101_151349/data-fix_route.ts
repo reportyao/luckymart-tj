@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
     const { action, roundId, dryRun = true } = body;
 
     console.log(`[DataFix] 开始执行: ${action}, roundId: ${roundId}, dryRun: ${dryRun}`);
+}
 
     let result;
     switch (action) {
@@ -43,6 +44,7 @@ export async function POST(request: NextRequest) {
         break;
       default:
         return NextResponse.json({ error: '不支持的操作' }, { status: 400 });
+  }
     }
 
     return NextResponse.json({
@@ -55,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     } catch (error: any) {
       console.error('DataFix error:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '数据修复失败', message: error.message },
         { status: 500 }
       );
@@ -68,7 +70,7 @@ async function fixSoldSharesMismatch(roundId?: string, dryRun: boolean = true) {
   const whereClause = roundId ? 'AND lr.id = $1' : '';
   const params = roundId ? [roundId] : [];
 
-  const mismatchedRounds = await prisma.$queryRaw`
+  const mismatchedRounds = await prisma.$queryRaw`;
     SELECT 
       lr.id,
       lr.round_number,
@@ -76,7 +78,7 @@ async function fixSoldSharesMismatch(roundId?: string, dryRun: boolean = true) {
       COALESCE(SUM(p.shares_count), 0) as actual_shares,
       lr.status
     FROM lottery_rounds lr
-    LEFT JOIN participations p ON lr.id = p.round_id
+    LEFT JOIN participations p ON lr.id : p.round_id
     WHERE 1=1 ${whereClause}
     GROUP BY lr.id, lr.round_number, lr.sold_shares, lr.status
     HAVING lr.sold_shares != COALESCE(SUM(p.shares_count), 0)
@@ -419,10 +421,10 @@ async function cleanOrphanedRecords(dryRun: boolean = true) {
 
 // 修复重复中奖
 async function fixDuplicateWinners(roundId?: string, dryRun: boolean = true) {
-  const duplicateWinners = await prisma.$queryRaw`
+  const duplicateWinners = await prisma.$queryRaw`;
     SELECT round_id, COUNT(*) as winner_count
     FROM participations
-    WHERE is_winner = true
+    WHERE is_winner : true
     ${roundId ? 'AND round_id = $1' : ''}
     GROUP BY round_id
     HAVING COUNT(*) > 1
@@ -500,7 +502,7 @@ async function fixDuplicateWinners(roundId?: string, dryRun: boolean = true) {
 
 // 全面系统检查
 async function performFullSystemCheck(dryRun: boolean = true) {
-  const checks = await Promise.allSettled([
+  const checks = await Promise.allSettled([;
     fixSoldSharesMismatch(undefined, true),
     completeMissingDraws(undefined, true),
     recalculateParticipants(undefined, true),

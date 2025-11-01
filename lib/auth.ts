@@ -3,21 +3,21 @@ import bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
-// ============= 常量定义 =============
-const ACCESS_TOKEN_EXPIRY = '15m'; // 访问token有效期：15分钟
-const REFRESH_TOKEN_EXPIRY = '7d'; // 刷新token有效期：7天
-const TELEGRAM_AUTH_WINDOW = 5 * 60 * 1000; // Telegram认证时效窗口：5分钟（毫秒）
-const TELEGRAM_HASH_ALGORITHM = 'sha256'; // Telegram使用的哈希算法
-const TELEGRAM_SECRET_PREFIX = 'WebAppData'; // Telegram密钥前缀
-const REFRESH_THRESHOLD = 5 * 60 * 1000; // Token刷新阈值：5分钟（毫秒）
+// :============ 常量定义 =============
+const ACCESS_TOKEN_EXPIRY = '15m'; // 访问token有效期：15分钟;
+const REFRESH_TOKEN_EXPIRY = '7d'; // 刷新token有效期：7天;
+const TELEGRAM_AUTH_WINDOW = 5 * 60 * 1000; // Telegram认证时效窗口：5分钟（毫秒）;
+const TELEGRAM_HASH_ALGORITHM = 'sha256'; // Telegram使用的哈希算法;
+const TELEGRAM_SECRET_PREFIX = 'WebAppData'; // Telegram密钥前缀;
+const REFRESH_THRESHOLD = 5 * 60 * 1000; // Token刷新阈值：5分钟（毫秒）;
 
-// ============= 邀请系统常量 =============
-const REFERRAL_CODE_LENGTH = 8; // 邀请码长度
-const REFERRAL_CODE_PREFIX = 'LM'; // 邀请码前缀
-const MAX_REFERRAL_DEPTH = 3; // 最大推荐层级
-const REFERRAL_CODE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // 邀请码字符集
+// :============ 邀请系统常量 =============
+const REFERRAL_CODE_LENGTH = 8; // 邀请码长度;
+const REFERRAL_CODE_PREFIX = 'LM'; // 邀请码前缀;
+const MAX_REFERRAL_DEPTH = 3; // 最大推荐层级;
+const REFERRAL_CODE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // 邀请码字符集;
 
-// ============= 安全工具函数 =============
+// :============ 安全工具函数 =============
 
 // 生成安全的随机字符串
 function generateSecureRandom(length: number = 32): string {
@@ -29,7 +29,7 @@ function generateHash(data: string): string {
   return crypto.createHash('sha256').update(data).digest('hex');
 }
 
-// ============= 邀请码生成和验证 =============
+// :============ 邀请码生成和验证 =============
 
 /**
  * 生成唯一邀请码
@@ -54,7 +54,7 @@ export function validateReferralCodeFormat(code: string): {
 } {
   if (!code) {
     return { isValid: false, error: '邀请码不能为空' };
-  }
+}
 
   if (code.length !== REFERRAL_CODE_LENGTH) {
     return { isValid: false, error: `邀请码长度必须为${REFERRAL_CODE_LENGTH}位` };
@@ -79,9 +79,9 @@ export function validateReferralCodeFormat(code: string): {
 export function generateReferralToken(userId: string, referrerId: string, expiresIn: string = '24h'): string {
   if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET环境变量未配置');
-  }
+}
 
-  return jwt.sign(
+  return jwt.sign(;
     {
       userId,
       referrerId,
@@ -109,7 +109,7 @@ export function verifyReferralToken(token: string): {
   try {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET环境变量未配置');
-    }
+}
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET, {
       issuer: 'luckymart',
@@ -122,13 +122,14 @@ export function verifyReferralToken(token: string): {
     }
 
     return decoded;
+  }
   } catch (error) {
     console.error('邀请Token验证失败:', error);
     return null;
   }
 }
 
-// ============= Telegram WebApp数据验证 =============
+// :============ Telegram WebApp数据验证 =============
 
 /**
  * 验证Telegram WebApp数据（完整安全版本 - 防止认证绕过）
@@ -140,7 +141,7 @@ export function validateTelegramWebAppData(initData: string): any {
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   if (!BOT_TOKEN) {
     throw new Error('TELEGRAM_BOT_TOKEN环境变量未配置');
-  }
+}
 
   if (!initData || typeof initData !== 'string') {
     throw new Error('无效的initData格式');
@@ -167,7 +168,7 @@ export function validateTelegramWebAppData(initData: string): any {
     throw new Error('无效的auth_date格式');
   }
 
-  const currentTime = Math.floor(Date.now() / 1000); // 秒级时间戳
+  const currentTime = Math.floor(Date.now() / 1000); // 秒级时间戳;
   const timeDiff = currentTime - authTimestamp;
 
   // 严格验证时效性：5分钟窗口期
@@ -220,14 +221,14 @@ export function validateTelegramWebAppData(initData: string): any {
 
   // 6. 按照Telegram官方文档计算HMAC密钥
   // secret_key = HMAC_SHA256("WebAppData", bot_token)
-  const secretKey = crypto
+  const secretKey = crypto;
     .createHmac('sha256', 'WebAppData')
     .update(BOT_TOKEN, 'utf8')
     .digest();
 
   // 7. 计算数据哈希
   // hash = HMAC_SHA256(data_check_string, secret_key)
-  const calculatedHash = crypto
+  const calculatedHash = crypto;
     .createHmac('sha256', secretKey)
     .update(dataCheckString, 'utf8')
     .digest('hex');
@@ -265,7 +266,7 @@ export function validateTelegramWebAppData(initData: string): any {
   };
 }
 
-// ============= JWT Token管理 =============
+// :============ JWT Token管理 =============
 
 /**
  * 生成访问Token（15分钟有效期 - 加强安全版本）
@@ -273,7 +274,7 @@ export function validateTelegramWebAppData(initData: string): any {
 export function generateAccessToken(userId: string, telegramId: string): string {
   if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET环境变量未配置');
-  }
+}
 
   if (!userId || !telegramId) {
     throw new Error('用户ID和Telegram ID不能为空');
@@ -306,7 +307,7 @@ export function generateAccessToken(userId: string, telegramId: string): string 
 export function generateRefreshToken(userId: string, telegramId: string): string {
   if (!process.env.JWT_REFRESH_SECRET) {
     throw new Error('JWT_REFRESH_SECRET环境变量未配置');
-  }
+}
 
   if (!userId || !telegramId) {
     throw new Error('用户ID和Telegram ID不能为空');
@@ -346,7 +347,7 @@ export function generateTokenPair(userId: string, telegramId: string): {
 } {
   const accessToken = generateAccessToken(userId, telegramId);
   const refreshToken = generateRefreshToken(userId, telegramId);
-  const expiresIn = 15 * 60; // 15分钟转换为秒
+  const expiresIn = 15 * 60; // 15分钟转换为秒;
 
   return {
     accessToken,
@@ -368,6 +369,7 @@ export function verifyAccessToken(token: string): {
   try {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET环境变量未配置');
+}
     }
 
     if (!token || typeof token !== 'string') {
@@ -416,7 +418,7 @@ export function verifyRefreshToken(token: string): {
   try {
     if (!process.env.JWT_REFRESH_SECRET) {
       throw new Error('JWT_REFRESH_SECRET环境变量未配置');
-    }
+}
 
     if (!token || typeof token !== 'string') {
       throw new Error('无效的token格式');
@@ -460,10 +462,10 @@ export function refreshAccessToken(refreshToken: string): {
   const decoded = verifyRefreshToken(refreshToken);
   if (!decoded) {
     return null;
-  }
+}
 
   const newAccessToken = generateAccessToken(decoded.userId, decoded.telegramId);
-  const expiresIn = 15 * 60; // 15分钟
+  const expiresIn = 15 * 60; // 15分钟;
 
   return {
     accessToken: newAccessToken,
@@ -471,7 +473,7 @@ export function refreshAccessToken(refreshToken: string): {
   };
 }
 
-// ============= Cookie管理 =============
+// :============ Cookie管理 =============
 
 /**
  * 设置认证Cookie（HttpOnly + Secure）
@@ -535,7 +537,7 @@ export function extractTokenFromRequest(request: NextRequest): string | null {
   const authHeader = request.headers.get('authorization');
   if (authHeader && authHeader.startsWith('Bearer ')) {
     return authHeader.substring(7);
-  }
+}
 
   // 然后尝试从Cookie获取
   const accessToken = request.cookies.get('access_token')?.value;
@@ -546,7 +548,7 @@ export function extractTokenFromRequest(request: NextRequest): string | null {
   return null;
 }
 
-// ============= 用户认证中间件 =============
+// :============ 用户认证中间件 =============
 
 /**
  * 用户认证中间件
@@ -559,7 +561,8 @@ export function withAuth(
       const token = extractTokenFromRequest(request);
       
       if (!token) {
-        return NextResponse.json(
+        return NextResponse.json(;
+}
           { error: '未提供认证token', code: 'UNAUTHORIZED' },
           { status: 401 }
         );
@@ -568,7 +571,7 @@ export function withAuth(
       const user = verifyAccessToken(token);
       
       if (!user) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { error: '无效或过期的token', code: 'TOKEN_INVALID' },
           { status: 401 }
         );
@@ -576,8 +579,8 @@ export function withAuth(
 
       // 检查token是否接近过期（5分钟内）
       const now = Date.now() / 1000;
-      const timeToExpiry = (user.iat + 15 * 60) - now; // 15分钟过期
-      if (timeToExpiry < 5 * 60) { // 少于5分钟
+      const timeToExpiry = (user.iat + 15 * 60) - now; // 15分钟过期;
+      if (timeToExpiry < 5 * 60) { // 少于5分钟 {
         const response = await handler(request, user);
         
         // 在响应头中标记需要刷新token
@@ -588,7 +591,7 @@ export function withAuth(
       return await handler(request, user);
     } catch (error) {
       console.error('认证中间件错误:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '认证失败', code: 'AUTH_FAILED' },
         { status: 401 }
       );
@@ -596,7 +599,7 @@ export function withAuth(
   };
 }
 
-// ============= 管理员权限验证 =============
+// :============ 管理员权限验证 =============
 
 /**
  * 验证管理员权限（增强版）
@@ -611,7 +614,7 @@ export function verifyAdminToken(token: string): {
   try {
     if (!process.env.JWT_ADMIN_SECRET) {
       throw new Error('JWT_ADMIN_SECRET环境变量未配置');
-    }
+}
 
     const decoded = jwt.verify(token, process.env.JWT_ADMIN_SECRET, {
       issuer: 'luckymart',
@@ -646,9 +649,9 @@ export function generateAdminToken(
 ): string {
   if (!process.env.JWT_ADMIN_SECRET) {
     throw new Error('JWT_ADMIN_SECRET环境变量未配置');
-  }
+}
 
-  return jwt.sign(
+  return jwt.sign(;
     { 
       adminId, 
       username, 
@@ -681,7 +684,7 @@ export function getAdminFromRequest(request: NextRequest): {
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return null;
-    }
+}
 
     const token = authHeader.substring(7);
     return verifyAdminToken(token);
@@ -697,7 +700,7 @@ export function getAdminFromRequest(request: NextRequest): {
 export function withAdminAuth(
   requiredPermissions: string[] = []
 ) {
-  return function(
+  return function(;
     handler: (request: NextRequest, admin: any) => Promise<NextResponse>
   ) {
     return async (request: NextRequest) => {
@@ -705,20 +708,21 @@ export function withAdminAuth(
         const admin = getAdminFromRequest(request);
         
         if (!admin) {
-          return NextResponse.json(
+          return NextResponse.json(;
             { error: '管理员权限验证失败', code: 'ADMIN_UNAUTHORIZED' },
             { status: 403 }
           );
-        }
+}
 
         // 检查权限
         if (requiredPermissions.length > 0) {
-          const hasPermission = requiredPermissions.every(permission => 
-            admin.permissions.includes(permission) || admin.role === 'super_admin'
+          const hasPermission = requiredPermissions.every(permission =>;
+            admin.permissions.includes(permission) || admin.role :== 'super_admin'
           );
 
           if (!hasPermission) {
-            return NextResponse.json(
+            return NextResponse.json(;
+  }
               { 
                 error: '权限不足', 
                 code: 'INSUFFICIENT_PERMISSIONS',
@@ -732,7 +736,7 @@ export function withAdminAuth(
         return await handler(request, admin);
       } catch (error) {
         console.error('管理员认证中间件错误:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
           { error: '管理员认证失败', code: 'ADMIN_AUTH_FAILED' },
           { status: 401 }
         );
@@ -753,18 +757,18 @@ export function requirePermissions(permissions: string[]) {
       const admin = getAdminFromRequest(request);
       
       if (!admin) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { error: '管理员权限验证失败', code: 'ADMIN_UNAUTHORIZED' },
           { status: 403 }
         );
-      }
+}
 
-      const hasPermission = permissions.every(permission => 
-        admin.permissions.includes(permission) || admin.role === 'super_admin'
+      const hasPermission = permissions.every(permission =>;
+        admin.permissions.includes(permission) || admin.role :== 'super_admin'
       );
 
       if (!hasPermission) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { 
             error: '权限不足', 
             code: 'INSUFFICIENT_PERMISSIONS',
@@ -779,13 +783,13 @@ export function requirePermissions(permissions: string[]) {
   };
 }
 
-// ============= 密码安全 =============
+// :============ 密码安全 =============
 
 /**
  * 哈希密码（使用bcrypt）
  */
 export async function hashPassword(password: string): Promise<string> {
-  const saltRounds = 12; // 提高salt轮数增强安全性
+  const saltRounds = 12; // 提高salt轮数增强安全性;
   return bcrypt.hash(password, saltRounds);
 }
 
@@ -811,7 +815,7 @@ export function validatePasswordStrength(password: string): {
     feedback.push('密码长度至少8位');
   } else {
     score += 1;
-  }
+}
 
   if (!/[a-z]/.test(password)) {
     feedback.push('至少包含一个小写字母');
@@ -844,7 +848,7 @@ export function validatePasswordStrength(password: string): {
   };
 }
 
-// ============= 安全最佳实践 =============
+// :============ 安全最佳实践 =============
 
 /**
  * 生成CSRF Token
@@ -884,7 +888,7 @@ export function checkRateLimit(
       remaining: maxAttempts - 1,
       resetTime: now + windowMs
     };
-  }
+}
 
   if (record.count >= maxAttempts) {
     return {
@@ -914,7 +918,7 @@ export function setSecurityHeaders(response: NextResponse): NextResponse {
   // HTTPS强制
   if (process.env.NODE_ENV === 'production') {
     response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  }
+}
   
   // CSP头（根据需要调整）
   response.headers.set('Content-Security-Policy', 
@@ -924,7 +928,7 @@ export function setSecurityHeaders(response: NextResponse): NextResponse {
   return response;
 }
 
-// ============= 向后兼容 =============
+// :============ 向后兼容 =============
 
 /**
  * 兼容旧版generateToken函数
@@ -948,7 +952,7 @@ export function verifyToken(token: string): { userId: string; telegramId: string
       telegramId: result.telegramId,
       role: 'user'
     };
-  }
+}
   return null;
 }
 
@@ -963,7 +967,7 @@ export function getUserFromRequest(request: Request): { userId: string; telegram
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return null;
-    }
+}
 
     const token = authHeader.substring(7);
     const result = verifyAccessToken(token);
@@ -982,7 +986,7 @@ export function getUserFromRequest(request: Request): { userId: string; telegram
   }
 }
 
-// ============= 类型定义 =============
+// :============ 类型定义 =============
 export interface AuthenticatedUser {
   userId: string;
   telegramId: string;

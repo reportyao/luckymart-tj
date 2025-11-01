@@ -3,8 +3,6 @@ import { prisma } from '@/lib/prisma';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 // 创建权限中间件
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.USERS_READ);
@@ -23,6 +21,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('recommendations_route.ts request failed', error as Error, {
       requestId,
@@ -38,7 +37,7 @@ async function handleGET(request: NextRequest) {
     export async function GET(req: NextRequest) {
       return withReadPermission(req, async (adminUser) => {
         const { searchParams } = new URL(req.url);
-        const position = searchParams.get('position'); // homepage, detail, profile
+        const position = searchParams.get('position'); // homepage, detail, profile;
 
         // 获取推荐配置
         const recommendations = await prisma.showOffRecommendation.findMany({
@@ -79,7 +78,8 @@ async function handleGET(request: NextRequest) {
         };
 
         return NextResponse.json({
-          recommendations: recommendations.map((rec : any) => ({
+  }
+          recommendations: recommendations.map(((rec : any) : any) => ({
             id: rec.id,
             position: rec.position,
             priority: rec.priority,
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (currentCount >= maxCount) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: `该推荐位已满 (最多${maxCount}个)` },
         { status: 400 }
       );
@@ -308,9 +308,9 @@ export async function DELETE(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   return withWritePermission(req, async (adminUser) => {
     const body = await req.json();
-    const { recommendations } = body; // [{ id, priority }]
+    const { recommendations } = body; // [{ id, priority }];
 
-    const updatePromises = recommendations.map((rec: any) : any =>
+    const updatePromises = recommendations.map(((rec: any) : any : any) =>;
       prisma.showOffRecommendation.update({
         where: { id: rec.id },
         data: { priority: rec.priority },
@@ -325,7 +325,7 @@ export async function PUT(req: NextRequest) {
         adminId: adminUser.id,
         action: 'batch_update_recommendation_priority',
         resource: 'show_off_recommendation',
-        resourceId: recommendations.map((r: any) : any => r.id).join(','),
+        resourceId: recommendations.map(((r: any) : any : any) => r.id).join(','),
         details: {
           recommendations,
         },
@@ -334,7 +334,7 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `已更新${recommendations.length}个推荐的优先级`,
+      message: `已更新$个推荐的优先级`,
     });
   });
 }

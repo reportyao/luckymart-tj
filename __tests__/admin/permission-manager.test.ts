@@ -123,7 +123,7 @@ describe('AdminPermissionManager', () => {
         status: 'active' as const,
       };
 
-      const result = await AdminPermissionManager.checkPermission(
+      const result = await AdminPermissionManager.checkPermission(;
         mockAdmin as any,
         AdminPermissions.USERS_READ
       );
@@ -139,7 +139,7 @@ describe('AdminPermissionManager', () => {
         status: 'active' as const,
       };
 
-      const mockPermissions = [
+      const mockPermissions = [;
         {
           id: 'perm-1',
           adminId: 'admin-1',
@@ -151,7 +151,7 @@ describe('AdminPermissionManager', () => {
 
       (prisma.adminPermissions.findMany as jest.Mock).mockResolvedValue(mockPermissions);
 
-      const result = await AdminPermissionManager.checkPermission(
+      const result = await AdminPermissionManager.checkPermission(;
         mockAdmin as any,
         AdminPermissions.USERS_READ
       );
@@ -169,7 +169,7 @@ describe('AdminPermissionManager', () => {
 
       (prisma.adminPermissions.findMany as jest.Mock).mockResolvedValue([]);
 
-      const result = await AdminPermissionManager.checkPermission(
+      const result = await AdminPermissionManager.checkPermission(;
         mockAdmin as any,
         AdminPermissions.PRODUCTS_DELETE
       );
@@ -194,7 +194,7 @@ describe('AdminPermissionManager', () => {
       jwt.verify.mockReturnValue({ adminId: 'admin-1' });
       (prisma.adminUsers.findUnique as jest.Mock).mockResolvedValue(mockAdmin);
 
-      const middleware = AdminPermissionManager.createPermissionMiddleware(
+      const middleware = AdminPermissionManager.createPermissionMiddleware(;
         AdminPermissions.USERS_READ
       );
 
@@ -204,7 +204,7 @@ describe('AdminPermissionManager', () => {
         },
       });
 
-      const mockHandler = jest.fn().mockResolvedValue(
+      const mockHandler = jest.fn().mockResolvedValue(;
         NextResponse.json({ success: true })
       );
 
@@ -215,7 +215,7 @@ describe('AdminPermissionManager', () => {
     });
 
     test('should return 401 for unauthenticated requests', async () => {
-      const middleware = AdminPermissionManager.createPermissionMiddleware(
+      const middleware = AdminPermissionManager.createPermissionMiddleware(;
         AdminPermissions.USERS_READ
       );
 
@@ -244,7 +244,7 @@ describe('AdminPermissionManager', () => {
       (prisma.adminUsers.findUnique as jest.Mock).mockResolvedValue(mockAdmin);
       (prisma.adminPermissions.findMany as jest.Mock).mockResolvedValue([]);
 
-      const middleware = AdminPermissionManager.createPermissionMiddleware(
+      const middleware = AdminPermissionManager.createPermissionMiddleware(;
         AdminPermissions.PRODUCTS_DELETE
       );
 

@@ -1,3 +1,5 @@
+import { UserInfoService } from './services/user-info-service';
+import { Telegraf } from 'telegraf';
 #!/usr/bin/env node
 
 /**
@@ -5,13 +7,10 @@
  * 测试所有用户信息相关功能
  */
 
-import { UserInfoService } from './services/user-info-service';
-import { Telegraf } from 'telegraf';
-import { logger } from './utils/logger';
 
 // 模拟测试用户ID（替换为实际的Telegram用户ID进行测试）
-const TEST_USER_ID = '123456789'; // 示例ID
-const TEST_USER_IDS = ['123456789', '987654321', '555666777']; // 批量测试ID
+const TEST_USER_ID = '123456789'; // 示例ID;
+const TEST_USER_IDS = ['123456789', '987654321', '555666777']; // 批量测试ID;
 
 class UserInfoServiceTester {
   private bot: Telegraf;
@@ -44,6 +43,7 @@ class UserInfoServiceTester {
       await this.testCacheManagement();
       
       console.log('\n✅ 所有测试完成！');
+  }
     } catch (error) {
       console.error('\n❌ 测试失败:', error);
       throw error;
@@ -61,6 +61,7 @@ class UserInfoServiceTester {
       
       if (userInfo) {
         console.log('✅ 获取用户信息成功:');
+  }
         console.log(`   - Telegram ID: ${userInfo.telegramId}`);
         console.log(`   - 用户名: ${userInfo.username || '未设置'}`);
         console.log(`   - 姓名: ${userInfo.firstName}`);
@@ -180,6 +181,7 @@ class UserInfoServiceTester {
         console.log('   - 成功用户列表:');
         batchResult.success.forEach(user => {
           console.log(`     • ${user.telegramId} (${user.firstName})`);
+  }
         });
       }
       
@@ -274,4 +276,4 @@ if (require.main === module) {
   });
 }
 
-export { UserInfoServiceTester };
+export ;

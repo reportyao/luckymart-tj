@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -28,6 +25,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('conversion_route.ts request failed', error as Error, {
       requestId,
@@ -41,7 +39,7 @@ async function handleGET(request: NextRequest) {
 
     // GET - 获取转化漏斗分析数据
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         try {
 
         const { searchParams } = new URL(request.url);
@@ -55,7 +53,7 @@ async function handleGET(request: NextRequest) {
         const where: any = {};
         if (productId) {
           where.product_id = productId;
-        }
+    }
         if (startDate && endDate) {
           where.date = {
             gte: new Date(startDate),
@@ -64,7 +62,7 @@ async function handleGET(request: NextRequest) {
         }
 
         // 获取分页数据
-        const [conversionData, totalCount] = await Promise.all([
+        const [conversionData, totalCount] = await Promise.all([;
           prisma.conversionFunnel.findMany({
             where,
             orderBy: { date: 'desc' },
@@ -136,7 +134,7 @@ async function handleGET(request: NextRequest) {
         const totalPurchases = Number(summary._sum.purchases || 0);
 
         // 转换数据格式
-        const formattedData = conversionData.map((item : any) => {
+        const formattedData = conversionData.map(((item : any) : any) => {
           const pageViews = Number(item.page_views);
           const detailViews = Number(item.detail_page_views);
           const favorites = Number(item.favorites);
@@ -225,7 +223,7 @@ async function handleGET(request: NextRequest) {
 
 // POST - 创建或更新转化漏斗数据
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     try {
 
     const body = await request.json();
@@ -246,7 +244,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必填字段：productId, date'
       }, { status: 400 });
-    }
+}
 
     // 检查商品是否存在
     const product = await prisma.products.findUnique({
@@ -345,4 +343,5 @@ export async function POST(request: NextRequest) {
       }, { status: 500 });
     }
   })(request);
+}
 }

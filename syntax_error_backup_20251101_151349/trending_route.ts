@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -25,13 +24,13 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get('endDate');
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
-    const rankType = searchParams.get('rankType') || 'popularity'; // 'sales', 'popularity', 'search'
+    const rankType = searchParams.get('rankType') || 'popularity'; // 'sales', 'popularity', 'search';
 
     // 构建查询条件
     const where: any = {};
     if (productId) {
       where.product_id = productId;
-    }
+}
     if (startDate && endDate) {
       where.date = {
         gte: new Date(startDate),
@@ -54,7 +53,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 获取分页数据
-    const [trendingData, totalCount] = await Promise.all([
+    const [trendingData, totalCount] = await Promise.all([;
       prisma.productTrending.findMany({
         where,
         orderBy,
@@ -229,6 +228,7 @@ export async function GET(request: NextRequest) {
     } catch (error: any) {
       console.error('获取热销趋势数据失败:', error);
       return NextResponse.json({
+  }
         success: false,
         error: '获取热销趋势数据失败'
       }, { status: 500 });
@@ -260,7 +260,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必填字段：productId, date'
       }, { status: 400 });
-    }
+}
 
     // 检查商品是否存在
     const product = await prisma.products.findUnique({
@@ -306,6 +306,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
+  }
       success: true,
       data: {
         trendingData: {
@@ -343,6 +344,7 @@ export async function PUT(request: NextRequest) {
 
     if (!date || !rankings || !Array.isArray(rankings)) {
       return NextResponse.json({
+}
         success: false,
         error: '缺少必要数据：date, rankings'
       }, { status: 400 });
@@ -445,7 +447,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({
         success: false,
         error: '批量更新排行榜数据失败'
-      }, { status: 500 });
+      }, );
     }
   })(request);
 }

@@ -9,16 +9,16 @@ export async function GET(request: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '请先登录' },
         { status: 401 }
       );
-    }
+}
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
-    const status = searchParams.get('status'); // 可选：筛选特定状态
+    const status = searchParams.get('status'); // 可选：筛选特定状态;
 
     const skip = (page - 1) * limit;
 
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       where.status = status;
     }
 
-    const [posts, total] = await Promise.all([
+    const [posts, total] = await Promise.all([;
       prisma.showOffPosts.findMany({
         where,
         include: {
@@ -116,7 +116,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('获取我的晒单列表失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '获取我的晒单列表失败' },
       { status: 500 }
     );

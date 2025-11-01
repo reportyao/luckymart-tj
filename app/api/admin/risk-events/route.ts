@@ -3,15 +3,13 @@ import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withReadPermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
 const withWritePermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
 // 模拟风险事件数据
-const mockRiskEvents = [
+const mockRiskEvents = [;
   {
     id: 'RE001',
     userId: 'U1001',
@@ -56,6 +54,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('risk-events_route.ts request failed', error as Error, {
       requestId,
@@ -69,7 +68,7 @@ async function handleGET(request: NextRequest) {
     ];
 
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
       try {
         const { searchParams } = new URL(request.url);
         const page = parseInt(searchParams.get('page') || '1');
@@ -83,19 +82,19 @@ async function handleGET(request: NextRequest) {
         let filteredEvents = mockRiskEvents;
 
         if (riskLevel && riskLevel !== 'all') {
-          filteredEvents = filteredEvents.filter((event : any) => event.riskLevel === riskLevel);
-        }
+          filteredEvents = filteredEvents.filter(((event : any) : any) => event.riskLevel === riskLevel);
+    }
 
         if (status && status !== 'all') {
-          filteredEvents = filteredEvents.filter((event : any) => event.status === status);
+          filteredEvents = filteredEvents.filter(((event : any) : any) => event.status === status);
         }
 
         if (eventType && eventType !== 'all') {
-          filteredEvents = filteredEvents.filter((event : any) => event.eventType === eventType);
+          filteredEvents = filteredEvents.filter(((event : any) : any) => event.eventType === eventType);
         }
 
         if (search) {
-          filteredEvents = filteredEvents.filter((event : any) => 
+          filteredEvents = filteredEvents.filter(((event : any) : any) => 
             event.userName.toLowerCase().includes(search.toLowerCase()) ||
             event.id.toLowerCase().includes(search.toLowerCase())
           );
@@ -121,7 +120,8 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取风险事件失败:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
+  }
           { success: false, error: '获取数据失败' },
           { status: 500 }
         );
@@ -130,17 +130,17 @@ async function handleGET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
   try {
     const body = await request.json();
     const { userId, eventType, riskLevel, description, riskScore } = body;
 
     if (!userId || !eventType || !description || riskScore === undefined) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少必需参数' },
         { status: 400 }
       );
-    }
+}
 
     const newEvent = {
       id: `RE${String(mockRiskEvents.length + 1).padStart(3, '0')}`,
@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'创建风险事件失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '创建失败' },
       { status: 500 }
     );

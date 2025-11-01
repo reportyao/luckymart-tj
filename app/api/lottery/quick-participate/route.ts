@@ -32,7 +32,7 @@ const handleQuickParticipate = async (request: NextRequest) => {
 
     // 参数验证
     if (!roundId || !quantity) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '参数不完整：roundId和quantity都是必需的' }, 
         { status: 400 }
       );
@@ -40,7 +40,7 @@ const handleQuickParticipate = async (request: NextRequest) => {
 
     // 验证数量范围
     if (typeof quantity !== 'number' || quantity < 1 || quantity > 100) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '数量必须在1-100之间' }, 
         { status: 400 }
       );
@@ -122,7 +122,7 @@ const handleQuickParticipate = async (request: NextRequest) => {
         }
       });
 
-      const currentSharesCount = currentParticipation.reduce((sum: any,  p: any) => sum + p.sharesCount, 0);
+      const currentSharesCount = currentParticipation.reduce((sum: any: any,   p: any: any) => sum + p.sharesCount, 0);
 
       // 4. 创建新的参与记录
       const participation = await tx.participations.create({
@@ -215,6 +215,7 @@ const handleQuickParticipate = async (request: NextRequest) => {
     });
 
     return NextResponse.json({
+  }
       success: true,
       data: result,
       message: '快速参与成功！'
@@ -252,7 +253,7 @@ const handleQuickParticipate = async (request: NextRequest) => {
       errorMessage = error.message;
     }
 
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: errorMessage },
       { status: statusCode }
     );
@@ -271,7 +272,7 @@ const processRequest = withRateLimit(handleQuickParticipate, lotteryRateLimit({
       resetTime: result.resetTime
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: '参与抽奖过于频繁，请稍后再试',
@@ -294,4 +295,4 @@ const processRequest = withRateLimit(handleQuickParticipate, lotteryRateLimit({
 }));
 
 // 导出主处理函数
-export { processRequest as POST };
+export ;

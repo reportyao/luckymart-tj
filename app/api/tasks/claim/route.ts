@@ -29,16 +29,16 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
 
     // 验证输入参数
     if (!taskType) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('任务类型不能为空', 'TASK_TYPE_REQUIRED'),
         { status: 400 }
       );
-    }
+}
 
     // 验证任务类型
     const validTaskTypes = ['register', 'first_recharge', 'first_lottery'];
     if (!validTaskTypes.includes(taskType)) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('无效的任务类型', 'INVALID_TASK_TYPE'),
         { status: 400 }
       );
@@ -52,7 +52,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     // 速率限制检查
     const clientIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     const rateLimitKey = `claim_${userId}_${taskType}`;
-    const rateLimit = checkRateLimit(rateLimitKey, 3, 60 * 1000); // 每分钟最多3次领取尝试
+    const rateLimit = checkRateLimit(rateLimitKey, 3, 60 * 1000); // 每分钟最多3次领取尝试;
 
     if (!rateLimit.allowed) {
       logger.warn('领取任务奖励频率超限', { userId, taskType, rateLimit }, {
@@ -60,7 +60,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.rateLimitExceeded('领取过于频繁，请稍后再试', 'RATE_LIMIT_EXCEEDED'),
         { status: 429 }
       );
@@ -73,18 +73,18 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     });
 
     if (!userRecord) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.notFound('用户不存在'),
         { status: 404 }
       );
     }
 
     // 调用数据库函数领取奖励
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       SELECT claim_task_reward(${userId}, ${taskType}) as result
     `;
 
-    if (!result || result.length === 0 || !result[0].result) {
+    if (!result || result.length === 0 || !(result?.0 ?? null).result) {
       const errorResult = result?.[0]?.result;
       
       if (errorResult && !errorResult.success) {
@@ -124,7 +124,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
           method: 'POST'
         });
 
-        return NextResponse.json<ApiResponse>(
+        return NextResponse.json<ApiResponse>(;
           ApiResponse.badRequest(errorMessage, errorCode),
           { status: statusCode }
         );
@@ -133,7 +133,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       }
     }
 
-    const claimResult = result[0].result;
+    const claimResult = (result?.0 ?? null).result;
     
     // 获取更新后的用户余额信息
     const updatedUser = await prisma.users.findUnique({
@@ -142,14 +142,14 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     });
 
     // 获取任务详细信息用于响应
-    const taskInfo = await prisma.$queryRaw`
+    const taskInfo = await prisma.$queryRaw`;
       SELECT 
         t.name_multilingual,
         t.description_multilingual,
         t.reward_amount,
         t.reward_type
       FROM new_user_tasks t
-      WHERE t.task_type = ${taskType} AND t.is_active = true
+      WHERE t.task_type : ${taskType} AND t.is_active = true
     `;
 
     const task = taskInfo[0];
@@ -157,11 +157,11 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     const nameMultilingual = task?.name_multilingual || {};
     const descriptionMultilingual = task?.description_multilingual || {};
     
-    const taskName = nameMultilingual[userLanguage] || 
+    const taskName = nameMultilingual[userLanguage] ||;
                     nameMultilingual['en-US'] || 
                     taskType;
                     
-    const taskDescription = descriptionMultilingual[userLanguage] || 
+    const taskDescription = descriptionMultilingual[userLanguage] ||;
                            descriptionMultilingual['en-US'] || 
                            taskType;
 
@@ -217,7 +217,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       method: 'POST'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('领取奖励失败，请稍后重试'),
       { status: 500 }
     );

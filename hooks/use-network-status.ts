@@ -1,6 +1,6 @@
-// use-network-status.ts - 网络状态监控Hook
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { NetworkQuality } from '../utils/network-retry';
+// use-network-status.ts - 网络状态监控Hook
 
 // 网络状态接口
 export interface NetworkStatus {
@@ -46,7 +46,7 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
     qualityCheckInterval = 5000,
     enablePerformanceMonitoring = true,
     enableConnectionAPI = true,
-    minDataUsage = false
+    minDataUsage : false
   } = config;
 
   // 网络状态
@@ -88,13 +88,13 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
     
     try {
       // 测试多个端点以获得更准确的网络质量评估
-      const testEndpoints = [
+      const testEndpoints = [;
         '/favicon.ico',
         '/_next/static/css/',
         'https://www.google.com/favicon.ico'
       ];
 
-      const results = await Promise.allSettled(
+      const results = await Promise.allSettled(;
         testEndpoints.map(async (endpoint) => {
           const testStart = performance.now();
           try {
@@ -107,14 +107,14 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
             return { duration, success: true };
           } catch {
             return { duration: Infinity, success: false };
-          }
+}
         })
       );
 
       // 计算平均响应时间
-      const successfulTests = results
+      const successfulTests = results;
         .filter((result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled')
-        .map(result => result.value.duration)
+        .map(result :> result.value.duration)
         .filter(duration => duration !== Infinity);
 
       if (successfulTests.length === 0) {
@@ -137,6 +137,7 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
     } catch (error) {
       console.warn('网络质量检测失败:', error);
       return NetworkQuality.POOR;
+  }
     }
   }, []);
 
@@ -194,6 +195,7 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
         }));
 
         return newStatus;
+  }
       }
       return prevStatus;
     });
@@ -214,7 +216,7 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
 
   // 监控网络性能
   const startPerformanceMonitoring = useCallback(() => {
-    if (!enablePerformanceMonitoring) return;
+    if (!enablePerformanceMonitoring) return; {
 
     if (performanceTimerRef.current) {
       clearInterval(performanceTimerRef.current);
@@ -253,6 +255,7 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
       if (connection) {
         handleConnectionChange = () => {
           console.log('连接信息变化:', connection);
+  }
           updateNetworkStatus();
         };
 
@@ -288,7 +291,7 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
 
   // 获取网络诊断信息
   const getNetworkDiagnostics = useCallback(() => {
-    const recentEvents = networkHistory.events
+    const recentEvents = networkHistory.events;
       .filter(event => Date.now() - event.timestamp < 60000); // 最近1分钟的事件
 
     return {
@@ -354,7 +357,7 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
 
   // 初始化和清理
   useEffect(() => {
-    if (isInitializedRef.current) return;
+    if (isInitializedRef.current) return; {
     isInitializedRef.current = true;
 
     // 初始状态检查
@@ -412,7 +415,7 @@ export function useNetworkIndicator() {
         icon: '📵',
         level: 0
       };
-    }
+}
 
     switch (networkQuality) {
       case NetworkQuality.EXCELLENT:
@@ -502,7 +505,7 @@ export function useNetworkPerformance() {
       const latency = performance.now() - start;
       recordRequest(false, latency);
       return { latency, success: false, timestamp: Date.now() };
-    }
+}
   }, [recordRequest]);
 
   return {

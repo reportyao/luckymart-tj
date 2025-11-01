@@ -1,11 +1,9 @@
+import { NotificationService } from './services/notification-service';
+import { Language } from './utils/notification-templates';
 /**
  * 多语言通知系统测试脚本
  */
 
-import { Telegraf } from 'telegraf';
-import { NotificationService } from './services/notification-service';
-import { Language } from './utils/notification-templates';
-import { logger } from './utils/logger';
 
 // 模拟Bot实例
 const mockBot = {
@@ -37,6 +35,7 @@ async function testNotificationService() {
     });
     
     console.log('✅ 通知服务初始化成功');
+  }
     console.log('📊 服务统计:', notificationService.getServiceStats());
     
     // 测试数据
@@ -68,6 +67,7 @@ async function testNotificationService() {
       await notificationService.sendBalanceQuery(testTelegramId, testChatId);
     } catch (error) {
       console.log('⚠️  预期的错误（用户不存在）:', (error as Error).message);
+  }
     }
     
     // 等待消息处理完成
@@ -143,4 +143,4 @@ if (require.main === module) {
   main().catch(console.error);
 }
 
-export { testNotificationService, testLanguageSupport };
+export ;

@@ -1,15 +1,13 @@
+import { NextRequest, NextResponse } from 'next/server';
+import {
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
 /**
  * 产品API路由 - 多语言版本
  * 
  * 支持根据用户语言偏好返回翻译后的产品数据
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import {
-import { getLogger } from '@/lib/logger';
-import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
   ProductMultilingualService,
   type SupportedLanguage,
 } from '@/lib/services/multilingual-query';
@@ -33,6 +31,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('products_route.ts request failed', error as Error, {
       requestId,
@@ -59,7 +58,7 @@ async function handleGET(request: NextRequest) {
         // 验证语言参数
         const validLanguages: SupportedLanguage[] = ['zh-CN', 'en-US', 'ru-RU', 'tg-TJ'];
         if (!validLanguages.includes(language)) {
-          return NextResponse.json(
+          return NextResponse.json(;
             {
               success: false,
               error: {
@@ -69,10 +68,10 @@ async function handleGET(request: NextRequest) {
             },
             { status: 400 }
           );
-        }
+    }
 
         // 使用多语言服务查询产品
-        const products = await ProductMultilingualService.getProductsByLanguage(
+        const products = await ProductMultilingualService.getProductsByLanguage(;
           language,
           {
             category,
@@ -82,7 +81,7 @@ async function handleGET(request: NextRequest) {
         );
 
         // 过滤状态
-        const filteredProducts = products.filter((p : any) => p.status === status);
+        const filteredProducts = products.filter(((p : any) : any) => p.status === status);
 
         return NextResponse.json({
           success: true,
@@ -102,7 +101,7 @@ async function handleGET(request: NextRequest) {
           endpoint: request.url
         });'产品查询错误:', error);
     
-        return NextResponse.json(
+        return NextResponse.json(;
           {
             success: false,
             error: {

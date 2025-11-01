@@ -1,7 +1,6 @@
-// 管理员权限验证测试
-import { getAdminFromRequest, verifyAdminToken } from '@/lib/auth';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { NextRequest } from 'next/server';
+// 管理员权限验证测试
 
 // 模拟管理员请求对象
 function createMockRequest(token: string): Partial<NextRequest> {

@@ -1,8 +1,3 @@
-/**
- * 移动端UI适配测试套件
- * 测试各种屏幕尺寸和语言长度下的显示效果
- */
-
 import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { LanguageSwitcherMobile } from '../components/LanguageSwitcherMobile';
@@ -13,6 +8,11 @@ import { TouchFeedback } from '../components/TouchFeedback';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../src/i18n';
 import type { SupportedLanguage } from '../src/i18n/config';
+/**
+ * 移动端UI适配测试套件
+ * 测试各种屏幕尺寸和语言长度下的显示效果
+ */
+
 
 // 模拟屏幕尺寸设备配置
 const mockDevices = {
@@ -104,7 +104,7 @@ describe('移动端UI适配测试', () => {
       test(`${deviceName} (${dimensions.width}x${dimensions.height}) 显示测试`, async () => {
         mockScreenSize(dimensions.width, dimensions.height);
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <div style={{ width: dimensions.width }}>
               <LanguageSwitcherMobile />
@@ -137,7 +137,7 @@ describe('移动端UI适配测试', () => {
     test('超小屏幕 (320px) 下的布局测试', () => {
       mockScreenSize(320, 568);
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <LanguageSwitcherMobile />
         </I18nextProvider>
@@ -159,7 +159,7 @@ describe('移动端UI适配测试', () => {
       for (const lang of languages) {
         i18n.changeLanguage(lang);
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <LanguageSwitcherMobile />
           </I18nextProvider>
@@ -178,7 +178,7 @@ describe('移动端UI适配测试', () => {
     });
 
     test('语言切换触摸区域测试', async () => {
-      const { container, rerender } = render(
+      const { container, rerender } = render(;
         <I18nextProvider i18n={i18n}>
           <LanguageSwitcherMobile />
         </I18nextProvider>
@@ -204,12 +204,12 @@ describe('移动端UI适配测试', () => {
       Object.entries(mockDevices).forEach(([deviceName, dimensions]) => {
         mockScreenSize(dimensions.width, dimensions.height);
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <MobileLanguageBottomSheet
               isOpen={true}
               onClose={jest.fn()}
-              currentLanguage="tg-TJ"
+              currentLanguage:"tg-TJ"
               onLanguageChange={jest.fn()}
             />
           </I18nextProvider>
@@ -230,12 +230,12 @@ describe('移动端UI适配测试', () => {
       mockScreenSize(390, 844); // iPhone 12
       
       const onClose = jest.fn();
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileLanguageBottomSheet
             isOpen={true}
             onClose={onClose}
-            currentLanguage="tg-TJ"
+            currentLanguage:"tg-TJ"
             onLanguageChange={jest.fn()}
           />
         </I18nextProvider>
@@ -272,11 +272,11 @@ describe('移动端UI适配测试', () => {
       mockScreenSize(320, 568);
       
       Object.entries(testTexts).forEach(([lang, text]) => {
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <MobileText 
               text={text} 
-              context="title"
+              context:"title"
               enableTruncation={true}
               maxChars={20}
             />
@@ -297,10 +297,10 @@ describe('移动端UI适配测试', () => {
       mockScreenSize(390, 844);
       
       contexts.forEach(context => {
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <MobileText 
-              text="测试文本" 
+              text:"测试文本" 
               context={context}
               enableTruncation={true}
             />
@@ -321,7 +321,7 @@ describe('移动端UI适配测试', () => {
       Object.entries(mockDevices).forEach(([deviceName, dimensions]) => {
         mockScreenSize(dimensions.width, dimensions.height);
         
-        const leftActions = [
+        const leftActions = [;
           {
             id: 'delete',
             text: '删除',
@@ -330,7 +330,7 @@ describe('移动端UI适配测试', () => {
           }
         ];
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <SwipeActions leftActions={leftActions}>
               <div>测试内容</div>
@@ -355,7 +355,7 @@ describe('移动端UI适配测试', () => {
       mockScreenSize(320, 568);
       
       const onSwipeEnd = jest.fn();
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <SwipeActions
             leftActions={[
@@ -392,9 +392,9 @@ describe('移动端UI适配测试', () => {
       Object.entries(mockDevices).forEach(([deviceName, dimensions]) => {
         mockScreenSize(dimensions.width, dimensions.height);
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
-            <TouchFeedback type="ripple" hapticIntensity="light">
+            <TouchFeedback type:"ripple" hapticIntensity="light">
               <button style={{ minHeight: '44px', minWidth: '44px' }}>触摸测试</button>
             </TouchFeedback>
           </I18nextProvider>
@@ -418,7 +418,7 @@ describe('移动端UI适配测试', () => {
       const feedbackTypes = ['ripple', 'scale', 'glow', 'color'] as const;
       
       feedbackTypes.forEach(type => {
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <TouchFeedback type={type}>
               <div>反馈测试</div>
@@ -434,7 +434,7 @@ describe('移动端UI适配测试', () => {
 
   describe('响应式设计正确性验证测试', () => {
     test('断点适配测试', async () => {
-      const breakpoints = [
+      const breakpoints = [;
         { name: 'mobile', width: 320 },
         { name: 'tablet', width: 768 },
         { name: 'desktop', width: 1024 },
@@ -443,11 +443,11 @@ describe('移动端UI适配测试', () => {
       for (const breakpoint of breakpoints) {
         mockScreenSize(breakpoint.width, 600);
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <MobileText 
-              text="响应式测试文本" 
-              context="title"
+              text:"响应式测试文本" 
+              context:"title"
               responsive={{
                 enabled: true,
                 breakpoints: {
@@ -483,7 +483,7 @@ describe('移动端UI适配测试', () => {
         const handleTouchStart = jest.fn();
         const handleTouchEnd = jest.fn();
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <TouchFeedback 
               onTouchStart={handleTouchStart}
@@ -523,7 +523,7 @@ describe('移动端UI性能测试', () => {
   test('渲染性能测试', () => {
     const startTime = performance.now();
     
-    const { container } = render(
+    const { container } = render(;
       <I18nextProvider i18n={i18n}>
         <LanguageSwitcherMobile />
       </I18nextProvider>
@@ -539,12 +539,12 @@ describe('移动端UI性能测试', () => {
   test('内存使用测试', () => {
     // 模拟多次渲染和卸载
     for (let i = 0; i < 10; i++) {
-      const { unmount } = render(
+      const { unmount } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileLanguageBottomSheet
             isOpen={true}
             onClose={jest.fn()}
-            currentLanguage="tg-TJ"
+            currentLanguage:"tg-TJ"
             onLanguageChange={jest.fn()}
           />
         </I18nextProvider>
@@ -561,7 +561,7 @@ describe('移动端UI性能测试', () => {
 // 无障碍测试
 describe('移动端UI无障碍测试', () => {
   test('触摸区域无障碍测试', () => {
-    const { container } = render(
+    const { container } = render(;
       <I18nextProvider i18n={i18n}>
         <LanguageSwitcherMobile />
       </I18nextProvider>
@@ -582,9 +582,9 @@ describe('移动端UI无障碍测试', () => {
   });
 
   test('语义化标签测试', () => {
-    const { container } = render(
+    const { container } = render(;
       <I18nextProvider i18n={i18n}>
-        <MobileText text="测试文本" context="title" as="h1" />
+        <MobileText text:"测试文本" context="title" as="h1" />
       </I18nextProvider>
     );
     

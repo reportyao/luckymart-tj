@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -15,7 +13,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  return withReadPermission(async (request: any, admin: any) => {
+  return withReadPermission(async (request: any: any, admin: any: any) => {
     try {
     const productId = params.id;
 
@@ -28,7 +26,7 @@ export async function GET(
         success: false,
         error: '商品不存在'
       }, { status: 404 });
-    }
+}
 
     return NextResponse.json({
       success: true,
@@ -59,9 +57,10 @@ export async function GET(
       endpoint: request.url
     });'获取商品详情失败:', error);
       return NextResponse.json({
+  }
         success: false,
         error: '获取商品详情失败'
-      }, { status: 500 });
+      }, );
     }
   })(request);
 }

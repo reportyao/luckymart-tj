@@ -1,10 +1,4 @@
-/**
- * Telegram Bot 功能测试套件
- * 验证Bot命令处理、多语言响应、通知模板、消息队列和重试机制
- */
-
 import { describe, test, expect, beforeAll, afterAll, beforeEach, jest } from '@jest/globals';
-import { Telegraf, Markup } from 'telegraf';
 import { prisma } from '../lib/prisma';
 import { NotificationService } from '../bot/services/notification-service';
 import { UserInfoService } from '../bot/services/user-info-service';
@@ -13,6 +7,11 @@ import { MessageQueue } from '../bot/utils/message-queue';
 import { NotificationTemplateManager, Language, NotificationType } from '../bot/utils/notification-templates';
 import { faultToleranceManager } from '../bot/utils/fault-tolerance-manager';
 import { logger } from '../bot/utils/logger';
+/**
+ * Telegram Bot 功能测试套件
+ * 验证Bot命令处理、多语言响应、通知模板、消息队列和重试机制
+ */
+
 
 // 模拟 Telegram Bot
 const mockBot = {
@@ -239,7 +238,7 @@ describe('Telegram Bot 功能测试', () => {
       });
 
       expect(orders).toHaveLength(1);
-      expect(orders[0].orderNumber).toBe(order.orderNumber);
+      expect((orders?.0 ?? null).orderNumber).toBe(order.orderNumber);
     }, 30000);
 
     test('/help 命令 - 帮助信息', async () => {

@@ -1,3 +1,7 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { withAuth } from '@/lib/auth';
+import { getLogger } from '@/lib/logger';
 /**
  * 首充奖励状态查询API
  * GET /api/rewards/first-recharge/status
@@ -5,13 +9,9 @@
  * 查询用户的首充奖励状态和可用奖励信息
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { withAuth } from '@/lib/auth';
-import { getLogger } from '@/lib/logger';
 
 // 首充奖励配置
-const FIRST_RECHARGE_REWARDS = [
+const FIRST_RECHARGE_REWARDS = [;
   { amount: 10, reward: 2, rate: 0.20, type: 'lucky_coins' },
   { amount: 20, reward: 5, rate: 0.25, type: 'lucky_coins' },
   { amount: 50, reward: 15, rate: 0.30, type: 'lucky_coins' },
@@ -76,6 +76,7 @@ async function checkExistingRecharge(userId: string): Promise<{
   } catch (error) {
     console.error('检查用户充值记录失败:', error);
     return {
+  }
       hasRecharge: false
     };
   }
@@ -111,7 +112,7 @@ async function getFirstRechargeStatus(userId: string) {
     }));
 
     // 如果已领取，获取已领取的奖励信息
-    let claimedReward = null;
+    let claimedReward: any = null;
     if (hasClaimed && existingReward) {
       const rewardTier = FIRST_RECHARGE_REWARDS.find(tier => tier.amount === Number(existingReward.rechargeAmount));
       claimedReward = {
@@ -123,6 +124,7 @@ async function getFirstRechargeStatus(userId: string) {
     }
 
     return {
+  }
       isEligible,
       hasClaimed,
       hasRecharge: rechargeCheck.hasRecharge,
@@ -166,13 +168,13 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         method: 'GET'
       });
       
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: {
             code: 'UNAUTHORIZED',
             message: '用户身份验证失败'
-          }
+}
         },
         { status: 401 }
       );
@@ -196,7 +198,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       error: error.message
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: {
@@ -205,7 +207,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
           details: error.message
         }
       },
-      { status: 500 }
+      
     );
   }
 });

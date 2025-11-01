@@ -1,10 +1,10 @@
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { TestDataGenerator, PerformanceTester } from './test-config';
 /**
  * 小数精度返利计算测试
  * 测试精确的浮点数计算和精度处理
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { TestDataGenerator, PerformanceTester } from './test-config';
 
 // 模拟高精度计算库
 jest.mock('decimal.js', () => ({
@@ -115,13 +115,13 @@ class PreciseCalculator {
     const [int2, dec2 = ''] = str2.split('.');
     
     // 放大分子和分母以处理小数
-    const scale = 18; // 最多18位小数精度
+    const scale = 18; // 最多18位小数精度;
     const scaledNum1 = parseInt(int1 + dec1 + '0'.repeat(scale - dec1.length), 10) * Math.pow(10, scale);
     const scaledNum2 = parseInt(int2 + dec2 + '0'.repeat(scale - dec2.length), 10);
     
     const result = Math.floor(scaledNum1 / scaledNum2);
     const resultStr = result.toString();
-    const totalDecLength = scale + scale; // 被除数扩大了scale位，除数扩大了scale位
+    const totalDecLength = scale + scale; // 被除数扩大了scale位，除数扩大了scale位;
     
     const resultInt = resultStr.slice(0, -totalDecLength) || '0';
     const resultDec = resultStr.slice(-totalDecLength).padStart(totalDecLength, '0');
@@ -184,7 +184,7 @@ class RebateCalculator {
     const effectiveRate = PreciseCalculator.divide(multipliedRebate, amount);
     
     // 步骤4: 检查最小返利阈值
-    const rebateAfterThreshold = PreciseCalculator.compare(multipliedRebate, this.MIN_REBATE_THRESHOLD.toString()) >= 0 
+    const rebateAfterThreshold = PreciseCalculator.compare(multipliedRebate, this.MIN_REBATE_THRESHOLD.toString()) >= 0;
       ? multipliedRebate 
       : '0';
     
@@ -218,7 +218,7 @@ class RebateCalculator {
         rebateByLevel[level] = '0';
       }
       
-      rebateByLevel[level] = PreciseCalculator.add(rebateByLevel[level], roundedRebate);
+      (rebateByLevel?.level ?? null) = PreciseCalculator.add((rebateByLevel?.level ?? null), roundedRebate);
       totalRebate = PreciseCalculator.add(totalRebate, roundedRebate);
     });
     
@@ -241,7 +241,7 @@ class RebateCalculator {
     const actualRate = PreciseCalculator.divide(rebateAmount, originalAmount);
     const deviation = PreciseCalculator.subtract(actualRate, expectedRate.toString());
     
-    const isValid = Math.abs(parseFloat(deviation)) < 0.000001; // 允许1e-6的误差
+    const isValid = Math.abs(parseFloat(deviation)) < 0.000001; // 允许1e-6的误差;
     
     return {
       isValid,
@@ -266,7 +266,7 @@ describe('小数精度返利计算测试', () => {
 
   describe('基础精度计算测试', () => {
     test('加法精度测试', () => {
-      const testCases = [
+      const testCases = [;
         { a: '0.1', b: '0.2', expected: '0.3' },
         { a: '1.23456789', b: '9.87654321', expected: '11.11111110' },
         { a: '1000000.00000001', b: '0.00000001', expected: '1000000.00000002' },
@@ -280,7 +280,7 @@ describe('小数精度返利计算测试', () => {
     });
 
     test('减法精度测试', () => {
-      const testCases = [
+      const testCases = [;
         { a: '1.0', b: '0.1', expected: '0.9' },
         { a: '10.00000000', b: '0.00000001', expected: '9.99999999' },
         { a: '100.555', b: '0.555', expected: '100.000' },
@@ -293,7 +293,7 @@ describe('小数精度返利计算测试', () => {
     });
 
     test('乘法精度测试', () => {
-      const testCases = [
+      const testCases = [;
         { a: '0.1', b: '0.2', expected: '0.02' },
         { a: '123.456', b: '78.9', expected: '9737.0784' },
         { a: '0.33333333', b: '3', expected: '0.99999999' },
@@ -307,7 +307,7 @@ describe('小数精度返利计算测试', () => {
     });
 
     test('除法精度测试', () => {
-      const testCases = [
+      const testCases = [;
         { a: '1', b: '3', expected: '0.333333333333333333' }, // 18位精度
         { a: '10', b: '3', expected: '3.333333333333333333' },
         { a: '1', b: '7', expected: '0.142857142857142857' },
@@ -320,7 +320,7 @@ describe('小数精度返利计算测试', () => {
     });
 
     test('四舍五入精度测试', () => {
-      const testCases = [
+      const testCases = [;
         { num: '3.14159265', precision: 2, expected: '3.14' },
         { num: '3.14159265', precision: 4, expected: '3.1416' },
         { num: '0.000000009', precision: 8, expected: '0.00000001' },
@@ -334,7 +334,7 @@ describe('小数精度返利计算测试', () => {
     });
 
     test('比较运算精度测试', () => {
-      const testCases = [
+      const testCases = [;
         { a: '1.00000000', b: '1.00000000', expected: 0 },
         { a: '1.00000001', b: '1.00000000', expected: 1 },
         { a: '0.99999999', b: '1.00000000', expected: -1 },
@@ -350,7 +350,7 @@ describe('小数精度返利计算测试', () => {
 
   describe('返利计算精确性测试', () => {
     test('基础返利计算', () => {
-      const testCases = [
+      const testCases = [;
         {
           amount: '100.00',
           rate: '0.05', // 5%
@@ -396,7 +396,7 @@ describe('小数精度返利计算测试', () => {
 
       Object.entries(tierMultipliers).forEach(([level, multiplier]) => {
         const result = rebateCalculator.calculateRebate(baseAmount, baseRate, parseInt(level), multiplier);
-        const expectedRebate = PreciseCalculator.multiply(
+        const expectedRebate = PreciseCalculator.multiply(;
           PreciseCalculator.multiply(baseAmount, baseRate),
           multiplier.toString()
         );
@@ -406,7 +406,7 @@ describe('小数精度返利计算测试', () => {
     });
 
     test('最小返利阈值处理', () => {
-      const testCases = [
+      const testCases = [;
         {
           amount: '0.001',
           rate: '0.05',
@@ -431,7 +431,7 @@ describe('小数精度返利计算测试', () => {
     });
 
     test('极值返利计算', () => {
-      const testCases = [
+      const testCases = [;
         {
           description: '极大金额返利',
           amount: '999999999999.99',
@@ -461,7 +461,7 @@ describe('小数精度返利计算测试', () => {
 
   describe('复合返利计算测试', () => {
     test('多层级返利汇总', () => {
-      const rebates = [
+      const rebates = [;
         { amount: '1000.00', rate: '0.10', level: 1 },
         { amount: '1000.00', rate: '0.08', level: 2 },
         { amount: '1000.00', rate: '0.06', level: 3 },
@@ -472,11 +472,11 @@ describe('小数精度返利计算测试', () => {
       const result = rebateCalculator.calculateTotalRebate(rebates);
       
       // 验证每层返利
-      expect(result.rebateByLevel[1]).toBe('100.00000000');
-      expect(result.rebateByLevel[2]).toBe('80.00000000');
-      expect(result.rebateByLevel[3]).toBe('60.00000000');
-      expect(result.rebateByLevel[4]).toBe('40.00000000');
-      expect(result.rebateByLevel[5]).toBe('20.00000000');
+      expect(result.(rebateByLevel?.1 ?? null)).toBe('100.00000000');
+      expect(result.(rebateByLevel?.2 ?? null)).toBe('80.00000000');
+      expect(result.(rebateByLevel?.3 ?? null)).toBe('60.00000000');
+      expect(result.(rebateByLevel?.4 ?? null)).toBe('40.00000000');
+      expect(result.(rebateByLevel?.5 ?? null)).toBe('20.00000000');
       
       // 验证总返利
       expect(result.totalRebate).toBe('300.00000000');
@@ -513,7 +513,7 @@ describe('小数精度返利计算测试', () => {
 
   describe('返利计算验证测试', () => {
     test('返利结果验证', () => {
-      const testCases = [
+      const testCases = [;
         {
           originalAmount: '100.00',
           rebateAmount: '5.00',
@@ -547,15 +547,15 @@ describe('小数精度返利计算测试', () => {
 
     test('浮点数精度问题修复', () => {
       // JavaScript浮点数精度问题示例
-      const jsFloatResult = 0.1 + 0.2; // 0.30000000000000004
-      const preciseResult = PreciseCalculator.add('0.1', '0.2'); // 0.3
+      const jsFloatResult = 0.1 + 0.2; // 0.30000000000000004;
+      const preciseResult = PreciseCalculator.add('0.1', '0.2'); // 0.3;
       
       expect(jsFloatResult).not.toBe(0.3);
       expect(preciseResult).toBe('0.3');
       
       // 测试乘法精度问题
-      const jsFloatMultiply = 0.1 * 0.2; // 0.020000000000000004
-      const preciseMultiply = PreciseCalculator.multiply('0.1', '0.2'); // 0.02
+      const jsFloatMultiply = 0.1 * 0.2; // 0.020000000000000004;
+      const preciseMultiply = PreciseCalculator.multiply('0.1', '0.2'); // 0.02;
       
       expect(jsFloatMultiply).not.toBe(0.02);
       expect(preciseMultiply).toBe('0.02');
@@ -628,7 +628,7 @@ describe('小数精度返利计算测试', () => {
         };
       };
 
-      const { results, totalTime, averageTime } = await PerformanceTester.testConcurrency(
+      const { results, totalTime, averageTime } = await PerformanceTester.testConcurrency(;
         () => calculateUserRebate(`user-${Math.floor(Math.random() * concurrentUsers)}`),
         concurrentUsers
       );
@@ -642,7 +642,7 @@ describe('小数精度返利计算测试', () => {
 
   describe('返利计算边界测试', () => {
     test('边界值精度测试', () => {
-      const boundaryCases = [
+      const boundaryCases = [;
         {
           description: '最小正数',
           amount: '0.00000001',
@@ -670,7 +670,7 @@ describe('小数精度返利计算测试', () => {
     });
 
     test('极端精度测试', () => {
-      const extremePrecision = [
+      const extremePrecision = [;
         {
           amount: '1.000000000000000001',
           rate: '1.000000000000000001',
@@ -696,7 +696,7 @@ describe('小数精度返利计算测试', () => {
     });
 
     test('数值溢出处理', () => {
-      const overflowCases = [
+      const overflowCases = [;
         {
           description: '超大金额',
           amount: Number.MAX_VALUE.toString(),
@@ -726,7 +726,7 @@ describe('小数精度返利计算测试', () => {
       // 模拟完整的返利计算流程
       
       // 1. 用户消费记录
-      const consumptionRecords = [
+      const consumptionRecords = [;
         { userId: 'user-1', amount: '1500.00', timestamp: new Date() },
         { userId: 'user-2', amount: '750.50', timestamp: new Date() },
         { userId: 'user-3', amount: '3200.75', timestamp: new Date() },
@@ -772,11 +772,11 @@ describe('小数精度返利计算测试', () => {
       };
 
       Object.entries(expectedRebates).forEach(([level, expected]) => {
-        expect(rebateBreakdown[level]).toBe(expected);
+        expect((rebateBreakdown?.level ?? null)).toBe(expected);
       });
 
       // 验证总返利
-      const expectedTotal = PreciseCalculator.add(
+      const expectedTotal = PreciseCalculator.add(;
         PreciseCalculator.add(
           PreciseCalculator.add(
             PreciseCalculator.add(expectedRebates['level-1'], expectedRebates['level-2']),
@@ -791,7 +791,7 @@ describe('小数精度返利计算测试', () => {
     });
 
     test('返利计算错误处理', async () => {
-      const errorCases = [
+      const errorCases = [;
         {
           description: '无效金额',
           amount: 'invalid',

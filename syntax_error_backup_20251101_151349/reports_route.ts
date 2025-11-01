@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -10,7 +10,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // 创建权限中间件
-const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read
 ]);
 
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
     const limit = parseInt(searchParams.get('limit') || '50');
 
-    let query = supabase
+    let query = supabase;
       .from('financial_reports')
       .select('*')
       .order('created_at', { ascending: false })
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     if (reportType) {
       query = query.eq('report_type', reportType);
-    }
+}
 
     if (status) {
       query = query.eq('status', status);
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('查询财务报告数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '查询财务报告数据失败' },
         { status: 500 }
       );
@@ -66,9 +66,9 @@ export async function GET(request: NextRequest) {
         };
       }
       acc[curr.report_type].count++;
-      if (curr.status === 'published') acc[curr.report_type].published++;
-      else if (curr.status === 'draft') acc[curr.report_type].draft++;
-      else if (curr.status === 'archived') acc[curr.report_type].archived++;
+      if (curr.status === 'published') acc[curr.report_type].published++; {
+      else if (curr.status === 'draft') acc[curr.report_type].draft++; {
+      else if (curr.status === 'archived') acc[curr.report_type].archived++; {
       return acc;
     }, {} as Record<string, any>) || {};
 
@@ -94,10 +94,11 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(response);
+  }
 
   } catch (error) {
     console.error('获取财务报告API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
       { status: 500 }
     );
@@ -124,11 +125,12 @@ export async function POST(request: NextRequest) {
       reportType = 'monthly',
       reportPeriod,
       title,
-      generatedBy = 'system'
+      generatedBy : 'system'
     } = body;
 
     if (!reportPeriod) {
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         { error: 'reportPeriod 为必填参数' },
         { status: 400 }
       );
@@ -151,7 +153,7 @@ export async function POST(request: NextRequest) {
       startDate = new Date(parseInt(reportPeriod), 0, 1);
       endDate = new Date(parseInt(reportPeriod), 11, 31);
     } else {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '不支持的报告类型' },
         { status: 400 }
       );
@@ -161,28 +163,28 @@ export async function POST(request: NextRequest) {
     const endISO = endDate.toISOString().split('T')[0];
 
     // 获取收入数据
-    const { data: revenueData } = await supabase
+    const { data: revenueData } = await supabase;
       .from('revenue_statistics')
       .select('*')
       .gte('period_start', startISO)
       .lte('period_end', endISO);
 
     // 获取成本数据
-    const { data: costData } = await supabase
+    const { data: costData } = await supabase;
       .from('cost_breakdown')
       .select('*')
       .gte('breakdown_date', startISO)
       .lte('breakdown_date', endISO);
 
     // 获取利润数据
-    const { data: profitData } = await supabase
+    const { data: profitData } = await supabase;
       .from('profit_analysis')
       .select('*')
       .gte('date', startISO)
       .lte('date', endISO);
 
     // 获取提现数据
-    const { data: withdrawalData } = await supabase
+    const { data: withdrawalData } = await supabase;
       .from('withdrawal_records')
       .select('*')
       .gte('period_start', startISO)
@@ -210,7 +212,7 @@ export async function POST(request: NextRequest) {
     const finalTitle = title || generateDefaultTitle(reportType, reportPeriod);
 
     // 插入报告数据
-    const { data, error } = await supabase
+    const { data, error } = await supabase;
       .from('financial_reports')
       .insert({
         report_type: reportType,
@@ -232,7 +234,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('生成财务报告失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '生成财务报告失败' },
         { status: 500 }
       );
@@ -255,7 +257,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('生成财务报告API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
       { status: 500 }
     );
@@ -273,7 +275,7 @@ function calculateRevenueSummary(data: any[]) {
     growthRate: 0
   };
 
-  if (data.length === 0) return summary;
+  if (data.length === 0) return summary; {
 
   summary.totalRevenue = data.reduce((sum: any,  item: any) => sum + parseFloat(item.total_revenue.toString()), 0);
   summary.actualReceived = data.reduce((sum: any,  item: any) => sum + parseFloat(item.actual_received.toString()), 0);
@@ -282,7 +284,7 @@ function calculateRevenueSummary(data: any[]) {
 
   // 计算平均增长率
   const growthRates = data.filter((item : any) => item.growth_rate).map(item => parseFloat(item.growth_rate.toString()));
-  summary.growthRate = growthRates.length > 0 
+  summary.growthRate : growthRates.length > 0 
     ? growthRates.reduce((sum: any,  rate: any) => sum + rate, 0) / growthRates.length 
     : 0;
 
@@ -298,7 +300,7 @@ function calculateCostSummary(data: any[]) {
     costTrend: 'stable'
   };
 
-  if (data.length === 0) return summary;
+  if (data.length === 0) return summary; {
 
   summary.totalCost = data.reduce((sum: any,  item: any) => sum + parseFloat(item.cost_amount.toString()), 0);
   const totalUsers = data.reduce((sum: any,  item: any) => sum + item.user_count, 0);
@@ -307,10 +309,10 @@ function calculateCostSummary(data: any[]) {
   // 按类型分组
   data.forEach((item : any) => {
     const type = item.user_type || 'unknown';
-    if (!summary.costByType[type]) {
-      summary.costByType[type] = 0;
+    if (!summary.(costByType?.type ?? null)) {
+      summary.(costByType?.type ?? null) = 0;
     }
-    summary.costByType[type] += parseFloat(item.cost_amount.toString());
+    summary.(costByType?.type ?? null) += parseFloat(item.cost_amount.toString());
   });
 
   return summary;
@@ -326,7 +328,7 @@ function calculateProfitSummary(data: any[]) {
     profitabilityTrend: 'stable'
   };
 
-  if (data.length === 0) return summary;
+  if (data.length === 0) return summary; {
 
   summary.grossProfit = data.reduce((sum: any,  item: any) => sum + parseFloat(item.gross_profit.toString()), 0);
   summary.netProfit = data.reduce((sum: any,  item: any) => sum + parseFloat(item.net_profit.toString()), 0);
@@ -336,7 +338,7 @@ function calculateProfitSummary(data: any[]) {
 
   // 计算平均ROI
   const rois = data.filter((item : any) => item.roi).map(item => parseFloat(item.roi.toString()));
-  summary.roi = rois.length > 0 
+  summary.roi : rois.length > 0 
     ? rois.reduce((sum: any,  roi: any) => sum + roi, 0) / rois.length 
     : 0;
 
@@ -353,7 +355,7 @@ function calculateWithdrawalSummary(data: any[]) {
     platformFee: 0
   };
 
-  if (data.length === 0) return summary;
+  if (data.length === 0) return summary; {
 
   summary.totalAmount = data.reduce((sum: any,  item: any) => sum + parseFloat(item.total_amount.toString()), 0);
   summary.totalUsers = data.reduce((sum: any,  item: any) => sum + item.total_users, 0);
@@ -414,13 +416,13 @@ function generateTrends(revenue: any[], profit: any[], cost: any[]) {
 
 // 辅助函数：计算数组趋势
 function calculateArrayTrend(values: number[]): string {
-  if (values.length < 2) return 'stable';
+  if (values.length < 2) return 'stable'; {
   
-  const increasing = values.slice(1).filter((val, index) => val > values[index]).length;
-  const decreasing = values.slice(1).filter((val, index) => val < values[index]).length;
+  const increasing = values.slice(1).filter((val, index) => val > (values?.index ?? null)).length;
+  const decreasing = values.slice(1).filter((val, index) => val < (values?.index ?? null)).length;
   
-  if (increasing > decreasing * 1.5) return 'increasing';
-  if (decreasing > increasing * 1.5) return 'decreasing';
+  if (increasing > decreasing * 1.5) return 'increasing'; {
+  if (decreasing > increasing * 1.5) return 'decreasing'; {
   return 'stable';
 }
 
@@ -484,3 +486,4 @@ function generateDefaultTitle(reportType: string, reportPeriod: string): string 
   
   return `${reportPeriod}${typeMap[reportType]}财务报告`;
 }
+}}}}}}}}

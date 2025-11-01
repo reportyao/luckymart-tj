@@ -11,7 +11,7 @@ const path = require('path');
 console.log('🔒 LuckyMart 认证系统安全修复验证\n');
 
 // 检查文件是否存在
-const filesToCheck = [
+const filesToCheck = [;
   { path: 'lib/auth.ts', name: '核心认证模块' },
   { path: 'app/api/auth/refresh/route.ts', name: 'Token刷新API' },
   { path: 'app/api/auth/logout/route.ts', name: '用户登出API' },
@@ -34,7 +34,7 @@ console.log('\n🔍 安全特性验证:');
 // 检查auth.ts中的关键安全功能
 const authContent = fs.readFileSync(path.join(__dirname, 'lib/auth.ts'), 'utf8');
 
-const securityFeatures = [
+const securityFeatures = [;
   { pattern: 'auth_date.*时效性', name: 'Telegram auth_date时效验证' },
   { pattern: 'httpOnly.*true', name: 'HttpOnly Cookie存储' },
   { pattern: 'ACCESS_TOKEN_EXPIRY.*15m', name: '15分钟访问token' },
@@ -53,7 +53,7 @@ const securityFeatures = [
 console.log('\n🛡️ 实施的安全功能:');
 let implementedFeatures = 0;
 securityFeatures.forEach(feature => {
-  if (authContent.includes(feature.pattern) || 
+  if (authContent.includes(feature.pattern) ||  {
       (feature.pattern.includes('.*') && new RegExp(feature.pattern).test(authContent))) {
     console.log(`✅ ${feature.name}`);
     implementedFeatures++;
@@ -66,7 +66,7 @@ console.log(`\n📊 实现进度: ${implementedFeatures}/${securityFeatures.leng
 
 // 检查JWT过期时间配置
 console.log('\n⏰ JWT配置验证:');
-const jwtConfig = [
+const jwtConfig = [;
   { pattern: /ACCESS_TOKEN_EXPIRY.*=.*['"]15m['"]/, name: '访问Token 15分钟' },
   { pattern: /REFRESH_TOKEN_EXPIRY.*=.*['"]7d['"]/, name: '刷新Token 7天' },
   { pattern: /TELEGRAM_AUTH_WINDOW.*=.*5\s*\*\s*60\s*\*\s*1000/, name: 'Telegram 5分钟时效窗口' }
@@ -82,7 +82,7 @@ jwtConfig.forEach(config => {
 
 // 检查安全常量
 console.log('\n🔐 安全常量:');
-const securityConstants = [
+const securityConstants = [;
   { pattern: /REFRESH_THRESHOLD.*5\s*\*\s*60\s*\*\s*1000/, name: 'Token刷新阈值 5分钟' },
   { pattern: /saltRounds.*12/, name: 'bcrypt盐轮数 12' },
 ];
@@ -97,7 +97,7 @@ securityConstants.forEach(constant => {
 
 // 统计代码行数
 const lines = authContent.split('\n').length;
-const codeLines = authContent.split('\n').filter(line => 
+const codeLines = authContent.split('\n').filter(line =>;
   line.trim() && 
   !line.trim().startsWith('//') && 
   !line.trim().startsWith('/*') &&
@@ -137,3 +137,4 @@ console.log('   5. 定期轮换JWT密钥');
 console.log('\n✨ 认证系统安全升级完成！');
 console.log('   详细文档: AUTH_SECURITY_README.md');
 console.log('   测试脚本: test_auth.ts');
+}

@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -28,6 +25,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('profit_route.ts request failed', error as Error, {
       requestId,
@@ -41,7 +39,7 @@ async function handleGET(request: NextRequest) {
 
     // GET - 获取利润分析数据
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         try {
 
         const { searchParams } = new URL(request.url);
@@ -55,7 +53,7 @@ async function handleGET(request: NextRequest) {
         const where: any = {};
         if (productId) {
           where.product_id = productId;
-        }
+    }
         if (startDate && endDate) {
           where.date = {
             gte: new Date(startDate),
@@ -64,7 +62,7 @@ async function handleGET(request: NextRequest) {
         }
 
         // 获取分页数据
-        const [profitData, totalCount] = await Promise.all([
+        const [profitData, totalCount] = await Promise.all([;
           prisma.profitAnalysis.findMany({
             where,
             orderBy: { date: 'desc' },
@@ -135,7 +133,7 @@ async function handleGET(request: NextRequest) {
         });
 
         // 转换数据格式
-        const formattedData = profitData.map((item : any) => {
+        const formattedData = profitData.map(((item : any) : any) => {
           const revenue = Number(item.revenue);
           const productCost = Number(item.product_cost);
           const platformFee = Number(item.platform_fee);
@@ -229,7 +227,7 @@ async function handleGET(request: NextRequest) {
 
 // POST - 创建或更新利润分析数据
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     try {
 
     const body = await request.json();
@@ -248,7 +246,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必填字段：productId, date'
       }, { status: 400 });
-    }
+}
 
     // 检查商品是否存在
     const product = await prisma.products.findUnique({
@@ -344,7 +342,7 @@ export async function POST(request: NextRequest) {
 
 // PUT - 批量更新利润数据
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     try {
 
     const body = await request.json();
@@ -355,7 +353,7 @@ export async function PUT(request: NextRequest) {
         success: false,
         error: '缺少更新数据'
       }, { status: 400 });
-    }
+}
 
     const results = [];
 
@@ -455,7 +453,7 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    const successCount = results.filter((r : any) => r.success).length;
+    const successCount = results.filter(((r : any) : any) => r.success).length;
 
     return NextResponse.json({
       success: true,
@@ -480,4 +478,5 @@ export async function PUT(request: NextRequest) {
       }, { status: 500 });
     }
   })(request);
+}
 }

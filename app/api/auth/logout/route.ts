@@ -17,10 +17,10 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
       const token = authHeader.substring(7);
       // 这里可以添加token解析逻辑，但为了安全起见，我们不解析token内容
       userId = 'authenticated_user';
-    }
+}
 
     // 清除所有认证相关的cookies
-    const response = NextResponse.json(
+    const response = NextResponse.json(;
       respond.success({
         message: '登出成功',
         timestamp: new Date().toISOString()
@@ -41,11 +41,12 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     });
 
     return response;
+  }
 
   } catch (error) {
     logger.error('Logout error', error as Error, { requestId });
     
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.customError('INTERNAL_ERROR', '登出处理失败').toJSON(),
       { status: 500 }
     );

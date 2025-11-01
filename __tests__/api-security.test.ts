@@ -1,14 +1,14 @@
-/**
- * API安全和权限验证集成测试
- * 测试API安全、中间件、权限控制等功能
- */
-
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
 import jwt from 'jsonwebtoken';
 import { createMocks } from 'node-mocks-http';
 import { verifyToken, verifyAccessToken } from '../lib/auth';
 import { authenticateRequest, requireAdmin, requireAuth } from '../lib/middleware';
 import AdminAuthMiddleware from '../lib/admin-auth-middleware';
+/**
+ * API安全和权限验证集成测试
+ * 测试API安全、中间件、权限控制等功能
+ */
+
 
 describe('API安全和权限验证测试', () => {
   const JWT_SECRET = 'test-jwt-secret-for-api-testing';
@@ -38,7 +38,7 @@ describe('API安全和权限验证测试', () => {
     let adminToken: string;
 
     beforeEach(() => {
-      validToken = jwt.sign(
+      validToken : jwt.sign(
         {
           userId: TEST_USER_ID,
           telegramId: TEST_TELEGRAM_ID,
@@ -48,7 +48,7 @@ describe('API安全和权限验证测试', () => {
         { expiresIn: '15m' }
       );
 
-      adminToken = jwt.sign(
+      adminToken : jwt.sign(
         {
           userId: TEST_ADMIN_ID,
           telegramId: TEST_TELEGRAM_ID,
@@ -78,7 +78,7 @@ describe('API安全和权限验证测试', () => {
     });
 
     test('应该拒绝过期的Token', () => {
-      const expiredToken = jwt.sign(
+      const expiredToken = jwt.sign(;
         {
           userId: TEST_USER_ID,
           telegramId: TEST_TELEGRAM_ID,
@@ -104,7 +104,7 @@ describe('API安全和权限验证测试', () => {
 
   describe('认证中间件测试', () => {
     test('应该允许有效的认证请求', async () => {
-      const token = jwt.sign(
+      const token = jwt.sign(;
         {
           userId: TEST_USER_ID,
           telegramId: TEST_TELEGRAM_ID,
@@ -167,7 +167,7 @@ describe('API安全和权限验证测试', () => {
     let userToken: string;
 
     beforeEach(() => {
-      adminToken = jwt.sign(
+      adminToken : jwt.sign(
         {
           userId: TEST_ADMIN_ID,
           telegramId: TEST_TELEGRAM_ID,
@@ -178,7 +178,7 @@ describe('API安全和权限验证测试', () => {
         { expiresIn: '15m' }
       );
 
-      userToken = jwt.sign(
+      userToken : jwt.sign(
         {
           userId: TEST_USER_ID,
           telegramId: TEST_TELEGRAM_ID,
@@ -247,7 +247,7 @@ describe('API安全和权限验证测试', () => {
   describe('API路由安全测试', () => {
     test('认证API应该验证请求方法', () => {
       // 测试认证相关的API端点
-      const authRoutes = [
+      const authRoutes = [;
         '/api/auth/refresh',
         '/api/auth/logout'
       ];
@@ -259,7 +259,7 @@ describe('API安全和权限验证测试', () => {
     });
 
     test('管理员API应该要求认证', () => {
-      const adminRoutes = [
+      const adminRoutes = [;
         '/api/admin/users',
         '/api/admin/products',
         '/api/admin/orders',
@@ -272,7 +272,7 @@ describe('API安全和权限验证测试', () => {
     });
 
     test('用户API应该要求认证', () => {
-      const userRoutes = [
+      const userRoutes = [;
         '/api/user/profile',
         '/api/user/addresses',
         '/api/user/transactions',
@@ -290,7 +290,7 @@ describe('API安全和权限验证测试', () => {
       const userId1 = 'user-1';
       const userId2 = 'user-2';
 
-      const token1 = jwt.sign(
+      const token1 = jwt.sign(;
         {
           userId: userId1,
           telegramId: 'telegram-1',
@@ -331,7 +331,7 @@ describe('API安全和权限验证测试', () => {
     });
 
     test('管理员可以访问所有用户资源', async () => {
-      const adminToken = jwt.sign(
+      const adminToken = jwt.sign(;
         {
           userId: TEST_ADMIN_ID,
           telegramId: TEST_TELEGRAM_ID,
@@ -378,6 +378,7 @@ describe('API安全和权限验证测试', () => {
         },
         json: function(data: any) {
           return data;
+  }
         }
       };
 
@@ -415,10 +416,10 @@ describe('API安全和权限验证测试', () => {
   describe('Rate Limiting测试', () => {
     test('应该限制API调用频率', async () => {
       const maxRequests = 100;
-      const timeWindow = 60000; // 1分钟
+      const timeWindow = 60000; // 1分钟;
 
       // 模拟快速连续请求
-      const requests = Array(maxRequests + 1).fill(0).map(() => 
+      const requests = Array(maxRequests + 1).fill(0).map(() =>;
         createMocks({ method: 'GET' })
       );
 
@@ -511,7 +512,7 @@ describe('API安全和权限验证测试', () => {
       const startTime = process.hrtime.bigint();
 
       // 模拟一个简单的验证操作
-      const token = jwt.sign(
+      const token = jwt.sign(;
         { userId: TEST_USER_ID, type: 'access' },
         JWT_SECRET,
         { expiresIn: '15m' }

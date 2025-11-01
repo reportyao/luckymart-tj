@@ -1,9 +1,9 @@
+import { 
 /**
  * 延迟奖励处理功能测试脚本
  * 测试延迟奖励的创建、查询、发放和监控功能
  */
 
-import { 
   DelayedRewardProcessor,
   RewardType,
   RewardStatus,
@@ -45,6 +45,7 @@ class DelayedRewardTest {
       await this.testCleanup();
 
       console.log('\n✅ 所有测试通过！\n');
+  }
     } catch (error) {
       console.error('\n❌ 测试失败:', error);
       throw error;
@@ -136,6 +137,7 @@ class DelayedRewardTest {
       result.details.forEach(detail => {
         if (!detail.success) {
           console.log(`   - 奖励 ${detail.rewardId}: ${detail.error}`);
+  }
         }
       });
     }
@@ -171,7 +173,7 @@ class DelayedRewardTest {
   async testCleanup(): Promise<void> {
     console.log('\n🧹 测试 5: 清理过期奖励');
 
-    const deletedCount = await delayedRewardProcessor.cleanupExpiredRewards(1); // 1天前
+    const deletedCount = await delayedRewardProcessor.cleanupExpiredRewards(1); // 1天前;
     console.log(`✅ 清理了 ${deletedCount} 个过期奖励记录`);
   }
 
@@ -179,7 +181,7 @@ class DelayedRewardTest {
    * 创建测试奖励
    */
   private async createTestRewards(): Promise<void> {
-    const testRewards = [
+    const testRewards = [;
       {
         userId: TEST_CONFIG.USER_ID,
         rewardType: RewardType.REFERRAL_REGISTER,
@@ -286,7 +288,7 @@ async function errorHandlingTest(): Promise<void> {
 
     // 测试并发处理
     console.log('测试并发处理...');
-    const concurrentPromises = [
+    const concurrentPromises = [;
       createDelayedReward({
         userId: TEST_CONFIG.USER_ID,
         rewardType: RewardType.REFERRAL_REGISTER,
@@ -340,4 +342,4 @@ if (require.main === module) {
   });
 }
 
-export { DelayedRewardTest, main as runDelayedRewardTests };
+export ;

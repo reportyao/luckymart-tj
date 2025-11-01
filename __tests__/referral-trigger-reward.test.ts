@@ -1,10 +1,9 @@
+import { createMockRequest, createMockResponse } from './test-utils';
 /**
  * 推荐奖励触发API测试
  * 测试POST /api/referral/trigger-reward端点
  */
 
-import { NextRequest } from 'next/server';
-import { createMockRequest, createMockResponse } from './test-utils';
 
 // 模拟依赖模块
 jest.mock('@/lib/prisma', () => ({

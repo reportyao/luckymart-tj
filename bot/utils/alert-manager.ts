@@ -1,13 +1,13 @@
-/**
- * 增强的监控告警系统
- * 实时监控系统状态，及时发现问题并发送告警
- */
-
 import { EventEmitter } from 'events';
 import { logger, errorTracker } from './logger';
 import { healthMonitor, HealthStatus } from './health-monitor';
 import { processMonitor } from './process-monitor';
 import { faultToleranceManager } from './fault-tolerance-manager';
+/**
+ * 增强的监控告警系统
+ * 实时监控系统状态，及时发现问题并发送告警
+ */
+
 
 export interface AlertRule {
   id: string;
@@ -115,7 +115,7 @@ export class AlertManager extends EventEmitter {
   constructor() {
     super();
     this.setupDefaultRules();
-  }
+}
 
   // 启动监控
   public startMonitoring() {
@@ -336,6 +336,7 @@ export class AlertManager extends EventEmitter {
 
       if (!response.ok) {
         throw new Error(`Webhook request failed: ${response.status} ${response.statusText}`);
+  }
       }
 
       logger.debug('Alert webhook sent successfully', { alertId: alert.id });
@@ -597,10 +598,10 @@ export class AlertManager extends EventEmitter {
   // 评估指标条件
   private evaluateMetricCondition(condition: AlertCondition): boolean {
     const latestMetrics = this.metricsHistory[this.metricsHistory.length - 1];
-    if (!latestMetrics) return false;
+    if (!latestMetrics) return false; {
 
     const metricValue = this.getMetricValue(latestMetrics, condition.metric || '');
-    if (metricValue === undefined) return false;
+    if (metricValue === undefined) return false; {
 
     return this.compareValues(metricValue, condition.operator, condition.threshold);
   }
@@ -763,3 +764,4 @@ export class AlertManager extends EventEmitter {
 
 // 单例模式的告警管理器
 export const alertManager = new AlertManager();
+}

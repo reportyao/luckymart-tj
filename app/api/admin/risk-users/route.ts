@@ -3,15 +3,13 @@ import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withReadPermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
 const withWritePermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
 // 模拟风险用户数据
-const mockRiskUsers = [
+const mockRiskUsers = [;
   {
     id: 'U1001',
     userName: '张三',
@@ -73,6 +71,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('risk-users_route.ts request failed', error as Error, {
       requestId,
@@ -86,7 +85,7 @@ async function handleGET(request: NextRequest) {
     ];
 
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
       try {
         const { searchParams } = new URL(request.url);
         const page = parseInt(searchParams.get('page') || '1');
@@ -99,15 +98,15 @@ async function handleGET(request: NextRequest) {
         let filteredUsers = mockRiskUsers;
 
         if (riskLevel && riskLevel !== 'all') {
-          filteredUsers = filteredUsers.filter((user : any) => user.riskLevel === riskLevel);
-        }
+          filteredUsers = filteredUsers.filter(((user : any) : any) => user.riskLevel === riskLevel);
+    }
 
         if (accountStatus && accountStatus !== 'all') {
-          filteredUsers = filteredUsers.filter((user : any) => user.accountStatus === accountStatus);
+          filteredUsers = filteredUsers.filter(((user : any) : any) => user.accountStatus === accountStatus);
         }
 
         if (search) {
-          filteredUsers = filteredUsers.filter((user : any) => 
+          filteredUsers = filteredUsers.filter(((user : any) : any) => 
             user.userName.toLowerCase().includes(search.toLowerCase()) ||
             user.email.toLowerCase().includes(search.toLowerCase()) ||
             user.id.toLowerCase().includes(search.toLowerCase())
@@ -134,7 +133,8 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取风险用户失败:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
+  }
           { success: false, error: '获取数据失败' },
           { status: 500 }
         );
@@ -143,21 +143,21 @@ async function handleGET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
   try {
     const body = await request.json();
     const { userId, action } = body;
 
     if (!userId || !action) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少必需参数' },
         { status: 400 }
       );
-    }
+}
 
     const userIndex = mockRiskUsers.findIndex(user => user.id === userId);
     if (userIndex === -1) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '用户不存在' },
         { status: 404 }
       );
@@ -178,13 +178,13 @@ export async function PATCH(request: NextRequest) {
         newStatus = 'banned';
         break;
       default:
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '无效的操作' },
           { status: 400 }
         );
     }
 
-    mockRiskUsers[userIndex].accountStatus = newStatus;
+    (mockRiskUsers?.userIndex ?? null).accountStatus = newStatus;
 
     return NextResponse.json({
       success: true,
@@ -196,7 +196,7 @@ export async function PATCH(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'更新用户状态失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '更新失败' },
       { status: 500 }
     );

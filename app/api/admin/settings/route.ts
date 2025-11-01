@@ -3,8 +3,6 @@ import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission
 import { prisma } from '@/lib/prisma';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.read() });
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.write() });
@@ -25,7 +23,7 @@ class SettingsCache {
 
   get(key: string): any | null {
     const item = this.cache.get(key);
-    if (!item) return null;
+    if (!item) return null; {
 
     const now = Date.now();
     
@@ -101,7 +99,7 @@ class SettingsCache {
   }
 }
 
-const settingsCache = new SettingsCache(50, 5 * 60 * 1000, 1000); // 最大50个条目，5分钟过期，最多1000次访问
+const settingsCache = new SettingsCache(50, 5 * 60 * 1000, 1000); // 最大50个条目，5分钟过期，最多1000次访问;
 
 // 获取缓存的系统设置
 async function getCachedSettings() {
@@ -116,12 +114,12 @@ function updateCache(settings: any) {
 // 从数据库获取所有设置
 async function getAllSettings() {
   const cached = await getCachedSettings();
-  if (cached) {return cached;}
+  if (cached) {return cached;} {
 
   const settings = await prisma.systemSettings.findMany();
   const settingsMap: any = {};
   
-  settings.forEach((setting : any) => {
+  settings.forEach(((setting : any) : any) => {
     let value = setting.settingValue;
     
     // 根据类型转换值
@@ -190,6 +188,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('settings_route.ts request failed', error as Error, {
       requestId,
@@ -203,7 +202,7 @@ async function handleGET(request: NextRequest) {
     }
 
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         const settings = await getAllSettings();
 
         return NextResponse.json({ 
@@ -214,7 +213,7 @@ async function handleGET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const data = await request.json();
 
     // 批量更新设置
@@ -324,3 +323,5 @@ export async function POST(request: NextRequest) {
     });
   })(request);
 }
+
+}}

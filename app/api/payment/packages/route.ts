@@ -14,6 +14,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('packages_route.ts request failed', error as Error, {
       requestId,
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
 
     const langSuffix = language === 'zh' ? 'Zh' : language === 'en' ? 'En' : 'Ru';
 
-    const localizedPackages = packages.map((pkg : any) => ({
+    const localizedPackages = packages.map(((pkg : any) : any) => ({
       id: pkg.id,
       name: pkg[`name${langSuffix}` as keyof typeof pkg],
       price: parseFloat(pkg.price.toString()),
@@ -53,6 +54,7 @@ export async function GET(request: NextRequest) {
     }));
 
     return NextResponse.json({
+}
       success: true,
       data: { packages: localizedPackages }
     });
@@ -62,9 +64,9 @@ export async function GET(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'Get packages error:', error);
-    return NextResponse.json(
-      { error: '获取充值礼包失败', message: error.message },
-      { status: 500 }
+    return NextResponse.json(;
+      ,
+      
     );
   }
 }

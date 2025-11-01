@@ -1,10 +1,10 @@
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { TestDataGenerator, PerformanceTester } from './test-config';
 /**
  * Bot集成测试
  * 测试Telegram Bot与邀请系统的完整集成
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { TestDataGenerator, PerformanceTester } from './test-config';
 
 // 模拟Telegram Bot API
 const mockTelegramBot = {
@@ -189,7 +189,7 @@ class BotReferralService {
   }
 
   private async sendWelcomeMessage(context: any, username: string, inviteCode: string) {
-    const welcomeText = `
+    const welcomeText = `;
 🎉 *欢迎使用LuckyMart邀请系统*！
 
 您好，${username}！您的专属邀请码：\`${inviteCode}\`
@@ -219,7 +219,7 @@ class BotReferralService {
   }
 
   private async sendInviteMessage(context: any, inviteLink: string, userData: any) {
-    const inviteText = `
+    const inviteText = `;
 📢 *邀请好友赚钱*
 
 您的专属邀请链接：
@@ -244,7 +244,7 @@ ${inviteLink}
   }
 
   private async sendBalanceMessage(context: any, userData: any) {
-    const balanceText = `
+    const balanceText = `;
 💰 *账户余额*
 
 当前余额：${userData.balance.toFixed(2)} 元
@@ -260,7 +260,7 @@ ${inviteLink}
   }
 
   private async sendRewardsMessage(context: any, userData: any) {
-    const rewardsText = `
+    const rewardsText = `;
 🏆 *奖励详情*
 
 📊 统计概览：
@@ -275,7 +275,7 @@ ${inviteLink}
   }
 
   private async sendHelpMessage(context: any) {
-    const helpText = `
+    const helpText = `;
 🤖 *LuckyMart Bot帮助*
 
 📱 *基本命令*：
@@ -339,7 +339,7 @@ ${inviteLink}
       return;
     }
 
-    const inviteesText = `
+    const inviteesText = `;
 👥 *我的邀请*
 
 已邀请人数：${userData.inviteCount} 人
@@ -392,7 +392,7 @@ ${userData.invitees.length > 0
     inviterData.totalRewards += reward;
 
     // 发送奖励通知
-    const rewardText = `
+    const rewardText = `;
 🎉 *奖励到账*
 
 💰 奖励金额：${reward.toFixed(2)} 元
@@ -703,7 +703,7 @@ describe('Bot集成测试', () => {
     });
 
     test('多层级邀请系统', async () => {
-      const users = [
+      const users = [;
         { id: '1001', name: '用户A' },
         { id: '1002', name: '用户B' },
         { id: '1003', name: '用户C' },
@@ -852,7 +852,7 @@ describe('Bot集成测试', () => {
         return botService.handleStartCommand(context);
       };
 
-      const { results, totalTime, averageTime } = await PerformanceTester.testConcurrency(
+      const { results, totalTime, averageTime } = await PerformanceTester.testConcurrency(;
         () => registerUser(Math.floor(Math.random() * 10000) + 2000),
         concurrentRegistrations
       );
@@ -905,7 +905,7 @@ describe('Bot集成测试', () => {
         }
       };
 
-      const { results, totalTime } = await PerformanceTester.testConcurrency(
+      const { results, totalTime } = await PerformanceTester.testConcurrency(;
         executeCommand,
         commandCount
       );
@@ -975,7 +975,7 @@ describe('Bot集成测试', () => {
         },
       };
 
-      const { duration } = await PerformanceTester.measureExecutionTime(() =>
+      const { duration } = await PerformanceTester.measureExecutionTime(() =>;
         slowBotService.handleStartCommand(context)
       );
 
@@ -1051,9 +1051,9 @@ describe('Bot集成测试', () => {
         // 简化版的防作弊检查
         if (action === '/start' && Math.random() < 0.1) {
           suspiciousActivityCount++;
-          return false; // 疑似作弊
+          return false; // 疑似作弊;
         }
-        return true; // 正常活动
+        return true; // 正常活动;
       };
 
       // 模拟多次快速注册尝试

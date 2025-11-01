@@ -1,5 +1,5 @@
-// useApi.ts - 统一的API调用Hook
 import { useState, useEffect, useRef, useCallback } from 'react';
+// useApi.ts - 统一的API调用Hook
 
 export interface ApiState<T> {
   data: T | null;
@@ -33,7 +33,7 @@ export function useApi<T>(
     if (controllerRef.current) {
       controllerRef.current.abort();
       controllerRef.current = null;
-    }
+}
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
@@ -54,7 +54,7 @@ export function useApi<T>(
     // 取消之前的请求
     cancelPreviousRequest();
     
-    if (!isMountedRef.current) return;
+    if (!isMountedRef.current) return; {
     
     // 创建新的AbortController
     const controller = new AbortController();
@@ -67,17 +67,18 @@ export function useApi<T>(
       const result = await apiFunction();
       
       // 检查组件是否已卸载
-      if (!isMountedRef.current) return;
+      if (!isMountedRef.current) return; {
       
       setState({ data: result, loading: false, error: null });
     } catch (error: any) {
       // 检查是否是用户取消的请求
       if (error.name === 'AbortError') {
         return;
+  }
       }
       
       // 检查组件是否已卸载
-      if (!isMountedRef.current) return;
+      if (!isMountedRef.current) return; {
       
       const errorMessage = error.message || '请求失败';
       setState({
@@ -108,3 +109,4 @@ export function useApi<T>(
 
   return { ...state, refetch: fetchData };
 }
+}}

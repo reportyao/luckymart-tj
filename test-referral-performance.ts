@@ -1,3 +1,6 @@
+import { execSync } from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 #!/usr/bin/env node
 
 /**
@@ -5,9 +8,6 @@
  * 运行完整的性能测试套件并生成详细的测试报告
  */
 
-import { execSync } from 'child_process';
-import * as fs from 'fs';
-import * as path from 'path';
 
 interface TestResult {
   testFile: string;
@@ -76,6 +76,7 @@ function runTestFile(testFile: string): TestResult[] {
     });
     
     return parseTestOutput(output, testFile);
+  }
   } catch (error) {
     console.error(`❌ 测试文件 ${testFile} 执行失败:`, error);
     
@@ -123,7 +124,7 @@ function parseTestOutput(output: string, testFile: string): TestResult[] {
         const status = match[2] === '✓' ? 'passed' : 'failed';
         currentTest = {
           testFile,
-          testName: match[3].trim(),
+          testName: (match?.3 ?? null).trim(),
           duration: extractDuration(line),
           status,
           assertions: 1,
@@ -136,7 +137,7 @@ function parseTestOutput(output: string, testFile: string): TestResult[] {
     if (line.includes('ms') && (line.includes('耗时') || line.includes('性能'))) {
       const durationMatch = line.match(/(\d+\.?\d*)\s*ms/);
       if (durationMatch && currentTest.duration === 0) {
-        currentTest.duration = parseFloat(durationMatch[1]);
+        currentTest.duration = parseFloat((durationMatch?.1 ?? null));
       }
     }
     
@@ -194,7 +195,7 @@ function collectEnvironmentInfo() {
  * 生成性能基准
  */
 function generateBenchmarks(testResults: TestResult[]): { [key: string]: any } {
-  const performanceTests = testResults.filter(test => 
+  const performanceTests = testResults.filter(test =>;
     test.testFile.includes('performance') || 
     test.testFile.includes('load') ||
     test.testFile.includes('cache')
@@ -283,8 +284,8 @@ function generateRecommendations(testResults: TestResult[], benchmarks: any): st
   }
   
   // 基于性能测试结果生成建议
-  const slowTests = testResults
-    .filter(test => test.duration > 2000)
+  const slowTests = testResults;
+    .filter(test :> test.duration > 2000)
     .sort((a, b) => b.duration - a.duration);
     
   if (slowTests.length > 0) {
@@ -411,7 +412,7 @@ function generateMarkdownReport(report: PerformanceReport): string {
       memory_efficiency: '内存效率'
     };
     
-    markdown += `| ${keyMap[key] || key} | ${benchmark.current} | ${benchmark.target} | ${benchmark.unit} | ${status} |\n`;
+    markdown += `| ${(keyMap?.key ?? null) || key} | ${benchmark.current} | ${benchmark.target} | ${benchmark.unit} | ${status} |\n`;
   });
   
   markdown += `\n## 🐌 最慢的测试\n\n`;
@@ -451,7 +452,7 @@ function generateMarkdownReport(report: PerformanceReport): string {
 async function main() {
   console.log('🚀 开始推荐系统性能基准测试\n');
   
-  const testFiles = [
+  const testFiles = [;
     '__tests__/referral-performance.test.ts',
     '__tests__/referral-rebate-accuracy.test.ts',
     '__tests__/referral-anti-fraud-accuracy.test.ts',
@@ -513,4 +514,4 @@ if (require.main === module) {
   });
 }
 
-export { main, generateReport, parseTestOutput };
+export ;

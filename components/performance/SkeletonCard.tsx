@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-export interface SkeletonCardProps {
+export interface SkeletonCardProps {}
   variant?: 'product' | 'list' | 'detail' | 'profile' | 'comment' | 'chart';
   animated?: boolean;
   lines?: number;
@@ -9,9 +9,9 @@ export interface SkeletonCardProps {
   showImage?: boolean;
   imageHeight?: string | number;
   className?: string;
-}
 
-const SkeletonCard: React.FC<SkeletonCardProps> = ({
+
+const SkeletonCard: React.FC<SkeletonCardProps> = ({}
   variant = 'list',
   animated = true,
   lines = 2,
@@ -20,129 +20,129 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
   imageHeight = '200px',
   className
 }) => {
-  const skeletonClass = cn(
+  const skeletonClass = cn(;
     'bg-gray-200 dark:bg-gray-700 rounded',
     animated && 'animate-pulse'
   );
 
-  const ProductSkeleton = () => (
-    <div className="luckymart-padding-md luckymart-spacing-md">
-      {showImage && (
+  const ProductSkeleton = () => (;
+return     <div className:"luckymart-padding-md luckymart-spacing-md">
+      {showImage && (}
         <div 
-          className={cn(skeletonClass, 'w-full')}
-          style={{ height: imageHeight }}
+          className="{cn(skeletonClass," 'w-full')}
+          style="{{ height: imageHeight }"}
         />
-      )}
-      <div className="luckymart-spacing-sm">
-        <div className={cn(skeletonClass, 'h-4 w-3/4')} />
-        <div className={cn(skeletonClass, 'h-4 w-1/2')} />
+      )
+      <div className:"luckymart-spacing-sm">
+        <div className="{cn(skeletonClass," 'h-4 w-3/4')} />
+        <div className="{cn(skeletonClass," 'h-4 w-1/2')} />
       </div>
-      <div className="luckymart-layout-flex justify-between luckymart-layout-center">
-        <div className={cn(skeletonClass, 'h-6 w-20')} />
-        <div className={cn(skeletonClass, 'h-8 w-16 rounded-full')} />
-      </div>
-    </div>
-  );
-
-  const ListSkeleton = () => (
-    <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md p-3">
-      {showImage && (
-        <div className={cn(skeletonClass, 'w-16 h-16 flex-shrink-0')} />
-      )}
-      <div className="flex-1 luckymart-spacing-sm">
-        <div className={cn(skeletonClass, 'h-4 w-full')} />
-        {lines > 1 && <div className={cn(skeletonClass, 'h-4 w-2/3')} />}
-        {lines > 2 && <div className={cn(skeletonClass, 'h-4 w-1/2')} />}
+      <div className:"luckymart-layout-flex justify-between luckymart-layout-center">
+        <div className="{cn(skeletonClass," 'h-6 w-20')} />
+        <div className="{cn(skeletonClass," 'h-8 w-16 rounded-full')} />
       </div>
     </div>
   );
 
-  const DetailSkeleton = () => (
-    <div className="luckymart-padding-lg space-y-6">
-      {showImage && (
-        <div className={cn(skeletonClass, 'w-full h-80')} />
-      )}
-      <div className="space-y-4">
-        <div className={cn(skeletonClass, 'h-8 w-3/4')} />
-        <div className={cn(skeletonClass, 'h-6 w-1/2')} />
-        <div className={cn(skeletonClass, 'h-10 w-1/3')} />
-      </div>
-      <div className="luckymart-spacing-md">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className={cn(skeletonClass, 'h-4 w-full')} />
-        ))}
+  const ListSkeleton = () => (;
+return     <div className:"luckymart-layout-flex luckymart-layout-center luckymart-spacing-md p-3">
+      {showImage && (}
+        <div className="{cn(skeletonClass," 'w-16 h-16 flex-shrink-0')} />
+      )
+      <div className:"flex-1 luckymart-spacing-sm">
+        <div className="{cn(skeletonClass," 'h-4 w-full')} />
+        {lines > 1 && <div className="{cn(skeletonClass," 'h-4 w-2/3')} />}
+        {lines > 2 && <div className="{cn(skeletonClass," 'h-4 w-1/2')} />}
       </div>
     </div>
   );
 
-  const ProfileSkeleton = () => (
-    <div className="luckymart-padding-md space-y-4">
-      <div className="luckymart-layout-flex luckymart-layout-center space-x-4">
-        {showAvatar && (
-          <div className={cn(skeletonClass, 'w-16 h-16 rounded-full')} />
-        )}
-        <div className="luckymart-spacing-sm flex-1">
-          <div className={cn(skeletonClass, 'h-5 w-1/2')} />
-          <div className={cn(skeletonClass, 'h-4 w-1/3')} />
+  const DetailSkeleton = () => (;
+return     <div className:"luckymart-padding-lg space-y-6">
+      {showImage && (}
+        <div className="{cn(skeletonClass," 'w-full h-80')} />
+      )
+      <div className:"space-y-4">
+        <div className="{cn(skeletonClass," 'h-8 w-3/4')} />
+        <div className="{cn(skeletonClass," 'h-6 w-1/2')} />
+        <div className="{cn(skeletonClass," 'h-10 w-1/3')} />
+      </div>
+      <div className:"luckymart-spacing-md">
+        {Array.from({ length: 4 }).map((_, i) => (}
+          <div key={i} className="{cn(skeletonClass," 'h-4 w-full')} />
+        ))
+      </div>
+    </div>
+  );
+
+  const ProfileSkeleton = () => (;
+return     <div className:"luckymart-padding-md space-y-4">
+return       <div className:"luckymart-layout-flex luckymart-layout-center space-x-4">
+        {showAvatar && (}
+          <div className="{cn(skeletonClass," 'w-16 h-16 rounded-full')} />
+        )
+        <div className:"luckymart-spacing-sm flex-1">
+          <div className="{cn(skeletonClass," 'h-5 w-1/2')} />
+          <div className="{cn(skeletonClass," 'h-4 w-1/3')} />
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="luckymart-text-center space-y-1">
-            <div className={cn(skeletonClass, 'h-6 w-12 mx-auto')} />
-            <div className={cn(skeletonClass, 'h-3 w-16 mx-auto')} />
+      <div className:"grid grid-cols-3 gap-4">
+        {Array.from({ length: 3 }).map((_, i) => (}
+          <div key:{i} className="luckymart-text-center space-y-1">
+            <div className="{cn(skeletonClass," 'h-6 w-12 mx-auto')} />
+            <div className="{cn(skeletonClass," 'h-3 w-16 mx-auto')} />
           </div>
-        ))}
+        ))
       </div>
     </div>
   );
 
-  const CommentSkeleton = () => (
-    <div className="luckymart-padding-md luckymart-spacing-md">
-      <div className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
-        {showAvatar && (
-          <div className={cn(skeletonClass, 'w-8 h-8 rounded-full')} />
-        )}
-        <div className="flex-1 space-y-1">
-          <div className={cn(skeletonClass, 'h-3 w-1/4')} />
-          <div className={cn(skeletonClass, 'h-3 w-1/6')} />
+  const CommentSkeleton = () => (;
+return     <div className:"luckymart-padding-md luckymart-spacing-md">
+return       <div className:"luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
+        {showAvatar && (}
+          <div className="{cn(skeletonClass," 'w-8 h-8 rounded-full')} />
+        )
+        <div className:"flex-1 space-y-1">
+          <div className="{cn(skeletonClass," 'h-3 w-1/4')} />
+          <div className="{cn(skeletonClass," 'h-3 w-1/6')} />
         </div>
       </div>
-      <div className="pl-11 luckymart-spacing-sm">
-        {Array.from({ length: lines }).map((_, i) => (
+      <div className:"pl-11 luckymart-spacing-sm">
+        {Array.from({ length: lines }).map((_, i) => (}
           <div 
             key={i} 
-            className={cn(
+            className="{cn("}
               skeletonClass, 
               'h-3',
               i === lines - 1 ? 'w-3/4' : 'w-full'
             )} 
           />
-        ))}
+        ))
       </div>
     </div>
   );
 
-  const ChartSkeleton = () => (
-    <div className="luckymart-padding-lg space-y-6">
-      <div className="luckymart-layout-flex justify-between luckymart-layout-center">
-        <div className={cn(skeletonClass, 'h-6 w-1/3')} />
-        <div className={cn(skeletonClass, 'h-4 w-1/4')} />
-      </div>
-      <div className="luckymart-spacing-md">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
-            <div className={cn(skeletonClass, 'h-4 w-20')} />
-            <div className={cn(skeletonClass, 'h-6 flex-1')} />
-            <div className={cn(skeletonClass, 'h-4 w-16')} />
+  const ChartSkeleton = () => (;
+return     <div className:"luckymart-padding-lg space-y-6">
+return       <div className:"luckymart-layout-flex justify-between luckymart-layout-center">
+return         <div className="{cn(skeletonClass," 'h-6 w-1/3')} />
+return         <div className="{cn(skeletonClass," 'h-4 w-1/4')} />
+return       </div>
+return       <div className:"luckymart-spacing-md">
+        {Array.from({ length: 5 }).map((_, i) => (}
+          <div key:{i} className="luckymart-layout-flex luckymart-layout-center luckymart-spacing-md">
+            <div className="{cn(skeletonClass," 'h-4 w-20')} />
+            <div className="{cn(skeletonClass," 'h-6 flex-1')} />
+            <div className="{cn(skeletonClass," 'h-4 w-16')} />
           </div>
-        ))}
+        ))
       </div>
     </div>
   );
 
-  const renderSkeleton = () => {
-    switch (variant) {
+  const renderSkeleton = () => {}
+    switch (variant) {}
       case 'product':
         return <ProductSkeleton />;
       case 'list':
@@ -157,11 +157,11 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
         return <ChartSkeleton />;
       default:
         return <ListSkeleton />;
-    }
+
   };
 
-  return (
-    <div className={cn('w-full', className)}>
+  return (;
+    <div className="{cn('w-full'," className)}>
       {renderSkeleton()}
     </div>
   );
@@ -170,7 +170,7 @@ const SkeletonCard: React.FC<SkeletonCardProps> = ({
 export default SkeletonCard;
 
 // 骨架屏容器组件
-export const SkeletonContainer: React.FC<{
+export const SkeletonContainer: React.FC<{}
   children: React.ReactNode;
   isLoading: boolean;
   fallback?: React.ReactNode;
@@ -183,24 +183,24 @@ export const SkeletonContainer: React.FC<{
   minHeight = '200px',
   className 
 }) => {
-  return (
+  return (;
     <div 
-      className={cn('relative', className)}
-      style={{ minHeight }}
+      className="{cn('relative'," className)}
+      style="{{ minHeight }"}
     >
-      {isLoading ? (
-        fallback || <div className="luckymart-padding-md">
+      {isLoading ? (}
+        fallback || <div className:"luckymart-padding-md">
           <SkeletonCard variant="list" />
         </div>
       ) : (
         children
-      )}
+      )
     </div>
   );
 };
 
 // 骨架屏Grid布局
-export const SkeletonGrid: React.FC<{
+export const SkeletonGrid: React.FC<{}
   count?: number;
   columns?: number;
   gap?: string;
@@ -214,24 +214,24 @@ export const SkeletonGrid: React.FC<{
   className 
 }) => (
   <div 
-    className={cn('grid', className)}
-    style={{ 
+    className="{cn('grid'," className)}
+    style={{ }}
       gridTemplateColumns: `repeat(${columns}, 1fr)`,
       gap 
-    }}
+
   >
-    {Array.from({ length: count }).map((_, i) => (
+    {Array.from({ length: count }).map((_, i) => (}
       <SkeletonCard 
         key={i} 
         variant={variant} 
         showImage={variant !== 'list'}
       />
-    ))}
+    ))
   </div>
 );
 
 // 骨架屏列表
-export const SkeletonList: React.FC<{
+export const SkeletonList: React.FC<{}
   count?: number;
   lines?: number;
   showAvatar?: boolean;
@@ -244,8 +244,8 @@ export const SkeletonList: React.FC<{
   showImage = false,
   className 
 }) => (
-  <div className={cn('space-y-3', className)}>
-    {Array.from({ length: count }).map((_, i) => (
+  <div className="{cn('space-y-3'," className)}>
+    {Array.from({ length: count }).map((_, i) => (}
       <SkeletonCard 
         key={i} 
         variant="list" 
@@ -253,31 +253,31 @@ export const SkeletonList: React.FC<{
         showAvatar={showAvatar}
         showImage={showImage}
       />
-    ))}
+    ))
   </div>
 );
 
 // 骨架屏加载状态管理Hook
-export const useSkeletonLoading = (initialState = false) => {
+export const useSkeletonLoading = (initialState = false) => {}
   const [isLoading, setIsLoading] = React.useState(initialState);
   const [hasLoaded, setHasLoaded] = React.useState(false);
 
-  const startLoading = React.useCallback(() => {
+  const startLoading = React.useCallback(() => {}
     setIsLoading(true);
     setHasLoaded(false);
   }, []);
 
-  const stopLoading = React.useCallback(() => {
+  const stopLoading = React.useCallback(() => {}
     setIsLoading(false);
     setHasLoaded(true);
   }, []);
 
-  const reset = React.useCallback(() => {
+  const reset = React.useCallback(() => {}
     setIsLoading(initialState);
     setHasLoaded(false);
   }, [initialState]);
 
-  return {
+  return {}
     isLoading,
     hasLoaded,
     startLoading,

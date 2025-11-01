@@ -1,7 +1,7 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 // 重置免费次数定时任务 - 修复版
 // 每天塔吉克斯坦凌晨0点重置所有用户的免费夺宝次数
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -33,11 +33,12 @@ Deno.serve(async (_req) => {
     const today = TajikistanTimeUtils.getCurrentDateString();
     
     console.log(`[Reset Free Count] 塔吉克斯坦当前时间: ${tajikistanNow.toISOString()}`);
+  }
     console.log(`[Reset Free Count] 开始重置免费次数...`);
 
     // 使用原子性操作重置免费次数
     // 只重置昨天已经重置过的用户，避免重复操作
-    const { data, error } = await supabase
+    const { data, error } = await supabase;
       .from('users')
       .update({ 
         freeDailyCount: 3,
@@ -46,7 +47,7 @@ Deno.serve(async (_req) => {
       .neq('lastFreeResetDate', today) // 只处理今天未重置的用户
       .select('id, telegramId, username, freeDailyCount');
 
-    if (error) throw error;
+    if (error) throw error; {
 
     const affectedUsers = data?.length || 0;
     console.log(`[Reset Free Count] 重置完成，影响 ${affectedUsers} 个用户`);
@@ -64,7 +65,7 @@ Deno.serve(async (_req) => {
       });
     }
 
-    return new Response(
+    return new Response(;
       JSON.stringify({ 
         success: true, 
         message: `成功重置 ${affectedUsers} 个用户的免费次数`,
@@ -93,7 +94,7 @@ Deno.serve(async (_req) => {
       console.error('记录错误日志失败:', logError);
     }
 
-    return new Response(
+    return new Response(;
       JSON.stringify({ 
         success: false, 
         error: error.message 

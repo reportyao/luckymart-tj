@@ -51,7 +51,7 @@ function optimizedRandomGeneration(seed, totalShares, minNumber = 1, maxNumber =
 }
 
 function calculateSecureParticipationHash(participations) {
-  const sortedParticipations = participations
+  const sortedParticipations = participations;
     .map((p, index) => ({
       id: p.id || `auto-${index}`,
       userId: p.userId,
@@ -64,7 +64,7 @@ function calculateSecureParticipationHash(participations) {
   const participationData = JSON.stringify(sortedParticipations);
   const firstHash = crypto.createHash('sha256').update(participationData).digest('hex');
   const hmacKey = crypto.createHash('sha256').update('lottery-secure-key-v2').digest();
-  const secureHash = crypto
+  const secureHash = crypto;
     .createHmac('sha256', hmacKey)
     .update(firstHash)
     .digest('hex');
@@ -74,7 +74,7 @@ function calculateSecureParticipationHash(participations) {
 
 function calculateProductHash(productId) {
   const productData = JSON.stringify({ productId, version: '2.0' });
-  const productHash = crypto
+  const productHash = crypto;
     .createHash('sha256')
     .update(productData)
     .digest('hex');
@@ -141,6 +141,7 @@ function runTests() {
     try {
       fn();
       console.log(`✅ ${name}`);
+  }
       passedTests++;
     } catch (error) {
       console.log(`❌ ${name}: ${error.message}`);
@@ -148,7 +149,7 @@ function runTests() {
   }
 
   // 测试数据
-  const mockParticipations = [
+  const mockParticipations = [;
     {
       id: 'part-1',
       userId: 'user-1',
@@ -282,7 +283,7 @@ function runTests() {
 
   // 测试9: 开奖结果生成
   test('开奖结果生成', () => {
-    const result = calculateSecureWinningNumber(
+    const result = calculateSecureWinningNumber(;
       participationIds,
       mockParticipations,
       productId,
@@ -306,7 +307,7 @@ function runTests() {
 
   // 测试10: 中奖者查找
   test('中奖者查找', () => {
-    const result = calculateSecureWinningNumber(
+    const result = calculateSecureWinningNumber(;
       participationIds,
       mockParticipations,
       productId,
@@ -321,7 +322,7 @@ function runTests() {
       throw new Error(`应该找到中奖者，生成号码: ${result.winningNumber}`);
     }
 
-    const expectedWinner = mockParticipations.find(p => 
+    const expectedWinner = mockParticipations.find(p =>;
       p.numbers.includes(result.winningNumber)
     );
     
@@ -332,7 +333,7 @@ function runTests() {
 
   // 测试11: 结果一致性验证
   test('结果一致性验证', () => {
-    const result1 = calculateSecureWinningNumber(
+    const result1 = calculateSecureWinningNumber(;
       participationIds,
       mockParticipations,
       productId,
@@ -340,7 +341,7 @@ function runTests() {
       1,
       100
     );
-    const result2 = calculateSecureWinningNumber(
+    const result2 = calculateSecureWinningNumber(;
       participationIds,
       mockParticipations,
       productId,
@@ -374,7 +375,7 @@ function runTests() {
     
     console.log(`   (性能: ${duration.toFixed(2)}ms for 100 iterations)`);
     
-    if (duration > 5000) { // 5秒内完成
+    if (duration > 5000) { // 5秒内完成 {
       throw new Error(`性能测试失败: ${duration.toFixed(2)}ms`);
     }
   });
@@ -393,7 +394,7 @@ function runTests() {
     const singleParticipation = [mockParticipations[0]];
     const participationIds = singleParticipation.map(p => p.id);
     
-    const result = calculateSecureWinningNumber(
+    const result = calculateSecureWinningNumber(;
       participationIds,
       singleParticipation,
       productId,
@@ -422,7 +423,7 @@ function runTests() {
     
     const startTime = process.hrtime.bigint();
     
-    const result = calculateSecureWinningNumber(
+    const result = calculateSecureWinningNumber(;
       participationIds,
       largeParticipations,
       productId,
@@ -436,7 +437,7 @@ function runTests() {
     
     console.log(`   (大型数据处理: ${duration.toFixed(2)}ms for 100 participations)`);
     
-    if (duration > 2000) { // 2秒内完成
+    if (duration > 2000) { // 2秒内完成 {
       throw new Error(`大型数据处理性能不足: ${duration.toFixed(2)}ms`);
     }
     
@@ -459,3 +460,5 @@ function runTests() {
 // 运行测试
 const success = runTests();
 process.exit(success ? 0 : 1);
+
+}

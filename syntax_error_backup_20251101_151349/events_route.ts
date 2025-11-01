@@ -25,17 +25,17 @@ export async function GET(request: NextRequest) {
 
     // 构建查询条件
     const where: any = {};
-    if (userId) where.userId = userId;
-    if (status) where.status = status;
-    if (severity) where.severity = severity;
-    if (incidentType) where.incident_type = incidentType;
+    if (userId) where.userId = userId; {
+    if (status) where.status = status; {
+    if (severity) where.severity = severity; {
+    if (incidentType) where.incident_type = incidentType; {
     
     // 日期范围过滤
     if (dateFrom || dateTo) {
       where.createdAt = {};
       if (dateFrom) {
         where.createdAt.gte = new Date(dateFrom);
-      }
+}
       if (dateTo) {
         where.createdAt.lte = new Date(dateTo);
       }
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 
     // 搜索过滤
     if (search) {
-      where.OR = [
+      where.OR : [
         { title: { contains: search, mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } },
         { userId: { contains: search, mode: 'insensitive' } }
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 转换数据格式并添加额外信息
-    const incidentsWithDetails = await Promise.all(
+    const incidentsWithDetails = await Promise.all(;
       result.incidents.map(async (incident: any) => {
         // 获取相关的风险处理记录
         const actions = await getRiskActionsForIncident(incident.id);
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
         const notifications = await getNotificationsForIncident(incident.id);
         
         // 计算事件持续时间
-        const duration = incident.resolved_at 
+        const duration = incident.resolved_at;
           ? new Date(incident.resolved_at).getTime() - new Date(incident.created_at).getTime()
           : new Date().getTime() - new Date(incident.created_at).getTime();
         
@@ -119,10 +119,11 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(response);
+  }
 
   } catch (error) {
     console.error('查询风险事件错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '查询风险事件失败',
         message: '系统正在处理其他请求，请稍后重试'
@@ -149,7 +150,8 @@ export async function POST(request: NextRequest) {
 
     // 验证必填参数
     if (!userId || !incidentType || !title) {
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         { error: '缺少必要参数: userId, incidentType, title' },
         { status: 400 }
       );
@@ -195,7 +197,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('创建风险事件错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '创建风险事件失败',
         message: '请检查参数格式并重试'
@@ -218,14 +220,14 @@ export async function PUT(request: NextRequest) {
     } = body;
 
     if (!incidentId || !status) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '缺少必要参数: incidentId, status' },
         { status: 400 }
       );
-    }
+}
 
     // 更新事件状态
-    const updatedIncident = await updateIncidentStatus(
+    const updatedIncident = await updateIncidentStatus(;
       incidentId,
       status,
       assignedTo,
@@ -245,7 +247,7 @@ export async function PUT(request: NextRequest) {
 
   } catch (error) {
     console.error('更新风险事件错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '更新风险事件失败',
         message: '请检查事件ID和状态是否正确'
@@ -394,3 +396,4 @@ async function updateIncidentStatus(
     throw error;
   }
 }
+}}

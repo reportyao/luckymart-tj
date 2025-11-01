@@ -6,10 +6,7 @@ import { ApiResponse } from '@/types';
 import { TajikistanTimeUtils } from '@/lib/timezone-utils';
 import { getLogger } from '@/lib/logger';
 import { NextResponseHelper, respond } from '@/lib/api-response';
-import { FREE_COUNT_RULES } from '@/lib/business-config';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 export const GET = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `profile-fixed_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
@@ -22,6 +19,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('profile-fixed_route.ts request failed', error as Error, {
       requestId,
@@ -40,7 +38,7 @@ async function handleGET(request: NextRequest) {
         const authHeader = request.headers.get('authorization');
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
           return NextResponseHelper.unauthorized('未授权访问');
-        }
+    }
 
         const token = authHeader.substring(7);
         const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
@@ -145,7 +143,7 @@ async function handleGET(request: NextRequest) {
         });'记录错误日志失败:', logError);
         }
     
-        return NextResponse.json(
+        return NextResponse.json(;
           { error: '获取用户信息失败', message: error.message },
           { status: 500 }
         );
@@ -157,7 +155,7 @@ export async function PUT(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
+}
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
@@ -222,7 +220,7 @@ export async function PUT(request: NextRequest) {
       success: true,
       data: {
         language,
-        message: messages[language] || messages.zh,
+        message: (messages?.language ?? null) || messages.zh,
         cacheUpdated: result.cacheUpdated,
         dbUpdated: result.dbUpdated
       }
@@ -250,7 +248,7 @@ export async function PUT(request: NextRequest) {
     });'记录错误日志失败:', logError);
     }
     
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '更新失败', message: error.message },
       { status: 500 }
     );

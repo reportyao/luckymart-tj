@@ -3,7 +3,7 @@ import { webpush } from 'web-push';
 
 // VAPID配置（生产环境需要替换为真实密钥）
 const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa40HI80NQD6F0jFSJj7Up5khOs8HCAHOqBZGNqn1jWiGCZbfZMUjO_gCZME4Pg';
-const vapidPrivateKey = '4F-AaOzBwUnU2tz9dSbW9kUOGwAf3S6iGK9T9a8X7Q8'; // 示例密钥，生产环境需要使用真实密钥
+const vapidPrivateKey = '4F-AaOzBwUnU2tz9dSbW9kUOGwAf3S6iGK9T9a8X7Q8'; // 示例密钥，生产环境需要使用真实密钥;
 
 // 配置web-push
 webpush.setVapidDetails(
@@ -22,6 +22,7 @@ export async function GET() {
   } catch (error) {
     console.error('获取VAPID公钥失败:', error);
     return NextResponse.json({
+}
       success: false,
       error: '获取VAPID公钥失败'
     }, { status: 500 });
@@ -40,7 +41,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '无效的订阅信息'
       }, { status: 400 });
-    }
+}
     
     // 保存订阅到数据库（这里使用内存存储，生产环境需要保存到数据库）
     const subscriptions = global.subscriptions || new Map();
@@ -55,6 +56,7 @@ export async function POST(request: NextRequest) {
     console.log('订阅保存成功:', subscription.endpoint);
     
     return NextResponse.json({
+  }
       success: true,
       message: '订阅保存成功'
     });
@@ -64,6 +66,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: false,
       error: '保存订阅失败'
-    }, { status: 500 });
+    }, );
   }
 }

@@ -5,10 +5,7 @@ import { rateLimitMonitor, DEFAULT_ALERT_RULES } from '@/lib/rate-limit-monitor'
 import { getRateLimitStats, resetRateLimitStats, cleanupRateLimits } from '@/lib/rate-limit-middleware';
 import { getSystemConfiguration, getRateLimitSystemStatus, restartRateLimitSystem } from '@/lib/rate-limit-system';
 import { getLogger } from '@/lib/logger';
-import { createTranslation } from '@/lib/createTranslation';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.read() });
 export const GET = withErrorHandling(async (request: NextRequest) => {
@@ -23,6 +20,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('rate-limit_route.ts request failed', error as Error, {
       requestId,
@@ -36,7 +34,7 @@ async function handleGET(request: NextRequest) {
 
     // 获取系统概览
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         const logger = getLogger();
 
         const url = new URL(request.url);
@@ -45,6 +43,7 @@ async function handleGET(request: NextRequest) {
         switch (action) {
           case 'overview':
             return handleSystemOverview();
+  }
       
           case 'config':
             return handleConfigList(request);
@@ -63,7 +62,7 @@ async function handleGET(request: NextRequest) {
       
           default:
             return NextResponse.json({ error: '未知操作' }, { status: 400 });
-        }
+    }
       })(request);
 }
 
@@ -83,6 +82,7 @@ async function handleSystemOverview() {
     };
 
     return NextResponse.json({
+  }
       success: true,
       data: {
         system: {
@@ -155,7 +155,7 @@ async function handleAlerts() {
   
   try {
     const alertEvents = rateLimitMonitor.getAlertEvents(50);
-    const activeAlerts = alertEvents.filter((alert : any) => alert.status === 'active');
+    const activeAlerts = alertEvents.filter(((alert : any) : any) => alert.status === 'active');
     
     return NextResponse.json({
       success: true,
@@ -212,7 +212,7 @@ async function handleHealthCheck() {
     const totalComponents = Object.keys(componentAvailability).length;
     const healthScore = (healthyComponents / totalComponents) * 100;
     
-    const isHealthy = healthScore >= 75; // 至少75%的组件正常
+    const isHealthy = healthScore >= 75; // 至少75%的组件正常;
     
     return NextResponse.json({
       success: true,
@@ -236,7 +236,7 @@ async function handleHealthCheck() {
 
 // 更新配置
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const logger = getLogger();
     const body = await request.json();
     const { action } = body;
@@ -268,7 +268,7 @@ export async function POST(request: NextRequest) {
       
       default:
         return NextResponse.json({ error: '未知操作' }, { status: 400 });
-    }
+}
   })(request);
 }
 
@@ -385,7 +385,7 @@ async function handleAddAlertRule(data: any) {
   const { rule } = data;
   
   if (!rule) {
-    return NextResponse.json({ error: '参数不完整' }, { status: 400 });
+    return NextResponse.json(, );
   }
 
   rateLimitMonitor.addAlertRule(rule);

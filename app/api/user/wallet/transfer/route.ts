@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
-import { getLogger } from '@/lib/logger';
 
 const prisma = new PrismaClient();
 
@@ -16,6 +15,7 @@ function verifyToken(req: NextRequest) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
     return decoded;
+  }
   } catch (error) {
     return null;
   }
@@ -27,7 +27,8 @@ export async function POST(req: NextRequest) {
     const decoded = verifyToken(req);
     
     if (!decoded) {
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         { success: false, error: '未授权访问' },
         { status: 401 }
       );
@@ -38,14 +39,14 @@ export async function POST(req: NextRequest) {
 
     // 验证输入
     if (!amount || amount <= 0) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '转换金额必须大于0' },
         { status: 400 }
       );
     }
 
     if (amount < 1) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '最小转换金额为1 TJS' },
         { status: 400 }
       );
@@ -65,6 +66,7 @@ export async function POST(req: NextRequest) {
 
       if (!user) {
         throw new Error('用户不存在');
+  }
       }
 
       // 检查余额是否足够
@@ -147,22 +149,22 @@ export async function POST(req: NextRequest) {
     // 处理业务错误
     if (error instanceof Error) {
       if (error.message === '余额不足') {
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '余额不足' },
           { status: 400 }
         );
       }
       if (error.message === '用户不存在') {
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '用户不存在' },
-          { status: 404 }
+          
         );
       }
     }
 
-    return NextResponse.json(
-      { success: false, error: '转换失败，请重试' },
-      { status: 500 }
+    return NextResponse.json(;
+      ,
+      
     );
   }
 }

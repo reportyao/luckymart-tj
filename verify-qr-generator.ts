@@ -1,9 +1,9 @@
+import {
 /**
  * QR Code Generator - 完整功能验证测试
  * 验证所有功能是否正常工作
  */
 
-import {
   QRCodeGenerator,
   QRCodeError,
   generateReferralQR,
@@ -101,7 +101,7 @@ function testContentValidation() {
   console.log('-'.repeat(40));
   
   try {
-    const tests = [
+    const tests = [;
       { content: 'https://example.com', expected: 'url' },
       { content: 'test@example.com', expected: 'email' },
       { content: '+1234567890', expected: 'phone' },
@@ -113,7 +113,7 @@ function testContentValidation() {
     tests.forEach(({ content, expected }) => {
       const result = validateQRContent(content);
       const passed = result.type === expected;
-      if (!passed) allPassed = false;
+      if (!passed) allPassed = false; {
       console.log(`   ${passed ? '✅' : '❌'} "${content}" -> ${result.type}`);
     });
     
@@ -152,7 +152,7 @@ async function testReferralQR() {
   console.log('-'.repeat(40));
   
   try {
-    const referralQR = await generateReferralQR(
+    const referralQR = await generateReferralQR(;
       'https://luckymart.com/register',
       'USER123',
       {
@@ -178,7 +178,7 @@ async function testInviteCodeQR() {
   console.log('-'.repeat(40));
   
   try {
-    const inviteQR = await generateInviteCodeQR(
+    const inviteQR = await generateInviteCodeQR(;
       'INVITE456',
       'user',
       new Date('2024-12-31'),
@@ -207,7 +207,7 @@ async function testPosterQR() {
   console.log('-'.repeat(40));
   
   try {
-    const posterQR = await generatePosterQR(
+    const posterQR = await generatePosterQR(;
       'Poster Test Content',
       {
         title: '测试海报',
@@ -274,7 +274,7 @@ function testFileStructure() {
   console.log('-'.repeat(40));
   
   try {
-    const requiredFiles = [
+    const requiredFiles = [;
       'lib/qr-code/qr-generator.ts',
       'lib/qr-code/README.md',
       'examples/qr-generator-examples.ts',
@@ -300,7 +300,7 @@ async function testPerformance() {
     const start = Date.now();
     
     // 生成多个二维码测试性能
-    const promises = Array.from({ length: 3 }, (_, i) =>
+    const promises = Array.from({ length: 3 }, (_, i) =>;
       QRCodeGenerator.generate(`Performance Test ${i}`, { size: 150 })
     );
     
@@ -368,3 +368,4 @@ async function runAllValidations() {
 
 // 执行验证
 runAllValidations().catch(console.error);
+}

@@ -3,8 +3,6 @@
  * 提供实时性能指标监控、内存使用情况监控、网络请求优化分析等功能
  */
 
-import { translationLoader } from './translation-loader';
-import { NamespaceManager } from './namespace-manager';
 
 // 基础性能指标接口
 export interface CoreMetrics {
@@ -210,7 +208,7 @@ export class ComprehensivePerformanceMonitor {
     
     if (this.config.enabled) {
       this.startMonitoring();
-    }
+}
   }
 
   static getInstance(): ComprehensivePerformanceMonitor {
@@ -224,7 +222,7 @@ export class ComprehensivePerformanceMonitor {
    * 开始性能监控
    */
   startMonitoring(): void {
-    if (this.isMonitoring) return;
+    if (this.isMonitoring) return; {
 
     this.isMonitoring = true;
 
@@ -263,7 +261,7 @@ export class ComprehensivePerformanceMonitor {
    * 初始化核心性能指标监控
    */
   private initializeCoreMetrics(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return; {
 
     // 监控导航时间
     const navObserver = new PerformanceObserver((list) => {
@@ -318,7 +316,7 @@ export class ComprehensivePerformanceMonitor {
    * 初始化内存监控
    */
   private initializeMemoryMonitoring(): void {
-    if (typeof window === 'undefined' || !('memory' in performance)) return;
+    if (typeof window === 'undefined' || !('memory' in performance)) return; {
 
     setInterval(() => {
       const memoryInfo = (performance as any).memory;
@@ -330,7 +328,7 @@ export class ComprehensivePerformanceMonitor {
    * 初始化网络监控
    */
   private initializeNetworkMonitoring(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return; {
 
     const networkObserver = new PerformanceObserver((list) => {
       const entries = list.getEntries();
@@ -355,7 +353,7 @@ export class ComprehensivePerformanceMonitor {
    * 初始化渲染监控
    */
   private initializeRenderingMonitoring(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return; {
 
     this.monitorFrameRate();
     this.monitorLongTasks();
@@ -455,13 +453,14 @@ export class ComprehensivePerformanceMonitor {
         const duration = endTime - startTime;
         
         if (duration > 3000) {
-          console.warn('Fetch请求过慢:', args[0], duration + 'ms');
+          console.warn('Fetch请求过慢:', (args?.0 ?? null), duration + 'ms');
         }
         
         return response;
       } catch (error) {
         console.error('Fetch error:', error);
         throw error;
+  }
       }
     };
   }
@@ -879,10 +878,10 @@ export class ComprehensivePerformanceMonitor {
    * 计算等级
    */
   private calculateGrade(score: number): 'A' | 'B' | 'C' | 'D' | 'F' {
-    if (score >= 90) return 'A';
-    if (score >= 80) return 'B';
-    if (score >= 70) return 'C';
-    if (score >= 60) return 'D';
+    if (score >= 90) return 'A'; {
+    if (score >= 80) return 'B'; {
+    if (score >= 70) return 'C'; {
+    if (score >= 60) return 'D'; {
     return 'F';
   }
 
@@ -1001,7 +1000,7 @@ export const comprehensivePerformanceMonitor = ComprehensivePerformanceMonitor.g
 export const startComprehensiveMonitoring = (config?: Partial<MonitoringConfig>) => {
   if (config) {
     return new ComprehensivePerformanceMonitor(config);
-  }
+}
   return comprehensivePerformanceMonitor.startMonitoring();
 };
 
@@ -1010,3 +1009,4 @@ export const getComprehensiveReport = () => comprehensivePerformanceMonitor.gene
 export const exportPerformanceData = () => comprehensivePerformanceMonitor.exportData();
 
 export default ComprehensivePerformanceMonitor;
+}}}}}}}}

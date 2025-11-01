@@ -1,8 +1,3 @@
-/**
- * 移动端组件专项测试
- * 测试LanguageSwitcherMobile、MobileLanguageBottomSheet、SwipeActions和TouchFeedback组件的适配性
- */
-
 import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -13,6 +8,11 @@ import { TouchFeedback } from '../components/TouchFeedback';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../src/i18n';
 import type { SupportedLanguage } from '../src/i18n/config';
+/**
+ * 移动端组件专项测试
+ * 测试LanguageSwitcherMobile、MobileLanguageBottomSheet、SwipeActions和TouchFeedback组件的适配性
+ */
+
 
 // 模拟屏幕尺寸
 const mockScreenSizes = {
@@ -97,7 +97,7 @@ describe('移动端组件适配性测试', () => {
 
   describe('LanguageSwitcherMobile 组件测试', () => {
     test('基本渲染测试', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <LanguageSwitcherMobile />
         </I18nextProvider>
@@ -111,7 +111,7 @@ describe('移动端组件适配性测试', () => {
     test('超小屏幕 (320px) 适配测试', async () => {
       mockScreenSize(320, 568);
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <LanguageSwitcherMobile />
         </I18nextProvider>
@@ -143,7 +143,7 @@ describe('移动端组件适配性测试', () => {
     test('iPhone 12 (390px) 适配测试', async () => {
       mockScreenSize(390, 844);
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <LanguageSwitcherMobile />
         </I18nextProvider>
@@ -166,7 +166,7 @@ describe('移动端组件适配性测试', () => {
       for (const lang of languages) {
         i18n.changeLanguage(lang);
         
-        const { container, rerender } = render(
+        const { container, rerender } = render(;
           <I18nextProvider i18n={i18n}>
             <LanguageSwitcherMobile />
           </I18nextProvider>
@@ -186,7 +186,7 @@ describe('移动端组件适配性测试', () => {
     });
 
     test('语言切换功能测试', async () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <LanguageSwitcherMobile />
         </I18nextProvider>
@@ -221,7 +221,7 @@ describe('移动端组件适配性测试', () => {
         () => new Promise(resolve => setTimeout(resolve, 100))
       );
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <LanguageSwitcherMobile />
         </I18nextProvider>
@@ -258,12 +258,12 @@ describe('移动端组件适配性测试', () => {
       const onClose = jest.fn();
       const onLanguageChange = jest.fn();
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileLanguageBottomSheet
             isOpen={true}
             onClose={onClose}
-            currentLanguage="tg-TJ"
+            currentLanguage:"tg-TJ"
             onLanguageChange={onLanguageChange}
           />
         </I18nextProvider>
@@ -280,12 +280,12 @@ describe('移动端组件适配性测试', () => {
       const onClose = jest.fn();
       const onLanguageChange = jest.fn();
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileLanguageBottomSheet
             isOpen={true}
             onClose={onClose}
-            currentLanguage="tg-TJ"
+            currentLanguage:"tg-TJ"
             onLanguageChange={onLanguageChange}
           />
         </I18nextProvider>
@@ -307,7 +307,7 @@ describe('移动端组件适配性测试', () => {
           <MobileLanguageBottomSheet
             isOpen={true}
             onClose={onClose}
-            currentLanguage="tg-TJ"
+            currentLanguage:"tg-TJ"
             onLanguageChange={onLanguageChange}
           />
         </I18nextProvider>
@@ -315,7 +315,7 @@ describe('移动端组件适配性测试', () => {
       
       // 查找语言选项
       const languageButtons = screen.getAllByRole('button');
-      const chineseButton = languageButtons.find(button => 
+      const chineseButton = languageButtons.find(button =>;
         button.textContent?.includes('中文')
       );
       
@@ -336,12 +336,12 @@ describe('移动端组件适配性测试', () => {
         const onClose = jest.fn();
         const onLanguageChange = jest.fn();
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <MobileLanguageBottomSheet
               isOpen={true}
               onClose={onClose}
-              currentLanguage="tg-TJ"
+              currentLanguage:"tg-TJ"
               onLanguageChange={onLanguageChange}
             />
           </I18nextProvider>
@@ -362,12 +362,12 @@ describe('移动端组件适配性测试', () => {
       const onClose = jest.fn();
       const onLanguageChange = jest.fn();
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileLanguageBottomSheet
             isOpen={true}
             onClose={onClose}
-            currentLanguage="tg-TJ"
+            currentLanguage:"tg-TJ"
             onLanguageChange={onLanguageChange}
           />
         </I18nextProvider>
@@ -401,12 +401,12 @@ describe('移动端组件适配性测试', () => {
       const onClose = jest.fn();
       const onLanguageChange = jest.fn();
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileLanguageBottomSheet
             isOpen={true}
             onClose={onClose}
-            currentLanguage="tg-TJ"
+            currentLanguage:"tg-TJ"
             onLanguageChange={onLanguageChange}
           />
         </I18nextProvider>
@@ -419,14 +419,14 @@ describe('移动端组件适配性测试', () => {
       if (handle) {
         const computedStyle = window.getComputedStyle(handle);
         // 手柄应该可见但不需要太大
-        expect(computedStyle.width).toBe('3rem'); // w-12 = 48px
+        expect(computedStyle.width).toBe('3rem'); // w-12 : 48px
       }
     });
   });
 
   describe('SwipeActions 组件测试', () => {
     test('基本渲染测试', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <SwipeActions
             leftActions={[
@@ -455,7 +455,7 @@ describe('移动端组件适配性测试', () => {
       const onSwipeEnd = jest.fn();
       const onSwipeProgress = jest.fn();
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <SwipeActions
             leftActions={[
@@ -517,7 +517,7 @@ describe('移动端组件适配性测试', () => {
         // 验证阈值对于屏幕宽度是合理的
         expect(threshold).toBeLessThan(screenWidth * 0.5);
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <SwipeActions
               leftActions={[
@@ -543,7 +543,7 @@ describe('移动端组件适配性测试', () => {
     test('手势提示显示测试', () => {
       mockScreenSize(390, 844);
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <SwipeActions
             leftActions={[
@@ -580,7 +580,7 @@ describe('移动端组件适配性测试', () => {
     test('操作按钮点击测试', () => {
       const onActionClick = jest.fn();
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <SwipeActions
             leftActions={[
@@ -609,9 +609,9 @@ describe('移动端组件适配性测试', () => {
 
   describe('TouchFeedback 组件测试', () => {
     test('基本渲染测试', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
-          <TouchFeedback type="ripple">
+          <TouchFeedback type:"ripple">
             <button>触摸测试</button>
           </TouchFeedback>
         </I18nextProvider>
@@ -625,7 +625,7 @@ describe('移动端组件适配性测试', () => {
       const onTouchStart = jest.fn();
       const onTouchEnd = jest.fn();
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <TouchFeedback 
             onTouchStart={onTouchStart}
@@ -659,7 +659,7 @@ describe('移动端组件适配性测试', () => {
       const feedbackTypes = ['ripple', 'scale', 'glow', 'color'] as const;
       
       feedbackTypes.forEach(type => {
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <TouchFeedback type={type}>
               <div>{type} 测试</div>
@@ -675,7 +675,7 @@ describe('移动端组件适配性测试', () => {
     test('长按功能测试', () => {
       const onLongPress = jest.fn();
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <TouchFeedback onLongPress={onLongPress}>
             <div>长按测试</div>
@@ -701,7 +701,7 @@ describe('移动端组件适配性测试', () => {
     test('视觉反馈测试', async () => {
       mockScreenSize(390, 844);
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <TouchFeedback type="ripple" visualFeedback={true}>
             <button style={{ width: '100px', height: '100px' }}>视觉反馈测试</button>
@@ -728,7 +728,7 @@ describe('移动端组件适配性测试', () => {
       Object.entries(mockScreenSizes).forEach(([deviceName, dimensions]) => {
         mockScreenSize(dimensions.width, dimensions.height);
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <TouchFeedback>
               <button style={{ minHeight: '44px', minWidth: '44px' }}>
@@ -758,7 +758,7 @@ describe('移动端组件适配性测试', () => {
     test('完整用户流程测试', async () => {
       mockScreenSize(390, 844);
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <div>
             <LanguageSwitcherMobile />
@@ -772,7 +772,7 @@ describe('移动端组件适配性测试', () => {
                 }
               ]}
             >
-              <TouchFeedback type="ripple">
+              <TouchFeedback type:"ripple">
                 <div style={{ padding: '20px', margin: '10px 0' }}>
                   集成测试内容
                 </div>
@@ -818,7 +818,7 @@ describe('移动端组件适配性测试', () => {
       Object.entries(mockScreenSizes).forEach(([deviceName, dimensions]) => {
         mockScreenSize(dimensions.width, dimensions.height);
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <div style={{ width: dimensions.width }}>
               <LanguageSwitcherMobile />
@@ -870,7 +870,7 @@ describe('移动端组件适配性测试', () => {
       
       const startTime = performance.now();
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <SwipeActions
             leftActions={Array.from({ length: 10 }, (_, i) => ({
@@ -900,7 +900,7 @@ describe('移动端组件适配性测试', () => {
         new Error('Network error')
       );
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <LanguageSwitcherMobile />
         </I18nextProvider>
@@ -934,12 +934,12 @@ describe('移动端组件适配性测试', () => {
       const onLanguageChange = jest.fn();
       
       // 模拟异常情况
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileLanguageBottomSheet
             isOpen={false} // 关闭状态
             onClose={onClose}
-            currentLanguage="invalid-lang"
+            currentLanguage:"invalid-lang"
             onLanguageChange={onLanguageChange}
           />
         </I18nextProvider>

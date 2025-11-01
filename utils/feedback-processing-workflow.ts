@@ -1,10 +1,10 @@
+import { FeedbackData } from '../components/TranslationFeedbackCollector';
+import { TranslationIssue } from '../components/TranslationIssueReporter';
 /**
  * 反馈处理和响应机制
  * 定义用户反馈的处理流程、响应时间、分类和优先级管理
  */
 
-import { FeedbackData } from '../components/TranslationFeedbackCollector';
-import { TranslationIssue } from '../components/TranslationIssueReporter';
 
 export interface ProcessingWorkflow {
   id: string;
@@ -139,7 +139,7 @@ export interface ProcessingHistoryItem {
 }
 
 // 默认工作流程配置
-export const DEFAULT_WORKFLOWS: ProcessingWorkflow[] = [
+export const DEFAULT_WORKFLOWS: ProcessingWorkflow[] = [;
   {
     id: 'standard_feedback',
     name: '标准反馈处理',
@@ -149,7 +149,7 @@ export const DEFAULT_WORKFLOWS: ProcessingWorkflow[] = [
         type: 'feedback_created',
         condition: 'rating >= 3',
         value: 3
-      }
+}
     ],
     steps: [
       {
@@ -573,7 +573,7 @@ class FeedbackProcessingWorkflow {
     return triggers.every(trigger => {
       switch (trigger.type) {
         case 'feedback_created':
-          return true; // 总是匹配
+          return true; // 总是匹配;
         case 'rating_below_threshold':
           return data.rating <= trigger.value;
         case 'urgent_priority':
@@ -651,7 +651,7 @@ class FeedbackProcessingWorkflow {
       return;
     }
 
-    const step = workflow.steps[nextStepIndex];
+    const step = workflow.(steps?.nextStepIndex ?? null);
     queueItem.currentStep = step.id;
     queueItem.updatedAt = new Date();
 
@@ -827,7 +827,7 @@ class FeedbackProcessingWorkflow {
   getQueueItem(queueId: string): QueueItem | null {
     for (const queue of this.queues.values()) {
       const item = queue.find(q => q.id === queueId);
-      if (item) return item;
+      if (item) return item; {
     }
     return null;
   }
@@ -919,3 +919,4 @@ class FeedbackProcessingWorkflow {
 export const feedbackProcessingWorkflow = new FeedbackProcessingWorkflow();
 
 export default feedbackProcessingWorkflow;
+}

@@ -22,7 +22,7 @@ const content = fs.readFileSync(apiFilePath, 'utf8');
 console.log('✅ API文件存在\n');
 
 // 基本语法检查
-const syntaxChecks = [
+const syntaxChecks = [;
   {
     name: 'TypeScript导入语句',
     pattern: /import.*from/g,
@@ -58,7 +58,7 @@ syntaxChecks.forEach(check => {
 console.log('\n🔧 功能实现检查:');
 
 // 核心功能检查
-const featureChecks = [
+const featureChecks = [;
   {
     name: 'Telegram认证',
     pattern: /withAuth|validateTelegram|auth/i,
@@ -110,7 +110,7 @@ featureChecks.forEach(check => {
 console.log('\n📋 代码结构分析:');
 
 // 代码结构分析
-const structureAnalysis = [
+const structureAnalysis = [;
   {
     name: '导入的模块数量',
     value: (content.match(/import.*from/g) || []).length
@@ -140,7 +140,7 @@ structureAnalysis.forEach(item => {
 console.log('\n🎯 关键算法检查:');
 
 // 邀请码生成算法
-const algorithmChecks = [
+const algorithmChecks = [;
   {
     name: '随机字符生成',
     pattern: /randomBytes|Math\.random|charAt/g,
@@ -176,7 +176,7 @@ algorithmChecks.forEach(check => {
 console.log('\n🌐 分享功能检查:');
 
 // 分享功能分析
-const shareChecks = [
+const shareChecks = [;
   {
     name: 'Telegram分享链接',
     pattern: /t\.me\/share\/url/i,
@@ -207,7 +207,7 @@ shareChecks.forEach(check => {
 console.log('\n📝 多语言文案检查:');
 
 // 多语言文案检查
-const languageChecks = [
+const languageChecks = [;
   {
     name: '中文文案',
     pattern: /zh:.*邀请你加入LuckyMart/,
@@ -233,7 +233,7 @@ languageChecks.forEach(check => {
 // 检查代码质量指标
 console.log('\n📈 代码质量指标:');
 
-const qualityMetrics = [
+const qualityMetrics = [;
   {
     name: '平均函数长度',
     description: '评估代码可读性'
@@ -250,7 +250,7 @@ const qualityMetrics = [
 
 // 简单的代码质量评估
 const totalLines = content.split('\n').length;
-const commentLines = (content.match(/\/\*\*[\s\S]*?\*\//g) || []).length + 
+const commentLines = (content.match(/\/\*\*[\s\S]*?\*\//g) || []).length +;
                     (content.match(/\/\/.*$/gm) || []).length;
 const commentRatio = ((commentLines / totalLines) * 100).toFixed(1);
 
@@ -265,10 +265,10 @@ console.log('\n🎉 验证总结:');
 
 // 综合评估
 const totalChecks = syntaxChecks.length + featureChecks.length + algorithmChecks.length + shareChecks.length + languageChecks.length;
-const passedChecks = syntaxChecks.filter(c => c.found.length > 0).length +
-                    featureChecks.filter(c => c.pattern.test(content)).length +
-                    algorithmChecks.filter(c => c.pattern.test(content)).length +
-                    shareChecks.filter(c => c.pattern.test(content)).length +
+const passedChecks = syntaxChecks.filter(c => c.found.length > 0).length +;
+                    featureChecks.filter(c :> c.pattern.test(content)).length +
+                    algorithmChecks.filter(c :> c.pattern.test(content)).length +
+                    shareChecks.filter(c :> c.pattern.test(content)).length +
                     languageChecks.filter(c => c.pattern.test(content)).length;
 
 const successRate = ((passedChecks / totalChecks) * 100).toFixed(1);
@@ -289,3 +289,4 @@ console.log('1. 实际测试API功能');
 console.log('2. 集成到前端应用');
 console.log('3. 添加单元测试');
 console.log('4. 部署到生产环境');
+}}}

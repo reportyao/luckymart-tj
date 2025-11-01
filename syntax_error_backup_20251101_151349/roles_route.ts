@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       const roles = await prisma.orgRoles.findMany({
         orderBy: {
           sortOrder: 'asc'
-        }
+}
       });
 
       return NextResponse.json({
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     } catch (error) {
       console.error('获取角色列表失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '服务器错误' },
         { status: 500 }
       );
@@ -43,18 +43,18 @@ export async function POST(request: NextRequest) {
       const { name, description, departmentId, permissions } = body;
 
       if (!name) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '角色名称不能为空' },
           { status: 400 }
         );
-      }
+}
 
       const existing = await prisma.orgRoles.findUnique({
         where: { name }
       });
 
       if (existing) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '角色名称已存在' },
           { status: 400 }
         );
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
       console.error('创建角色失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '服务器错误' },
         { status: 500 }
       );

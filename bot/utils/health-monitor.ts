@@ -1,11 +1,11 @@
+import { prisma } from '../../lib/prisma';
+import { logger } from './logger';
+import { MessageQueue } from './message-queue';
 /**
  * 健康检查系统
  * 监控Bot各个组件的健康状态
  */
 
-import { prisma } from '../../lib/prisma';
-import { logger } from './logger';
-import { MessageQueue } from './message-queue';
 
 export interface HealthStatus {
   status: 'healthy' | 'unhealthy' | 'degraded';
@@ -65,7 +65,7 @@ export class HealthMonitor {
 
   constructor(messageQueue?: MessageQueue) {
     this.messageQueue = messageQueue;
-  }
+}
 
   public async getHealthStatus(): Promise<HealthStatus> {
     const start = Date.now();
@@ -89,7 +89,7 @@ export class HealthMonitor {
   }
 
   private async runAllChecks(): Promise<HealthStatus['checks']> {
-    const checkPromises = [
+    const checkPromises = [;
       this.checkDatabase(),
       this.checkTelegram(),
       this.checkMemory(),
@@ -141,6 +141,7 @@ export class HealthMonitor {
       logger.error('Database health check failed', { error: (error as Error).message }, error as Error);
       
       return {
+  }
         status: 'unhealthy',
         message: 'Database connection failed',
         duration,
@@ -161,6 +162,7 @@ export class HealthMonitor {
       
       if (!botToken) {
         throw new Error('Telegram bot token not configured');
+  }
       }
 
       const duration = Date.now() - start;
@@ -293,10 +295,10 @@ export class HealthMonitor {
       let status: 'healthy' | 'unhealthy' | 'degraded' = 'healthy';
       let message = 'Disk space sufficient';
       
-      if (freeSpace < 1024 * 1024 * 1024) { // 小于1GB
+      if (freeSpace < 1024 * 1024 * 1024) { // 小于1GB {
         status = 'unhealthy';
         message = 'Low disk space';
-      } else if (freeSpace < 5 * 1024 * 1024 * 1024) { // 小于5GB
+      } else if (freeSpace < 5 * 1024 * 1024 * 1024) { // 小于5GB {
         status = 'degraded';
         message = 'Disk space warning';
       }
@@ -330,7 +332,7 @@ export class HealthMonitor {
     try {
       // 这里简化处理，实际应该检查文件系统
       // 在实际部署中可以使用更准确的方法
-      return 10 * 1024 * 1024 * 1024; // 假设10GB可用空间
+      return 10 * 1024 * 1024 * 1024; // 假设10GB可用空间;
     } catch {
       return 0;
     }

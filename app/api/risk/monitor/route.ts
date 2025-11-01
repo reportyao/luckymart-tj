@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RiskControlService } from '@/lib/risk-control';
 import crypto from 'crypto';
-import { getLogger } from '@/lib/logger';
 
 // POST /api/risk/monitor - 启动实时监控会话
 export async function POST(request: NextRequest) {
@@ -11,11 +10,11 @@ export async function POST(request: NextRequest) {
 
     // 验证必填参数
     if (!userId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '缺少必要参数: userId' },
         { status: 400 }
       );
-    }
+}
 
     // 获取客户端信息
     const userAgent = request.headers.get('user-agent') || '';
@@ -81,7 +80,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'创建监控会话失败:', dbError);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '监控服务暂时不可用' },
         { status: 503 }
       );
@@ -92,7 +91,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'实时监控API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '监控服务启动失败',
         message: '系统正在维护中，请稍后重试'
@@ -109,16 +108,16 @@ export async function PUT(request: NextRequest) {
     const { sessionToken, userActions, activityData } = body;
 
     if (!sessionToken) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '缺少必要参数: sessionToken' },
         { status: 400 }
       );
-    }
+}
 
     // 验证会话令牌
     const session = await RiskControlService.validateSessionToken(sessionToken);
     if (!session) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '无效或已过期的会话令牌' },
         { status: 401 }
       );
@@ -160,13 +159,14 @@ export async function PUT(request: NextRequest) {
     };
 
     return NextResponse.json(response);
+  }
 
   } catch (error) {
     logger.error("API Error", error as Error, {
       requestId,
       endpoint: request.url
     });'更新监控会话错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '监控会话更新失败' },
       { status: 500 }
     );
@@ -180,7 +180,8 @@ export async function DELETE(request: NextRequest) {
     const sessionToken = searchParams.get('sessionToken');
 
     if (!sessionToken) {
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         { error: '缺少必要参数: sessionToken' },
         { status: 400 }
       );
@@ -189,7 +190,7 @@ export async function DELETE(request: NextRequest) {
     // 验证会话令牌
     const session = await RiskControlService.validateSessionToken(sessionToken);
     if (!session) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '无效或已过期的会话令牌' },
         { status: 401 }
       );
@@ -221,7 +222,7 @@ export async function DELETE(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'结束监控会话错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '结束监控会话失败' },
       { status: 500 }
     );
@@ -234,7 +235,7 @@ function generateDeviceFingerprint(data: {
   userId: string;
   deviceInfo?: any;
 }): string {
-  const fingerprint = [
+  const fingerprint = [;
     data.userId,
     data.userAgent,
     data.deviceInfo?.screen || 'unknown',
@@ -278,7 +279,7 @@ async function performInitialRiskAssessment(
       requestId,
       endpoint: request.url
     });'初步风险评估失败:', error);
-    return 50; // 默认中等风险
+    return 50; // 默认中等风险;
   }
 }
 
@@ -303,20 +304,20 @@ async function analyzeUserBehavior(
     // 分析行为模式
     if (userActions && userActions.length > 0) {
       // 快速连续操作
-      const actionTimes = userActions.map((action: any) => new Date(action.timestamp));
-      const intervals = actionTimes.slice(1).map((time, index) => 
-        time.getTime() - actionTimes[index].getTime()
+      const actionTimes = userActions.map(((action: any) : any) => new Date(action.timestamp));
+      const intervals = actionTimes.slice(1).map((time, index) =>;
+        time.getTime() - (actionTimes?.index ?? null).getTime()
       );
 
-      const avgInterval = intervals.reduce((sum: any, interval: any) => sum + interval, 0) / intervals.length;
-      if (avgInterval < 1000) { // 小于1秒的平均间隔
+      const avgInterval = intervals.reduce((sum: any: any,  interval: any: any) => sum + interval, 0) / intervals.length;
+      if (avgInterval < 1000) { // 小于1秒的平均间隔 {
         riskIncrease += 30;
         analysis.suspiciousIndicators.push('rapid_action_sequence');
       }
 
       // 异常操作类型
-      const actionTypes = new Set(userActions.map((action: any) => action.type));
-      if (actionTypes.size > 10) { // 太多不同类型的操作
+      const actionTypes = new Set(userActions.map(((action: any) : any) => action.type));
+      if (actionTypes.size > 10) { // 太多不同类型的操作 {
         riskIncrease += 20;
         analysis.suspiciousIndicators.push('diverse_action_pattern');
       }
@@ -326,7 +327,7 @@ async function analyzeUserBehavior(
     if (activityData) {
       // 时间模式分析
       const currentHour = new Date().getHours();
-      if (currentHour < 6 || currentHour > 23) { // 深夜活动
+      if (currentHour < 6 || currentHour > 23) { // 深夜活动 {
         riskIncrease += 10;
         analysis.suspiciousIndicators.push('unusual_time_activity');
       }
@@ -416,4 +417,5 @@ async function generateSessionReport(session: any): Promise<any> {
       recommendations: session.risk_score > 50 ? ['建议人工审核', '增加监控频率'] : ['监控正常']
     }
   };
+}
 }

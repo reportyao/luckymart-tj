@@ -1,11 +1,11 @@
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import crypto from 'crypto';
+import {
 /**
  * 增强版VRF开奖算法单元测试
  * 测试修复后的抽奖系统安全性、公平性和可验证性
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import crypto from 'crypto';
-import {
   generateSystemSeed,
   calculateSecureParticipationHash,
   calculateSecureWinningNumber,
@@ -23,7 +23,7 @@ import {
 } from '../lib/lottery-algorithm';
 
 describe('增强版VRF开奖算法测试', () => {
-  const mockParticipations = [
+  const mockParticipations = [;
     {
       id: 'part-1',
       userId: 'user-1',
@@ -54,7 +54,7 @@ describe('增强版VRF开奖算法测试', () => {
 
   describe('防重复开奖功能测试', () => {
     test('validateDrawUniqueness应该正确验证唯一性', () => {
-      const existingDraws = [
+      const existingDraws = [;
         { roundId: 'round-1', winningNumber: 10000001 },
         { roundId: 'round-2', winningNumber: 10000002 }
       ];
@@ -102,10 +102,10 @@ describe('增强版VRF开奖算法测试', () => {
 
       const logs = logger.getLogs();
       expect(logs).toHaveLength(2);
-      expect(logs[0].action).toBe('lottery_participation');
-      expect(logs[1].action).toBe('lottery_draw');
-      expect(logs[0].requestId).toBeDefined();
-      expect(logs[0].metadata).toBeDefined();
+      expect((logs?.0 ?? null).action).toBe('lottery_participation');
+      expect((logs?.1 ?? null).action).toBe('lottery_draw');
+      expect((logs?.0 ?? null).requestId).toBeDefined();
+      expect((logs?.0 ?? null).metadata).toBeDefined();
 
       const exportedLogs = JSON.parse(logger.exportLogs());
       expect(exportedLogs).toHaveLength(2);
@@ -164,14 +164,14 @@ describe('增强版VRF开奖算法测试', () => {
       const productId = 'test-product';
       const participationIds = mockParticipations.map(p => p.id);
 
-      const drawResult = calculateSecureWinningNumber(
+      const drawResult = calculateSecureWinningNumber(;
         participationIds,
         mockParticipations,
         productId,
         totalShares
       );
 
-      const verification = verifySecureDrawResult(
+      const verification = verifySecureDrawResult(;
         participationIds,
         mockParticipations,
         productId,
@@ -192,7 +192,7 @@ describe('增强版VRF开奖算法测试', () => {
       const participationIds = mockParticipations.map(p => p.id);
 
       // 使用错误的期望中奖号码
-      const verification = verifySecureDrawResult(
+      const verification = verifySecureDrawResult(;
         participationIds,
         mockParticipations,
         productId,
@@ -223,15 +223,15 @@ describe('增强版VRF开奖算法测试', () => {
       const tajikTime = getTajikistanTime();
       
       // 在有效窗口内的时间
-      const validTime = new Date(tajikTime.getTime() + 60000); // 1分钟后
+      const validTime = new Date(tajikTime.getTime() + 60000); // 1分钟后;
       expect(isValidDrawTime(validTime, tajikTime)).toBe(true);
 
       // 超出最大窗口的时间
-      const invalidTime = new Date(tajikTime.getTime() + 600000); // 10分钟后
+      const invalidTime = new Date(tajikTime.getTime() + 600000); // 10分钟后;
       expect(isValidDrawTime(invalidTime, tajikTime)).toBe(false);
 
       // 小于最小窗口的时间
-      const tooEarlyTime = new Date(tajikTime.getTime() - 10000); // 10秒前
+      const tooEarlyTime = new Date(tajikTime.getTime() - 10000); // 10秒前;
       expect(isValidDrawTime(tooEarlyTime, tajikTime)).toBe(false);
     });
   });
@@ -242,7 +242,7 @@ describe('增强版VRF开奖算法测试', () => {
       const seed2 = generateSystemSeed();
       
       expect(typeof seed1).toBe('string');
-      expect(seed1.length).toBe(64); // 32字节 = 64十六进制字符
+      expect(seed1.length).toBe(64); // 32字节 : 64十六进制字符
       expect(/^[0-9a-f]+$/i.test(seed1)).toBe(true);
       expect(seed1).not.toBe(seed2);
     });
@@ -264,7 +264,7 @@ describe('增强版VRF开奖算法测试', () => {
     });
 
     test('不同的参与数据应该产生不同的哈希', () => {
-      const modifiedParticipations = [
+      const modifiedParticipations = [;
         ...mockParticipations.slice(0, -1),
         {
           ...mockParticipations[mockParticipations.length - 1],
@@ -294,7 +294,7 @@ describe('增强版VRF开奖算法测试', () => {
     const participationIds = mockParticipations.map(p => p.id);
 
     test('应该生成有效的开奖结果', () => {
-      const result = calculateSecureWinningNumber(
+      const result = calculateSecureWinningNumber(;
         participationIds,
         mockParticipations,
         productId,
@@ -309,13 +309,13 @@ describe('增强版VRF开奖算法测试', () => {
     });
 
     test('相同的输入应该产生相同的结果', () => {
-      const result1 = calculateSecureWinningNumber(
+      const result1 = calculateSecureWinningNumber(;
         participationIds,
         mockParticipations,
         productId,
         totalShares
       );
-      const result2 = calculateSecureWinningNumber(
+      const result2 = calculateSecureWinningNumber(;
         participationIds,
         mockParticipations,
         productId,
@@ -330,14 +330,14 @@ describe('增强版VRF开奖算法测试', () => {
 
   describe('查找中奖者测试', () => {
     test('应该找到正确的中奖者', () => {
-      const winningNumber = 7; // 假设中奖号码是7，在user-2的参与中
+      const winningNumber = 7; // 假设中奖号码是7，在user-2的参与中;
       const winner = findWinner(mockParticipations, winningNumber);
       
       expect(winner).toBe('user-2');
     });
 
     test('应该处理未中奖的情况', () => {
-      const winningNumber = 99; // 不在任何参与中的号码
+      const winningNumber = 99; // 不在任何参与中的号码;
       const winner = findWinner(mockParticipations, winningNumber);
       
       expect(winner).toBeNull();
@@ -350,7 +350,7 @@ describe('增强版VRF开奖算法测试', () => {
       const productId = 'test-product';
       const participationIds = mockParticipations.map(p => p.id);
 
-      const result = calculateSecureWinningNumber(
+      const result = calculateSecureWinningNumber(;
         participationIds,
         mockParticipations,
         productId,
@@ -381,7 +381,7 @@ describe('增强版VRF开奖算法测试', () => {
       
       const startTime = process.hrtime.bigint();
       
-      const result = calculateSecureWinningNumber(
+      const result = calculateSecureWinningNumber(;
         largeParticipations.map(p => p.id),
         largeParticipations,
         'test-product',
@@ -416,7 +416,7 @@ describe('增强版VRF开奖算法测试', () => {
 
   describe('边界条件测试', () => {
     test('应该处理空参与列表', () => {
-      const result = calculateSecureWinningNumber(
+      const result = calculateSecureWinningNumber(;
         [],
         [],
         'test-product',
@@ -432,7 +432,7 @@ describe('增强版VRF开奖算法测试', () => {
       const singleParticipation = [mockParticipations[0]];
       const participationIds = singleParticipation.map(p => p.id);
       
-      const result = calculateSecureWinningNumber(
+      const result = calculateSecureWinningNumber(;
         participationIds,
         singleParticipation,
         'test-product',
@@ -446,7 +446,7 @@ describe('增强版VRF开奖算法测试', () => {
     test('应该处理大量份额', () => {
       const participationIds = mockParticipations.map(p => p.id);
       
-      const result = calculateSecureWinningNumber(
+      const result = calculateSecureWinningNumber(;
         participationIds,
         mockParticipations,
         'test-product',
@@ -463,7 +463,7 @@ describe('增强版VRF开奖算法测试', () => {
     test('相同输入应该产生可验证的一致结果', () => {
       const participationIds = mockParticipations.map(p => p.id);
       
-      const results = [
+      const results = [;
         calculateSecureWinningNumber(participationIds, mockParticipations, 'test-product', 100),
         calculateSecureWinningNumber(participationIds, mockParticipations, 'test-product', 100),
         calculateSecureWinningNumber(participationIds, mockParticipations, 'test-product', 100),
@@ -491,12 +491,12 @@ describe('增强版VRF开奖算法测试', () => {
   describe('时区兼容性测试', () => {
     test('时间验证应该考虑塔吉克斯坦时区', () => {
       const tajikTime = getTajikistanTime();
-      const scheduledTime = new Date(tajikTime.getTime() + 60000); // 1分钟后
+      const scheduledTime = new Date(tajikTime.getTime() + 60000); // 1分钟后;
       
       const isValid = isValidDrawTime(scheduledTime, tajikTime);
       expect(isValid).toBe(true);
       
-      const futureTime = new Date(tajikTime.getTime() + 600000); // 10分钟后（超出最大窗口）
+      const futureTime = new Date(tajikTime.getTime() + 600000); // 10分钟后（超出最大窗口）;
       const isInvalid = isValidDrawTime(futureTime, tajikTime);
       expect(isInvalid).toBe(false);
     });
@@ -506,7 +506,7 @@ describe('增强版VRF开奖算法测试', () => {
 // 集成测试
 describe('集成测试', () => {
   test('完整的开奖和验证流程', async () => {
-    const mockParticipations = [
+    const mockParticipations = [;
       { userId: 'user-1', numbers: [1, 2, 3, 4, 5], amount: 5, createdAt: new Date() },
       { userId: 'user-2', numbers: [6, 7, 8, 9, 10], amount: 3, createdAt: new Date() }
     ];
@@ -516,7 +516,7 @@ describe('集成测试', () => {
     const participationIds = mockParticipations.map(p => p.userId);
     
     // 执行开奖
-    const drawResult = calculateSecureWinningNumber(
+    const drawResult = calculateSecureWinningNumber(;
       participationIds,
       mockParticipations,
       productId,
@@ -527,7 +527,7 @@ describe('集成测试', () => {
     const winner = findWinner(mockParticipations, drawResult.winningNumber);
     
     // 验证开奖结果
-    const verification = verifySecureDrawResult(
+    const verification = verifySecureDrawResult(;
       participationIds,
       mockParticipations,
       productId,

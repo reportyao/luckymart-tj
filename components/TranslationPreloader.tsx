@@ -1,14 +1,14 @@
+import React, { useEffect, useRef, useState, useCallback, ReactNode } from 'react';
+import { NamespaceManager, createNamespaceManager } from '../utils/namespace-manager';
+import { translationLoader } from '../utils/translation-loader';
 /**
  * 翻译预加载组件
  * 基于用户行为和路由的智能预加载系统
  */
 
-import React, { useEffect, useRef, useState, useCallback, ReactNode } from 'react';
-import { NamespaceManager, createNamespaceManager } from '../utils/namespace-manager';
-import { translationLoader } from '../utils/translation-loader';
 
 // 预加载配置
-export interface PreloaderConfig {
+export interface PreloaderConfig {}
   enableRoutePrediction: boolean;
   enableBehaviorPrediction: boolean;
   enableIntersectionObserver: boolean;
@@ -16,27 +16,27 @@ export interface PreloaderConfig {
   batchSize: number;
   maxConcurrentLoads: number;
   enableAnalytics: boolean;
-}
+
 
 // 预测结果
-export interface PredictionResult {
+export interface PredictionResult {}
   routes: string[];
   confidence: number;
   reasons: string[];
   timestamp: number;
-}
+
 
 // 预加载状态
-export interface PreloadState {
+export interface PreloadState {}
   isPreloading: boolean;
   loadedNamespaces: Set<string>;
   predictedRoutes: string[];
   confidence: number;
   lastPreload: number;
-}
+
 
 // 默认配置
-const DEFAULT_CONFIG: PreloaderConfig = {
+const DEFAULT_CONFIG: PreloaderConfig = {}
   enableRoutePrediction: true,
   enableBehaviorPrediction: true,
   enableIntersectionObserver: true,
@@ -47,157 +47,165 @@ const DEFAULT_CONFIG: PreloaderConfig = {
 };
 
 // 预加载分析器
-class PreloadAnalyzer {
+class PreloadAnalyzer {}
+  private readonly MAX_HISTORY_SIZE = 100; // 最大历史记录数
+  private readonly CLEANUP_INTERVAL = 5 * 60 * 1000; // 5分钟清理一次
   private clickHistory: Array<{ x: number; y: number; time: number; element: string }> = [];
   private hoverHistory: Array<{ element: string; time: number; duration: number }> = [];
   private routeHistory: Array<{ route: string; time: number }> = [];
-  private scrollBehavior: { direction: 'up' | 'down'; speed: number; position: number } = {
+  private scrollBehavior: { direction: 'up' | 'down'; speed: number; position: number } = {}
     direction: 'down',
     speed: 0,
     position: 0
   };
+  private cleanupInterval?: NodeJS.Timeout;
 
   constructor(private config: PreloaderConfig) {}
+    // 定期自动清理
+    if (config.enableAnalytics) {}
+      this.cleanupInterval = setInterval(() => this.cleanup(), this.CLEANUP_INTERVAL);
+
+  
 
   // 分析用户行为
-  analyzeBehavior(): PredictionResult {
+  analyzeBehavior(): PredictionResult {}
     const routePredictions = this.predictRoutes();
     const behaviorPredictions = this.predictFromBehavior();
     
     const allPredictions = [...routePredictions, ...behaviorPredictions];
     const confidence = this.calculateConfidence(allPredictions);
     
-    return {
+    return {}
       routes: allPredictions,
       confidence,
       reasons: this.getPredictionReasons(allPredictions),
       timestamp: Date.now()
     };
-  }
+  
 
   // 记录点击事件
-  recordClick(x: number, y: number, element: string): void {
+  recordClick(x: number, y: number, element: string): void {}
     const click = { x, y, time: Date.now(), element };
     this.clickHistory.push(click);
     
-    // 保持历史记录在合理范围内
-    if (this.clickHistory.length > 50) {
-      this.clickHistory.shift();
-    }
+    // 严格限制历史记录大小
+    if (this.clickHistory.length > this.MAX_HISTORY_SIZE) {}
+      this.clickHistory.splice(0, this.clickHistory.length - this.MAX_HISTORY_SIZE);
+    
 
     // 记录元素相关预测
     this.predictFromClick(click);
-  }
+  
 
   // 记录悬停事件
-  recordHover(element: string, duration: number): void {
-    this.hoverHistory.push({
+  recordHover(element: string, duration: number): void {}
+    this.hoverHistory.push({}
       element,
       time: Date.now(),
       duration
     });
 
-    // 保持历史记录
-    if (this.hoverHistory.length > 30) {
-      this.hoverHistory.shift();
-    }
-  }
+    // 严格限制历史记录大小
+    if (this.hoverHistory.length > this.MAX_HISTORY_SIZE) {}
+      this.hoverHistory.splice(0, this.hoverHistory.length - this.MAX_HISTORY_SIZE);
+    
+  
 
   // 记录路由变化
-  recordRouteChange(route: string): void {
+  recordRouteChange(route: string): void {}
     this.routeHistory.push({ route, time: Date.now() });
     
-    if (this.routeHistory.length > 20) {
-      this.routeHistory.shift();
-    }
-  }
+    if (this.routeHistory.length > this.MAX_HISTORY_SIZE) {}
+      this.routeHistory.splice(0, this.routeHistory.length - this.MAX_HISTORY_SIZE);
+    
+  
 
   // 记录滚动行为
-  recordScroll(position: number): void {
+  recordScroll(position: number): void {}
     const now = Date.now();
     const timeDiff = now - this.scrollBehavior.position;
     
-    if (timeDiff > 0) {
+    if (timeDiff > 0) {}
       const direction = position > this.scrollBehavior.position ? 'down' : 'up';
       const speed = Math.abs(position - this.scrollBehavior.position) / timeDiff;
       
       this.scrollBehavior = { direction, speed, position: now };
-    }
-  }
+    
+  
 
   // 预测路由
-  private predictRoutes(): string[] {
+  private predictRoutes(): string[] {}
     const predictions: string[] = [];
     const recentRoutes = this.routeHistory.slice(-5);
     
-    if (recentRoutes.length < 2) return predictions;
+    if (recentRoutes.length < 2) return predictions; {}
 
     // 分析路由模式
     const routePatterns = this.analyzeRoutePatterns(recentRoutes);
     predictions.push(...routePatterns);
 
     return [...new Set(predictions)];
-  }
+  
 
   // 基于行为预测
-  private predictFromBehavior(): string[] {
+  private predictFromBehavior(): string[] {}
     const predictions: string[] = [];
     
     // 基于滚动方向预测
-    if (this.scrollBehavior.direction === 'down' && this.scrollBehavior.speed > 0.5) {
+    if (this.scrollBehavior.direction === 'down' && this.scrollBehavior.speed > 0.5) {}
       predictions.push('/load-more', '/next-page');
-    }
+    
 
     // 基于悬停模式预测
     const frequentElements = this.getFrequentHoverElements();
     predictions.push(...this.elementsToRoutes(frequentElements));
 
     return [...new Set(predictions)];
-  }
+  
 
   // 基于点击预测
-  private predictFromClick(click: { x: number; y: number; time: number; element: string }): void {
+  private predictFromClick(click: { x: number; y: number; time: number; element: string }): void {}
     // 分析点击位置和元素
     const recentClicks = this.clickHistory.slice(-3);
-    if (this.hasClickPattern(recentClicks)) {
+    if (this.hasClickPattern(recentClicks)) {}
       this.predictNavigationFromClicks(recentClicks);
-    }
-  }
+    
+  
 
   // 分析路由模式
-  private analyzeRoutePatterns(recentRoutes: Array<{ route: string; time: number }>): string[] {
+  private analyzeRoutePatterns(recentRoutes: Array<{ route: string; time: number }>): string[] {}
     const patterns: string[] = [];
     
     // 检查是否存在线性路径
     const routes = recentRoutes.map(r => r.route);
-    if (this.isLinearPath(routes)) {
+    if (this.isLinearPath(routes)) {}
       const nextInSequence = this.getNextInSequence(routes);
-      if (nextInSequence) {
+      if (nextInSequence) {}
         patterns.push(nextInSequence);
-      }
-    }
+      
+    
 
     return patterns;
-  }
+  
 
   // 获取高频悬停元素
-  private getFrequentHoverElements(): string[] {
+  private getFrequentHoverElements(): string[] {}
     const elementCounts = new Map<string, number>();
     
-    this.hoverHistory.forEach(hover => {
+    this.hoverHistory.forEach(hover => {}
       elementCounts.set(hover.element, (elementCounts.get(hover.element) || 0) + 1);
     });
 
     return Array.from(elementCounts.entries())
       .filter(([_, count]) => count > 2)
-      .sort((a, b) => b[1] - a[1])
+      .sort((a, b) => (b?.1 ?? null) - (a?.1 ?? null))
       .slice(0, 5)
       .map(([element]) => element);
-  }
+  
 
   // 元素到路由的映射
-  private elementsToRoutes(elements: string[]): string[] {
-    const elementToRoute: Record<string, string[]> = {
+  private elementsToRoutes(elements: string[]): string[] {}
+    const elementToRoute: Record<string, string[]> = {}
       'nav-item-home': ['/'],
       'nav-item-orders': ['/orders'],
       'nav-item-profile': ['/profile'],
@@ -208,70 +216,70 @@ class PreloadAnalyzer {
     };
 
     const routes: string[] = [];
-    elements.forEach(element => {
+    elements.forEach(element => {}
       const mapped = elementToRoute[element];
-      if (mapped) {
+      if (mapped) {}
         routes.push(...mapped);
-      }
+      
     });
 
     return routes;
-  }
+  
 
   // 检查点击模式
-  private hasClickPattern(clicks: Array<{ x: number; y: number; element: string }>): boolean {
-    if (clicks.length < 3) return false;
+  private hasClickPattern(clicks: Array<{ x: number; y: number; element: string }>): boolean {}
+    if (clicks.length < 3) return false; {}
 
     // 检查是否存在导航模式
-    const navigationElements = clicks.filter(c => 
+    const navigationElements = clicks.filter(c =>;
       c.element.includes('nav') || c.element.includes('menu')
     );
 
     return navigationElements.length >= 2;
-  }
+  
 
   // 从点击中预测导航
-  private predictNavigationFromClicks(clicks: Array<{ x: number; y: number; element: string }>): void {
+  private predictNavigationFromClicks(clicks: Array<{ x: number; y: number; element: string }>): void {}
     // 实现基于点击序列的导航预测
     const lastClick = clicks[clicks.length - 1];
     
     // 如果点击的是导航相关元素，预测相关路由
-    if (lastClick.element.includes('nav-')) {
+    if (lastClick.element.includes('nav-')) {}
       // 基于点击的导航元素预测相关页面
-    }
-  }
+    
+  
 
   // 检查是否为线性路径
-  private isLinearPath(routes: string[]): boolean {
-    if (routes.length < 3) return false;
+  private isLinearPath(routes: string[]): boolean {}
+    if (routes.length < 3) return false; {}
 
     // 简化的线性路径检测
     const sortedRoutes = [...routes].sort();
     return routes.join(',') === sortedRoutes.join(',');
-  }
+  
 
   // 获取序列中的下一个路由
-  private getNextInSequence(routes: string[]): string | null {
+  private getNextInSequence(routes: string[]): string | null {}
     // 简化的序列预测
-    const knownSequences = [
+    const knownSequences = [;
       ['/orders', '/profile', '/settings'],
       ['/lottery', '/wallet', '/transactions']
     ];
 
-    for (const sequence of knownSequences) {
-      const index = sequence.findIndex(seq => 
-        routes.every(route => route !== seq)
+    for (const sequence of knownSequences) {}
+      const index = sequence.findIndex(seq =>;
+        routes.every(route :> route !== seq)
       );
-      if (index === routes.length - 1) {
+      if (index === routes.length - 1) {}
         return sequence[index + 1] || null;
-      }
-    }
+      
+    
 
     return null;
-  }
+  
 
   // 计算预测置信度
-  private calculateConfidence(predictions: string[]): number {
+  private calculateConfidence(predictions: string[]): number {}
     let confidence = 0;
 
     // 基于历史数据置信度
@@ -287,95 +295,118 @@ class PreloadAnalyzer {
     confidence += predictionWeight;
 
     return Math.round(confidence * 100);
-  }
+  
 
   // 获取预测原因
-  private getPredictionReasons(predictions: string[]): string[] {
+  private getPredictionReasons(predictions: string[]): string[] {}
     const reasons: string[] = [];
 
-    if (this.routeHistory.length > 0) {
+    if (this.routeHistory.length > 0) {}
       reasons.push('基于访问历史');
-    }
+    
 
-    if (this.clickHistory.length > 5) {
+    if (this.clickHistory.length > 5) {}
       reasons.push('基于点击行为');
-    }
+    
 
-    if (this.hoverHistory.length > 3) {
+    if (this.hoverHistory.length > 3) {}
       reasons.push('基于悬停模式');
-    }
+    
 
-    if (predictions.length > 0) {
+    if (predictions.length > 0) {}
       reasons.push('智能算法预测');
-    }
+    
 
     return reasons;
-  }
+  
 
   // 获取分析结果
-  getAnalytics(): {
+  getAnalytics(): {}
     clickCount: number;
     hoverCount: number;
     routeCount: number;
     averageConfidence: number;
     topPredictions: string[];
   } {
-    return {
+    return {}
       clickCount: this.clickHistory.length,
       hoverCount: this.hoverHistory.length,
       routeCount: this.routeHistory.length,
       averageConfidence: this.calculateConfidence([]),
       topPredictions: this.predictRoutes()
     };
-  }
+  
 
   // 清理历史数据
-  cleanup(): void {
-    const oneHourAgo = Date.now() - (60 * 60 * 1000);
+  cleanup(): void {}
+    const now = Date.now();
+    const oneHourAgo = now - (60 * 60 * 1000);
     
+    // 清理过期数据
     this.clickHistory = this.clickHistory.filter(c => c.time > oneHourAgo);
     this.hoverHistory = this.hoverHistory.filter(h => h.time > oneHourAgo);
     this.routeHistory = this.routeHistory.filter(r => r.time > oneHourAgo);
-  }
-}
+    
+    // 释放不必要的大对象引用
+    if (this.clickHistory.length === 0) {}
+      this.clickHistory = [];
+    
+  
+  
+  // 内存监控
+  getMemoryUsage(): { size: number; estimatedBytes: number } {}
+    const size = this.clickHistory.length + this.hoverHistory.length + this.routeHistory.length;
+    const estimatedBytes = size * 100; // 估算每个记录100字节;
+    return { size, estimatedBytes };
+  
+  
+  // 销毁方法
+  destroy(): void {}
+    if (this.cleanupInterval) {}
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = undefined;
+    
+    this.cleanup();
+  
+
 
 // 主预加载组件
-interface TranslationPreloaderProps {
+interface TranslationPreloaderProps {}
   children: ReactNode;
   locale?: string;
   config?: Partial<PreloaderConfig>;
   onPredictionUpdate?: (prediction: PredictionResult) => void;
-  onPreloadComplete?: (stats: {
+  onPreloadComplete?: (stats: {}
     loadedNamespaces: string[];
     loadTime: number;
     confidence: number;
   }) => void;
-}
+
 
 // 预加载上下文
-interface PreloaderContextValue {
+interface PreloaderContextValue {}
   state: PreloadState;
   analyzer: PreloadAnalyzer;
   manager: NamespaceManager;
   predictAndPreload: () => Promise<void>;
   forcePreload: (namespaces: string[]) => Promise<void>;
   getStats: () => any;
-}
+
 
 // 创建上下文
 const PreloaderContext = React.createContext<PreloaderContextValue | null>(null);
 
 // 预加载Hook
-export function useTranslationPreloader() {
+export function useTranslationPreloader() {}
   const context = useContext(PreloaderContext);
-  if (!context) {
+  if (!context) {}
     throw new Error('useTranslationPreloader must be used within TranslationPreloader');
-  }
+
   return context;
-}
+
 
 // 主组件
-export function TranslationPreloader({
+export function TranslationPreloader({}
   children,
   locale = 'zh-CN',
   config: userConfig = {},
@@ -383,7 +414,7 @@ export function TranslationPreloader({
   onPreloadComplete
 }: TranslationPreloaderProps) {
   const config = { ...DEFAULT_CONFIG, ...userConfig };
-  const [state, setState] = useState<PreloadState>({
+  const [state, setState] = useState<PreloadState>({}
     isPreloading: false,
     loadedNamespaces: new Set(),
     predictedRoutes: [],
@@ -394,33 +425,35 @@ export function TranslationPreloader({
   const analyzerRef = useRef<PreloadAnalyzer>();
   const managerRef = useRef<NamespaceManager>();
   const intersectionObserverRef = useRef<IntersectionObserver>();
+  const eventListenersRef = useRef<Array<{ element: Element | Document | Window; type: string; listener: EventListener }>>([]);
+  const hoverTimerRef = useRef<NodeJS.Timeout>();
 
   // 初始化
-  useEffect(() => {
+  useEffect(() => {}
     analyzerRef.current = new PreloadAnalyzer(config);
     managerRef.current = createNamespaceManager(translationLoader);
 
-    if (config.enableIntersectionObserver) {
+    if (config.enableIntersectionObserver) {}
       setupIntersectionObserver();
-    }
 
-    if (config.enableBehaviorPrediction) {
+
+    if (config.enableBehaviorPrediction) {}
       setupBehaviorTracking();
-    }
+    
 
     // 初始预加载
     initialPreload();
 
-    return () => {
+    return () => {}
       cleanup();
     };
   }, []);
 
   // 初始预加载
-  const initialPreload = useCallback(async () => {
-    if (!managerRef.current) return;
+  const initialPreload = useCallback(async () => {}
+    if (!managerRef.current) return; {}
 
-    try {
+    try {}
       setState(prev => ({ ...prev, isPreloading: true }));
       
       // 预加载关键路径命名空间
@@ -429,23 +462,23 @@ export function TranslationPreloader({
       
       const startTime = performance.now();
       
-      for (const namespace of criticalNamespaces) {
+      for (const namespace of criticalNamespaces) {}
         await translationLoader.loadNamespace(namespace, locale);
-        setState(prev => ({
+        setState(prev => ({}
           ...prev,
           loadedNamespaces: new Set([...prev.loadedNamespaces, namespace])
         }));
-      }
+      
 
       const loadTime = performance.now() - startTime;
       
-      setState(prev => ({ 
+      setState(prev => ({ }
         ...prev, 
         isPreloading: false,
         lastPreload: Date.now()
       }));
 
-      onPreloadComplete?.({
+      onPreloadComplete?.({}
         loadedNamespaces: criticalNamespaces,
         loadTime,
         confidence: 100
@@ -453,17 +486,17 @@ export function TranslationPreloader({
     } catch (error) {
       console.error('Initial preload failed:', error);
       setState(prev => ({ ...prev, isPreloading: false }));
-    }
+    
   }, [locale, onPreloadComplete]);
 
   // 智能预测和预加载
-  const predictAndPreload = useCallback(async () => {
-    if (!analyzerRef.current || !managerRef.current || state.isPreloading) return;
+  const predictAndPreload = useCallback(async () => {}
+    if (!analyzerRef.current || !managerRef.current || state.isPreloading) return; {}
 
-    try {
+    try {}
       const prediction = analyzerRef.current.analyzeBehavior();
       
-      setState(prev => ({
+      setState(prev => ({}
         ...prev,
         predictedRoutes: prediction.routes,
         confidence: prediction.confidence
@@ -471,46 +504,46 @@ export function TranslationPreloader({
 
       onPredictionUpdate?.(prediction);
 
-      if (prediction.confidence > 60 && prediction.routes.length > 0) {
+      if (prediction.confidence > 60 && prediction.routes.length > 0) {}
         // 基于预测进行预加载
-        for (const route of prediction.routes) {
+        for (const route of prediction.routes) {}
           await managerRef.current.preloadBasedOnRoute(route, locale);
-        }
+        
 
         // 清理旧数据
         analyzerRef.current.cleanup();
-      }
+      
     } catch (error) {
       console.error('Prediction and preload failed:', error);
-    }
+    
   }, [state.isPreloading, locale, onPredictionUpdate]);
 
   // 强制预加载
-  const forcePreload = useCallback(async (namespaces: string[]) => {
-    if (!managerRef.current) return;
+  const forcePreload = useCallback(async (namespaces: string[]) => {}
+    if (!managerRef.current) return; {}
 
-    try {
+    try {}
       setState(prev => ({ ...prev, isPreloading: true }));
       
       const startTime = performance.now();
       
-      for (const namespace of namespaces) {
+      for (const namespace of namespaces) {}
         await translationLoader.loadNamespace(namespace, locale);
-        setState(prev => ({
+        setState(prev => ({}
           ...prev,
           loadedNamespaces: new Set([...prev.loadedNamespaces, namespace])
         }));
-      }
+      
 
       const loadTime = performance.now() - startTime;
       
-      setState(prev => ({ 
+      setState(prev => ({ }
         ...prev, 
         isPreloading: false,
         lastPreload: Date.now()
       }));
 
-      onPreloadComplete?.({
+      onPreloadComplete?.({}
         loadedNamespaces: namespaces,
         loadTime,
         confidence: 100
@@ -518,91 +551,128 @@ export function TranslationPreloader({
     } catch (error) {
       console.error('Force preload failed:', error);
       setState(prev => ({ ...prev, isPreloading: false }));
-    }
+    
   }, [locale, onPreloadComplete]);
 
   // 设置交叉观察器
-  const setupIntersectionObserver = () => {
-    if (typeof window === 'undefined') return;
+  const setupIntersectionObserver = () => {}
+    if (typeof window === 'undefined') return; {}
 
-    intersectionObserverRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
+    intersectionObserverRef.current : new IntersectionObserver(
+      (entries) => {}
+        entries.forEach(entry => {}
+          if (entry.isIntersecting) {}
             const route = entry.target.getAttribute('data-route');
-            if (route && managerRef.current) {
+            if (route && managerRef.current) {}
               managerRef.current.preloadBasedOnRoute(route, locale);
-            }
-          }
+            
+          
         });
       },
-      {
+      {}
         rootMargin: '200px',
         threshold: 0.1
-      }
+      
     );
 
     // 观察所有带有data-route属性的元素
-    setTimeout(() => {
+    setTimeout(() => {}
       const routeElements = document.querySelectorAll('[data-route]');
-      routeElements.forEach(element => {
+      routeElements.forEach(element => {}
         intersectionObserverRef.current?.observe(element);
       });
     }, 1000);
   };
 
-  // 设置行为跟踪
-  const setupBehaviorTracking = () => {
-    if (typeof document === 'undefined') return;
-
-    let hoverTimer: NodeJS.Timeout;
+  // 设置行为跟踪 - 保存监听器引用以便清理
+  const setupBehaviorTracking = () => {}
+    if (typeof document === 'undefined') return; {}
 
     // 记录点击
-    document.addEventListener('click', (e) => {
+    const clickListener = (e: Event) => {}
       const target = e.target as HTMLElement;
       analyzerRef.current?.recordClick(e.clientX, e.clientY, target.tagName.toLowerCase());
       
       // 延迟执行预测以避免频繁调用
-      clearTimeout(hoverTimer);
-      hoverTimer = setTimeout(predictAndPreload, 300);
+      if (hoverTimerRef.current) {}
+        clearTimeout(hoverTimerRef.current);
+      
+      hoverTimerRef.current = setTimeout(predictAndPreload, 300);
+    };
+    
+    document.addEventListener('click', clickListener);
+    eventListenersRef.current.push({}
+      element: document,
+      type: 'click',
+      listener: clickListener
     });
 
     // 记录悬停
-    document.addEventListener('mouseenter', (e) => {
+    const mouseEnterListener = (e: Event) => {}
       const target = e.target as HTMLElement;
       const startTime = Date.now();
       
-      const handleLeave = () => {
+      const handleLeave = () => {}
         const duration = Date.now() - startTime;
         analyzerRef.current?.recordHover(target.tagName.toLowerCase(), duration);
         target.removeEventListener('mouseleave', handleLeave);
       };
       
       target.addEventListener('mouseleave', handleLeave);
-    }, true);
+    };
+    
+    document.addEventListener('mouseenter', mouseEnterListener, true);
+    eventListenersRef.current.push({}
+      element: document,
+      type: 'mouseenter',
+      listener: mouseEnterListener
+    });
 
     // 记录滚动
-    document.addEventListener('scroll', (e) => {
+    const scrollListener = (e: Event) => {}
       const position = window.pageYOffset;
       analyzerRef.current?.recordScroll(position);
-    }, { passive: true });
+    };
+    
+    document.addEventListener('scroll', scrollListener, { passive: true });
+    eventListenersRef.current.push({}
+      element: document,
+      type: 'scroll',
+      listener: scrollListener
+    });
 
     // 记录路由变化
-    window.addEventListener('popstate', () => {
+    window.addEventListener('popstate', () => {}
       const route = window.location.pathname;
       analyzerRef.current?.recordRouteChange(route);
     });
   };
 
   // 清理资源
-  const cleanup = () => {
+  const cleanup = () => {}
     intersectionObserverRef.current?.disconnect();
-    analyzerRef.current?.cleanup();
+    
+    // 清理所有事件监听器
+    eventListenersRef.current.forEach(({ element, type, listener }) => {}
+      element.removeEventListener(type, listener);
+    });
+    eventListenersRef.current = [];
+    
+    // 清理定时器
+    if (hoverTimerRef.current) {}
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = undefined;
+    
+    
+    // 清理分析器
+    if (analyzerRef.current) {}
+      analyzerRef.current.destroy();
+    
   };
 
   // 获取统计信息
-  const getStats = useCallback(() => {
-    return {
+  const getStats = useCallback(() => {}
+    return {}
       state,
       analytics: analyzerRef.current?.getAnalytics(),
       usageStats: managerRef.current?.getUsageStats(),
@@ -610,7 +680,7 @@ export function TranslationPreloader({
     };
   }, [state]);
 
-  const contextValue: PreloaderContextValue = {
+  const contextValue: PreloaderContextValue = {}
     state,
     analyzer: analyzerRef.current!,
     manager: managerRef.current!,
@@ -619,41 +689,41 @@ export function TranslationPreloader({
     getStats
   };
 
-  return (
+  return (;
     <PreloaderContext.Provider value={contextValue}>
       {children}
       
       {/* 预加载状态指示器 (开发模式) */}
-      {process.env.NODE_ENV === 'development' && (
+      {process.env.NODE_ENV :== 'development' && (}
         <PreloadIndicator 
           isPreloading={state.isPreloading}
           confidence={state.confidence}
           loadedCount={state.loadedNamespaces.size}
           predictedRoutes={state.predictedRoutes}
         />
-      )}
+      )
     </PreloaderContext.Provider>
   );
-}
+
 
 // 预加载状态指示器组件
-interface PreloadIndicatorProps {
+interface PreloadIndicatorProps {}
   isPreloading: boolean;
   confidence: number;
   loadedCount: number;
   predictedRoutes: string[];
-}
 
-function PreloadIndicator({ 
+
+function PreloadIndicator({ }
   isPreloading, 
   confidence, 
   loadedCount, 
   predictedRoutes 
 }: PreloadIndicatorProps) {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === 'undefined') return null; {}
 
-  return (
-    <div style={{
+  return (;
+    <div style={{}}
       position: 'fixed',
       bottom: '20px',
       right: '20px',
@@ -664,15 +734,15 @@ function PreloadIndicator({
       fontSize: '12px',
       zIndex: 9999,
       pointerEvents: 'none'
-    }}>
+
       <div>🔄 预加载: {isPreloading ? '进行中' : '空闲'}</div>
       <div>📊 置信度: {confidence}%</div>
       <div>📦 已加载: {loadedCount} 个命名空间</div>
-      {predictedRoutes.length > 0 && (
+      {predictedRoutes.length > 0 && (}
         <div>🎯 预测路由: {predictedRoutes.slice(0, 3).join(', ')}</div>
-      )}
+      )
     </div>
   );
-}
+
 
 export default TranslationPreloader;

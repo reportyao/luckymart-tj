@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import { getLogger } from '@/lib/logger';
-
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -26,7 +25,7 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId');
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
-    const date = searchParams.get('date'); // 指定某一天的统计
+    const date = searchParams.get('date'); // 指定某一天的统计;
     const sortBy = searchParams.get('sortBy') || 'engagement_score';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
     const limit = parseInt(searchParams.get('limit') || '50');
@@ -37,7 +36,7 @@ export async function GET(request: NextRequest) {
     
     if (userId) {
       whereConditions.user_id = userId;
-    }
+}
     
     if (date) {
       whereConditions.date = new Date(date);
@@ -55,7 +54,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 获取参与度统计数据
-    const [engagementStats, totalCount] = await Promise.all([
+    const [engagementStats, totalCount] = await Promise.all([;
       prisma.userEngagementStats.findMany({
         where: whereConditions,
         orderBy: {
@@ -110,6 +109,7 @@ export async function GET(request: NextRequest) {
     } catch (error: any) {
       logger.error('获取用户参与度分析失败', error as Error);
       return NextResponse.json({
+  }
         success: false,
         error: error.message || '获取用户参与度分析失败'
       }, { status: 500 });
@@ -140,7 +140,7 @@ export async function PUT(request: NextRequest) {
         success: false,
         error: '缺少必需参数：userId 和 date'
       }, { status: 400 });
-    }
+}
 
     // 验证用户是否存在
     const user = await prisma.users.findUnique({
@@ -156,7 +156,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // 计算参与度评分
-    const engagementScore = calculateEngagementScore(
+    const engagementScore = calculateEngagementScore(;
       loginCount || 0,
       totalSessionDuration || 0,
       pageViews || 0,
@@ -201,6 +201,7 @@ export async function PUT(request: NextRequest) {
     });
 
     return NextResponse.json({
+  }
       success: true,
       data: engagementStats,
       message: '参与度统计更新成功'
@@ -301,7 +302,7 @@ async function getEngagementSummaryStats(whereConditions: any) {
  * 获取参与度分布
  */
 async function getEngagementDistribution(whereConditions: any) {
-  const distribution = await prisma.$queryRaw`
+  const distribution = await prisma.$queryRaw`;
     SELECT 
       CASE 
         WHEN engagement_score >= 80 THEN 'high'
@@ -339,7 +340,7 @@ async function getEngagementDistribution(whereConditions: any) {
  * 获取参与度趋势数据
  */
 async function getEngagementTrendData(whereConditions: any) {
-  const trends = await prisma.$queryRaw`
+  const trends = await prisma.$queryRaw`;
     SELECT 
       date,
       COUNT(*) as total_users,
@@ -363,7 +364,7 @@ async function getEngagementTrendData(whereConditions: any) {
  * 获取用户分群数据
  */
 async function getUserSegmentation(whereConditions: any) {
-  const segmentation = await prisma.$queryRaw`
+  const segmentation = await prisma.$queryRaw`;
     WITH user_segments AS (
       SELECT 
         ues.user_id,
@@ -378,9 +379,9 @@ async function getUserSegmentation(whereConditions: any) {
           ELSE 'at_risk'
         END as segment
       FROM user_engagement_stats ues
-      JOIN users u ON ues.user_id = u.id
-      WHERE ues.date = CURRENT_DATE
-      ${whereConditions.user_id ? `AND ues.user_id = '${whereConditions.user_id}'` : ''}
+      JOIN users u ON ues.user_id : u.id
+      WHERE ues.date : CURRENT_DATE
+      $'` : ''}
     )
     SELECT 
       segment,

@@ -1,8 +1,3 @@
-/**
- * 容错机制测试脚本
- * 测试各种容错组件的功能和集成
- */
-
 import { botDaemon } from '../utils/bot-daemon';
 import { alertManager } from '../utils/alert-manager';
 import { enhancedErrorTracker } from '../utils/enhanced-error-tracker';
@@ -13,6 +8,11 @@ import { processMonitor } from '../utils/process-monitor';
 import { healthMonitor } from '../utils/health-monitor';
 import { reconnectManager } from '../utils/reconnect-manager';
 import { logger } from '../utils/logger';
+/**
+ * 容错机制测试脚本
+ * 测试各种容错组件的功能和集成
+ */
+
 
 export interface TestResult {
   testName: string;
@@ -28,7 +28,7 @@ export class FaultToleranceTester {
 
   constructor() {
     this.setupTestEnvironment();
-  }
+}
 
   // 设置测试环境
   private setupTestEnvironment(): void {
@@ -75,7 +75,7 @@ export class FaultToleranceTester {
   private async testErrorTracker(): Promise<void> {
     await this.runTest('Error Tracker', async () => {
       // 测试错误记录
-      const errorId = enhancedErrorTracker.recordError(
+      const errorId = enhancedErrorTracker.recordError(;
         'test_error',
         new Error('Test error for validation'),
         {
@@ -87,6 +87,7 @@ export class FaultToleranceTester {
 
       if (!errorId) {
         throw new Error('Failed to record error');
+  }
       }
 
       // 测试错误获取
@@ -99,7 +100,7 @@ export class FaultToleranceTester {
       }
 
       // 测试错误解决
-      const resolved = enhancedErrorTracker.resolveError(errors[0].id);
+      const resolved = enhancedErrorTracker.resolveError((errors?.0 ?? null).id);
       if (!resolved) {
         throw new Error('Failed to resolve error');
       }
@@ -211,7 +212,7 @@ export class FaultToleranceTester {
       });
 
       // 生成性能报告
-      const report = performanceMonitor.generateReport(10000); // 10秒报告
+      const report = performanceMonitor.generateReport(10000); // 10秒报告;
       if (!report || !report.summary) {
         throw new Error('Failed to generate performance report');
       }
@@ -281,7 +282,7 @@ export class FaultToleranceTester {
       }
 
       // 解决告警
-      const resolved = alertManager.resolveAlert(activeAlerts[0].id);
+      const resolved = alertManager.resolveAlert((activeAlerts?.0 ?? null).id);
       if (!resolved) {
         throw new Error('Failed to resolve alert');
       }
@@ -370,6 +371,7 @@ export class FaultToleranceTester {
       for (const component of requiredComponents) {
         if (!components[component as keyof typeof components]) {
           throw new Error(`Missing health check for component: ${component}`);
+  }
         }
       }
 
@@ -508,7 +510,7 @@ export class FaultToleranceTester {
 
       // 测试错误到告警的集成
       try {
-        const errorId = enhancedErrorTracker.recordError(
+        const errorId = enhancedErrorTracker.recordError(;
           'integration_test',
           new Error('Testing integration between error tracker and alert manager'),
           { severity: 'high', component: 'integration_test' }

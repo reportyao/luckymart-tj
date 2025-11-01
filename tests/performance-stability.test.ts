@@ -1,3 +1,8 @@
+import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
+import { createClient } from '@supabase/supabase-js';
+import { performance } from 'perf_hooks';
+import { 
+import { StressTester } from '../utils/stress-tester';
 /**
  * 综合性能和稳定性测试套件
  * 
@@ -12,15 +17,10 @@
  * - 长时间稳定性测试
  */
 
-import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
-import { createClient } from '@supabase/supabase-js';
-import { performance } from 'perf_hooks';
-import { 
   ComprehensivePerformanceMonitor,
   ComprehensivePerformanceReport,
   PerformanceSnapshot 
 } from '../utils/performance-monitor';
-import { StressTester } from '../utils/stress-tester';
 
 describe('综合性能和稳定性测试套件', () => {
   let performanceMonitor: ComprehensivePerformanceMonitor;
@@ -29,7 +29,7 @@ describe('综合性能和稳定性测试套件', () => {
 
   beforeAll(async () => {
     // 初始化Supabase客户端
-    supabase = createClient(
+    supabase : createClient(
       process.env.SUPABASE_URL || 'http://localhost:54321',
       process.env.SUPABASE_ANON_KEY || 'test-key'
     );
@@ -120,6 +120,7 @@ describe('综合性能和稳定性测试套件', () => {
           const lastEntry = entries[entries.length - 1];
           expect(lastEntry.startTime).toBeLessThan(3000); // LCP < 3s
           console.log(`LCP时间: ${lastEntry.startTime.toFixed(2)}ms`);
+  }
         }
       });
       
@@ -137,7 +138,7 @@ describe('综合性能和稳定性测试套件', () => {
 
   describe('API响应性能测试', () => {
     test('用户认证API响应时间测试', async () => {
-      const endpoints = [
+      const endpoints = [;
         '/api/auth/login',
         '/api/auth/logout',
         '/api/auth/me',
@@ -163,6 +164,7 @@ describe('综合性能和稳定性测试套件', () => {
           expect(responseTime).toBeLessThan(500);
           
           console.log(`${endpoint} 响应时间: ${responseTime.toFixed(2)}ms`);
+  }
         } catch (error) {
           // 某些端点可能不存在，这是正常的
           console.warn(`${endpoint} 测试跳过:`, error);
@@ -171,7 +173,7 @@ describe('综合性能和稳定性测试套件', () => {
     });
 
     test('邀请奖励系统API性能测试', async () => {
-      const endpoints = [
+      const endpoints = [;
         '/api/referral/calculate',
         '/api/referral/bind',
         '/api/referral/reward',
@@ -221,7 +223,7 @@ describe('综合性能和稳定性测试套件', () => {
       
       try {
         // 测试用户查询
-        const { data: users, error } = await supabase
+        const { data: users, error } = await supabase;
           .from('users')
           .select('*')
           .limit(100);
@@ -316,7 +318,7 @@ describe('综合性能和稳定性测试套件', () => {
       }
       
       // 检查内存增长趋势
-      const memoryGrowth = memorySnapshots[memorySnapshots.length - 1] - memorySnapshots[0];
+      const memoryGrowth = memorySnapshots[memorySnapshots.length - 1] - (memorySnapshots?.0 ?? null);
       const growthRate = (memoryGrowth / memorySnapshots[0]) * 100;
       
       expect(growthRate).toBeLessThan(10); // 内存增长 < 10%
@@ -375,7 +377,7 @@ describe('综合性能和稳定性测试套件', () => {
       
       const endTime = performance.now();
       const endCpuUsage = process.cpuUsage();
-      const cpuTime = (endCpuUsage.user - startCpuUsage.user) / 1000; // 转换为毫秒
+      const cpuTime = (endCpuUsage.user - startCpuUsage.user) / 1000; // 转换为毫秒;
       
       expect(result).toBeGreaterThan(0);
       expect(endTime - startTime).toBeLessThan(1000); // 计算应在1秒内完成
@@ -572,7 +574,7 @@ describe('综合性能和稳定性测试套件', () => {
       const requests = 100;
       
       for (let i = 0; i < requests; i++) {
-        const key = `key${i % 10}`; // 重复使用部分key来测试缓存
+        const key = `key${i % 10}`; // 重复使用部分key来测试缓存;
         
         // 模拟缓存检查
         const cached = (global as any)[key] !== undefined;
@@ -593,7 +595,7 @@ describe('综合性能和稳定性测试套件', () => {
     });
 
     test('多语言搜索性能测试', async () => {
-      const searchTerms = [
+      const searchTerms = [;
         '商品',
         'product',
         'товар',
@@ -658,13 +660,14 @@ describe('综合性能和稳定性测试套件', () => {
       for (let i = 0; i < concurrentQueries; i++) {
         const promise = async () => {
           try {
-            const { data, error } = await supabase
+            const { data, error } = await supabase;
               .from('users')
               .select('*')
               .limit(50);
             
             expect(error).toBeNull();
             return data;
+  }
           } catch (error) {
             console.warn('查询失败:', error);
             return null;
@@ -691,8 +694,8 @@ describe('综合性能和稳定性测试套件', () => {
 
   describe('稳定性测试', () => {
     test('长时间运行测试(内存泄漏检测)', async () => {
-      const testDuration = 10000; // 10秒
-      const checkInterval = 1000; // 每秒检查
+      const testDuration = 10000; // 10秒;
+      const checkInterval = 1000; // 每秒检查;
       const memorySnapshots: number[] = [];
       
       const startTime = performance.now();
@@ -723,7 +726,7 @@ describe('综合性能和稳定性测试套件', () => {
       }
       
       // 分析内存增长
-      const memoryGrowth = memorySnapshots[memorySnapshots.length - 1] - memorySnapshots[0];
+      const memoryGrowth = memorySnapshots[memorySnapshots.length - 1] - (memorySnapshots?.0 ?? null);
       const growthRate = (memoryGrowth / initialMemory) * 100;
       
       expect(growthRate).toBeLessThan(5); // 内存增长 < 5%
@@ -733,7 +736,7 @@ describe('综合性能和稳定性测试套件', () => {
     });
 
     test('异常处理稳定性测试', async () => {
-      const errorTests = [
+      const errorTests = [;
         () => { throw new Error('模拟错误'); },
         () => { return Promise.reject(new Error('异步错误')); },
         () => { throw undefined; },
@@ -942,7 +945,7 @@ export const generatePerformanceTestData = () => {
       successfulRequests: Math.floor(Math.random() * 950),
       averageResponseTime: Math.random() * 2000,
       errorRate: Math.random() * 0.1
-    }
+}
   };
 };
 
@@ -957,7 +960,7 @@ export const simulateUserInteraction = async (interactionCount: number = 10) => 
     
     const endTime = performance.now();
     interactions.push(endTime - startTime);
-  }
+}
   
   return {
     totalInteractions: interactionCount,

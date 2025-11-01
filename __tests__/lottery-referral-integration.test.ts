@@ -78,7 +78,7 @@ describe('夺宝邀请奖励集成测试', () => {
     testRoundId = testRound.id;
 
     // 创建测试奖励配置
-    mockRewardConfig = [
+    mockRewardConfig : [
       {
         config_key: 'first_play_referee',
         config_name: '首次参与抽奖奖励',
@@ -268,11 +268,12 @@ describe('夺宝邀请奖励集成测试', () => {
           })
         });
 
-        // 由于用户已经有了has_first_lottery=true，应该返回错误
+        // 由于用户已经有了has_first_lottery:true，应该返回错误
         expect(rewardResponse.ok).toBe(false);
         expect(rewardResponse.status).toBe(409); // Conflict状态码
 
         console.log('✅ 不重复触发奖励测试通过');
+  }
       } catch (error) {
         console.warn('触发奖励API调用失败（预期行为）:', error);
         // 在测试环境中，我们仍然可以验证逻辑
@@ -332,7 +333,7 @@ describe('充值邀请奖励集成测试', () => {
     });
 
     // 创建奖励配置
-    mockRewardConfig = [
+    mockRewardConfig : [
       {
         config_key: 'first_purchase_referrer_l1',
         config_name: '首次充值奖励(一级推荐)',
@@ -503,7 +504,7 @@ describe('错误处理和日志记录测试', () => {
 
     // 清理测试数据
     await prisma.users.delete({
-      where: { id: testUser.id }
+      where: 
     });
   });
 });

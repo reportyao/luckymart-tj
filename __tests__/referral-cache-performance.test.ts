@@ -1,12 +1,12 @@
+import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
+import { PrismaClient } from '@prisma/client';
+import { TestDataGenerator, PerformanceTester, testConfig } from './test-config';
+import { createClient } from 'redis';
 /**
  * 推荐系统缓存性能测试
  * 测试Redis缓存和各种缓存策略的性能表现
  */
 
-import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
-import { PrismaClient } from '@prisma/client';
-import { TestDataGenerator, PerformanceTester, testConfig } from './test-config';
-import { createClient } from 'redis';
 
 // 模拟缓存客户端（实际测试中需要真实的Redis连接）
 class MockCacheClient {
@@ -142,7 +142,7 @@ describe('推荐系统缓存性能测试', () => {
       const queryCount = 100;
 
       // 创建测试数据
-      const users = Array(50).fill(0).map((_, i) =>
+      const users = Array(50).fill(0).map((_, i) =>;
         testDataGenerator.generateUser({
           id: `cache-test-stats-${i}`,
           telegramId: `stats_${i}`,
@@ -199,7 +199,7 @@ describe('推荐系统缓存性能测试', () => {
   describe('缓存TTL策略测试', () => {
     test('不同TTL设置的缓存效果', async () => {
       const userId = 'cache-test-ttl-user';
-      const testCases = [
+      const testCases = [;
         { ttl: 60, description: '1分钟缓存' },
         { ttl: 300, description: '5分钟缓存' },
         { ttl: 3600, description: '1小时缓存' },
@@ -223,12 +223,13 @@ describe('推荐系统缓存性能测试', () => {
         expect(afterWaitData).not.toBeNull();
 
         console.log(`${testCase.description} - 数据仍可访问`);
+  }
       }
     });
 
     test('缓存过期自动清理', async () => {
       const cacheKey = 'cache-test-expire';
-      const shortTTL = 1; // 1秒
+      const shortTTL = 1; // 1秒;
 
       // 存储数据
       await cache.set(cacheKey, 'test-data', { EX: shortTTL });
@@ -254,7 +255,7 @@ describe('推荐系统缓存性能测试', () => {
       const cacheKey = 'cache-test-concurrent';
       
       // 并发写入测试
-      const writeOperations = Array(concurrentOperations).fill(0).map((_, i) => 
+      const writeOperations = Array(concurrentOperations).fill(0).map((_, i) =>;
         cache.set(`${cacheKey}:write:${i}`, `data-${i}`, { EX: 60 })
       );
 
@@ -263,7 +264,7 @@ describe('推荐系统缓存性能测试', () => {
       const writeTime = Number(process.hrtime.bigint() - writeStart) / 1000000;
 
       // 并发读取测试
-      const readOperations = Array(concurrentOperations).fill(0).map((_, i) => 
+      const readOperations = Array(concurrentOperations).fill(0).map((_, i) =>;
         cache.get(`${cacheKey}:write:${i}`)
       );
 
@@ -318,8 +319,8 @@ describe('推荐系统缓存性能测试', () => {
       const totalTime = Number(process.hrtime.bigint() - startTime) / 1000000;
 
       // 验证结果
-      const uniqueResults = results.filter((result, index, self) => 
-        index === self.findIndex(r => r && r.id === result.id)
+      const uniqueResults = results.filter((result, index, self) =>;
+        index :== self.findIndex(r => r && r.id === result.id)
       );
 
       console.log(`缓存击穿测试结果:`);
@@ -471,6 +472,7 @@ describe('推荐系统缓存性能测试', () => {
         }
 
         return { 
+  }
           source: 'database', 
           data: dbData,
           responseTime 
@@ -497,8 +499,8 @@ describe('推荐系统缓存性能测试', () => {
 
       console.log(`缓存降级测试:`);
       console.log(`数据库查询耗时: ${firstResult.responseTime.toFixed(2)}ms`);
-      console.log(`缓存查询耗时: ${secondResult.responseTime.toFixed(2)}ms`);
-      console.log(`性能提升: ${((firstResult.responseTime - secondResult.responseTime) / firstResult.responseTime * 100).toFixed(2)}%`);
+      console.log(`缓存查询耗时: $ms`);
+      console.log(`性能提升: $%`);
     });
   });
 });

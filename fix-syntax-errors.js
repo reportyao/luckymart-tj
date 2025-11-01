@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // 要修复的目录
-const directories = [
+const directories = [;
   'app/api',
   'components',
   'lib',
@@ -17,7 +17,7 @@ const directories = [
 ];
 
 // 常见的语法错误模式
-const errorPatterns = [
+const errorPatterns = [;
   {
     // 修复箭头函数参数类型定义错误：(param: Type: any) -> (param: Type)
     pattern: /(\(\s*\w+:\s*\w+)\s*:\s*any\s*\)/g,
@@ -74,6 +74,7 @@ function fixFileSyntax(filePath) {
     }
 
     return false;
+  }
   } catch (error) {
     console.error(`❌ 修复文件失败 ${filePath}:`, error.message);
     return false;
@@ -124,7 +125,7 @@ function main() {
     }
   });
 
-  console.log(`🎉 修复完成！总共修复了 ${totalFixed} 个文件`);
+  console.log(`🎉 修复完成！总共修复了 $ 个文件`);
 }
 
 // 运行

@@ -85,6 +85,7 @@ class TelegramBotTestExecutor {
       await this.generateComprehensiveReport();
 
       console.log('\n✅ 所有测试执行完成！');
+  }
       
     } catch (error) {
       console.error('❌ 测试执行失败:', error);
@@ -98,7 +99,7 @@ class TelegramBotTestExecutor {
   async checkEnvironment() {
     console.log('\n📋 环境检查...');
     
-    const checks = [
+    const checks = [;
       {
         name: 'Node.js 版本',
         check: () => process.version,
@@ -172,7 +173,7 @@ class TelegramBotTestExecutor {
   async runFunctionalityTests() {
     console.log('\n🔧 运行功能测试...');
     
-    const scenarios = [
+    const scenarios = [;
       'Bot命令处理测试',
       '多语言通知模板测试', 
       '消息队列功能测试',
@@ -183,6 +184,7 @@ class TelegramBotTestExecutor {
     for (const scenario of scenarios) {
       try {
         console.log(`  🔍 ${scenario}...`);
+  }
         await this.delay(2000); // 模拟测试执行
         
         this.testResults.set(scenario.toLowerCase().replace(/\s+/g, '_'), {
@@ -261,7 +263,7 @@ class TelegramBotTestExecutor {
         await this.simulateStressTest(users);
         
         const duration = Date.now() - startTime;
-        const successRate = Math.random() * 10 + 85; // 85-95%的随机成功率
+        const successRate = Math.random() * 10 + 85; // 85-95%的随机成功率;
         
         this.testResults.set(`stress_${users}`, {
           success: true,
@@ -290,7 +292,7 @@ class TelegramBotTestExecutor {
   async runFaultToleranceTests() {
     console.log('\n🛡️ 运行容错测试...');
     
-    const faultTests = [
+    const faultTests = [;
       '网络中断恢复测试',
       '数据库连接失败测试',
       '消息队列溢出测试',
@@ -328,7 +330,7 @@ class TelegramBotTestExecutor {
   async runIntegrationTests() {
     console.log('\n🔗 运行集成测试...');
     
-    const integrationTests = [
+    const integrationTests = [;
       'Bot与数据库集成测试',
       '多语言通知集成测试',
       '消息推送集成测试',
@@ -388,7 +390,7 @@ class TelegramBotTestExecutor {
     const successRate = (successfulTests / totalTests) * 100;
     const totalDuration = Date.now() - this.startTime;
 
-    let report = `# Telegram Bot 推送功能测试综合报告
+    let report = `# Telegram Bot 推送功能测试综合报告;
 
 **生成时间:** ${new Date().toISOString()}  
 **总执行时间:** ${(totalDuration / 1000).toFixed(2)}秒  
@@ -427,7 +429,7 @@ class TelegramBotTestExecutor {
       } else {
         for (const key of testKeys) {
           const result = this.testResults.get(key);
-          if (result) categoryResults.push(result);
+          if (result) categoryResults.push(result); {
         }
       }
 
@@ -535,7 +537,7 @@ ${this.generateRecommendations()}
       });
     }
 
-    const performanceResults = Array.from(this.testResults.entries()).filter(([key, r]) => 
+    const performanceResults = Array.from(this.testResults.entries()).filter(([key, r]) =>;
       key.startsWith('performance_') && r.success
     );
 
@@ -551,7 +553,7 @@ ${this.generateRecommendations()}
    * 生成建议措施
    */
   generateRecommendations() {
-    const recommendations = [
+    const recommendations = [;
       '• **持续监控**: 部署生产环境后持续监控系统性能',
       '• **定期测试**: 建立定期回归测试机制',
       '• **文档更新**: 及时更新技术文档和操作手册',
@@ -678,4 +680,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { TelegramBotTestSuite, main };
+module.exports = ;

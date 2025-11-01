@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 /**
  * 翻译更新通知系统
  * Translation Update Notification System
@@ -8,7 +9,6 @@
  * - 提供翻译更新的状态跟踪和进度监控
  */
 
-import { EventEmitter } from 'events';
 
 export interface NotificationConfig {
   id: string;
@@ -188,7 +188,7 @@ export class TranslationUpdateNotifier extends EventEmitter {
     super();
     this.setupEventListeners();
     this.startNotificationProcessor();
-  }
+}
 
   private setupEventListeners(): void {
     this.on('notification:sent', (status: NotificationStatus) => {
@@ -539,7 +539,7 @@ export class TranslationUpdateNotifier extends EventEmitter {
       }
     }
 
-    return history
+    return history;
       .sort((a, b) => b.event.timestamp - a.event.timestamp)
       .slice(0, filters?.limit || 50);
   }
@@ -675,16 +675,17 @@ export class TranslationUpdateNotifier extends EventEmitter {
     // 如果指定了配置，使用该配置进行过滤
     if (configId) {
       const config = this.configs.get(configId);
-      if (!config) return false;
+      if (!config) return false; {
 
       // 检查过滤器
       for (const filter of config.filters) {
-        const matches = filter.condition.every(condition => 
+        const matches = filter.condition.every(condition =>;
           this.evaluateCondition(event, condition)
         );
         
         if (filter.action === 'exclude' && matches) {
           return false;
+  }
         }
       }
     }
@@ -725,7 +726,7 @@ export class TranslationUpdateNotifier extends EventEmitter {
         
         const now = new Date();
         const dayOfWeek = now.getDay();
-        const currentTime = now.toTimeString().slice(0, 5); // HH:mm
+        const currentTime = now.toTimeString().slice(0, 5); // HH:mm;
         
         // 检查是否为节假日
         const dateString = now.toISOString().split('T')[0];
@@ -734,7 +735,7 @@ export class TranslationUpdateNotifier extends EventEmitter {
         }
         
         // 检查工作时间
-        const inWorkingHours = workingHours.days.includes(dayOfWeek) &&
+        const inWorkingHours = workingHours.days.includes(dayOfWeek) &&;
                               currentTime >= workingHours.start &&
                               currentTime <= workingHours.end;
         
@@ -747,6 +748,7 @@ export class TranslationUpdateNotifier extends EventEmitter {
           const inQuietHours = currentTime >= quietHours.start || currentTime <= quietHours.end;
           if (inQuietHours) {
             return false;
+  }
           }
         }
         
@@ -754,7 +756,7 @@ export class TranslationUpdateNotifier extends EventEmitter {
       }
     }
     
-    return true; // 如果没有配置限制，允许发送
+    return true; // 如果没有配置限制，允许发送;
   }
 
   private queueEvent(event: NotificationEvent): void {
@@ -782,9 +784,9 @@ export class TranslationUpdateNotifier extends EventEmitter {
 
     // 检查触发条件
     const shouldTrigger = config.triggers.some(trigger => {
-      if (trigger.event !== event.type) return false;
+      if (trigger.event !== event.type) return false; {
       
-      return trigger.conditions.every(condition =>
+      return trigger.conditions.every(condition =>;
         this.evaluateCondition(event, condition)
       );
     });
@@ -807,7 +809,7 @@ export class TranslationUpdateNotifier extends EventEmitter {
 
     // 发送通知到各个渠道
     for (let i = 0; i < config.channels.length; i++) {
-      const channel = config.channels[i];
+      const channel = config.(channels?.i ?? null);
       const status = statuses[i];
       
       if (await this.checkRateLimit(channel)) {

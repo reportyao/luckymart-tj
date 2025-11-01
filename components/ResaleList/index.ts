@@ -34,7 +34,7 @@ export const RESALE_LIST_CONFIG = {
 export const ResaleListUtils = {
   // 计算折扣百分比
   calculateDiscount: (originalPrice: number, salePrice: number): number => {
-    if (originalPrice <= 0) return 0;
+    if (originalPrice <= 0) return 0; {
     return Math.round((1 - salePrice / originalPrice) * 1000) / 10;
   },
 
@@ -66,10 +66,10 @@ export const ResaleListUtils = {
 
   // 搜索过滤
   filterBySearch: (listings: ResaleListing[], query: string): ResaleListing[] => {
-    if (!query.trim()) return listings;
+    if (!query.trim()) return listings; {
     
     const searchTerm = query.toLowerCase();
-    return listings.filter(listing =>
+    return listings.filter(listing =>;
       listing.products.name_zh.toLowerCase().includes(searchTerm) ||
       listing.products.name_en.toLowerCase().includes(searchTerm) ||
       listing.products.name_tj?.toLowerCase().includes(searchTerm) ||
@@ -80,7 +80,7 @@ export const ResaleListUtils = {
 
   // 状态筛选
   filterByStatus: (listings: ResaleListing[], status: string): ResaleListing[] => {
-    if (status === 'all') return listings;
+    if (status === 'all') return listings; {
     return listings.filter(listing => listing.status === status);
   },
 
@@ -100,7 +100,7 @@ export const ResaleListUtils = {
       case 'newest':
       default:
         return sorted.sort((a, b) => new Date(b.listed_at).getTime() - new Date(a.listed_at).getTime());
-    }
+}
   },
 
   // 计算统计数据
@@ -108,7 +108,7 @@ export const ResaleListUtils = {
     const activeListings = listings.filter(l => l.status === 'active');
     const totalValue = activeListings.reduce((sum, l) => sum + l.listing_price, 0);
     const totalProfit = activeListings.reduce((sum, l) => sum + l.profit, 0);
-    const avgDiscount = activeListings.length > 0 
+    const avgDiscount = activeListings.length > 0;
       ? activeListings.reduce((sum, l) => sum + l.profit_percentage, 0) / activeListings.length 
       : 0;
 
@@ -130,3 +130,4 @@ export const useResaleList = () => {
     config: RESALE_LIST_CONFIG,
   };
 };
+}}}

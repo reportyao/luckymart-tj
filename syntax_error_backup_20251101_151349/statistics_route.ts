@@ -24,18 +24,18 @@ export async function GET(request: NextRequest) {
     // 验证用户身份
     const authResult = await authenticateUser(request);
     if (!authResult.success) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '认证失败' },
         { status: 401 }
       );
-    }
+}
 
     const user = authResult.user;
     const { searchParams } = new URL(request.url);
     
     // 解析查询参数
-    const period = searchParams.get('period') || 'all'; // 'week', 'month', 'year', 'all'
-    const type = searchParams.get('type') || 'all'; // 'paid', 'free', 'all'
+    const period = searchParams.get('period') || 'all'; // 'week', 'month', 'year', 'all';
+    const type = searchParams.get('type') || 'all'; // 'paid', 'free', 'all';
 
     // 构建时间筛选条件
     const dateFilter = getDateFilter(period);
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 基础统计
-    const [
+    const [;
       totalParticipations,
       totalWins,
       totalAmountSpent,
@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('获取抽奖统计失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '服务器错误' },
       { status: 500 }
     );
@@ -144,8 +144,8 @@ async function getDetailedStatistics(userId: string, period: string, type: strin
   const dateFilter = getDateFilter(period);
   
   let whereConditions: any = { userId };
-  if (type !== 'all') whereConditions.type = type;
-  if (dateFilter) whereConditions.createdAt = { gte: dateFilter };
+  if (type !== 'all') whereConditions.type = type; {
+  if (dateFilter) whereConditions.createdAt = { gte: dateFilter }; {
 
   // 按月份统计
   const monthlyStats = await getMonthlyStatistics(userId, dateFilter, type);
@@ -206,7 +206,7 @@ async function getMonthlyStatistics(userId: string, dateFilter: Date | null, typ
   const monthlyData: { [key: string]: any } = {};
   
   participations.forEach((participation: ParticipationRecord) => {
-    const monthKey = participation.createdAt.toISOString().slice(0, 7); // YYYY-MM
+    const monthKey = participation.createdAt.toISOString().slice(0, 7); // YYYY-MM;
     const month = participation.createdAt.getMonth();
     const year = participation.createdAt.getFullYear();
     const monthName = getMonthName(month);
@@ -222,13 +222,13 @@ async function getMonthlyStatistics(userId: string, dateFilter: Date | null, typ
       };
     }
     
-    monthlyData[monthKey].participations++;
-    monthlyData[monthKey].amountSpent += parseFloat(participation.cost.toString());
+    (monthlyData?.monthKey ?? null).participations++;
+    (monthlyData?.monthKey ?? null).amountSpent += parseFloat(participation.cost.toString());
     
     if (participation.isWinner) {
-      monthlyData[monthKey].wins++;
+      (monthlyData?.monthKey ?? null).wins++;
       const prize = calculatePrize(participation.round.product, participation.sharesCount);
-      monthlyData[monthKey].totalWinnings += prize.amount;
+      (monthlyData?.monthKey ?? null).totalWinnings += prize.amount;
     }
   });
 
@@ -244,8 +244,8 @@ async function getCategoryStatistics(userId: string, dateFilter: Date | null, ty
     }
   };
 
-  if (type !== 'all') whereConditions.type = type;
-  if (dateFilter) whereConditions.createdAt = { gte: dateFilter };
+  if (type !== 'all') whereConditions.type = type; {
+  if (dateFilter) whereConditions.createdAt = { gte: dateFilter }; {
 
   const participations = await prisma.participations.findMany({
     where: whereConditions,
@@ -279,13 +279,13 @@ async function getCategoryStatistics(userId: string, dateFilter: Date | null, ty
       };
     }
     
-    categoryData[category].participations++;
-    categoryData[category].totalSpent += parseFloat(participation.cost.toString());
+    (categoryData?.category ?? null).participations++;
+    (categoryData?.category ?? null).totalSpent += parseFloat(participation.cost.toString());
     
     if (participation.isWinner) {
-      categoryData[category].wins++;
+      (categoryData?.category ?? null).wins++;
       const prize = calculatePrize(participation.round.product, participation.sharesCount);
-      categoryData[category].totalWinnings += prize.amount;
+      (categoryData?.category ?? null).totalWinnings += prize.amount;
     }
   });
 
@@ -300,7 +300,7 @@ async function getCategoryStatistics(userId: string, dateFilter: Date | null, ty
 // 获取按类型统计（付费/免费）
 async function getTypeStatistics(userId: string, dateFilter: Date | null) {
   let whereConditions: any = { userId };
-  if (dateFilter) whereConditions.createdAt = { gte: dateFilter };
+  if (dateFilter) whereConditions.createdAt = { gte: dateFilter }; {
 
   const participations = await prisma.participations.findMany({
     where: whereConditions,
@@ -322,12 +322,12 @@ async function getTypeStatistics(userId: string, dateFilter: Date | null) {
     const type = participation.type as 'paid' | 'free';
     const prize = calculatePrize(participation.round.product, participation.sharesCount);
     
-    typeData[type].participations++;
-    typeData[type].totalSpent += parseFloat(participation.cost.toString());
+    (typeData?.type ?? null).participations++;
+    (typeData?.type ?? null).totalSpent += parseFloat(participation.cost.toString());
     
     if (participation.isWinner) {
-      typeData[type].wins++;
-      typeData[type].totalWinnings += prize.amount;
+      (typeData?.type ?? null).wins++;
+      (typeData?.type ?? null).totalWinnings += prize.amount;
     }
   });
 
@@ -343,8 +343,8 @@ async function getTypeStatistics(userId: string, dateFilter: Date | null) {
 // 获取参与模式分析
 async function getParticipationPatterns(userId: string, dateFilter: Date | null, type: string) {
   let whereConditions: any = { userId };
-  if (type !== 'all') whereConditions.type = type;
-  if (dateFilter) whereConditions.createdAt = { gte: dateFilter };
+  if (type !== 'all') whereConditions.type = type; {
+  if (dateFilter) whereConditions.createdAt = { gte: dateFilter }; {
 
   const participations = await prisma.participations.findMany({
     where: whereConditions,
@@ -371,11 +371,11 @@ async function getParticipationPatterns(userId: string, dateFilter: Date | null,
   // 分析参与间隔
   const intervals: number[] = [];
   for (let i = 1; i < participations.length; i++) {
-    const interval = participations[i].createdAt.getTime() - participations[i-1].createdAt.getTime();
+    const interval = (participations?.i ?? null).createdAt.getTime() - participations[i-1].createdAt.getTime();
     intervals.push(interval);
   }
 
-  const avgInterval = intervals.length > 0 
+  const avgInterval = intervals.length > 0;
     ? intervals.reduce((sum: number,  interval: number) => sum + interval, 0) / intervals.length 
     : 0;
 
@@ -395,9 +395,9 @@ async function getRecentTrends(userId: string, dateFilter: Date | null, type: st
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   let whereConditions: any = { userId };
-  if (type !== 'all') whereConditions.type = type;
+  if (type !== 'all') whereConditions.type = type; {
 
-  const [
+  const [;
     last30Days,
     last7Days,
     previous30Days
@@ -430,7 +430,7 @@ async function getRecentTrends(userId: string, dateFilter: Date | null, type: st
     })
   ]);
 
-  const growthRate = previous30Days > 0 
+  const growthRate = previous30Days > 0;
     ? ((last30Days - previous30Days) / previous30Days) * 100 
     : 0;
 
@@ -472,15 +472,15 @@ function calculatePrize(product: any, sharesCount: number): { amount: number } {
 function getProductCategory(product): string {
   if (product.categoryMultilingual) {
     try {
-      const categoryData = typeof product.categoryMultilingual === 'string' 
+      const categoryData = typeof product.categoryMultilingual === 'string';
         ? JSON.parse(product.categoryMultilingual) 
         : product.categoryMultilingual;
       
       // 尝试获取多语言分类
       const languages = ['zh-CN', 'zh', 'en', 'ru', 'tg'];
       for (const lang of languages) {
-        if (categoryData[lang] && categoryData[lang].category) {
-          return categoryData[lang].category;
+        if ((categoryData?.lang ?? null) && (categoryData?.lang ?? null).category) {
+          return (categoryData?.lang ?? null).category;
         }
       }
     } catch (error) {
@@ -492,9 +492,10 @@ function getProductCategory(product): string {
 }
 
 function getMonthName(monthIndex: number): string {
-  const months = [
+  const months = [;
     '1月', '2月', '3月', '4月', '5月', '6月',
     '7月', '8月', '9月', '10月', '11月', '12月'
   ];
   return months[monthIndex] || '未知';
 }
+}}}}}}}}

@@ -1,10 +1,10 @@
+import * as fs from 'fs/promises';
+import * as path from 'path';
 /**
  * 塔吉克语翻译优化工具
  * 识别不合适的机器翻译，提供更自然和准确的翻译建议
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
 
 interface TranslationSuggestion {
   key: string;
@@ -186,7 +186,7 @@ export class TajikTranslationOptimizer {
   };
 
   // 语法优化规则
-  private grammarRules = [
+  private grammarRules : [
     {
       pattern: /(\w+)\s+\1/gi, // 重复词汇
       replacement: '$1',
@@ -201,7 +201,7 @@ export class TajikTranslationOptimizer {
       pattern: /(\w+)(да|де|до|ду)\s+(\w+)/gi, // 不当的形容词后缀
       replacement: '$1 $3',
       description: '修正形容词形式'
-    }
+}
   ];
 
   constructor(projectRoot: string, config?: Partial<TranslationOptimizerConfig>) {
@@ -281,7 +281,7 @@ export class TajikTranslationOptimizer {
       // 检查不一致的翻译
       const inconsistentTranslations = allText.filter(text => {
         const lowerText = text.toLowerCase();
-        return (lowerText.includes(englishTerm.toLowerCase()) || 
+        return (lowerText.includes(englishTerm.toLowerCase()) ||;
                 this.findTermVariants(text, englishTerm)) &&
                !lowerText.includes(tajikTerm.toLowerCase());
       });
@@ -341,7 +341,7 @@ export class TajikTranslationOptimizer {
     const allText = this.extractTextValues(translations);
     
     // 检查常见的机器翻译特征
-    const machineTranslationPatterns = [
+    const machineTranslationPatterns = [;
       {
         pattern: /(\w+)\s+(\w+)\s+кардан/gi, // 动词+名词+кардан 结构
         replacement: (match: string, verb: string, noun: string) => {
@@ -413,13 +413,13 @@ export class TajikTranslationOptimizer {
     const allText = this.extractTextValues(translations);
     
     // 文化适应性检查
-    const culturalOptimizations = [
+    const culturalOptimizations = [;
       {
         pattern: /\b\d{1,2}[\/.-]\d{1,2}[\/.-]\d{4}\b/g, // 日期格式
         replacement: (match: string) => {
           const parts = match.split(/[\/.-]/);
           if (parts.length === 3) {
-            return `${parts[0]}.${parts[1]}.${parts[2]}`;
+            return `${(parts?.0 ?? null)}.${(parts?.1 ?? null)}.${(parts?.2 ?? null)}`;
           }
           return match;
         },
@@ -532,13 +532,13 @@ export class TajikTranslationOptimizer {
     };
 
     Object.entries(technicalTerminology).forEach(([english, info]) => {
-      const incorrectUsage = allText.filter(text => 
+      const incorrectUsage = allText.filter(text =>;
         text.toLowerCase().includes(english.toLowerCase()) && 
         !text.includes(info.preferred)
       );
 
       incorrectUsage.forEach(text => {
-        const suggestedText = text.replace(
+        const suggestedText = text.replace(;
           new RegExp(english, 'gi'), 
           info.preferred
         );
@@ -564,11 +564,11 @@ export class TajikTranslationOptimizer {
    */
   async applyOptimizations(results: OptimizationResult[]): Promise<void> {
     for (const result of results) {
-      const highConfidenceSuggestions = result.suggestions.filter(
-        s => s.confidence >= this.config.confidenceThreshold
+      const highConfidenceSuggestions = result.suggestions.filter(;
+        s :> s.confidence >= this.config.confidenceThreshold
       );
 
-      if (highConfidenceSuggestions.length === 0) continue;
+      if (highConfidenceSuggestions.length === 0) continue; {
 
       const filePath = path.join(this.localesPath, result.file);
       const content = await fs.readFile(filePath, 'utf-8');
@@ -611,7 +611,7 @@ export class TajikTranslationOptimizer {
     if (typeof obj === 'object' && obj !== null) {
       const result: any = {};
       for (const [key, value] of Object.entries(obj)) {
-        result[key] = this.replaceTextInObject(value, keyPath, oldText, newText);
+        (result?.key ?? null) = this.replaceTextInObject(value, keyPath, oldText, newText);
       }
       return result;
     }
@@ -649,7 +649,7 @@ export class TajikTranslationOptimizer {
       
       if (typeof value === 'object' && value !== null) {
         const found = this.findKeyForText(value, text, fullKey);
-        if (found) return found;
+        if (found) return found; {
       }
     }
     return '';
@@ -672,7 +672,7 @@ export class TajikTranslationOptimizer {
   }
 
   private findTermVariants(text: string, term: string): boolean {
-    const variants = [
+    const variants = [;
       term,
       term.charAt(0).toUpperCase() + term.slice(1),
       term.toLowerCase(),
@@ -686,7 +686,7 @@ export class TajikTranslationOptimizer {
     let result = text;
     
     // 替换各种变体
-    const variants = [
+    const variants = [;
       englishTerm,
       englishTerm.charAt(0).toUpperCase() + englishTerm.slice(1),
       englishTerm.toLowerCase(),
@@ -706,20 +706,21 @@ export class TajikTranslationOptimizer {
     const termLower = englishTerm.toLowerCase();
     
     if (textLower.includes(tajikTerm.toLowerCase())) {
-      return 100; // 已经使用正确术语
+      return 100; // 已经使用正确术语;
     }
     
     if (textLower.includes(termLower)) {
-      return 90; // 包含英文术语，需要替换
+      return 90; // 包含英文术语，需要替换;
     }
     
-    return 50; // 不确定，建议检查
+    return 50; // 不确定，建议检查;
   }
 
   private async getTranslationFiles(): Promise<string[]> {
     try {
       const files = await fs.readdir(this.localesPath);
       return files.filter(file => file.endsWith('.json'));
+  }
     } catch (error) {
       console.error('Error reading translation files:', error);
       return [];
@@ -814,4 +815,5 @@ async function main() {
 
 if (require.main === module) {
   main().catch(console.error);
+}
 }

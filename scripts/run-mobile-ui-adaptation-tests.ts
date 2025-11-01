@@ -1,10 +1,10 @@
+import { ScreenSizeTester, runScreenSizeTests, generateAdaptationReport } from '../utils/screen-size-tester';
+import { runMultilingualTextLengthTests, generateTextLengthTestReport } from '../tests/multilingual-text-length.test';
+import { runMobileComponentTests, generateComponentTestReport } from '../tests/mobile-component-adaptation.test';
 /**
  * 运行移动端UI适配测试的主脚本
  */
 
-import { ScreenSizeTester, runScreenSizeTests, generateAdaptationReport } from '../utils/screen-size-tester';
-import { runMultilingualTextLengthTests, generateTextLengthTestReport } from '../tests/multilingual-text-length.test';
-import { runMobileComponentTests, generateComponentTestReport } from '../tests/mobile-component-adaptation.test';
 
 /**
  * 运行完整的移动端UI适配测试套件
@@ -15,6 +15,7 @@ async function runFullMobileAdaptationTests() {
   try {
     // 1. 运行屏幕尺寸测试
     console.log('📱 运行屏幕尺寸适配测试...');
+  }
     const screenResults = await runScreenSizeTests();
     console.log(`✅ 屏幕尺寸测试完成，共测试 ${screenResults.length} 个设备\n`);
 
@@ -90,7 +91,7 @@ async function runFullMobileAdaptationTests() {
  * 生成最终综合报告
  */
 function generateFinalReport(screenResults: any[], textResults: any[]): string {
-  let report = `# 移动端UI适配测试综合报告
+  let report = `# 移动端UI适配测试综合报告;
 
 生成时间: ${new Date().toLocaleString()}
 
@@ -290,4 +291,4 @@ if (require.main === module) {
     });
 }
 
-export { runFullMobileAdaptationTests };
+export ;

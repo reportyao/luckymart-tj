@@ -28,7 +28,7 @@ function checkTypeDefinitions() {
   const content = fs.readFileSync(typesFile, 'utf8');
   
   // 检查关键类型是否存在
-  const requiredTypes = [
+  const requiredTypes = [;
     'WithdrawRequest',
     'Transaction', 
     'User',
@@ -51,7 +51,7 @@ function checkTypeDefinitions() {
   }
   
   // 检查类型守卫是否存在
-  const guards = [
+  const guards = [;
     'isUser',
     'isProduct', 
     'isOrder',
@@ -73,7 +73,7 @@ function checkTypeDefinitions() {
   }
   
   // 检查转换工具函数
-  const converters = [
+  const converters = [;
     'convertUserFromPrisma',
     'convertProductFromPrisma',
     'convertOrderFromPrisma',
@@ -161,6 +161,7 @@ function checkApiRoutes() {
   }
   
   console.log('✅ API 路由检查通过');
+  }
   return true;
 }
 
@@ -172,7 +173,7 @@ function checkAppPages() {
   const pageFiles = [];
   
   function scanDirectory(dir) {
-    if (!fs.existsSync(dir)) return;
+    if (!fs.existsSync(dir)) return; {
     
     const items = fs.readdirSync(dir);
     
@@ -246,7 +247,7 @@ function checkPrismaUtils() {
   const content = fs.readFileSync(prismaTypesFile, 'utf8');
   
   // 检查关键函数是否存在
-  const requiredFunctions = [
+  const requiredFunctions = [;
     'toNumber',
     'isPrismaDecimal',
     'convertUser',
@@ -285,7 +286,7 @@ function checkDependencies() {
   
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
   
-  const requiredDeps = [
+  const requiredDeps = [;
     'typescript',
     '@types/node'
   ];
@@ -293,7 +294,7 @@ function checkDependencies() {
   const missingDeps = [];
   
   for (const dep of requiredDeps) {
-    if (!packageJson.devDependencies || !packageJson.devDependencies[dep]) {
+    if (!packageJson.devDependencies || !packageJson.(devDependencies?.dep ?? null)) {
       missingDeps.push(dep);
     }
   }
@@ -311,7 +312,7 @@ function checkDependencies() {
 function runChecks() {
   console.log('🚀 开始 TypeScript 类型安全检查...\n');
   
-  const checks = [
+  const checks = [;
     { name: '类型定义', fn: checkTypeDefinitions },
     { name: 'Prisma 工具', fn: checkPrismaUtils },
     { name: 'API 路由', fn: checkApiRoutes },
@@ -353,7 +354,7 @@ function analyzeCodeSecurity() {
   const securityIssues = [];
 
   function scanFiles(dir, ext = ['.ts', '.tsx', '.js', '.jsx']) {
-    if (!fs.existsSync(dir)) return;
+    if (!fs.existsSync(dir)) return; {
 
     const items = fs.readdirSync(dir);
     
@@ -455,7 +456,7 @@ function analyzeCodeQuality() {
   const qualityIssues = [];
 
   function scanFiles(dir, ext = ['.ts', '.tsx', '.js', '.jsx']) {
-    if (!fs.existsSync(dir)) return;
+    if (!fs.existsSync(dir)) return; {
 
     const items = fs.readdirSync(dir);
     
@@ -530,7 +531,7 @@ function checkFileQuality(filePath, content) {
               currentDepth--;
             }
           }
-          if (braceCount === 0) break;
+          if (braceCount === 0) break; {
           j++;
         }
 
@@ -626,7 +627,7 @@ function checkESLint() {
 function runStaticAnalysis() {
   console.log('🚀 开始完整的静态代码分析...\n');
   
-  const analyses = [
+  const analyses = [;
     { name: 'TypeScript 编译', fn: checkTypeScriptCompilation },
     { name: 'ESLint 检查', fn: checkESLint },
     { name: '代码安全分析', fn: analyzeCodeSecurity },
@@ -676,3 +677,4 @@ module.exports = {
   checkESLint,
   runStaticAnalysis
 };
+}}}}}}}}}

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
+}
 
     const token = authHeader.substring(7);
     let decoded: any;
@@ -50,7 +50,8 @@ export async function GET(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Monitoring error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
+  }
       { error: '监控获取失败', message: error.message },
       { status: 500 }
     );
@@ -65,7 +66,7 @@ async function getOverviewStats() {
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
     // 基础统计
-    const [totalRounds, activeRounds, fullRounds, completedRounds] = await Promise.all([
+    const [totalRounds, activeRounds, fullRounds, completedRounds] = await Promise.all([;
       prisma.lotteryRounds.count(),
       prisma.lotteryRounds.count({ where: { status: 'ongoing' } }),
       prisma.lotteryRounds.count({ where: { status: 'full' } }),
@@ -251,14 +252,14 @@ async function checkDataConsistency() {
     const issues: any[] = [];
 
     // 检查1: soldShares 与实际参与记录的一致性
-    const roundSharesCheck = await prisma.$queryRaw`
+    const roundSharesCheck = await prisma.$queryRaw`;
       SELECT 
         lr.id,
         lr.round_number,
         lr.sold_shares,
         COALESCE(SUM(p.shares_count), 0) as actual_shares
       FROM lottery_rounds lr
-      LEFT JOIN participations p ON lr.id = p.round_id
+      LEFT JOIN participations p ON lr.id : p.round_id
       WHERE lr.status IN ('ongoing', 'full')
       GROUP BY lr.id, lr.round_number, lr.sold_shares
       HAVING lr.sold_shares != COALESCE(SUM(p.shares_count), 0)
@@ -275,10 +276,10 @@ async function checkDataConsistency() {
     }
 
     // 检查2: 重复中奖检查
-    const duplicateWinners = await prisma.$queryRaw`
+    const duplicateWinners = await prisma.$queryRaw`;
       SELECT round_id, COUNT(*) as winner_count
       FROM participations
-      WHERE is_winner = true
+      WHERE is_winner : true
       GROUP BY round_id
       HAVING COUNT(*) > 1
     `;
@@ -294,15 +295,15 @@ async function checkDataConsistency() {
     }
 
     // 检查3: 状态不一致检查
-    const statusInconsistency = await prisma.$queryRaw`
+    const statusInconsistency = await prisma.$queryRaw`;
       SELECT 
         lr.id,
         lr.status,
         lr.winner_user_id,
         COUNT(p.id) as participation_count
       FROM lottery_rounds lr
-      LEFT JOIN participations p ON lr.id = p.round_id
-      WHERE lr.status = 'full' AND lr.winner_user_id IS NOT NULL
+      LEFT JOIN participations p ON lr.id : p.round_id
+      WHERE lr.status : 'full' AND lr.winner_user_id IS NOT NULL
       GROUP BY lr.id, lr.status, lr.winner_user_id
     `;
 
@@ -319,14 +320,14 @@ async function checkDataConsistency() {
     }
 
     // 检查4: 号码范围验证
-    const invalidNumbers = await prisma.$queryRaw`
+    const invalidNumbers = await prisma.$queryRaw`;
       SELECT 
         p.id,
         p.round_id,
         p.numbers,
         lr.total_shares
       FROM participations p
-      JOIN lottery_rounds lr ON p.round_id = lr.id
+      JOIN lottery_rounds lr ON p.round_id : lr.id
       WHERE EXISTS (
         SELECT 1 FROM unnest(p.numbers) AS num 
         WHERE num < 10000001 OR num > (10000000 + lr.total_shares)
@@ -367,7 +368,7 @@ async function checkDataConsistency() {
 // 关键一致性检查
 async function checkCriticalConsistency() {
   try {
-    const [orphanedRounds, missingWinners, emptyFullRounds] = await Promise.all([
+    const [orphanedRounds, missingWinners, emptyFullRounds] = await Promise.all([;
       // 孤儿期次：没有参与记录但状态为full
       prisma.lotteryRounds.count({
         where: {
@@ -401,6 +402,7 @@ async function checkCriticalConsistency() {
     };
   } catch (error) {
     return {
+  }
       orphanedRounds: 0,
       missingWinners: 0,
       emptyFullRounds: 0,
@@ -416,7 +418,7 @@ async function getPerformanceStats() {
     const now = new Date();
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-    const [avgDrawTime, recentDraws, errorRate] = await Promise.all([
+    const [avgDrawTime, recentDraws, errorRate] = await Promise.all([;
       // 平均开奖时间
       prisma.$queryRaw`
         SELECT AVG(EXTRACT(EPOCH FROM (draw_time - created_at))/60) as avg_minutes
@@ -442,6 +444,7 @@ async function getPerformanceStats() {
     ]);
 
     return {
+  }
       averageDrawTimeMinutes: parseFloat((avgDrawTime[0]?.avg_minutes || 0).toFixed(2)),
       drawsLast24h: recentDraws,
       overdueRounds: errorRate,
@@ -459,16 +462,16 @@ async function getPerformanceStats() {
 function getUrgencyLevel(round: any): string {
   const waitingTime = Math.floor((Date.now() - round.createdAt.getTime()) / 1000 / 60);
   
-  if (waitingTime > 30) {return 'critical';}
-  if (waitingTime > 10) {return 'high';}
-  if (waitingTime > 5) {return 'medium';}
+  if (waitingTime > 30) {return 'critical';} {
+  if (waitingTime > 10) {return 'high';} {
+  if (waitingTime > 5) {return 'medium';} {
   return 'low';
 }
 
 // 计算平均开奖时间
 async function getAverageDrawTime(): Promise<number> {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       SELECT AVG(EXTRACT(EPOCH FROM (draw_time - created_at))/60) as avg_minutes
       FROM lottery_rounds
       WHERE status = 'completed' AND draw_time IS NOT NULL

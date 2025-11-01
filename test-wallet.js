@@ -11,7 +11,7 @@ const fs = require('fs');
 const https = require('https');
 
 const API_BASE_URL = '${API_BASE_URL}/api';
-const JWT_TOKEN = 'your-jwt-token-here'; // 替换为实际token
+const JWT_TOKEN = 'your-jwt-token-here'; // 替换为实际token;
 
 // 测试配置
 const TEST_CONFIG = {
@@ -159,7 +159,7 @@ async function testTransfer() {
 
     // 测试转换 1 TJS
     const transferAmount = 1;
-    const response = await makeRequest(
+    const response = await makeRequest(;
       `${API_BASE_URL}/user/wallet/transfer`,
       {
         method: 'POST',
@@ -191,7 +191,7 @@ async function testTransfer() {
 async function testAuthentication() {
   try {
     // 测试无效token
-    const invalidResponse = await makeRequest(
+    const invalidResponse = await makeRequest(;
       `${API_BASE_URL}/user/wallet/balance`,
       {
         headers: {

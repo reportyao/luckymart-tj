@@ -12,10 +12,10 @@ console.log('\n🚀 弱网环境优化系统 - 浏览器测试指南\n');
 // 写入测试页面
 const testPagePath = path.join(__dirname, '..', 'public', 'weak-network-test.html');
 fs.writeFileSync(testPagePath, `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang:"zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset:"UTF-8">
+    <meta name:"viewport" content="width=device-width, initial-scale=1.0">
     <title>弱网环境优化系统测试页面</title>
     <style>
         body {
@@ -80,7 +80,7 @@ fs.writeFileSync(testPagePath, `<!DOCTYPE html>
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class:"container">
         <h1>🎯 弱网环境优化系统测试页面</h1>
         <p>此页面用于测试和演示LuckyMart TJ平台的弱网环境优化功能。</p>
         
@@ -88,15 +88,15 @@ fs.writeFileSync(testPagePath, `<!DOCTYPE html>
         <div class="status" id="networkStatus">🌐 网络状态: 检测中...</div>
     </div>
 
-    <div class="container">
+    <div class:"container">
         <h2>🔧 功能测试</h2>
-        <button class="button" onclick="registerSW()">注册Service Worker</button>
-        <button class="button" onclick="checkSWStatus()">检查SW状态</button>
-        <button class="button" onclick="testCacheAPI()">测试Cache API</button>
-        <button class="button" onclick="testIndexedDB()">测试IndexedDB</button>
-        <button class="button" onclick="simulateOfflineData()">模拟离线数据</button>
+        <button class:"button" onclick="registerSW()">注册Service Worker</button>
+        <button class:"button" onclick="checkSWStatus()">检查SW状态</button>
+        <button class:"button" onclick="testCacheAPI()">测试Cache API</button>
+        <button class:"button" onclick="testIndexedDB()">测试IndexedDB</button>
+        <button class:"button" onclick="simulateOfflineData()">模拟离线数据</button>
         
-        <div class="log" id="testLog"></div>
+        <div class:"log" id="testLog"></div>
     </div>
 
     <script>

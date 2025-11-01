@@ -1,15 +1,15 @@
-'use client';
-
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { motion, PanInfo } from 'framer-motion';
+'use client';
 
-interface TouchPoint {
+
+interface TouchPoint {}
   x: number;
   y: number;
   time: number;
-}
 
-interface GestureHandlerProps {
+
+interface GestureHandlerProps {}
   children: React.ReactNode;
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
@@ -24,9 +24,9 @@ interface GestureHandlerProps {
   longPressDuration?: number;
   doubleTapThreshold?: number;
   swipeThreshold?: number;
-}
 
-const GestureHandler: React.FC<GestureHandlerProps> = ({
+
+const GestureHandler: React.FC<GestureHandlerProps> = ({}
   children,
   onSwipeLeft,
   onSwipeRight,
@@ -46,76 +46,92 @@ const GestureHandler: React.FC<GestureHandlerProps> = ({
   const observerRef = useRef<IntersectionObserver | null>(null);
   const [isLongPress, setIsLongPress] = useState(false);
   const [lastTap, setLastTap] = useState<TouchPoint | null>(null);
-  const longPressTimer = useRef<NodeJS.Timeout>();
+  const longPressTimerRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
   const [scale, setScale] = useState(1);
 
+  // 清理定时器的辅助函数
+  const clearLongPressTimer = useCallback((id: string) => {}
+    const timer = longPressTimerRef.current.get(id);
+    if (timer) {}
+      clearTimeout(timer);
+      longPressTimerRef.current.delete(id);
+    
+  }, []);
+
+  // 设置长按定时器的辅助函数
+  const setLongPressTimer = useCallback((id: string, callback: () => void, duration: number) => {}
+    clearLongPressTimer(id);
+    const timer = setTimeout(callback, duration);
+    longPressTimerRef.current.set(id, timer);
+  }, [clearLongPressTimer]);
+
   // 双击检测
-  const handleTap = useCallback((point: TouchPoint) => {
-    if (lastTap) {
+  const handleTap = useCallback((point: TouchPoint) => {}
+    if (lastTap) {}
       const timeDiff = point.time - lastTap.time;
-      const distance = Math.sqrt(
+      const distance = Math.sqrt(;
         Math.pow(point.x - lastTap.x, 2) + Math.pow(point.y - lastTap.y, 2)
       );
 
-      if (timeDiff < doubleTapThreshold && distance < 10) {
+      if (timeDiff < doubleTapThreshold && distance < 10) {}
         onDoubleTap?.();
         setLastTap(null);
         return;
-      }
-    }
+      
+    
     setLastTap(point);
   }, [lastTap, doubleTapThreshold, onDoubleTap]);
 
   // 长按检测
-  const handleTouchStart = useCallback(() => {
-    if (disabled) return;
+  const handleTouchStart = useCallback(() => {}
+    if (disabled) return; {}
 
-    longPressTimer.current = setTimeout(() => {
+    const timerId = 'longPress';
+    setLongPressTimer(timerId, () => {}
       setIsLongPress(true);
       onLongPress?.();
     }, longPressDuration);
-  }, [disabled, longPressDuration, onLongPress]);
+  }, [disabled, longPressDuration, onLongPress, setLongPressTimer]);
 
   // 清除长按定时器
-  const handleTouchEnd = useCallback(() => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-    }
+  const handleTouchEnd = useCallback(() => {}
+    const timerId = 'longPress';
+    clearLongPressTimer(timerId);
     setIsLongPress(false);
-  }, []);
+  }, [clearLongPressTimer]);
 
   // 滑动处理
-  const handleDrag = useCallback((event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    if (disabled) return;
+  const handleDrag = useCallback((event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {}
+    if (disabled) return; {}
 
     const { delta } = info;
 
     // 检查滑动距离
     const swipeDistance = Math.sqrt(delta.x * delta.x + delta.y * delta.y);
 
-    if (swipeDistance < swipeThreshold) {
-      if (onDrag) {
+    if (swipeDistance < swipeThreshold) {}
+      if (onDrag) {}
         onDrag(info.point.x, info.point.y);
-      }
+      
       return;
-    }
+    
 
     // 确定滑动方向
-    if (Math.abs(delta.x) > Math.abs(delta.y)) {
+    if (Math.abs(delta.x) > Math.abs(delta.y)) {}
       // 水平滑动
-      if (delta.x > 0) {
+      if (delta.x > 0) {}
         onSwipeRight?.();
       } else {
         onSwipeLeft?.();
-      }
+      
     } else {
       // 垂直滑动
-      if (delta.y > 0) {
+      if (delta.y > 0) {}
         onSwipeDown?.();
       } else {
         onSwipeUp?.();
-      }
-    }
+      
+    
   }, [
     disabled,
     swipeThreshold,
@@ -127,8 +143,8 @@ const GestureHandler: React.FC<GestureHandlerProps> = ({
   ]);
 
   // 缩放处理
-  const handlePinch = useCallback((event: any, info: any) => {
-    if (disabled) return;
+  const handlePinch = useCallback((event: any, info: any) => {}
+    if (disabled) return; {}
     
     const newScale = info.scale;
     setScale(newScale);
@@ -136,89 +152,78 @@ const GestureHandler: React.FC<GestureHandlerProps> = ({
   }, [disabled, onPinch]);
 
   // 触摸事件处理
-  const handleTouchMove = useCallback((event: React.TouchEvent) => {
-    if (longPressTimer.current) {
-      clearTimeout(longPressTimer.current);
-    }
-  }, []);
+  const handleTouchMove = useCallback((event: React.TouchEvent) => {}
+    const timerId = 'longPress';
+    clearLongPressTimer(timerId);
+  }, [clearLongPressTimer]);
 
   // IntersectionObserver for visibility detection
-  useEffect(() => {
-    if (!containerRef.current) return;
+  useEffect(() => {}
+    if (!containerRef.current) return; {}
 
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
+    observerRef.current : new IntersectionObserver(
+      (entries) => {}
         const [entry] = entries;
-        if (!entry.isIntersecting) {
+        if (!entry.isIntersecting) {}
           // 组件不可见时清理状态
-          if (longPressTimer.current) {
-            clearTimeout(longPressTimer.current);
-          }
+          const timerId = 'longPress';
+          clearLongPressTimer(timerId);
           setIsLongPress(false);
           setLastTap(null);
-        }
+        
       },
       { threshold: 0.1 }
     );
 
     observerRef.current.observe(containerRef.current);
 
-    return () => {
-      if (observerRef.current) {
+    return () => {}
+      if (observerRef.current) {}
         observerRef.current.disconnect();
         observerRef.current = null;
-      }
-      if (longPressTimer.current) {
-        clearTimeout(longPressTimer.current);
-      }
+      
+      // 清理所有定时器
+      longPressTimerRef.current.forEach((timer) => clearTimeout(timer));
+      longPressTimerRef.current.clear();
     };
-  }, []);
+  }, [clearLongPressTimer]);
 
-  // 组件卸载时清理定时器
-  useEffect(() => {
-    return () => {
-      if (longPressTimer.current) {
-        clearTimeout(longPressTimer.current);
-      }
-    };
-  }, []);
+  if (disabled) {}
+    return <div className="{className}>{children}</div>;"
+  
 
-  if (disabled) {
-    return <div className={className}>{children}</div>;
-  }
-
-  return (
+  return (;
     <motion.div
       ref={containerRef}
-      className={`touch-manipulation ${className}`}
+      className="{`touch-manipulation" ${className}`}
       drag={!disabled}
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
       onDrag={handleDrag}
       whileTap={{ scale: 0.95 }}
-      style={{ scale }}
+      style="{{ scale }"}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onTouchMove={handleTouchMove}
-      onClick={(e) => {
-        const point: TouchPoint = {
+      onClick={(e) => {}}
+        const point: TouchPoint = {}
           x: e.clientX,
           y: e.clientY,
           time: Date.now()
         };
         handleTap(point);
-      }}
+
     >
       {children}
       
       {/* 视觉反馈 */}
-      {isLongPress && (
+      {isLongPress && (}
         <motion.div
-          className="absolute inset-0 bg-blue-500/20 luckymart-rounded-lg pointer-events-none"
+          className:"absolute inset-0 bg-blue-500/20 luckymart-rounded-lg pointer-events-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         />
-      )}
+      )
     </motion.div>
   );
 };
@@ -237,7 +242,7 @@ export type GestureType =
   | 'drag';
 
 // 手势配置
-export const GESTURE_CONFIG = {
+export const GESTURE_CONFIG = {}
   swipeThreshold: 50,
   longPressDuration: 500,
   doubleTapThreshold: 300,
@@ -245,16 +250,16 @@ export const GESTURE_CONFIG = {
 };
 
 // 手势事件钩子
-export const useGestureEvents = () => {
-  const addGestureListener = useCallback((element: HTMLElement, gesture: GestureType, callback: () => void) => {
-    const handler = (e: Event) => {
+export const useGestureEvents = () => {}
+  const addGestureListener = useCallback((element: HTMLElement, gesture: GestureType, callback: () => void) => {}
+    const handler = (e: Event) => {}
       e.preventDefault();
       callback();
     };
     
     element.addEventListener(`gesture-${gesture}`, handler);
     
-    return () => {
+    return () => {}
       element.removeEventListener(`gesture-${gesture}`, handler);
     };
   }, []);

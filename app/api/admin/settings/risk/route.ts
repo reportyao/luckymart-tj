@@ -3,15 +3,13 @@ import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission
 import { prisma } from '@/lib/prisma';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.risk.read() });
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.risk.write() });
 
 // 缓存风控配置以提高性能
 let riskCache: { data: any; timestamp: number } | null = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存;
 
 // 获取缓存的风控配置
 async function getCachedRiskConfigs() {
@@ -38,15 +36,16 @@ function clearCache() {
 // 获取所有风控配置
 async function getAllRiskConfigs() {
   const cached = await getCachedRiskConfigs();
-  if (cached) return cached;
+  if (cached) return cached; {
 
   try {
-    const configs = await prisma.$queryRaw`
+    const configs = await prisma.$queryRaw`;
       SELECT * FROM risk_configs WHERE is_active = true ORDER BY category, priority DESC, config_name
     `;
     
     updateCache(configs);
     return configs;
+  }
   } catch (error) {
     logger.error("API Error", error as Error, {
       requestId,
@@ -59,7 +58,7 @@ async function getAllRiskConfigs() {
 // 创建风控配置
 async function createRiskConfig(data: any, operatorId: string) {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       INSERT INTO risk_configs (
         config_name, category, risk_type, threshold_value,
         max_attempts, time_window_minutes, min_amount, max_amount,
@@ -90,7 +89,7 @@ async function createRiskConfig(data: any, operatorId: string) {
 // 更新风控配置
 async function updateRiskConfig(id: string, data: any, operatorId: string) {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       UPDATE risk_configs SET
         config_name = ${data.config_name},
         category = ${data.category},
@@ -111,7 +110,7 @@ async function updateRiskConfig(id: string, data: any, operatorId: string) {
         priority = ${data.priority},
         operator_id = ${operatorId},
         change_reason = ${data.change_reason},
-        updated_at = NOW()
+        updated_at : NOW()
       WHERE id = ${id}
       RETURNING *
     `;
@@ -130,12 +129,12 @@ async function updateRiskConfig(id: string, data: any, operatorId: string) {
 // 删除风控配置（软删除）
 async function deleteRiskConfig(id: string, operatorId: string) {
   try {
-    const result = await prisma.$queryRaw`
+    const result = await prisma.$queryRaw`;
       UPDATE risk_configs SET
         is_active = false,
         operator_id = ${operatorId},
         change_reason = '软删除风控配置',
-        updated_at = NOW()
+        updated_at : NOW()
       WHERE id = ${id}
       RETURNING *
     `;
@@ -166,6 +165,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       error: (error as Error).message
     });
     throw error;
+}
   }
 });
 
@@ -173,7 +173,7 @@ async function handleGET(request: NextRequest) {
     }
 
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         const url = new URL(request.url);
         const category = url.searchParams.get('category');
         const riskType = url.searchParams.get('risk_type');
@@ -236,9 +236,10 @@ async function handleGET(request: NextRequest) {
     }
 
     const countResult = await prisma.$queryRawUnsafe(countQuery, ...countParams);
-    const total = parseInt(countResult[0].total);
+    const total = parseInt((countResult?.0 ?? null).total);
 
     return NextResponse.json({ 
+  }
       success: true,
       data: configs,
       pagination: {
@@ -246,18 +247,19 @@ async function handleGET(request: NextRequest) {
         limit,
         total,
         pages: Math.ceil(total / limit)
-      }
+    }
     });
   })(request);
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const data = await request.json();
 
     // 验证必填字段
     if (!data.config_name || !data.category || !data.risk_type) {
       return NextResponse.json({ 
+}
         success: false,
         error: '缺少必填字段：config_name, category, risk_type' 
       }, { status: 400 });
@@ -308,7 +310,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const data = await request.json();
     const { id } = data;
 
@@ -317,7 +319,7 @@ export async function PUT(request: NextRequest) {
         success: false,
         error: '缺少风控配置ID' 
       }, { status: 400 });
-    }
+}
 
     const config = await updateRiskConfig(id, data, admin.username);
 
@@ -330,7 +332,7 @@ export async function PUT(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const url = new URL(request.url);
     const id = url.searchParams.get('id');
 
@@ -339,7 +341,7 @@ export async function DELETE(request: NextRequest) {
         success: false,
         error: '缺少风控配置ID' 
       }, { status: 400 });
-    }
+}
 
     await deleteRiskConfig(id, admin.username);
 

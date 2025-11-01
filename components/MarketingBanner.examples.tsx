@@ -3,8 +3,8 @@ import MarketingBanner from './MarketingBanner';
 import { MarketingBanner as MarketingBannerType, MarketingBannerGroup } from '@/types';
 
 // 示例营销横幅数据
-const sampleBanners: MarketingBannerType[] = [
-  {
+const sampleBanners: MarketingBannerType[] = [;
+  {}
     id: '1',
     type: 'promotion',
     titleZh: '双十一大促销',
@@ -34,7 +34,7 @@ const sampleBanners: MarketingBannerType[] = [
     clickable: true,
     linkUrl: '/promotions/double11'
   },
-  {
+  {}
     id: '2',
     type: 'new_user',
     titleZh: '新用户专享',
@@ -60,7 +60,7 @@ const sampleBanners: MarketingBannerType[] = [
     clickable: true,
     linkUrl: '/register'
   },
-  {
+  {}
     id: '3',
     type: 'activity',
     titleZh: '每日签到奖励',
@@ -85,11 +85,11 @@ const sampleBanners: MarketingBannerType[] = [
     updatedAt: new Date(),
     clickable: true,
     linkUrl: '/checkin'
-  }
+  
 ];
 
 // 示例横幅组
-const sampleBannerGroup: MarketingBannerGroup = {
+const sampleBannerGroup: MarketingBannerGroup = {}
   id: 'main-promotions',
   name: '主要促销活动',
   description: '首页主要营销横幅轮播',
@@ -99,7 +99,7 @@ const sampleBannerGroup: MarketingBannerGroup = {
   loop: true,
   showIndicators: true,
   showArrows: true,
-  responsive: {
+  responsive: {}
     mobile: true,
     tablet: true,
     desktop: true
@@ -109,55 +109,55 @@ const sampleBannerGroup: MarketingBannerGroup = {
   updatedAt: new Date()
 };
 
-const MarketingBannerExamples: React.FC = () => {
+const MarketingBannerExamples: React.FC = () => {}
   // 横幅点击处理
-  const handleBannerClick = (banner: MarketingBannerType) => {
+  const handleBannerClick = (banner: MarketingBannerType) => {}
     console.log('Banner clicked:', banner.titleZh);
     // 这里可以添加统计代码
   };
 
   // 横幅浏览处理
-  const handleBannerView = (banner: MarketingBannerType) => {
+  const handleBannerView = (banner: MarketingBannerType) => {}
     console.log('Banner viewed:', banner.titleZh);
     // 这里可以添加浏览统计代码
   };
 
-  return (
-    <div className="p-6 space-y-8">
-      <h1 className="text-3xl font-bold mb-6">MarketingBanner 组件示例</h1>
+  return (;
+    <div className:"p-6 space-y-8">
+      <h1 className:"text-3xl font-bold mb-6">MarketingBanner 组件示例</h1>
 
       {/* 单个横幅示例 */}
       <section>
-        <h2 className="text-2xl font-semibold mb-4">单个横幅示例</h2>
-        <div className="space-y-4">
+        <h2 className:"text-2xl font-semibold mb-4">单个横幅示例</h2>
+        <div className:"space-y-4">
           <div>
-            <h3 className="text-lg mb-2">促销横幅</h3>
+            <h3 className:"text-lg mb-2">促销横幅</h3>
             <MarketingBanner
               banner={sampleBanners[0]}
-              language="zh"
-              className="mb-4"
+              language:"zh"
+              className:"mb-4"
               onBannerClick={handleBannerClick}
               onBannerView={handleBannerView}
             />
           </div>
           
           <div>
-            <h3 className="text-lg mb-2">新用户横幅</h3>
+            <h3 className:"text-lg mb-2">新用户横幅</h3>
             <MarketingBanner
               banner={sampleBanners[1]}
-              language="zh"
-              className="mb-4"
+              language:"zh"
+              className:"mb-4"
               onBannerClick={handleBannerClick}
               onBannerView={handleBannerView}
             />
           </div>
           
           <div>
-            <h3 className="text-lg mb-2">签到横幅</h3>
+            <h3 className:"text-lg mb-2">签到横幅</h3>
             <MarketingBanner
               banner={sampleBanners[2]}
-              language="zh"
-              className="mb-4"
+              language:"zh"
+              className:"mb-4"
               onBannerClick={handleBannerClick}
               onBannerView={handleBannerView}
             />
@@ -167,11 +167,11 @@ const MarketingBannerExamples: React.FC = () => {
 
       {/* 轮播横幅组示例 */}
       <section>
-        <h2 className="text-2xl font-semibold mb-4">轮播横幅组示例</h2>
+        <h2 className:"text-2xl font-semibold mb-4">轮播横幅组示例</h2>
         <MarketingBanner
           bannerGroup={sampleBannerGroup}
-          language="zh"
-          className="mb-4"
+          language:"zh"
+          className:"mb-4"
           onBannerClick={handleBannerClick}
           onBannerView={handleBannerView}
         />
@@ -179,33 +179,33 @@ const MarketingBannerExamples: React.FC = () => {
 
       {/* 不同语言示例 */}
       <section>
-        <h2 className="text-2xl font-semibold mb-4">多语言示例</h2>
+        <h2 className:"text-2xl font-semibold mb-4">多语言示例</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <h3 className="text-lg mb-2">中文</h3>
+            <h3 className:"text-lg mb-2">中文</h3>
             <MarketingBanner
               banner={sampleBanners[0]}
-              language="zh"
+              language:"zh"
               onBannerClick={handleBannerClick}
               onBannerView={handleBannerView}
             />
           </div>
           
           <div>
-            <h3 className="text-lg mb-2">英文</h3>
+            <h3 className:"text-lg mb-2">英文</h3>
             <MarketingBanner
               banner={sampleBanners[0]}
-              language="en"
+              language:"en"
               onBannerClick={handleBannerClick}
               onBannerView={handleBannerView}
             />
           </div>
           
           <div>
-            <h3 className="text-lg mb-2">俄文</h3>
+            <h3 className:"text-lg mb-2">俄文</h3>
             <MarketingBanner
               banner={sampleBanners[0]}
-              language="ru"
+              language:"ru"
               onBannerClick={handleBannerClick}
               onBannerView={handleBannerView}
             />
@@ -215,45 +215,45 @@ const MarketingBannerExamples: React.FC = () => {
 
       {/* 不同尺寸示例 */}
       <section>
-        <h2 className="text-2xl font-semibold mb-4">不同尺寸示例</h2>
-        <div className="space-y-4">
+        <h2 className:"text-2xl font-semibold mb-4">不同尺寸示例</h2>
+        <div className:"space-y-4">
           <div>
-            <h3 className="text-lg mb-2">小尺寸</h3>
+            <h3 className:"text-lg mb-2">小尺寸</h3>
             <MarketingBanner
-              banner={{
-                ...sampleBanners[0],
+              banner={{}}
+                ...(sampleBanners?.0 ?? null),
                 height: 'small',
                 width: 'auto'
-              }}
-              language="zh"
+
+              language:"zh"
               onBannerClick={handleBannerClick}
               onBannerView={handleBannerView}
             />
           </div>
           
           <div>
-            <h3 className="text-lg mb-2">中等尺寸</h3>
+            <h3 className:"text-lg mb-2">中等尺寸</h3>
             <MarketingBanner
-              banner={{
-                ...sampleBanners[0],
+              banner={{}}
+                ...(sampleBanners?.0 ?? null),
                 height: 'medium',
                 width: 'container'
-              }}
-              language="zh"
+
+              language:"zh"
               onBannerClick={handleBannerClick}
               onBannerView={handleBannerView}
             />
           </div>
           
           <div>
-            <h3 className="text-lg mb-2">大尺寸</h3>
+            <h3 className:"text-lg mb-2">大尺寸</h3>
             <MarketingBanner
-              banner={{
-                ...sampleBanners[0],
+              banner={{}}
+                ...(sampleBanners?.0 ?? null),
                 height: 'large',
                 width: 'full'
-              }}
-              language="zh"
+
+              language:"zh"
               onBannerClick={handleBannerClick}
               onBannerView={handleBannerView}
             />
@@ -263,24 +263,24 @@ const MarketingBannerExamples: React.FC = () => {
 
       {/* 不同动画示例 */}
       <section>
-        <h2 className="text-2xl font-semibold mb-4">不同动画示例</h2>
+        <h2 className:"text-2xl font-semibold mb-4">不同动画示例</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {['fade', 'slide', 'bounce', 'pulse', 'none'].map((animation) => (
+          {['fade', 'slide', 'bounce', 'pulse', 'none'].map((animation) => (}
             <div key={animation}>
               <h3 className="text-lg mb-2 capitalize">{animation} 动画</h3>
               <MarketingBanner
-                banner={{
-                  ...sampleBanners[0],
+                banner={{}}
+                  ...(sampleBanners?.0 ?? null),
                   animation: animation as any,
                   titleZh: `${animation} 动画示例`,
                   id: `animation-${animation}`
-                }}
-                language="zh"
+
+                language:"zh"
                 onBannerClick={handleBannerClick}
                 onBannerView={handleBannerView}
               />
             </div>
-          ))}
+          ))
         </div>
       </section>
     </div>

@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -38,6 +36,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('daily_route.ts request failed', error as Error, {
       requestId,
@@ -61,7 +60,7 @@ async function handleGET(request: NextRequest) {
         const limit = parseInt(searchParams.get('limit') || '30');
         const offset = (page - 1) * limit;
 
-        let query = supabase
+        let query = supabase;
           .from('cost_statistics')
           .select('*')
           .order('stat_date', { ascending: false });
@@ -69,7 +68,7 @@ async function handleGET(request: NextRequest) {
         if (date) {
           query = query.eq('stat_date', date);
         } else if (startDate && endDate) {
-          query = query
+          query : query
             .gte('stat_date', startDate)
             .lte('stat_date', endDate);
         } else {
@@ -77,13 +76,13 @@ async function handleGET(request: NextRequest) {
           const thirtyDaysAgo = new Date();
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
           query = query.gte('stat_date', thirtyDaysAgo.toISOString().split('T')[0]);
-        }
+    }
 
         // 获取总数
         const { count } = await query.select('*', { count: 'exact', head: true });
     
         // 获取分页数据
-        const { data: costData, error } = await query
+        const { data: costData, error } = await query;
           .range(offset, offset + limit - 1);
 
         if (error) {
@@ -91,7 +90,7 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'查询成本统计数据失败:', error);
-          return NextResponse.json(
+          return NextResponse.json(;
             { error: '查询成本统计数据失败' },
             { status: 500 }
           );
@@ -141,7 +140,8 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取每日成本统计API错误:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
+  }
           { error: '服务器内部错误' },
           { status: 500 }
         );
@@ -168,22 +168,22 @@ export async function POST(request: NextRequest) {
 
     // 检查是否已存在该日期的数据
     if (!forceRecalculate) {
-      const { data: existing } = await supabase
+      const { data: existing } = await supabase;
         .from('cost_statistics')
         .select('id')
         .eq('stat_date', targetDate)
         .single();
 
       if (existing) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { error: '该日期的成本数据已存在，如需重新计算请设置 forceRecalculate=true' },
           { status: 400 }
         );
-      }
+}
     }
 
     // 调用成本聚合函数
-    const { data, error } = await supabase
+    const { data, error } = await supabase;
       .rpc('aggregate_daily_cost_statistics', {
         target_date: targetDate
       });
@@ -193,14 +193,14 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'计算成本统计数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '计算成本统计数据失败', details: error.message },
         { status: 500 }
       );
     }
 
     // 获取计算结果
-    const { data: resultData } = await supabase
+    const { data: resultData } = await supabase;
       .from('cost_statistics')
       .select('*')
       .eq('stat_date', targetDate)
@@ -218,9 +218,9 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'计算每日成本统计API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
-      { status: 500 }
+      
     );
   }
   })(request);

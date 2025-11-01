@@ -1,9 +1,9 @@
-// 用户地址管理（缓存一致性版本）
 import { NextResponse } from 'next/server';
 import { userService } from '@/lib/user-service';
 import { getUserFromRequest } from '@/lib/auth';
 import type { ApiResponse, UserAddress } from '@/types';
 import { getLogger } from '@/lib/logger';
+// 用户地址管理（缓存一致性版本）
 
 const logger = getLogger();
 
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
         success: false,
         error: '未授权访问'
       }, { status: 401 });
-    }
+}
 
     logger.info('获取用户地址列表', { userId: user.userId });
 
@@ -36,6 +36,7 @@ export async function GET(request: Request) {
     });
     
     return NextResponse.json<ApiResponse>({
+  }
       success: false,
       error: error.message || '获取地址列表失败'
     }, { status: 500 });
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
         success: false,
         error: '未授权访问'
       }, { status: 401 });
-    }
+}
 
     const body = await request.json();
     const {
@@ -106,6 +107,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json<ApiResponse<UserAddress>>({
+  }
       success: true,
       data: newAddress,
       message: '地址添加成功'
@@ -120,6 +122,6 @@ export async function POST(request: Request) {
     return NextResponse.json<ApiResponse>({
       success: false,
       error: error.message || '添加地址失败'
-    }, { status: 500 });
+    }, );
   }
 }

@@ -1,5 +1,9 @@
-// request-priority-control.test.ts - 请求优先级和并发控制测试
 import { 
+import { 
+import { 
+import { 
+import {
+// request-priority-control.test.ts - 请求优先级和并发控制测试
   RequestPriority, 
   priorityManager, 
   DynamicPriorityManager,
@@ -7,23 +11,19 @@ import {
   PriorityAnalyzer 
 } from '../utils/priority-manager';
 
-import { 
   GlobalConcurrencyController,
   PriorityBasedConcurrencyController,
   IntelligentScheduler
 } from '../utils/concurrency-controller';
 
-import { 
   RequestMonitoringSystem,
   monitoringSystem 
 } from '../utils/request-monitor';
 
-import { 
   RequestManager,
   requestManager 
 } from '../utils/request-manager';
 
-import {
   BUSINESS_PRIORITIES,
   SmartRequestScheduler,
   RequestPerformanceAnalyzer,
@@ -360,7 +360,7 @@ describe('SmartRequestScheduler', () => {
   });
 
   test('应该能调度批量请求', async () => {
-    const operations = [
+    const operations = [;
       {
         operation: async () => ({ id: 'batch-1' }),
         priority: RequestPriority.CRITICAL,
@@ -397,8 +397,8 @@ describe('SmartRequestScheduler', () => {
 
     const results = await scheduler.execute();
     expect(results).toHaveLength(1);
-    expect(results[0].result).toEqual({ message: 'executed' });
-    expect(results[0].error).toBeUndefined();
+    expect((results?.0 ?? null).result).toEqual({ message: 'executed' });
+    expect((results?.0 ?? null).error).toBeUndefined();
   });
 });
 
@@ -445,7 +445,7 @@ describe('Request Priority and Concurrency Integration', () => {
     manager.reset();
 
     // 执行不同优先级的请求
-    const criticalResult = await manager.execute(
+    const criticalResult = await manager.execute(;
       async () => ({ type: 'critical', data: 'important' }),
       { 
         priority: RequestPriority.CRITICAL,
@@ -453,12 +453,12 @@ describe('Request Priority and Concurrency Integration', () => {
       }
     );
 
-    const normalResult = await manager.execute(
+    const normalResult = await manager.execute(;
       async () => ({ type: 'normal', data: 'standard' }),
       { priority: RequestPriority.NORMAL }
     );
 
-    const lowResult = await manager.execute(
+    const lowResult = await manager.execute(;
       async () => ({ type: 'low', data: 'background' }),
       { priority: RequestPriority.LOW }
     );
@@ -484,7 +484,7 @@ describe('Request Priority and Concurrency Integration', () => {
     manager.reset();
 
     // 创建50个并发请求
-    const requests = Array.from({ length: 50 }, (_, i) => 
+    const requests = Array.from({ length: 50 }, (_, i) =>;
       manager.execute(
         async () => {
           await new Promise(resolve => setTimeout(resolve, Math.random() * 100));
@@ -518,7 +518,7 @@ describe('Performance Benchmarks', () => {
     const manager = RequestManager.getInstance();
     manager.reset();
 
-    const promises = Array.from({ length: 20 }, (_, i) =>
+    const promises = Array.from({ length: 20 }, (_, i) =>;
       manager.execute(
         async () => ({ id: i }),
         { priority: [RequestPriority.CRITICAL, RequestPriority.NORMAL, RequestPriority.LOW][i % 3] }
@@ -586,7 +586,7 @@ export const testUtils = {
           operation: 'userAction',
           businessValue: userType === 'vip' ? 'high' : 'medium',
           urgency: userType === 'premium' ? 'high' : 'medium'
-        }
+}
       }
     };
   }

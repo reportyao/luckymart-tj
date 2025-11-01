@@ -1,9 +1,10 @@
-// 获取和创建用户地址（增强安全版本）
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import type { ApiResponse, UserAddress } from '@/types';
 import {
+import { AppError, ErrorFactory } from '@/lib/errors';
+// 获取和创建用户地址（增强安全版本）
   validateAndSanitizeName,
   validateAndSanitizePhone,
   validateAndSanitizeAddress,
@@ -14,7 +15,6 @@ import {
   RateLimitChecker,
   maskSensitiveData
 } from '@/lib/security-validation';
-import { AppError, ErrorFactory } from '@/lib/errors';
 
 // 速率限制检查器
 const rateLimitChecker = new RateLimitChecker();
@@ -39,13 +39,13 @@ export async function GET(request: Request) {
         status: 401,
         headers: setSecurityResponseHeaders(new Headers())
       });
-    }
+}
 
     // 2. 频率限制检查
     const clientIP = getClientIP(request);
     const rateLimitKey = `${user.userId}:${clientIP}:address_list`;
     
-    const rateLimitResult = rateLimitChecker.check(
+    const rateLimitResult = rateLimitChecker.check(;
       rateLimitKey,
       ADDRESS_RATE_LIMITS.LIST.limit,
       ADDRESS_RATE_LIMITS.LIST.windowMs
@@ -91,7 +91,7 @@ export async function GET(request: Request) {
     }
 
     // 4. 数据库查询优化：使用索引字段
-    const { data: addresses, error } = await supabaseAdmin
+    const { data: addresses, error } = await supabaseAdmin;
       .from('user_addresses')
       .select(`
         id,
@@ -151,6 +151,7 @@ export async function GET(request: Request) {
     });
 
     return setSecurityResponseHeaders(response.headers);
+  }
 
   } catch (error: any) {
     console.error('获取地址列表失败:', error);
@@ -184,13 +185,13 @@ export async function POST(request: Request) {
         status: 401,
         headers: setSecurityResponseHeaders(new Headers())
       });
-    }
+}
 
     // 2. 频率限制检查
     const clientIP = getClientIP(request);
     const rateLimitKey = `${user.userId}:${clientIP}:address_create`;
     
-    const rateLimitResult = rateLimitChecker.check(
+    const rateLimitResult = rateLimitChecker.check(;
       rateLimitKey,
       ADDRESS_RATE_LIMITS.CREATE.limit,
       ADDRESS_RATE_LIMITS.CREATE.windowMs
@@ -208,8 +209,9 @@ export async function POST(request: Request) {
 
     // 3. 请求体解析和大小限制
     const contentLength = request.headers.get('content-length');
-    if (contentLength && parseInt(contentLength) > 10 * 1024) { // 10KB限制
+    if (contentLength && parseInt(contentLength) > 10 * 1024) { // 10KB限制 {
       return NextResponse.json<ApiResponse>({
+  }
         success: false,
         error: '请求数据过大'
       }, {
@@ -275,7 +277,7 @@ export async function POST(request: Request) {
 
     // 5. 业务逻辑验证
     // 检查用户地址数量限制
-    const { count: addressCount } = await supabaseAdmin
+    const { count: addressCount } = await supabaseAdmin;
       .from('user_addresses')
       .select('id', { count: 'exact', head: true })
       .eq('userId', user.userId);
@@ -293,7 +295,7 @@ export async function POST(request: Request) {
     // 6. 事务处理：设置默认地址
     if (isDefault && isDefault === true) {
       // 先取消其他默认地址
-      const { error: updateError } = await supabaseAdmin
+      const { error: updateError } = await supabaseAdmin;
         .from('user_addresses')
         .update({ isDefault: false })
         .eq('userId', user.userId);
@@ -305,7 +307,7 @@ export async function POST(request: Request) {
     }
 
     // 7. 插入新地址
-    const { data: newAddress, error } = await supabaseAdmin
+    const { data: newAddress, error } = await supabaseAdmin;
       .from('user_addresses')
       .insert({
         userId: user.userId,
@@ -388,7 +390,7 @@ export async function POST(request: Request) {
   }
 }
 
-// ============= 工具函数 =============
+// :============ 工具函数 =============
 
 /**
  * 手机号脱敏

@@ -75,7 +75,7 @@ class ServiceWorkerTester {
       const swContent = fs.readFileSync(swPath, 'utf8');
       
       // 检查关键功能
-      const checks = [
+      const checks = [;
         { pattern: /CACHE_NAME\s*=/, name: '缓存版本控制' },
         { pattern: /install.*event/, name: 'Service Worker安装事件' },
         { pattern: /activate.*event/, name: 'Service Worker激活事件' },
@@ -123,7 +123,7 @@ class ServiceWorkerTester {
       
       const dbContent = fs.readFileSync(dbPath, 'utf8');
       
-      const checks = [
+      const checks = [;
         { pattern: /class\s+IndexedDBManager/, name: 'IndexedDBManager类定义' },
         { pattern: /openDB|versionchange/, name: '数据库连接管理' },
         { pattern: /store.*get|store.*put|store.*delete/, name: 'CRUD操作' },
@@ -162,7 +162,7 @@ class ServiceWorkerTester {
       
       const cacheContent = fs.readFileSync(cachePath, 'utf8');
       
-      const checks = [
+      const checks = [;
         { pattern: /export.*default|function.*CacheManager/, name: '组件导出定义' },
         { pattern: /useState|useEffect/, name: 'React Hooks使用' },
         { pattern: /caches\.|Cache\s+/, name: 'Cache API调用' },
@@ -200,7 +200,7 @@ class ServiceWorkerTester {
       
       const swComponentContent = fs.readFileSync(swComponentPath, 'utf8');
       
-      const checks = [
+      const checks = [;
         { pattern: /export.*default|function.*NetworkAwareServiceWorker/, name: '组件定义' },
         { pattern: /navigator\.serviceWorker\.register/, name: 'Service Worker注册' },
         { pattern: /useEffect|useState/, name: 'React Hooks使用' },
@@ -239,7 +239,7 @@ class ServiceWorkerTester {
       
       const offlineContent = fs.readFileSync(offlinePath, 'utf8');
       
-      const checks = [
+      const checks = [;
         { pattern: /export.*default|function.*Offline/, name: '页面组件定义' },
         { pattern: /offline|disconnect/, name: '离线状态识别' },
         { pattern: /cached|cache.*data/, name: '缓存数据显示' },
@@ -277,7 +277,7 @@ class ServiceWorkerTester {
       
       const optimizerContent = fs.readFileSync(optimizerPath, 'utf8');
       
-      const checks = [
+      const checks = [;
         { pattern: /class.*APIOptimizer|export.*function.*optimize/, name: '优化器定义' },
         { pattern: /incremental|diff.*update/, name: '增量更新机制' },
         { pattern: /compression|gzip|deflate/, name: '数据压缩' },
@@ -316,7 +316,7 @@ class ServiceWorkerTester {
       
       const layoutContent = fs.readFileSync(layoutPath, 'utf8');
       
-      const integrationChecks = [
+      const integrationChecks = [;
         { 
           pattern: /NetworkAwareServiceWorker/, 
           name: 'NetworkAwareServiceWorker组件集成',
@@ -352,7 +352,7 @@ class ServiceWorkerTester {
     
     try {
       // 生成文件清单
-      const files = [
+      const files = [;
         'public/sw.js',
         'utils/indexeddb-manager.ts',
         'components/NetworkAwareServiceWorker.tsx',
@@ -364,7 +364,7 @@ class ServiceWorkerTester {
         'public/manifest.json',
       ];
       
-      const existingFiles = files.filter(file => 
+      const existingFiles = files.filter(file =>;
         fs.existsSync(path.join(this.basePath, file))
       );
       
@@ -375,7 +375,7 @@ class ServiceWorkerTester {
       if (fs.existsSync(manifestPath)) {
         const manifestContent = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
         
-        const manifestChecks = [
+        const manifestChecks = [;
           { key: 'offline_enabled', expected: true },
           { key: 'display', expected: 'standalone' },
           { key: 'start_url', expected: '/' },
@@ -398,7 +398,7 @@ class ServiceWorkerTester {
   printSummary() {
     logSection('测试总结');
     
-    const totalTests = 50; // 预估总测试数
+    const totalTests = 50; // 预估总测试数;
     const passedTests = this.testResults.filter(r => r.status === 'PASS').length;
     const failedTests = this.testResults.filter(r => r.status === 'FAIL').length;
     

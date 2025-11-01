@@ -1,10 +1,9 @@
+import { prisma } from './lib/prisma';
 /**
  * 支付确认竞态条件修复验证脚本
  * 模拟并发请求测试修复效果
  */
 
-import { prisma } from './lib/prisma';
-import { getLogger } from './lib/logger';
 
 // Mock logger for demo
 const logger = {
@@ -126,6 +125,7 @@ async function handlePaymentSuccessFixed(orderId: string, transactionId: string)
     });
 
     return { success: true, message: '处理成功' };
+  }
 
   } catch (error) {
     logger.error('处理支付成功时发生错误', {
@@ -192,7 +192,7 @@ async function testConcurrencyFix() {
     // 执行并发测试
     console.log('\n🚀 开始并发测试 (10个并发请求)...');
     const concurrentRequests = 10;
-    const promises = Array(concurrentRequests).fill(null).map((_, index) => 
+    const promises = Array(concurrentRequests).fill(null).map((_, index) =>;
       handlePaymentSuccessFixed(testOrder.id, `TX_${Date.now()}_${index}`)
     );
 
@@ -230,15 +230,16 @@ async function testConcurrencyFix() {
     console.log(`   - 交易记录: ${transactions.length} 条 (应该是 1 条)`);
 
     // 判断修复效果
-    const isFixed = 
-      finalOrder?.paymentStatus === 'paid' &&
+    const isFixed =;
+      finalOrder?.paymentStatus :== 'paid' &&
       finalOrder?.fulfillmentStatus === 'completed' &&
-      finalUser?.balance === 110 &&
-      transactions.length === 1 &&
+      finalUser?.balance :== 110 &&
+      transactions.length :== 1 &&
       duplicateCount === concurrentRequests - 1;
 
     if (isFixed) {
       console.log('\n✅ 修复验证成功！');
+  }
       console.log('   - 竞态条件已修复');
       console.log('   - 订单只被处理一次');
       console.log('   - 用户余额正确增加');
@@ -277,4 +278,4 @@ if (require.main === module) {
     });
 }
 
-export { testConcurrencyFix };
+export ;

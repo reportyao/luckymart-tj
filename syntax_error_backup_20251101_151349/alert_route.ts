@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRiskTelegramBot, RiskAlertMessage } from '@/lib/risk-telegram-bot';
-import { RiskControlService } from '@/lib/risk-control';
 
 // POST /api/risk/alert - 发送风险预警通知
 export async function POST(request: NextRequest) {
@@ -18,23 +17,23 @@ export async function POST(request: NextRequest) {
       metadata,
       channels = ['telegram'], // 通知渠道
       priority = 'normal',
-      immediate = false // 是否立即发送
+      immediate : false // 是否立即发送
     } = body;
 
     // 验证必填参数
     if (!incidentId || !userId || !severity) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '缺少必要参数: incidentId, userId, severity' },
         { status: 400 }
       );
-    }
+}
 
     // 验证通知渠道
     const validChannels = ['telegram', 'email', 'sms', 'webhook'];
     const selectedChannels = channels.filter((channel : any) => validChannels.includes(channel));
     
     if (selectedChannels.length === 0) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '未指定有效的通知渠道' },
         { status: 400 }
       );
@@ -154,10 +153,11 @@ export async function POST(request: NextRequest) {
 
     const statusCode = results.successful > 0 ? 200 : 500;
     return NextResponse.json(response, { status: statusCode });
+  }
 
   } catch (error) {
     console.error('发送风险预警通知错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '发送预警通知失败',
         message: '系统正在处理其他请求，请稍后重试'
@@ -178,7 +178,8 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0');
 
     if (!incidentId) {
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         { error: '缺少必要参数: incidentId' },
         { status: 400 }
       );
@@ -216,7 +217,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('查询通知状态错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '查询通知状态失败',
         message: '请检查参数并重试'
@@ -233,11 +234,11 @@ export async function PUT(request: NextRequest) {
     const { notificationId, acknowledgedBy } = body;
 
     if (!notificationId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '缺少必要参数: notificationId' },
         { status: 400 }
       );
-    }
+}
 
     // 更新通知状态为已确认
     const updated = await acknowledgeNotification(notificationId, acknowledgedBy);
@@ -254,7 +255,7 @@ export async function PUT(request: NextRequest) {
 
   } catch (error) {
     console.error('确认通知错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '确认通知失败',
         message: '请检查通知ID是否正确'
@@ -350,7 +351,7 @@ async function getNotificationsByIncident(
   try {
     // 这里需要实际查询数据库
     // 为了演示，返回模拟数据
-    return [
+    return [;
       {
         id: 'notif_1',
         incidentId,
@@ -415,7 +416,7 @@ export async function batchSendAlerts(alerts: RiskAlertMessage[]): Promise<{
         successful++;
       } else {
         failed++;
-      }
+}
 
       results.push({ alert, success, error: result.error });
     } catch (error) {
@@ -431,5 +432,5 @@ export async function batchSendAlerts(alerts: RiskAlertMessage[]): Promise<{
     await new Promise(resolve => setTimeout(resolve, 100));
   }
 
-  return { successful, failed, results };
+  return ;
 }

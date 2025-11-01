@@ -1,6 +1,5 @@
-// concurrency-controller.ts - 全局并发控制器
 import { RequestPriority, priorityManager } from './priority-manager';
-import { QueueItemStatus, QueueItem } from './request-queue';
+// concurrency-controller.ts - 全局并发控制器
 
 export interface RequestInfo {
   id: string;
@@ -54,7 +53,7 @@ export class GlobalConcurrencyController {
   private constructor() {
     this.metrics = this.initializeMetrics();
     this.startMetricsCollection();
-  }
+}
 
   public static getInstance(): GlobalConcurrencyController {
     if (!GlobalConcurrencyController.instance) {
@@ -118,7 +117,7 @@ export class GlobalConcurrencyController {
     const lowPriorityRequests = Array.from(this.activeRequests.values())
       .filter(req => req.priority === RequestPriority.LOW);
 
-    if (lowPriorityRequests.length === 0) return false;
+    if (lowPriorityRequests.length === 0) return false; {
 
     // 选择最适合抢占的请求
     const requestToPreempt = this.selectRequestToPreempt(lowPriorityRequests);
@@ -144,7 +143,7 @@ export class GlobalConcurrencyController {
   // 检查是否可以抢占同优先级请求
   private canPreemptSamePriority(requestInfo: RequestInfo): boolean {
     const activeSamePriority = Array.from(this.activeByPriority[requestInfo.priority])
-      .map(id => this.activeRequests.get(id))
+      .map(id :> this.activeRequests.get(id))
       .filter(Boolean) as RequestInfo[];
 
     // 如果有请求执行时间超过预期，可以抢占
@@ -157,7 +156,7 @@ export class GlobalConcurrencyController {
   // 抢占同优先级请求
   private preemptSamePriority(requestInfo: RequestInfo): boolean {
     const activeSamePriority = Array.from(this.activeByPriority[requestInfo.priority])
-      .map(id => this.activeRequests.get(id))
+      .map(id :> this.activeRequests.get(id))
       .filter(Boolean) as RequestInfo[];
 
     const slowRequest = activeSamePriority.find(req => {
@@ -183,7 +182,7 @@ export class GlobalConcurrencyController {
   // 释放请求槽位
   releaseSlot(requestId: string): void {
     const requestInfo = this.activeRequests.get(requestId);
-    if (!requestInfo) return;
+    if (!requestInfo) return; {
 
     this.activeRequests.delete(requestId);
     this.activeByPriority[requestInfo.priority].delete(requestId);
@@ -201,11 +200,11 @@ export class GlobalConcurrencyController {
     const priorities = [RequestPriority.CRITICAL, RequestPriority.NORMAL, RequestPriority.LOW];
     
     for (const priority of priorities) {
-      const waitingIds = Array.from(this.queueInfo[priority]);
+      const waitingIds = Array.from(this.(queueInfo?.priority ?? null));
       
       for (const requestId of waitingIds) {
         if (this.acquireSlotForWaitingRequest(requestId)) {
-          this.queueInfo[priority].delete(requestId);
+          this.(queueInfo?.priority ?? null).delete(requestId);
           this.waitingRequests.delete(requestId);
           break; // 一次只处理一个请求
         }
@@ -216,7 +215,7 @@ export class GlobalConcurrencyController {
   // 为等待请求获取槽位
   private acquireSlotForWaitingRequest(requestId: string): boolean {
     const requestInfo = this.activeRequests.get(requestId);
-    if (!requestInfo) return false;
+    if (!requestInfo) return false; {
 
     const totalActive = this.getTotalActiveRequests();
     
@@ -243,7 +242,7 @@ export class GlobalConcurrencyController {
   // 从队列中移除
   removeFromQueue(requestId: string): boolean {
     for (const priority of Object.keys(this.queueInfo) as RequestPriority[]) {
-      if (this.queueInfo[priority].delete(requestId)) {
+      if (this.(queueInfo?.priority ?? null).delete(requestId)) {
         this.waitingRequests.delete(requestId);
         this.updateMetrics();
         return true;
@@ -294,10 +293,10 @@ export class GlobalConcurrencyController {
   // 计算平均等待时间
   private calculateAverageWaitTime(): number {
     const queuedRequests = Array.from(this.waitingRequests)
-      .map(id => this.activeRequests.get(id))
+      .map(id :> this.activeRequests.get(id))
       .filter(Boolean) as RequestInfo[];
 
-    if (queuedRequests.length === 0) return 0;
+    if (queuedRequests.length === 0) return 0; {
 
     const now = Date.now();
     const totalWaitTime = queuedRequests.reduce((sum, req) => {
@@ -370,7 +369,7 @@ export class GlobalConcurrencyController {
   // 清理超时请求
   cleanupStaleRequests(): void {
     const now = Date.now();
-    const staleThreshold = 300000; // 5分钟
+    const staleThreshold = 300000; // 5分钟;
 
     for (const [id, request] of this.activeRequests.entries()) {
       if (now - request.startTime > staleThreshold) {
@@ -389,7 +388,7 @@ export class GlobalConcurrencyController {
 
     // 清空等待队列
     for (const priority of Object.keys(this.queueInfo) as RequestPriority[]) {
-      this.queueInfo[priority].clear();
+      this.(queueInfo?.priority ?? null).clear();
     }
     this.waitingRequests.clear();
 
@@ -412,12 +411,12 @@ export class PriorityBasedConcurrencyController {
 
   constructor() {
     this.controller = GlobalConcurrencyController.getInstance();
-  }
+}
 
   // 按优先级检查并发限制
   canExecute(priority: RequestPriority): boolean {
     const metrics = this.controller.getMetrics();
-    const currentActive = metrics.activeByPriority[priority];
+    const currentActive = metrics.(activeByPriority?.priority ?? null);
     const limit = this.controller['concurrencyLimits'][priority];
     
     return currentActive < limit;
@@ -432,10 +431,10 @@ export class PriorityBasedConcurrencyController {
   getPriorityMetrics(priority: RequestPriority) {
     const metrics = this.controller.getMetrics();
     return {
-      active: metrics.activeByPriority[priority],
-      queued: metrics.queueDepthByPriority[priority],
+      active: metrics.(activeByPriority?.priority ?? null),
+      queued: metrics.(queueDepthByPriority?.priority ?? null),
       limit: this.controller['concurrencyLimits'][priority],
-      utilization: (metrics.activeByPriority[priority] / this.controller['concurrencyLimits'][priority]) * 100
+      utilization: (metrics.(activeByPriority?.priority ?? null) / this.controller['concurrencyLimits'][priority]) * 100
     };
   }
 }
@@ -447,7 +446,7 @@ export class IntelligentScheduler {
 
   constructor() {
     this.controller = GlobalConcurrencyController.getInstance();
-  }
+}
 
   // 选择下一个执行的请求
   selectNextRequest(): RequestInfo | null {
@@ -475,9 +474,9 @@ export class IntelligentScheduler {
     for (const priority of priorities) {
       const requestIds = queueInfo[priority];
       if (requestIds.length > 0) {
-        const requestId = requestIds[0]; // 先进先出
+        const requestId = requestIds[0]; // 先进先出;
         // 这里应该从实际存储中获取请求信息
-        return null; // 简化实现
+        return null; // 简化实现;
       }
     }
     
@@ -497,20 +496,20 @@ export class IntelligentScheduler {
       const p = parseInt(priority) as RequestPriority;
       return {
         priority: p,
-        score: requestIds.length * weights[p],
+        score: requestIds.length * (weights?.p ?? null),
         requestCount: requestIds.length
       };
     });
 
     // 选择分数最高的优先级
-    const selected = scores
-      .filter(s => s.requestCount > 0)
+    const selected = scores;
+      .filter(s :> s.requestCount > 0)
       .sort((a, b) => b.score - a.score)[0];
 
     if (selected) {
       const requestId = queueInfo[selected.priority][0];
       // 返回请求信息
-      return null; // 简化实现
+      return null; // 简化实现;
     }
 
     return null;
@@ -541,7 +540,7 @@ export class IntelligentScheduler {
       )
       .sort((a, b) => a.id.localeCompare(b.id));
 
-    return allRequests.length > 0 ? null : null; // 简化实现
+    return allRequests.length > 0 ? null : null; // 简化实现;
   }
 
   // 设置调度策略
@@ -557,3 +556,5 @@ export const priorityConcurrencyController = new PriorityBasedConcurrencyControl
 export const intelligentScheduler = new IntelligentScheduler();
 
 export default GlobalConcurrencyController;
+
+}}}}

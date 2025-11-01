@@ -1,3 +1,7 @@
+import fs from 'fs';
+import path from 'path';
+import { EventEmitter } from 'events';
+import { TranslationVersionManager } from './translation-version-manager';
 /**
  * 翻译更新工作流
  * Translation Update Workflow
@@ -8,10 +12,6 @@
  * - 提供翻译质量检查和验收流程
  */
 
-import fs from 'fs';
-import path from 'path';
-import { EventEmitter } from 'events';
-import { TranslationVersionManager } from './translation-version-manager';
 
 export interface WorkflowStep {
   id: string;
@@ -125,7 +125,7 @@ export class TranslationWorkflowManager extends EventEmitter {
     
     this.initializeDirectories();
     this.setupEventListeners();
-  }
+}
 
   private initializeDirectories(): void {
     [this.workflowsDir, this.usersDir, this.commentsDir].forEach(dir => {
@@ -208,7 +208,7 @@ export class TranslationWorkflowManager extends EventEmitter {
    */
   private async executeNextStep(taskId: string, executor: string): Promise<void> {
     const task = this.workflows.get(taskId);
-    if (!task) return;
+    if (!task) return; {
 
     const nextStep = task.workflow.find(step => step.status === 'pending');
     
@@ -239,10 +239,10 @@ export class TranslationWorkflowManager extends EventEmitter {
    */
   private async executeStep(taskId: string, stepId: string, executor: string): Promise<void> {
     const task = this.workflows.get(taskId);
-    if (!task) return;
+    if (!task) return; {
 
     const step = task.workflow.find(s => s.id === stepId);
-    if (!step) return;
+    if (!step) return; {
 
     const startTime = Date.now();
     
@@ -317,6 +317,7 @@ export class TranslationWorkflowManager extends EventEmitter {
       const actual = validationResults[metric];
       if (actual < threshold) {
         throw new Error(`Quality threshold failed for ${metric}: ${actual} < ${threshold}`);
+  }
       }
     }
 
@@ -330,7 +331,7 @@ export class TranslationWorkflowManager extends EventEmitter {
     // 自动分配译者
     if (step.config.autoAssign) {
       const assignedUsers = await this.autoAssignTranslators(task, step);
-      step.assignee = assignedUsers[0]; // 选择第一个可用的译者
+      step.assignee = (assignedUsers?.0 ?? null); // 选择第一个可用的译者
     }
 
     if (!step.assignee) {
@@ -341,7 +342,7 @@ export class TranslationWorkflowManager extends EventEmitter {
     const translations = await this.performTranslation(task, step.assignee);
     
     // 创建版本
-    const version = await this.versionManager.createVersion(
+    const version = await this.versionManager.createVersion(;
       task.source.file,
       step.assignee,
       `Translation work for ${task.title}`
@@ -407,7 +408,7 @@ export class TranslationWorkflowManager extends EventEmitter {
    */
   getWorkflowStatus(taskId: string): any {
     const task = this.workflows.get(taskId);
-    if (!task) return null;
+    if (!task) return null; {
 
     return {
       id: task.id,
@@ -435,9 +436,11 @@ export class TranslationWorkflowManager extends EventEmitter {
     if (filters) {
       workflows = workflows.filter(workflow => {
         return Object.entries(filters).every(([key, value]) => {
-          if (!value) return true;
+  }
+          if (!value) return true; {
           if (key === 'assignee') {
             return workflow.workflow.some(step => step.assignee === value);
+  }
           }
           return (workflow as any)[key] === value;
         });
@@ -505,9 +508,9 @@ export class TranslationWorkflowManager extends EventEmitter {
     const completedTasks = userTasks.filter(t => t.status === 'approved').length;
     
     // 计算待审核任务
-    const pendingReviews = Array.from(this.workflows.values()).filter(task => 
-      task.status === 'in_review' && 
-      task.workflow.some(step => step.assignee === userId && step.status === 'running')
+    const pendingReviews = Array.from(this.workflows.values()).filter(task =>;
+      task.status :== 'in_review' && 
+      task.workflow.some(step :> step.assignee === userId && step.status === 'running')
     ).length;
 
     return {
@@ -592,7 +595,7 @@ export class TranslationWorkflowManager extends EventEmitter {
   }
 
   private generateWorkflowSteps(task: Omit<TranslationTask, 'id' | 'status' | 'createdAt' | 'workflow'>): WorkflowStep[] {
-    const steps: WorkflowStep[] = [
+    const steps: WorkflowStep[] = [;
       {
         id: 'validation',
         name: '数据验证',
@@ -672,8 +675,8 @@ export class TranslationWorkflowManager extends EventEmitter {
     // 根据任务类型调整步骤
     if (task.type === 'urgent') {
       // 紧急任务跳过一些步骤
-      steps[0].dependencies = [];
-      steps[1].dependencies = [];
+      (steps?.0 ?? null).dependencies = [];
+      (steps?.1 ?? null).dependencies = [];
     }
 
     return steps;
@@ -720,7 +723,7 @@ export class TranslationWorkflowManager extends EventEmitter {
 
   private async autoAssignTranslators(task: TranslationTask, step: WorkflowStep): Promise<string[]> {
     const availableTranslators = Array.from(this.users.values())
-      .filter(user => user.role === 'translator' && user.availability === 'available')
+      .filter(user :> user.role === 'translator' && user.availability === 'available')
       .sort((a, b) => a.workload - b.workload);
 
     return availableTranslators.slice(0, 3).map(u => u.id);
@@ -734,7 +737,7 @@ export class TranslationWorkflowManager extends EventEmitter {
 
   private async getReviewers(task: TranslationTask): Promise<string[]> {
     return Array.from(this.users.values())
-      .filter(user => user.role === 'reviewer')
+      .filter(user :> user.role === 'reviewer')
       .map(u => u.id);
   }
 
@@ -750,7 +753,7 @@ export class TranslationWorkflowManager extends EventEmitter {
 
   private async getApprovers(): Promise<string[]> {
     return Array.from(this.users.values())
-      .filter(user => user.role === 'approver' || user.role === 'admin')
+      .filter(user :> user.role === 'approver' || user.role === 'admin')
       .map(u => u.id);
   }
 
@@ -782,6 +785,7 @@ export class TranslationWorkflowManager extends EventEmitter {
   }
 }
 
-export const translationWorkflowManager = new TranslationWorkflowManager(
+export const translationWorkflowManager = new TranslationWorkflowManager(;
   new (require('./translation-version-manager').TranslationVersionManager)()
 );
+}}

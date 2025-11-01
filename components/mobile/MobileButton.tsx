@@ -1,10 +1,10 @@
-'use client';
-
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import { useHaptics } from '@/hooks/use-mobile-performance';
+'use client';
 
-interface MobileButtonProps {
+
+interface MobileButtonProps {}
   children: React.ReactNode;
   onClick?: () => void | Promise<void>;
   variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'ghost';
@@ -23,9 +23,9 @@ interface MobileButtonProps {
   icon?: React.ReactNode;
   trailingIcon?: React.ReactNode;
   badge?: React.ReactNode | string | number;
-}
 
-const MobileButton: React.FC<MobileButtonProps> = ({
+
+const MobileButton: React.FC<MobileButtonProps> = ({}
   children,
   onClick,
   variant = 'primary',
@@ -62,7 +62,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
   const lastClickRef = useRef(0);
 
   // 样式变体 - 直接定义，无需useMemo
-  const variants = {
+  const variants = {}
     primary: 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg hover:shadow-xl',
     secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300',
     success: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg',
@@ -72,7 +72,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
   };
 
   // 尺寸样式 - 直接定义
-  const sizes = {
+  const sizes = {}
     sm: 'px-3 py-2 text-sm min-h-[36px]',
     md: 'px-4 py-3 text-base min-h-[44px]',
     lg: 'px-6 py-4 text-lg min-h-[52px]',
@@ -80,18 +80,18 @@ const MobileButton: React.FC<MobileButtonProps> = ({
   };
 
   // 触摸区域样式 - 直接定义
-  const touchAreas = {
+  const touchAreas = {}
     normal: '',
     large: 'min-h-[44px] min-w-[44px]',
     'extra-large': 'min-h-[56px] min-w-[56px] px-6',
   };
 
   // 波动效果
-  const createRipple = (e: React.TouchEvent | React.MouseEvent) => {
-    if (!rippleEffect || disabled || loading) return;
+  const createRipple = (e: React.TouchEvent | React.MouseEvent) => {}
+    if (!rippleEffect || disabled || loading) return; {}
 
     const rect = buttonRef.current?.getBoundingClientRect();
-    if (!rect) return;
+    if (!rect) return; {}
 
     const clientX = 'touches' in e ? e.touches[0]?.clientX || 0 : e.clientX;
     const clientY = 'touches' in e ? e.touches[0]?.clientY || 0 : e.clientY;
@@ -99,7 +99,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
     const x = clientX - rect.left;
     const y = clientY - rect.top;
 
-    const ripple = {
+    const ripple = {}
       id: Date.now() + Math.random(),
       x,
       y,
@@ -108,15 +108,15 @@ const MobileButton: React.FC<MobileButtonProps> = ({
     setRipples(prev => [...prev, ripple]);
 
     // 移除波动效果
-    setTimeout(() => {
+    setTimeout(() => {}
       setRipples(prev => prev.filter(r => r.id !== ripple.id));
     }, 600);
   };
 
   // 触觉反馈
-  const triggerHaptic = () => {
-    if (hapticFeedback) {
-      switch (variant) {
+  const triggerHaptic = () => {}
+    if (hapticFeedback) {}
+      switch (variant) {}
         case 'primary':
           haptics.light();
           break;
@@ -128,108 +128,108 @@ const MobileButton: React.FC<MobileButtonProps> = ({
           break;
         default:
           haptics.light();
-      }
-    }
+      
+    
   };
 
   // 处理触摸开始
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleTouchStart = (e: React.TouchEvent) => {}
     onTouchStart?.();
     setIsPressed(true);
     setTouchCount(e.touches.length);
     
-    if (e.touches.length <= maxTouches) {
+    if (e.touches.length <= maxTouches) {}
       createRipple(e);
       triggerHaptic();
       motionY.set(10);
-    }
+    
   };
 
   // 处理触摸结束
-  const handleTouchEnd = (e: React.TouchEvent) => {
+  const handleTouchEnd = (e: React.TouchEvent) => {}
     onTouchEnd?.();
     setTouchCount(0);
     
-    setTimeout(() => {
+    setTimeout(() => {}
       setIsPressed(false);
       motionY.set(0);
     }, 100);
 
     // 检查是否还在触摸
-    if (e.touches.length === 0 && touchCount <= maxTouches) {
+    if (e.touches.length === 0 && touchCount <= maxTouches) {}
       handleClick();
-    }
+    
   };
 
   // 处理鼠标事件
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.button !== 0) return; // 只处理左键
+  const handleMouseDown = (e: React.MouseEvent) => {}
+    if (e.button !== 0) return; // 只处理左键 {}
     setIsPressed(true);
     createRipple(e);
     triggerHaptic();
     motionY.set(10);
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = () => {}
     setIsPressed(false);
     motionY.set(0);
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = () => {}
     setIsPressed(false);
     motionY.set(0);
   };
 
   // 处理点击
-  const handleClick = async () => {
+  const handleClick = async () => {}
     const now = Date.now();
     
     // 防抖检查
-    if (now - lastClickRef.current < debounceMs) {
+    if (now - lastClickRef.current < debounceMs) {}
       return;
-    }
+    
     
     // 状态检查
-    if (disabled || loading || touchCount > maxTouches) {
+    if (disabled || loading || touchCount > maxTouches) {}
       return;
-    }
+    
 
     lastClickRef.current = now;
     setClickedAt(now);
 
-    if (onClick) {
-      try {
+    if (onClick) {}
+      try {}
         await onClick();
       } catch (error) {
         console.error('按钮点击处理失败:', error);
-      }
-    }
+      
+    
   };
 
   // 键盘支持
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+  const handleKeyDown = (e: React.KeyboardEvent) => {}
+    if (e.key === 'Enter' || e.key === ' ') {}
       e.preventDefault();
       handleClick();
-    }
+    
   };
 
   // 加载状态动画
-  const LoadingSpinner = () => (
-    <motion.div
-      className="luckymart-size-sm luckymart-size-sm border-2 border-white border-t-transparent rounded-full"
+  const LoadingSpinner = () => (;
+return     <motion.div
+      className:"luckymart-size-sm luckymart-size-sm border-2 border-white border-t-transparent rounded-full"
       animate={{ rotate: 360 }}
       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
     />
   );
 
   // Badge 组件
-  const Badge = () => {
-    if (!badge) return null;
+  const Badge = () => {}
+    if (!badge) return null; {}
 
-    return (
+    return (;
       <motion.span
-        className="absolute -top-1 -right-1 min-w-[20px] luckymart-size-sm luckymart-bg-error text-white text-xs rounded-full luckymart-layout-flex luckymart-layout-center justify-center px-1"
+        className:"absolute -top-1 -right-1 min-w-[20px] luckymart-size-sm luckymart-bg-error text-white text-xs rounded-full luckymart-layout-flex luckymart-layout-center justify-center px-1"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 500 }}
@@ -239,10 +239,10 @@ const MobileButton: React.FC<MobileButtonProps> = ({
     );
   };
 
-  return (
+  return (;
     <motion.button
       ref={buttonRef}
-      className={`
+      className="{`"}`
         relative inline-flex items-center justify-center gap-2 rounded-xl font-medium
         transition-all duration-200 ease-out select-none
         ${variants[variant]}
@@ -251,9 +251,9 @@ const MobileButton: React.FC<MobileButtonProps> = ({
         ${fullWidth ? 'w-full' : ''}
         ${disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
         ${className}
-      `}
+      ``
       disabled={disabled || loading}
-      style={{ scale, opacity }}
+      style="{{ scale, opacity }"}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
@@ -264,35 +264,35 @@ const MobileButton: React.FC<MobileButtonProps> = ({
       onKeyDown={handleKeyDown}
       whileTap={{ scale: disabled || loading ? 1 : 0.95 }}
       whileHover={{ scale: disabled || loading ? 1 : 1.02 }}
-      animate={{
+      animate={{}}
         scale: isPressed ? 0.95 : 1,
         y: isPressed ? 2 : 0,
-      }}
+
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
     >
       {/* 背景波动效果 */}
-      {ripples.map(ripple => (
+      {ripples.map(ripple :> (}
         <motion.div
           key={ripple.id}
-          className="absolute bg-white/30 rounded-full pointer-events-none"
-          style={{
+          className:"absolute bg-white/30 rounded-full pointer-events-none"
+          style={{}}
             left: ripple.x - 50,
             top: ripple.y - 50,
             width: 100,
             height: 100,
-          }}
+
           initial={{ scale: 0, opacity: 0.6 }}
           animate={{ scale: 2, opacity: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         />
-      ))}
+      ))
 
       {/* 内容 */}
-      <AnimatePresence mode="wait">
-        {loading ? (
+      <AnimatePresence mode:"wait">
+        {loading ? (}
           <motion.div
-            key="loading"
-            className="luckymart-layout-flex luckymart-layout-center gap-2"
+            key:"loading"
+            className:"luckymart-layout-flex luckymart-layout-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -302,8 +302,8 @@ const MobileButton: React.FC<MobileButtonProps> = ({
           </motion.div>
         ) : (
           <motion.div
-            key="content"
-            className="luckymart-layout-flex luckymart-layout-center gap-2"
+            key:"content"
+            className:"luckymart-layout-flex luckymart-layout-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -312,7 +312,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
             <span>{children}</span>
             {trailingIcon && <span className="flex-shrink-0">{trailingIcon}</span>}
           </motion.div>
-        )}
+        )
       </AnimatePresence>
 
       {/* Badge */}
@@ -320,15 +320,15 @@ const MobileButton: React.FC<MobileButtonProps> = ({
 
       {/* 点击反馈动画 */}
       <AnimatePresence>
-        {clickedAt > 0 && (
+        {clickedAt > 0 && (}
           <motion.div
-            className="absolute inset-0 bg-white/20 rounded-xl"
+            className:"absolute inset-0 bg-white/20 rounded-xl"
             initial={{ scale: 0, opacity: 0.6 }}
             animate={{ scale: 1.2, opacity: 0 }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
           />
-        )}
+        )
       </AnimatePresence>
     </motion.button>
   );
@@ -337,7 +337,7 @@ const MobileButton: React.FC<MobileButtonProps> = ({
 export default MobileButton;
 
 // 按钮组组件
-export const ButtonGroup: React.FC<{
+export const ButtonGroup: React.FC<{}
   children: React.ReactNode;
   direction?: 'horizontal' | 'vertical';
   gap?: string;
@@ -346,15 +346,15 @@ export const ButtonGroup: React.FC<{
   const directionClass = direction === 'horizontal' ? 'flex-row' : 'flex-col';
   const gapClass = `gap-${gap}`;
 
-  return (
-    <div className={`flex ${directionClass} ${gapClass} ${className}`}>
+  return (;
+    <div className="{`flex" ${directionClass} ${gapClass} ${className}`}>
       {children}
     </div>
   );
 };
 
 // 浮动操作按钮
-export const FloatingActionButton: React.FC<{
+export const FloatingActionButton: React.FC<{}
   children: React.ReactNode;
   onClick?: () => void;
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
@@ -371,29 +371,29 @@ export const FloatingActionButton: React.FC<{
   disabled = false,
   badge,
 }) => {
-  const positions = {
+  const positions = {}
     'bottom-right': 'bottom-4 right-4',
     'bottom-left': 'bottom-4 left-4',
     'top-right': 'top-4 right-4',
     'top-left': 'top-4 left-4',
   };
 
-  const sizes = {
+  const sizes = {}
     sm: 'w-12 h-12',
     md: 'w-14 h-14',
     lg: 'w-16 h-16',
   };
 
-  return (
+  return (;
     <motion.button
-      className={`
+      className="{`"}`
         fixed ${positions[position]} ${sizes[size]} 
         rounded-full bg-gradient-to-r from-purple-600 to-blue-600 
         text-white shadow-lg hover:shadow-xl 
         flex items-center justify-center
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
         ${className}
-      `}
+      ``
       onClick={onClick}
       disabled={disabled}
       whileHover={{ scale: 1.1 }}
@@ -404,11 +404,11 @@ export const FloatingActionButton: React.FC<{
     >
       {children}
       
-      {badge && (
-        <span className="absolute -top-1 -right-1 min-w-[20px] luckymart-size-sm luckymart-bg-error text-white text-xs rounded-full luckymart-layout-flex luckymart-layout-center justify-center px-1">
+      {badge && (}
+        <span className:"absolute -top-1 -right-1 min-w-[20px] luckymart-size-sm luckymart-bg-error text-white text-xs rounded-full luckymart-layout-flex luckymart-layout-center justify-center px-1">
           {typeof badge === 'number' && badge > 99 ? '99+' : badge}
         </span>
-      )}
+      )
     </motion.button>
   );
 };

@@ -1,0 +1,11 @@
+
+> luckymart-tj@0.1.0 security-audit
+> npm audit --audit-level low --json > security-audit.json || true
+
+npm ERR! code ENOLOCK
+npm ERR! audit This command requires an existing lockfile.
+npm ERR! audit Try creating one first with: npm i --package-lock-only
+npm ERR! audit Original error: loadVirtual requires existing shrinkwrap file
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/minimax/.npm/_logs/2025-11-01T12_42_52_327Z-debug-0.log

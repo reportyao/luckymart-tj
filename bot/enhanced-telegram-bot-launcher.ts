@@ -1,10 +1,3 @@
-#!/usr/bin/env node
-
-/**
- * 完整的Telegram Bot容错增强启动脚本
- * 集成了所有容错机制：守护进程、监控告警、错误追踪、配置管理、性能监控等
- */
-
 import { botDaemon } from './utils/bot-daemon';
 import { alertManager } from './utils/alert-manager';
 import { enhancedErrorTracker } from './utils/enhanced-error-tracker';
@@ -15,6 +8,13 @@ import { processMonitor } from './utils/process-monitor';
 import { healthMonitor } from './utils/health-monitor';
 import { reconnectManager } from './utils/reconnect-manager';
 import { logger } from './utils/logger';
+#!/usr/bin/env node
+
+/**
+ * 完整的Telegram Bot容错增强启动脚本
+ * 集成了所有容错机制：守护进程、监控告警、错误追踪、配置管理、性能监控等
+ */
+
 
 export interface EnhancedBotConfig {
   daemon: {
@@ -90,7 +90,7 @@ export class EnhancedTelegramBotLauncher {
         autoSave: true,
         maxBackups: 50,
         ...config?.config
-      }
+}
     };
   }
 
@@ -166,7 +166,7 @@ export class EnhancedTelegramBotLauncher {
     const missingVars: string[] = [];
 
     for (const varName of requiredEnvVars) {
-      if (!process.env[varName]) {
+      if (!process.(env?.varName ?? null)) {
         missingVars.push(varName);
       }
     }
@@ -769,7 +769,7 @@ export class EnhancedTelegramBotLauncher {
 
   // 发送启动通知
   private async sendStartupNotification(): Promise<void> {
-    const message = `🤖 Enhanced Telegram Bot 已启动
+    const message = `🤖 Enhanced Telegram Bot 已启动;
 
 启动时间: ${new Date().toISOString()}
 运行时间: ${process.uptime()}秒
@@ -855,7 +855,7 @@ Bot现在可以稳定运行了！`;
         return;
       }
 
-      const report = performanceMonitor.generateReport(3600000); // 1小时报告
+      const report = performanceMonitor.generateReport(3600000); // 1小时报告;
       
       logger.info('Performance report generated', {
         timestamp: report.timestamp,

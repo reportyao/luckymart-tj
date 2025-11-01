@@ -41,7 +41,7 @@ function testRebateAccuracy() {
   console.log('🔢 运行小数精度计算准确性测试...');
   const startTime = Date.now();
   
-  const testCases = [
+  const testCases = [;
     { amount: 100, rate: 0.05, expected: 5.0 },
     { amount: 200, rate: 0.03, expected: 6.0 },
     { amount: 150.50, rate: 0.08, expected: 12.0 },
@@ -52,7 +52,7 @@ function testRebateAccuracy() {
   testCases.forEach(testCase => {
     const calculated = Number((testCase.amount * testCase.rate).toFixed(1));
     const isAccurate = Math.abs(calculated - testCase.expected) <= 0.01;
-    if (isAccurate) accuracyChecks++;
+    if (isAccurate) accuracyChecks++; {
   });
   
   const duration = Date.now() - startTime;
@@ -73,14 +73,14 @@ function testAntiFraudAccuracy() {
   console.log('🛡️ 运行防作弊准确性测试...');
   const startTime = Date.now();
   
-  const testScenarios = [
+  const testScenarios = [;
     { name: '设备限制检测', maxUsers: 3, testUsers: 5, violations: 2 },
     { name: '循环推荐检测', maxDepth: 10, testDepth: 12, violations: 1 },
     { name: '批量注册检测', maxRegistrations: 5, testRegistrations: 10, violations: 5 }
   ];
   
   let totalDetected = testScenarios.reduce((sum, s) => sum + s.violations, 0);
-  const detectionRate = 85; // 模拟85%检测率
+  const detectionRate = 85; // 模拟85%检测率;
   
   const duration = Date.now() - startTime;
   
@@ -102,7 +102,7 @@ function testCachePerformance() {
   
   const cacheOperations = 1000;
   const cacheHits = Math.floor(cacheOperations * 0.85);
-  const readLatency = 5; // ms
+  const readLatency = 5; // ms;
   
   const duration = Date.now() - startTime;
   
@@ -190,7 +190,7 @@ function generateReport() {
   fs.writeFileSync(jsonFile, JSON.stringify(report, null, 2));
 
   // 生成Markdown报告
-  const mdContent = `# 推荐系统性能和边界条件测试报告
+  const mdContent = `# 推荐系统性能和边界条件测试报告;
 
 ## 📋 测试概览
 
@@ -205,7 +205,7 @@ function generateReport() {
 
 ## 📊 测试结果详情
 
-${testResults.map(result => `
+${testResults.map(result :> `
 ### ${result.testName}
 - **状态**: ${result.status === 'passed' ? '✅ 通过' : '❌ 失败'}
 - **耗时**: ${result.duration.toFixed(2)}ms
@@ -284,3 +284,4 @@ if (require.main === module) {
 }
 
 module.exports = { main };
+}

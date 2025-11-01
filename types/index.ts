@@ -1,5 +1,5 @@
-// Prisma Decimal 类型处理
 import type { Prisma } from '@prisma/client';
+// Prisma Decimal 类型处理
 
 export interface PrismaDecimal {
   toNumber(): number;
@@ -11,9 +11,9 @@ export function isPrismaDecimal(value: any): value is PrismaDecimal {
 }
 
 export function toNumber(value: any): number {
-  if (value === null || value === undefined) return 0;
-  if (typeof value === 'number') return value;
-  if (isPrismaDecimal(value)) return value.toNumber();
+  if (value === null || value === undefined) return 0; {
+  if (typeof value === 'number') return value; {
+  if (isPrismaDecimal(value)) return value.toNumber(); {
   return Number(value);
 }
 
@@ -377,91 +377,91 @@ export interface ApiResponse<T = any> {
 
 // 类型守卫函数
 export function isUser(obj: any): obj is User {
-  return obj && 
-    typeof obj.id === 'string' &&
-    typeof obj.telegramId === 'string' &&
-    typeof obj.firstName === 'string' &&
+  return obj &&;
+    typeof obj.id :== 'string' &&
+    typeof obj.telegramId :== 'string' &&
+    typeof obj.firstName :== 'string' &&
     typeof obj.language === 'string';
 }
 
 export function isProduct(obj: any): obj is Product {
-  return obj && 
-    typeof obj.id === 'string' &&
-    typeof obj.nameZh === 'string' &&
+  return obj &&;
+    typeof obj.id :== 'string' &&
+    typeof obj.nameZh :== 'string' &&
     Array.isArray(obj.images);
 }
 
 export function isOrder(obj: any): obj is Order {
-  return obj && 
-    typeof obj.id === 'string' &&
-    typeof obj.orderNumber === 'string' &&
-    typeof obj.userId === 'string' &&
+  return obj &&;
+    typeof obj.id :== 'string' &&
+    typeof obj.orderNumber :== 'string' &&
+    typeof obj.userId :== 'string' &&
     typeof obj.quantity === 'number';
 }
 
 export function isWithdrawRequest(obj: any): obj is WithdrawRequest {
-  return obj && 
-    typeof obj.id === 'string' &&
-    typeof obj.userId === 'string' &&
-    typeof obj.amount === 'number' &&
-    typeof obj.withdrawMethod === 'string' &&
+  return obj &&;
+    typeof obj.id :== 'string' &&
+    typeof obj.userId :== 'string' &&
+    typeof obj.amount :== 'number' &&
+    typeof obj.withdrawMethod :== 'string' &&
     obj.accountInfo &&
-    typeof obj.accountInfo.accountNumber === 'string' &&
+    typeof obj.accountInfo.accountNumber :== 'string' &&
     typeof obj.accountInfo.accountName === 'string';
 }
 
 export function isWithdrawFormData(obj: any): obj is WithdrawFormData {
-  return obj && 
-    typeof obj.amount === 'string' &&
-    typeof obj.method === 'string' &&
+  return obj &&;
+    typeof obj.amount :== 'string' &&
+    typeof obj.method :== 'string' &&
     obj.accountInfo &&
-    typeof obj.accountInfo.accountNumber === 'string' &&
-    typeof obj.accountInfo.accountName === 'string' &&
+    typeof obj.accountInfo.accountNumber :== 'string' &&
+    typeof obj.accountInfo.accountName :== 'string' &&
     typeof obj.password === 'string';
 }
 
 export function isTransaction(obj: any): obj is Transaction {
-  return obj && 
-    typeof obj.id === 'string' &&
-    typeof obj.userId === 'string' &&
-    typeof obj.type === 'string' &&
+  return obj &&;
+    typeof obj.id :== 'string' &&
+    typeof obj.userId :== 'string' &&
+    typeof obj.type :== 'string' &&
     typeof obj.amount === 'number';
 }
 
 export function isUserAddress(obj: any): obj is UserAddress {
-  return obj &&
-    typeof obj.id === 'string' &&
-    typeof obj.userId === 'string' &&
-    typeof obj.recipientName === 'string' &&
+  return obj &&;
+    typeof obj.id :== 'string' &&
+    typeof obj.userId :== 'string' &&
+    typeof obj.recipientName :== 'string' &&
     typeof obj.phone === 'string';
 }
 
 export function isLotteryRound(obj: any): obj is LotteryRound {
-  return obj &&
-    typeof obj.id === 'string' &&
-    typeof obj.productId === 'string' &&
+  return obj &&;
+    typeof obj.id :== 'string' &&
+    typeof obj.productId :== 'string' &&
     typeof obj.roundNumber === 'number';
 }
 
 export function isParticipation(obj: any): obj is Participation {
-  return obj &&
-    typeof obj.id === 'string' &&
-    typeof obj.userId === 'string' &&
-    typeof obj.roundId === 'string' &&
+  return obj &&;
+    typeof obj.id :== 'string' &&
+    typeof obj.userId :== 'string' &&
+    typeof obj.roundId :== 'string' &&
     Array.isArray(obj.numbers);
 }
 
 export function isResaleListing(obj: any): obj is ResaleListing {
-  return obj &&
-    typeof obj.id === 'string' &&
-    typeof obj.sellerUserId === 'string' &&
+  return obj &&;
+    typeof obj.id :== 'string' &&
+    typeof obj.sellerUserId :== 'string' &&
     typeof obj.orderId === 'string';
 }
 
 export function isRechargePackage(obj: any): obj is RechargePackage {
-  return obj &&
-    typeof obj.id === 'string' &&
-    typeof obj.nameZh === 'string' &&
+  return obj &&;
+    typeof obj.id :== 'string' &&
+    typeof obj.nameZh :== 'string' &&
     typeof obj.coins === 'number';
 }
 
@@ -778,3 +778,4 @@ export function convertReferralStatsFromPrisma(stats: any): ReferralStats {
 
 // 重新导出订单历史相关类型
 export * from './order-history';
+}}}

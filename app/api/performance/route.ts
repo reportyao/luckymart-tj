@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 // 性能指标数据验证Schema
 const PerformanceMetricsSchema = z.object({
@@ -52,6 +50,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('performance_route.ts request failed', error as Error, {
       requestId,
@@ -79,7 +78,7 @@ async function handleGET(request: NextRequest) {
             success: true,
             data: stats
           });
-        }
+    }
 
         if (type === 'mobile-issues') {
           const issues = getMobilePerformanceIssues({ timeRange, deviceType, pageUrl });
@@ -147,7 +146,7 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'Performance stats error:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
           { 
             error: '获取性能统计失败', 
             message: error.message 
@@ -167,13 +166,13 @@ async function getMobilePerformanceStats(filters: {
   let filteredData = performanceStore;
   
   if (filters.deviceType === 'mobile') {
-    filteredData = filteredData.filter((item : any) => item.deviceInfo?.isMobile);
+    filteredData = filteredData.filter(((item : any) : any) => item.deviceInfo?.isMobile);
   } else if (filters.deviceType === 'desktop') {
-    filteredData = filteredData.filter((item : any) => !item.deviceInfo?.isMobile);
+    filteredData = filteredData.filter(((item : any) : any) => !item.deviceInfo?.isMobile);
   }
   
   if (filters.pageUrl) {
-    filteredData = filteredData.filter((item : any) => item.pageUrl === filters.pageUrl);
+    filteredData = filteredData.filter(((item : any) : any) => item.pageUrl === filters.pageUrl);
   }
 
   // 计算平均值
@@ -207,12 +206,12 @@ function getMobilePerformanceIssues(filters: {
   let filteredData = performanceStore;
   
   if (filters.deviceType === 'mobile') {
-    filteredData = filteredData.filter((item : any) => item.deviceInfo?.isMobile);
+    filteredData = filteredData.filter(((item : any) : any) => item.deviceInfo?.isMobile);
   }
   
   // 汇总所有问题
   const allIssues = filteredData.flatMap(item => item.issues || []);
-  const issueCounts = allIssues.reduce((acc: any,  issue: any) => {
+  const issueCounts = allIssues.reduce((acc: any: any,   issue: any: any) => {
     acc[issue.type] = (acc[issue.type] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
@@ -301,26 +300,26 @@ function getMobileOptimizationRecommendations(filters: {
     totalRecommendations: recommendations.length,
     recommendations,
     priority: {
-      high: recommendations.filter((r : any) => r.priority === 'high').length,
-      medium: recommendations.filter((r : any) => r.priority === 'medium').length,
-      low: recommendations.filter((r : any) => r.priority === 'low').length
+      high: recommendations.filter(((r : any) : any) => r.priority === 'high').length,
+      medium: recommendations.filter(((r : any) : any) => r.priority === 'medium').length,
+      low: recommendations.filter(((r : any) : any) => r.priority === 'low').length
     }
   };
 }
 
 // 辅助函数
 function calculateAverage(data: any[], field: string): number {
-  const values = data.map((item : any) => item[field]).filter(val => typeof val === 'number');
-  return values.length > 0 ? values.reduce((sum: any,  val: any) => sum + val, 0) / values.length : 0;
+  const values = data.map(((item : any) : any) => (item?.field ?? null)).filter(val => typeof val === 'number');
+  return values.length > 0 ? values.reduce((sum: any: any,   val: any: any) => sum + val, 0) / values.length : 0;
 }
 
 function calculateAverageScore(data: any[]): number {
-  const scores = data.map((item : any) => item.score?.overall).filter(score => typeof score === 'number');
-  return scores.length > 0 ? scores.reduce((sum: any,  score: any) => sum + score, 0) / scores.length : 0;
+  const scores = data.map(((item : any) : any) => item.score?.overall).filter(score => typeof score === 'number');
+  return scores.length > 0 ? scores.reduce((sum: any: any,   score: any: any) => sum + score, 0) / scores.length : 0;
 }
 
 function calculateDeviceStats(data: any[], isMobile: boolean): { sessions: number; avgScore: number } {
-  const deviceData = data.filter((item : any) => item.deviceInfo?.isMobile === isMobile);
+  const deviceData = data.filter(((item : any) : any) => item.deviceInfo?.isMobile === isMobile);
   return {
     sessions: deviceData.length,
     avgScore: calculateAverageScore(deviceData)
@@ -383,7 +382,7 @@ export async function DELETE(request: NextRequest) {
         success: true,
         message: '移动端性能监控数据已清除'
       });
-    }
+}
 
     if (type === 'old') {
       // 清除7天前的数据
@@ -417,7 +416,7 @@ export async function DELETE(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'Clear performance data error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         error: '清除数据失败', 
         message: error.message 
@@ -460,11 +459,11 @@ export async function POST(request: NextRequest) {
       // 保持记录数量限制
       if (performanceStore.length > MAX_RECORDS) {
         performanceStore.splice(0, performanceStore.length - MAX_RECORDS);
-      }
+}
       
       // 发送告警（如果有问题）
       if (issues.length > 0) {
-        logger.info("API Log", { requestId, data: arguments[0] }) => ({ type: i.type, severity: i.severity })),
+        logger.info("API Log", { requestId, data: (arguments?.0 ?? null) }) => ({ type: i.type, severity: i.severity })),
           timestamp: new Date()
         });
       }
@@ -496,7 +495,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '无效的指标数据' },
       { status: 400 }
     );
@@ -506,7 +505,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'Record metric error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         error: '记录指标失败', 
         message: error.message 
@@ -527,8 +526,8 @@ function calculatePerformanceScore(data: z.infer<typeof PerformanceMetricsSchema
   };
   
   const validScores = Object.values(scores).filter(score => score !== null) as number[];
-  const overallScore = validScores.length > 0 
-    ? validScores.reduce((sum: any,  score: any) => sum + score, 0) / validScores.length 
+  const overallScore = validScores.length > 0;
+    ? validScores.reduce((sum: any: any,   score: any: any) => sum + score, 0) / validScores.length 
     : 0;
   
   return {
@@ -539,8 +538,8 @@ function calculatePerformanceScore(data: z.infer<typeof PerformanceMetricsSchema
 
 // 获取单项指标评分
 function getScore(value: number, good: number, poor: number): number {
-  if (value <= good) return 100;
-  if (value >= poor) return 0;
+  if (value <= good) return 100; {
+  if (value >= poor) return 0; {
   return Math.round(((poor - value) / (poor - good)) * 100);
 }
 
@@ -632,7 +631,7 @@ function generateOptimizationRecommendations(data: z.infer<typeof PerformanceMet
     estimatedImpact: string;
   }> = [];
   
-  issues.forEach((issue : any) => {
+  issues.forEach(((issue : any) : any) => {
     switch (issue.type) {
       case 'fcp-slow':
         recommendations.push({
@@ -685,4 +684,5 @@ function generateOptimizationRecommendations(data: z.infer<typeof PerformanceMet
   });
   
   return recommendations;
+}
 }

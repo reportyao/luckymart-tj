@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withI18n, ApiLanguageContext } from '@/lib/i18n-middleware';
-import { validateLanguageParameter } from '@/lib/i18n-middleware';
-import { getLogger } from '@/lib/logger';
 
 /**
  * 更新用户语言偏好设置
@@ -16,7 +14,7 @@ async function PUT(request: NextRequest & { languageContext: ApiLanguageContext 
 
     // 验证必需参数
     if (!userId || !language) {
-      return NextResponse.json(
+      return NextResponse.json(;
         formatter.formatError(
           'validation_error',
           'validation_error',
@@ -39,7 +37,7 @@ async function PUT(request: NextRequest & { languageContext: ApiLanguageContext 
     });
 
     // 返回成功响应
-    const response = formatter.formatSuccess(
+    const response = formatter.formatSuccess(;
       { user: updatedUser },
       'success',
       {
@@ -52,7 +50,7 @@ async function PUT(request: NextRequest & { languageContext: ApiLanguageContext 
     // 设置cookie来持久化语言偏好
     const headers = new Headers(response.headers);
     headers.append('Set-Cookie', 
-      `preferred_language=${language}; Path=/; Max-Age=31536000; SameSite=Lax`
+      `preferred_language:${language}; Path=/; Max-Age=31536000; SameSite=Lax`
     );
 
     return NextResponse.json(response, {
@@ -67,13 +65,14 @@ async function PUT(request: NextRequest & { languageContext: ApiLanguageContext 
     
     // 处理特定错误类型
     if (error.code === 'P2025') {
-      return NextResponse.json(
+      return NextResponse.json(;
+  }
         formatter.formatError('user_not_found', 'user_not_found'),
         { status: 404 }
       );
     }
 
-    return NextResponse.json(
+    return NextResponse.json(;
       formatter.formatError('internal_error', 'error', { 
         originalError: error.message 
       }),
@@ -93,7 +92,8 @@ async function GET(request: NextRequest & { languageContext: ApiLanguageContext 
     const userId = searchParams.get('userId');
 
     if (!userId) {
-      return NextResponse.json(
+      return NextResponse.json(;
+  }
         formatter.formatError('validation_error', 'validation_error', {
           requiredField: 'userId'
         }),
@@ -113,14 +113,14 @@ async function GET(request: NextRequest & { languageContext: ApiLanguageContext 
     });
 
     if (!user) {
-      return NextResponse.json(
+      return NextResponse.json(;
         formatter.formatError('user_not_found', 'user_not_found'),
         { status: 404 }
       );
     }
 
     // 返回用户语言设置信息
-    const response = formatter.formatSuccess(
+    const response = formatter.formatSuccess(;
       { 
         user: {
           id: user.id,
@@ -145,11 +145,11 @@ async function GET(request: NextRequest & { languageContext: ApiLanguageContext 
       endpoint: request.url
     });'Get user language error:', error);
     
-    return NextResponse.json(
+    return NextResponse.json(;
       formatter.formatError('internal_error', 'error', {
         originalError: error.message
       }),
-      { status: 500 }
+      
     );
   }
 }
@@ -159,4 +159,4 @@ const PUTWithI18n = withI18n(PUT);
 const GETWithI18n = withI18n(GET);
 
 // 导出包装后的处理程序
-export { PUTWithI18n as PUT, GETWithI18n as GET };
+export ;

@@ -1,11 +1,11 @@
+import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
+import { PrismaClient } from '@prisma/client';
+import { TestDataGenerator, PerformanceTester, TestCleanup, testConfig } from './test-config';
 /**
  * 推荐系统负载测试
  * 测试系统在高负载场景下的性能表现和稳定性
  */
 
-import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
-import { PrismaClient } from '@prisma/client';
-import { TestDataGenerator, PerformanceTester, TestCleanup, testConfig } from './test-config';
 
 describe('推荐系统负载测试', () => {
   let prisma: PrismaClient;
@@ -40,7 +40,7 @@ describe('推荐系统负载测试', () => {
 
   describe('渐进式负载测试', () => {
     test('推荐绑定请求渐进式负载', async () => {
-      const loadStages = [
+      const loadStages = [;
         { users: 100, duration: 1000, name: '轻负载' },
         { users: 500, duration: 2000, name: '中负载' },
         { users: 1000, duration: 3000, name: '重负载' },
@@ -73,7 +73,7 @@ describe('推荐系统负载测试', () => {
             });
 
             // 创建推荐关系
-            if (i % 10 !== 0) { // 10%用户作为推荐者
+            if (i % 10 !== 0) { // 10%用户作为推荐者 {
               await prisma.referralRelationships.create({
                 data: {
                   referrerUserId: referrerId,
@@ -100,7 +100,7 @@ describe('推荐系统负载测试', () => {
         const p95ResponseTime = responseTimes.sort((a, b) => a - b)[Math.floor(responseTimes.length * 0.95)];
 
         const successRate = (successCount / stage.users) * 100;
-        const throughput = stage.users / (totalTime / 1000); // ops/second
+        const throughput = stage.users / (totalTime / 1000); // ops/second;
 
         const stageResult = {
           stage: stage.name,
@@ -133,8 +133,8 @@ describe('推荐系统负载测试', () => {
       }
 
       // 验证负载递增对性能的影响
-      expect(results[1].avgResponseTime).toBeGreaterThan(results[0].avgResponseTime);
-      expect(results[2].avgResponseTime).toBeGreaterThan(results[1].avgResponseTime);
+      expect((results?.1 ?? null).avgResponseTime).toBeGreaterThan((results?.0 ?? null).avgResponseTime);
+      expect((results?.2 ?? null).avgResponseTime).toBeGreaterThan((results?.1 ?? null).avgResponseTime);
     });
 
     test('推荐奖励计算负载测试', async () => {
@@ -230,8 +230,8 @@ describe('推荐系统负载测试', () => {
   describe('压力测试', () => {
     test('数据库连接池压力测试', async () => {
       const maxConnections = 100;
-      const testDuration = 10000; // 10秒
-      const operationInterval = 50; // 每50ms执行一次操作
+      const testDuration = 10000; // 10秒;
+      const operationInterval = 50; // 每50ms执行一次操作;
 
       console.log(`开始数据库连接池压力测试: 最大${maxConnections}连接，${testDuration}ms持续时间`);
 
@@ -359,7 +359,7 @@ describe('推荐系统负载测试', () => {
       }
 
       // 分析内存使用趋势
-      const initialMemory = memorySnapshots[0].memory.heapUsed;
+      const initialMemory = (memorySnapshots?.0 ?? null).memory.heapUsed;
       const finalMemory = memorySnapshots[memorySnapshots.length - 1].memory.heapUsed;
       const memoryGrowth = finalMemory - initialMemory;
       const growthRate = (memoryGrowth / initialMemory) * 100;
@@ -380,8 +380,8 @@ describe('推荐系统负载测试', () => {
 
   describe('长时间稳定性测试', () => {
     test('长时间运行稳定性', async () => {
-      const testDuration = 30000; // 30秒
-      const operationInterval = 100; // 每100ms执行一次操作
+      const testDuration = 30000; // 30秒;
+      const operationInterval = 100; // 每100ms执行一次操作;
       const expectedOperations = testDuration / operationInterval;
 
       console.log(`开始长时间稳定性测试: ${testDuration}ms`);
@@ -598,3 +598,4 @@ describe('推荐系统负载测试', () => {
     });
   });
 });
+}

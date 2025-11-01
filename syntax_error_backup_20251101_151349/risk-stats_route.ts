@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 
-const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read
 ]);
 
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
   return withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
-    const period = searchParams.get('period') || 'today'; // today, week, month
+    const period = searchParams.get('period') || 'today'; // today, week, month;
     const refresh = searchParams.get('refresh') === 'true';
 
     // 在实际应用中，这里会根据 period 参数获取不同时间段的数据
@@ -100,11 +100,11 @@ export async function GET(request: NextRequest) {
           todayRiskEvents: mockDashboardData.todayRiskEvents * 30,
           rulesExecuted: mockDashboardData.rulesExecuted * 30
         })
-      }
+}
     });
   } catch (error) {
     console.error('获取风控统计数据失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '获取数据失败' },
       { status: 500 }
     );
@@ -120,11 +120,11 @@ export async function POST(request: NextRequest) {
     const { metric, action } = body;
 
     if (!metric) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少指标参数' },
         { status: 400 }
       );
-    }
+}
 
     // 模拟实时数据更新
     const updatedData = { ...mockDashboardData };
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('更新统计数据失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '更新失败' },
       { status: 500 }
     );

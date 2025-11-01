@@ -1,8 +1,3 @@
-/**
- * 邀请奖励触发机制 API兼容性测试
- * 验证更新后的API与现有功能的兼容性
- */
-
 import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
@@ -10,6 +5,11 @@ import { generateTokenPair, verifyAccessToken } from '@/lib/auth';
 import { rewardTrigger } from '@/lib/reward-trigger-manager';
 import { FraudChecker } from '@/lib/anti-fraud/fraud-checker';
 import { validateReferralCodeFormat } from '@/lib/auth';
+/**
+ * 邀请奖励触发机制 API兼容性测试
+ * 验证更新后的API与现有功能的兼容性
+ */
+
 
 // 模拟 NextRequest
 class MockNextRequest extends Request {
@@ -122,6 +122,7 @@ describe('邀请奖励触发机制 API兼容性测试', () => {
       });
 
       console.log('测试数据清理完成');
+  }
     } catch (error) {
       console.warn('清理测试数据时出错:', error);
     }
@@ -244,7 +245,7 @@ describe('邀请奖励触发机制 API兼容性测试', () => {
 
   describe('防作弊系统测试', () => {
     test('应该能够执行推荐关系检查', async () => {
-      const checkResult = await FraudChecker.checkReferral(
+      const checkResult = await FraudChecker.checkReferral(;
         testUser1.id,
         testUser2.id
       );
@@ -254,7 +255,7 @@ describe('邀请奖励触发机制 API兼容性测试', () => {
     });
 
     test('应该能够检测自我推荐', async () => {
-      const checkResult = await FraudChecker.checkReferral(
+      const checkResult = await FraudChecker.checkReferral(;
         testUser1.id,
         testUser1.id
       );

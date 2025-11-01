@@ -1,14 +1,14 @@
+import { performance } from 'perf_hooks';
 #!/usr/bin/env node
 /**
  * LuckyMartTJ 基础功能验证脚本
  * 在系统不稳定时进行基础功能验证
  */
 
-import { performance } from 'perf_hooks';
 
 // 获取API基础URL配置
 const getApiBaseUrl = () => {
-  return process.env.TEST_API_BASE_URL || 
+  return process.env.TEST_API_BASE_URL ||;
          process.env.NEXT_PUBLIC_API_BASE_URL || 
          '${API_BASE_URL}';
 };
@@ -27,7 +27,7 @@ class BasicModuleTester {
     console.log('📅 开始时间:', new Date().toISOString());
     console.log('🌐 目标URL:', this.baseUrl);
 
-    const tests: ModuleTest[] = [
+    const tests: ModuleTest[] = [;
       {
         name: '系统健康检查',
         description: '验证系统基础API响应',
@@ -288,8 +288,9 @@ class BasicModuleTester {
         signal: AbortSignal.timeout(15000)
       });
       
-      if (response.status !== 500) { // 500通常表示数据库连接问题
+      if (response.status !== 500) { // 500通常表示数据库连接问题 {
         return {
+  }
           success: true,
           duration: 0,
           message: '数据库连接正常'
@@ -331,7 +332,7 @@ class BasicModuleTester {
     });
 
     // 生成Markdown报告
-    let report = `
+    let report = `;
 # LuckyMartTJ 基础功能验证报告
 
 ## 📊 测试摘要

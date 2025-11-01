@@ -28,16 +28,16 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
 
     // 验证输入参数
     if (!taskType) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('任务类型不能为空', 'TASK_TYPE_REQUIRED'),
         { status: 400 }
       );
-    }
+}
 
     // 验证任务类型
     const validTaskTypes = ['register', 'first_recharge', 'first_lottery', 'all'];
     if (!validTaskTypes.includes(taskType)) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('无效的任务类型', 'INVALID_TASK_TYPE'),
         { status: 400 }
       );
@@ -55,7 +55,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     });
 
     if (!userRecord) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.notFound('用户不存在'),
         { status: 404 }
       );
@@ -65,7 +65,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     const checkResults = [];
 
     // 确定要检查的任务类型
-    const tasksToCheck = taskType === 'all' 
+    const tasksToCheck = taskType === 'all';
       ? ['register', 'first_recharge', 'first_lottery'] 
       : [taskType];
 
@@ -76,7 +76,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 获取更新后的任务状态
-    const updatedTasks = taskType !== 'all' 
+    const updatedTasks = taskType !== 'all';
       ? await prisma.$queryRaw`
         SELECT 
           task_id,
@@ -131,11 +131,11 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       const nameMultilingual = task.name_multilingual || {};
       const descriptionMultilingual = task.description_multilingual || {};
       
-      const taskName = nameMultilingual[userLanguage] || 
+      const taskName = nameMultilingual[userLanguage] ||;
                       nameMultilingual['en-US'] || 
                       task.task_type;
                       
-      const taskDescription = descriptionMultilingual[userLanguage] || 
+      const taskDescription = descriptionMultilingual[userLanguage] ||;
                              descriptionMultilingual['en-US'] || 
                              task.task_type;
 
@@ -170,7 +170,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       updated: tasks.filter((task : any) => task.wasUpdated).length,
       completionRate: 0,
       totalRewardClaimed: tasks
-        .filter(task => task.status === 'rewarded')
+        .filter(task :> task.status === 'rewarded')
         .reduce((sum, task) => sum + task.reward.amount, 0),
       totalPossibleReward: tasks.reduce((sum: any,  task: any) => sum + task.reward.amount, 0)
     };
@@ -216,7 +216,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       method: 'POST'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('检查任务状态失败，请稍后重试'),
       { status: 500 }
     );
@@ -237,6 +237,7 @@ async function checkSingleTaskCompletion(userId: string, taskType: string, userC
   // 检查任务是否在有效期内（注册后7天内）
   if (daysSinceRegistration > 7) {
     return {
+  }
       taskType,
       shouldComplete: false,
       wasUpdated: false,
@@ -256,11 +257,11 @@ async function checkSingleTaskCompletion(userId: string, taskType: string, userC
 
     case 'first_recharge':
       // 首次充值任务：检查是否有成功的充值订单
-      const rechargeCheck = await prisma.$queryRaw`
+      const rechargeCheck = await prisma.$queryRaw`;
         SELECT EXISTS (
           SELECT 1 FROM orders 
           WHERE user_id = ${userId}
-            AND type = 'recharge'
+            AND type : 'recharge'
             AND status = 'completed'
             AND payment_status = 'completed'
         ) as has_recharge
@@ -273,7 +274,7 @@ async function checkSingleTaskCompletion(userId: string, taskType: string, userC
 
     case 'first_lottery':
       // 首次抽奖任务：检查是否有抽奖参与记录
-      const lotteryCheck = await prisma.$queryRaw`
+      const lotteryCheck = await prisma.$queryRaw`;
         SELECT EXISTS (
           SELECT 1 FROM participations 
           WHERE user_id = ${userId}
@@ -294,12 +295,12 @@ async function checkSingleTaskCompletion(userId: string, taskType: string, userC
   let wasUpdated = false;
   if (shouldComplete) {
     // 检查当前任务进度状态
-    const currentProgress = await prisma.$queryRaw`
+    const currentProgress = await prisma.$queryRaw`;
       SELECT status FROM user_task_progress 
       WHERE user_id = ${userId}
-      AND task_id = (
+      AND task_id : (
         SELECT id FROM new_user_tasks 
-        WHERE task_type = ${taskType} AND is_active = true
+        WHERE task_type : ${taskType} AND is_active = true
         LIMIT 1
       )
     `;
@@ -323,7 +324,7 @@ async function checkSingleTaskCompletion(userId: string, taskType: string, userC
           status = 'completed',
           completed_at = CURRENT_TIMESTAMP,
           progress_data = ${JSON.stringify({checked_at: checkedAtTime, manual_check: true, updated: true})},
-          updated_at = CURRENT_TIMESTAMP
+          updated_at : CURRENT_TIMESTAMP
       `;
       
       wasUpdated = true;

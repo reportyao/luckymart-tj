@@ -1,9 +1,6 @@
-// request-utils.ts - 请求工具函数和使用示例
 import { RequestPriority, priorityManager } from './priority-manager';
-import { concurrencyController } from './concurrency-controller';
-import { monitoringSystem } from './request-monitor';
 import { requestManager } from './request-manager';
-import { NetworkQuality } from './network-retry';
+// request-utils.ts - 请求工具函数和使用示例
 
 // 预设的业务优先级配置
 export const BUSINESS_PRIORITIES = {
@@ -45,12 +42,12 @@ export const BUSINESS_PRIORITIES = {
     dataExport: RequestPriority.LOW,
     batchOperations: RequestPriority.LOW,
     systemMonitoring: RequestPriority.LOW
-  }
+}
 };
 
 // 请求装饰器工厂
 export function createPriorityRequestDecorator() {
-  return function<T extends (...args: any[]) => Promise<any>>(
+  return function<T extends (...args: any[]) => Promise<any>>(;
     target: any,
     propertyKey: string,
     descriptor: TypedPropertyDescriptor<T>
@@ -59,10 +56,10 @@ export function createPriorityRequestDecorator() {
 
     descriptor.value = async function(...args: any[]) {
       // 自动检测方法上的优先级配置
-      const priority = (target.constructor as any).PRIORITY_MAPPINGS?.[propertyKey] || 
+      const priority = (target.constructor as any).PRIORITY_MAPPINGS?.[propertyKey] ||;
                       RequestPriority.NORMAL;
 
-      return await requestManager.execute(
+      return await requestManager.execute(;
         () => originalMethod.apply(this, args),
         {
           priority,
@@ -70,7 +67,7 @@ export function createPriorityRequestDecorator() {
             operation: propertyKey,
             urgency: this.getUrgency?.(args) || 'medium',
             businessValue: this.getBusinessValue?.(args) || 'medium'
-          }
+}
         }
       );
     } as T;
@@ -95,7 +92,7 @@ export class BusinessContextBuilder {
   operation(op: string): this {
     this.context.operation = op;
     return this;
-  }
+}
 
   // 设置用户ID
   user(id: string): this {
@@ -162,7 +159,7 @@ export class SmartRequestScheduler {
     this.requests.sort((a, b) => a.scheduledTime - b.scheduledTime);
 
     return id;
-  }
+}
 
   // 批量调度
   scheduleBatch<T>(
@@ -173,7 +170,7 @@ export class SmartRequestScheduler {
       context?: any;
     }>
   ): string[] {
-    return operations.map(op => 
+    return operations.map(op =>;
       this.schedule(op.operation, op.priority, op.delay || 0, op.context)
     );
   }
@@ -186,7 +183,7 @@ export class SmartRequestScheduler {
     // 移除已执行的请求
     this.requests = this.requests.filter(req => req.scheduledTime > now);
 
-    const results = await Promise.allSettled(
+    const results = await Promise.allSettled(;
       dueRequests.map(async (req) => {
         try {
           const result = await requestManager.execute(req.operation, {
@@ -201,6 +198,7 @@ export class SmartRequestScheduler {
           };
         } catch (error) {
           return {
+  }
             id: req.id,
             result: null,
             error: error instanceof Error ? error.message : 'Unknown error'
@@ -209,7 +207,7 @@ export class SmartRequestScheduler {
       })
     );
 
-    return results.map(result => 
+    return results.map(result =>;
       result.status === 'fulfilled' ? result.value : 
       { id: 'unknown', result: null, error: 'Execution failed' }
     );
@@ -264,7 +262,7 @@ export class RequestPerformanceAnalyzer {
       existing.requestCount++;
       existing.totalTime += duration;
       existing.lastAccess = Date.now();
-      if (!success) existing.errorCount++;
+      if (!success) existing.errorCount++; {
     } else {
       this.metrics.set(requestId, {
         requestCount: 1,
@@ -273,7 +271,7 @@ export class RequestPerformanceAnalyzer {
         priority,
         lastAccess: Date.now()
       });
-    }
+}
   }
 
   // 获取性能分析
@@ -437,7 +435,7 @@ export function useBusinessRequest<T>(
     urgency?: 'low' | 'medium' | 'high';
     businessValue?: 'low' | 'medium' | 'high';
     priority?: RequestPriority;
-  }
+}
 ) {
   const { execute, ...state } = useEnhancedApi(operation, {
     businessContext: businessOptions,
@@ -471,7 +469,7 @@ export function useBatchRequests() {
     progress: 0
   });
 
-  const executeBatch = useCallback(async (
+  const executeBatch = useCallback(async (;
     requests: Array<{
       id: string;
       operation: () => Promise<any>;
@@ -493,7 +491,7 @@ export function useBatchRequests() {
 
     for (const [priority, priorityRequests] of Object.entries(groupedRequests)) {
       // 并发执行同优先级请求
-      const priorityResults = await Promise.allSettled(
+      const priorityResults = await Promise.allSettled(;
         priorityRequests.map(async (req) => {
           try {
             const result = await requestManager.execute(req.operation, {
@@ -509,6 +507,7 @@ export function useBatchRequests() {
             };
           } catch (error) {
             return {
+}
               id: req.id,
               data: null,
               error: error instanceof Error ? error.message : 'Unknown error',
@@ -551,7 +550,7 @@ export function useBatchRequests() {
 export const examples = {
   // 基础使用示例
   basicUsage: async () => {
-    const result = await requestManager.execute(
+    const result = await requestManager.execute(;
       async () => {
         const response = await fetch('/api/user/profile');
         return response.json();
@@ -562,7 +561,7 @@ export const examples = {
           operation: 'userProfile',
           urgency: 'high',
           businessValue: 'high'
-        }
+}
       }
     );
 
@@ -571,7 +570,7 @@ export const examples = {
 
   // 批量请求示例
   batchUsage: async () => {
-    const requests = [
+    const requests = [;
       {
         id: 'user_profile',
         operation: () => fetch('/api/user/profile').then(r => r.json()),
@@ -593,8 +592,8 @@ export const examples = {
     ];
 
     const smartScheduler = new SmartRequestScheduler();
-    const results = await Promise.all(
-      requests.map(req => 
+    const results = await Promise.all(;
+      requests.map(req :> 
         requestManager.execute(req.operation, {
           priority: req.priority,
           businessContext: req.businessContext

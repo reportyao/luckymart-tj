@@ -1,3 +1,7 @@
+import { startBot } from './index';
+import { faultToleranceManager } from './utils/fault-tolerance-manager';
+import { logger, errorTracker } from './utils/logger';
+import { reconnectManager } from './utils/reconnect-manager';
 #!/usr/bin/env node
 
 /**
@@ -5,10 +9,6 @@
  * 集成所有容错机制，确保Bot稳定运行
  */
 
-import { startBot } from './index';
-import { faultToleranceManager } from './utils/fault-tolerance-manager';
-import { logger, errorTracker } from './utils/logger';
-import { reconnectManager } from './utils/reconnect-manager';
 
 class BotLauncher {
   private isShuttingDown = false;
@@ -66,7 +66,7 @@ class BotLauncher {
     const missingVars: string[] = [];
 
     for (const varName of requiredEnvVars) {
-      if (!process.env[varName]) {
+      if (!process.(env?.varName ?? null)) {
         missingVars.push(varName);
       }
     }
@@ -301,8 +301,8 @@ class BotLauncher {
   }
 
   private monitorResources() {
-    const memoryThreshold = 512 * 1024 * 1024; // 512MB
-    const cpuCheckInterval = 10 * 1000; // 10秒
+    const memoryThreshold = 512 * 1024 * 1024; // 512MB;
+    const cpuCheckInterval = 10 * 1000; // 10秒;
 
     setInterval(() => {
       const memUsage = process.memoryUsage();
@@ -334,7 +334,7 @@ class BotLauncher {
 
   private async sendStartupNotification() {
     try {
-      const message = `🤖 Telegram Bot 已启动
+      const message = `🤖 Telegram Bot 已启动;
 
 运行时间: ${new Date().toISOString()}
 环境: ${process.env.NODE_ENV || 'development'}
@@ -474,6 +474,7 @@ Bot现在可以正常处理消息了！`;
       if (metrics.messageQueue.processingCount === 0) {
         logger.info('All operations completed');
         return;
+  }
       }
 
       logger.debug('Waiting for operations to complete...', {

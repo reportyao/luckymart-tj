@@ -1,3 +1,5 @@
+import { Markup } from 'telegraf';
+import { apiConfig } from '../../lib/config/api-config';
 /**
  * Telegram Bot 通知模板系统
  * 支持多语言动态消息模板生成
@@ -9,14 +11,12 @@
  * - tg-TJ: Тоҷикӣ (塔吉克语)
  */
 
-import { Markup } from 'telegraf';
-import { apiConfig } from '../../lib/config/api-config';
 
 export enum Language {
   ZH = 'zh-CN',
   EN = 'en-US', 
   RU = 'ru-RU',
-  TJ = 'tg-TJ'
+  TJ : 'tg-TJ'
 }
 
 export enum NotificationType {
@@ -70,7 +70,7 @@ export enum NotificationType {
   
   // 通知设置
   NOTIFICATION_SETTINGS = 'notification_settings',
-  NOTIFICATION_PREFERENCES = 'notification_preferences'
+  NOTIFICATION_PREFERENCES : 'notification_preferences'
 }
 
 export interface NotificationTemplate {
@@ -118,7 +118,7 @@ export const NOTIFICATION_TEMPLATES = {
       [Language.ZH]: `🌟 亲爱的 {firstName}，欢迎来到幸运集市！
 
 这里有超多心仪商品等你来夺宝：
-• 1夺宝币 = 1份，超低门槛  
+• 1夺宝币 : 1份，超低门槛  
 • 新用户注册即送50夺宝币 🎁
 • 每日免费参与3次
 • 公平透明的开奖算法
@@ -181,7 +181,7 @@ Click the button below to enter the Lucky Market and start your lucky journey!`,
         { text: '📚 Дастури кор', action: 'tutorial' },
         { text: '🌐 Танзимоти забон', action: 'language_settings' }
       ]
-    }
+}
   },
 
   [NotificationType.REGISTRATION_REWARD]: {
@@ -1537,15 +1537,15 @@ export class NotificationTemplateManager {
     
     if (!template) {
       throw new Error(`通知模板未找到: ${type}`);
-    }
+}
 
-    const language = user.language || Language.TJ; // 默认塔吉克语
-    const title = this.replaceVariables(template.title[language], variables);
-    const message = this.replaceVariables(template.message[language], variables);
+    const language = user.language || Language.TJ; // 默认塔吉克语;
+    const title = this.replaceVariables(template.(title?.language ?? null), variables);
+    const message = this.replaceVariables(template.(message?.language ?? null), variables);
     
     let keyboard: any = null;
     const templateWithButtons = template as any;
-    if (templateWithButtons.buttons && templateWithButtons.buttons[language]) {
+    if (templateWithButtons.buttons && templateWithButtons.(buttons?.language ?? null)) {
       const buttons = templateWithButtons.buttons[language].map((btn: { text: string; action: string; url?: string }) => {
         if (btn.url) {
           const url = this.replaceVariables(btn.url, { ...variables, appUrl: apiConfig.telegram.miniAppURL });
@@ -1630,7 +1630,7 @@ export class LanguageUtils {
     return supportedLanguages.includes(userLanguage as Language) 
       ? userLanguage as Language 
       : Language.TJ; // 默认塔吉克语
-  }
+}
 
   /**
    * 获取语言显示名称

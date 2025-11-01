@@ -4,14 +4,13 @@ import { withAuth } from '@/lib/auth';
 import { ApiResponse } from '@/lib/api-response';
 import { getLogger } from '@/lib/logger';
 import { DatabaseLockManager } from '@/lib/database-lock-manager';
-import { respond } from '@/lib/responses';
 
 
 const logger = getLogger();
 
 // 签到奖励配置：7天周期的奖励金额
 const CHECK_IN_REWARDS = [1.00, 0.50, 0.30, 0.10, 0.05, 0.03, 0.02];
-const TOTAL_REWARD_AMOUNT = CHECK_IN_REWARDS.reduce((sum: any,  reward: any) => sum + reward, 0);
+const TOTAL_REWARD_AMOUNT = CHECK_IN_REWARDS.reduce((sum: any: any,   reward: any: any) => sum + reward, 0);
 
 /**
  * 签到并领取奖励API
@@ -29,11 +28,11 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
       
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
-    }
+}
 
     requestLogger.info('开始处理用户签到', { userId: user.userId }, {
       endpoint: '/api/check-in/claim',
@@ -42,12 +41,12 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
 
     // 获取请求体数据
     const body = await request.json().catch(() => ({}));
-    const { forceCheckIn = false } = body; // 支持强制签到（用于断签重置后）
+    const { forceCheckIn = false } = body; // 支持强制签到（用于断签重置后）;
 
     // 使用数据库锁确保并发安全
     const lockKey = `check_in_${user.userId}`;
     const lockManager = DatabaseLockManager.getInstance();
-    const lockAcquired = await lockManager.acquireLock(lockKey, 5000); // 5秒超时
+    const lockAcquired = await lockManager.acquireLock(lockKey, 5000); // 5秒超时;
 
     if (!lockAcquired) {
       requestLogger.warn('签到失败：获取数据库锁超时', { userId: user.userId }, {
@@ -55,7 +54,8 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
+  }
         ApiResponse.badRequest('请求过于频繁，请稍后重试', 'RATE_LIMIT'),
         { status: 429 }
       );
@@ -64,7 +64,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     try {
       // 开始数据库事务
       const result = await prisma.$transaction(async (tx: any) => {
-        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD格式
+        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD格式;
 
         // 检查今日是否已签到
         const todayCheckIn = await tx.check_in_records.findFirst({
@@ -309,7 +309,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
           method: 'POST'
         });
 
-        const errorResponse = result.code === 'ALREADY_CHECKED_IN' 
+        const errorResponse = result.code === 'ALREADY_CHECKED_IN';
           ? ApiResponse.badRequest(result.error, result.code)
           : result.code === 'CYCLE_COMPLETED'
           ? ApiResponse.badRequest(result.error, result.code)
@@ -359,9 +359,9 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       method: 'POST'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('签到失败，请稍后重试'),
-      { status: 500 }
+      
     );
   }
 });

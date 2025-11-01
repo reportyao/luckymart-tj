@@ -1,9 +1,9 @@
+import { performance } from 'perf_hooks';
 #!/usr/bin/env node
 /**
  * 简化的压力测试脚本 - 快速验证系统稳定性
  */
 
-import { performance } from 'perf_hooks';
 
 interface SimpleTestResult {
   name: string;
@@ -30,7 +30,7 @@ class SimpleStressTest {
     const responseTimes: number[] = [];
 
     // 并发请求测试
-    const concurrent = Math.min(20, Math.ceil(requests / 5)); // 最大20个并发
+    const concurrent = Math.min(20, Math.ceil(requests / 5)); // 最大20个并发;
     const workers: Promise<void>[] = [];
 
     for (let i = 0; i < concurrent; i++) {
@@ -41,7 +41,7 @@ class SimpleStressTest {
 
     const endTime = performance.now();
     const duration = endTime - startTime;
-    const avgResponseTime = responseTimes.length > 0 
+    const avgResponseTime = responseTimes.length > 0;
       ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length 
       : 0;
 

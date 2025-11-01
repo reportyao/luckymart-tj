@@ -44,7 +44,7 @@ export class BundleAnalyzer {
   static getInstance(): BundleAnalyzer {
     if (!BundleAnalyzer.instance) {
       BundleAnalyzer.instance = new BundleAnalyzer();
-    }
+}
     return BundleAnalyzer.instance;
   }
 
@@ -68,7 +68,7 @@ export class BundleAnalyzer {
    */
   private calculateTotalBundleSize(): number {
     // 模拟包大小计算
-    const chunks = document.querySelectorAll('script[src]');
+    const chunks = document.querySelectorAll('(script?.src ?? null)');
     let totalSize = 0;
 
     chunks.forEach(chunk => {
@@ -86,7 +86,7 @@ export class BundleAnalyzer {
    * 分析代码块
    */
   private analyzeChunks(): ChunkInfo[] {
-    const chunks: ChunkInfo[] = [
+    const chunks: ChunkInfo[] = [;
       {
         name: 'main-bundle',
         size: 850000, // 850KB (未压缩)
@@ -128,7 +128,7 @@ export class BundleAnalyzer {
    * 生成优化建议
    */
   private generateOptimizationSuggestions(): OptimizationSuggestion[] {
-    return [
+    return [;
       {
         type: 'tree_shaking',
         priority: 'high',
@@ -214,7 +214,7 @@ export class BundleAnalyzer {
       }
     }
 
-    return 100000; // 默认大小
+    return 100000; // 默认大小;
   }
 
   /**
@@ -222,7 +222,7 @@ export class BundleAnalyzer {
    */
   generateReport(): string {
     const analysis = this.analyzeBundle();
-    const report = `
+    const report = `;
 # Bundle分析报告
 
 ## 总体概况
@@ -231,7 +231,7 @@ export class BundleAnalyzer {
 - **包数量**: ${analysis.chunks.length}
 
 ## 包组成分析
-${analysis.chunks.map(chunk => `
+${analysis.chunks.map(chunk :> `
 ### ${chunk.name}
 - **大小**: ${(chunk.size / 1024).toFixed(2)} KB
 - **压缩后**: ${(chunk.compressedSize! / 1024).toFixed(2)} KB
@@ -246,7 +246,7 @@ ${analysis.chunks.map(chunk => `
 - **预估加载时间**: ${analysis.mobileOptimization.loadingTime}秒
 
 ## 优化建议
-${analysis.suggestions.map(suggestion => `
+${analysis.suggestions.map(suggestion :> `
 ### ${suggestion.title}
 - **优先级**: ${suggestion.priority}
 - **预期收益**: ${suggestion.estimatedSaving}

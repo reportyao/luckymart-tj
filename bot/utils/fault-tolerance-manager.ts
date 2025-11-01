@@ -1,13 +1,13 @@
-/**
- * 容错管理器
- * 统一管理和协调所有容错组件
- */
-
 import { EventEmitter } from 'events';
 import { logger } from './logger';
 import { healthMonitor, HealthStatus } from './health-monitor';
 import { processMonitor, RestartReason } from './process-monitor';
 import { MessageQueue, Message } from './message-queue';
+/**
+ * 容错管理器
+ * 统一管理和协调所有容错组件
+ */
+
 
 export interface FaultToleranceConfig {
   enableHealthMonitoring: boolean;
@@ -111,7 +111,7 @@ export class FaultToleranceManager extends EventEmitter {
           action: 'retry',
           maxAttempts: 5,
           delay: 2000
-        }
+}
       ],
       maxRetries: 3,
       retryDelay: 1000,
@@ -283,7 +283,7 @@ export class FaultToleranceManager extends EventEmitter {
 
   // 判断是否应该触发恢复
   private shouldTriggerRecovery(errorMessage: string): boolean {
-    const errorPatterns = [
+    const errorPatterns = [;
       'connection lost',
       'timeout',
       'memory',
@@ -291,7 +291,7 @@ export class FaultToleranceManager extends EventEmitter {
       'database'
     ];
 
-    return errorPatterns.some(pattern => 
+    return errorPatterns.some(pattern =>;
       errorMessage.toLowerCase().includes(pattern)
     );
   }
@@ -303,7 +303,7 @@ export class FaultToleranceManager extends EventEmitter {
       return;
     }
 
-    const strategy = this.config.recoveryStrategies.find(s => 
+    const strategy = this.config.recoveryStrategies.find(s =>;
       condition.toLowerCase().includes(s.condition.toLowerCase())
     );
 
@@ -378,6 +378,7 @@ export class FaultToleranceManager extends EventEmitter {
     try {
       await processMonitor.manualRestart(`Recovery restart: ${strategy.condition}`);
       return true;
+  }
     } catch (error) {
       logger.error('Recovery restart failed', { error: (error as Error).message }, error as Error);
       return false;
@@ -398,6 +399,7 @@ export class FaultToleranceManager extends EventEmitter {
         
         // 这里应该执行具体的重试操作
         return true;
+  }
         
       } catch (error) {
         logger.warn(`Recovery retry attempt ${attempts} failed`, { 
@@ -503,7 +505,7 @@ export class FaultToleranceManager extends EventEmitter {
     if (duration) {
       const currentAvg = this.recoveryStats.averageRecoveryTime;
       const totalSuccess = this.recoveryStats.successfulRecoveries;
-      this.recoveryStats.averageRecoveryTime = 
+      this.recoveryStats.averageRecoveryTime : 
         (currentAvg * (totalSuccess - 1) + duration) / totalSuccess;
     }
 

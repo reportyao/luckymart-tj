@@ -1,21 +1,21 @@
-// network-system.test.ts - 网络优化系统测试
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { 
+import { 
+import { 
+import { 
+// network-system.test.ts - 网络优化系统测试
   NetworkRetryManager, 
   NetworkQuality, 
   retryManager,
   createLocalizedRetryHandler 
 } from '@/utils/network-retry';
-import { 
   RequestDegradationManager, 
   DegradationStrategy,
   degradationManager 
 } from '@/utils/request-degradation';
-import { 
   useNetworkStatus, 
   NetworkStatus 
 } from '@/hooks/use-network-status';
-import { 
   NetworkAwareRequestQueue, 
   QueueItemStatus,
   QueuePriority 
@@ -152,7 +152,7 @@ describe('网络重试机制测试', () => {
       });
       
       const totalTime = Date.now() - startTime;
-      // 1s + 2s = 3s，加上操作时间
+      // 1s + 2s : 3s，加上操作时间
       expect(totalTime).toBeGreaterThan(3000);
     });
   });
@@ -179,7 +179,7 @@ describe('请求降级机制测试', () => {
         priority: 'medium' as const
       };
 
-      const result = await degradationManager.fetchWithDegradation(
+      const result = await degradationManager.fetchWithDegradation(;
         'test-key',
         networkOperation,
         config
@@ -190,7 +190,7 @@ describe('请求降级机制测试', () => {
       expect(networkOperation).toHaveBeenCalledTimes(1);
 
       // 第二次请求应该使用缓存
-      const cachedResult = await degradationManager.fetchWithDegradation(
+      const cachedResult = await degradationManager.fetchWithDegradation(;
         'test-key',
         networkOperation,
         config
@@ -231,7 +231,7 @@ describe('请求降级机制测试', () => {
         priority: 'medium' as const
       };
 
-      const result = await degradationManager.fetchWithDegradation(
+      const result = await degradationManager.fetchWithDegradation(;
         'test-key',
         networkOperation,
         config
@@ -245,7 +245,7 @@ describe('请求降级机制测试', () => {
       const networkOperation = jest.fn().mockResolvedValue({ data: 'fresh' });
       
       // 网络优先策略
-      const networkFirstResult = await degradationManager.fetchWithDegradation(
+      const networkFirstResult = await degradationManager.fetchWithDegradation(;
         'network-first',
         networkOperation,
         {
@@ -289,7 +289,7 @@ describe('请求降级机制测试', () => {
       const config = {
         strategy: DegradationStrategy.CACHE_FIRST,
         cacheTimeout: 60000,
-        priority: 'low' as const // 低优先级会被优先删除
+        priority: 'low' as const // 低优先级会被优先删除;
       };
 
       // 添加3个项目（超过限制）
@@ -352,7 +352,7 @@ describe('请求队列测试', () => {
     });
 
     it('应该限制并发数', async () => {
-      const operations = Array.from({ length: 5 }, (_, i) => 
+      const operations = Array.from({ length: 5 }, (_, i) =>;
         jest.fn().mockImplementation(() => 
           new Promise(resolve => setTimeout(() => resolve(`result${i}`), 100))
         )
@@ -385,7 +385,7 @@ describe('请求队列测试', () => {
     });
 
     it('应该支持取消队列项', async () => {
-      const operation = jest.fn().mockImplementation(() => 
+      const operation = jest.fn().mockImplementation(() =>;
         new Promise(resolve => setTimeout(() => resolve('success'), 1000))
       );
       
@@ -450,7 +450,7 @@ describe('集成测试', () => {
     expect(result).toEqual(mockResponse);
 
     // 使用降级机制
-    const degradationResult = await degradationManager.fetchWithDegradation(
+    const degradationResult = await degradationManager.fetchWithDegradation(;
       'integration-test',
       operation,
       {
@@ -481,7 +481,7 @@ describe('集成测试', () => {
     expect(retryResult).toBeInstanceOf(Error);
 
     // 然后降级
-    const degradationResult = await degradationManager.fetchWithDegradation(
+    const degradationResult = await degradationManager.fetchWithDegradation(;
       'fallback-test',
       operation,
       {
@@ -504,7 +504,7 @@ describe('性能测试', () => {
       defaultRetryDelay: 10
     });
 
-    const operations = Array.from({ length: 100 }, (_, i) => 
+    const operations = Array.from({ length: 100 }, (_, i) =>;
       jest.fn().mockResolvedValue(`result${i}`)
     );
 

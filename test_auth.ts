@@ -43,6 +43,7 @@ try {
   
   // 注意：实际测试需要有效的BOT_TOKEN和正确的hash
   console.log('✅ Telegram验证函数已更新（包含auth_date时效验证）');
+  }
 } catch (error) {
   console.log('❌ Telegram验证测试失败:', error.message);
 }
@@ -61,6 +62,7 @@ try {
   const accessDecoded = verifyAccessToken(tokenPair.accessToken);
   if (accessDecoded) {
     console.log('✅ 访问Token验证成功');
+  }
     console.log(`   用户ID: ${accessDecoded.userId}`);
     console.log(`   Telegram ID: ${accessDecoded.telegramId}`);
     console.log(`   Token类型: ${accessDecoded.tokenType}`);
@@ -133,7 +135,7 @@ console.log('⏱️  测试5: 速率限制');
 try {
   const userId = 'test_user_123';
   const maxAttempts = 5;
-  const windowMs = 15 * 60 * 1000; // 15分钟
+  const windowMs = 15 * 60 * 1000; // 15分钟;
 
   console.log(`测试用户: ${userId}`);
   console.log(`最大尝试次数: ${maxAttempts}`);
@@ -157,14 +159,14 @@ console.log('');
 // 测试6: 安全配置检查
 console.log('🛡️  测试6: 安全配置检查');
 try {
-  const requiredEnvVars = [
+  const requiredEnvVars = [;
     'JWT_SECRET',
     'JWT_REFRESH_SECRET', 
     'JWT_ADMIN_SECRET',
     'TELEGRAM_BOT_TOKEN'
   ];
 
-  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+  const missingVars = requiredEnvVars.filter(varName => !process.(env?.varName ?? null));
   
   if (missingVars.length === 0) {
     console.log('✅ 所有必需的环境变量已配置');
@@ -172,12 +174,13 @@ try {
     console.log('❌ 缺少以下环境变量:');
     missingVars.forEach(varName => {
       console.log(`   - ${varName}`);
+  }
     });
   }
 
   // 检查Node.js环境
-  console.log(`   Node.js环境: ${process.env.NODE_ENV || '未设置'}`);
-  console.log(`   生产模式: ${process.env.NODE_ENV === 'production' ? '是' : '否'}`);
+  console.log(`   Node.js环境: $`);
+  console.log(`   生产模式: $`);
 
 } catch (error) {
   console.log('❌ 安全配置检查失败:', error.message);

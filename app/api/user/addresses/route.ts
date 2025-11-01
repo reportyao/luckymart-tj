@@ -1,4 +1,3 @@
-// 获取用户地址列表
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
@@ -6,7 +5,7 @@ import { withErrorHandling } from '@/lib/middleware';
 import { getLogger } from '@/lib/logger';
 import { respond } from '@/lib/responses';
 import { ErrorFactory } from '@/lib/errors';
-import type { ApiResponse, UserAddress } from '@/types';
+// 获取用户地址列表
 
 // 获取地址列表
 export const GET = withErrorHandling(async (request: NextRequest) => {
@@ -25,14 +24,14 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
     const user = getUserFromRequest(request);
     if (!user?.userId) {
       logger.warn('未授权访问地址列表', { requestId, user });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('UNAUTHORIZED', '未授权访问').toJSON(),
         { status: 401 }
       );
-    }
+}
 
     // 查询用户地址
-    const { data: addresses, error } = await supabaseAdmin
+    const { data: addresses, error } = await supabaseAdmin;
       .from('user_addresses')
       .select('*')
       .eq('userId', user.userId)
@@ -50,7 +49,8 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       addressCount: addresses?.length || 0 
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
+  }
       respond.success(addresses || [], '获取地址列表成功').toJSON()
     );
 
@@ -77,7 +77,8 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     const user = getUserFromRequest(request);
     if (!user?.userId) {
       logger.warn('未授权访问创建地址', { requestId, user });
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         respond.customError('UNAUTHORIZED', '未授权访问').toJSON(),
         { status: 401 }
       );
@@ -107,7 +108,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
           detailAddress: !detailAddress
         }
       });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.validationError('缺少必填字段', 'required_fields').toJSON(),
         { status: 400 }
       );
@@ -115,7 +116,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
     // 如果设置为默认地址，先取消其他默认地址
     if (isDefault) {
-      const { error: updateError } = await supabaseAdmin
+      const { error: updateError } = await supabaseAdmin;
         .from('user_addresses')
         .update({ isDefault: false })
         .eq('userId', user.userId);
@@ -130,7 +131,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     }
 
     // 插入新地址
-    const { data: newAddress, error } = await supabaseAdmin
+    const { data: newAddress, error } = await supabaseAdmin;
       .from('user_addresses')
       .insert({
         userId: user.userId,
@@ -157,12 +158,12 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
       isDefault: newAddress.isDefault
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.success(newAddress, '地址添加成功').toJSON()
     );
 
   } catch (error) {
-    logger.error('创建地址失败', error as Error, { requestId });
+    logger.error('创建地址失败', error as Error, );
     throw error;
   }
 });

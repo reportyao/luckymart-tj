@@ -8,18 +8,18 @@ export async function POST(request: NextRequest) {
     // 验证用户身份
     const authResult = await authenticateUser(request);
     if (!authResult.success) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '认证失败' },
         { status: 401 }
       );
-    }
+}
 
     const user = authResult.user;
     const body = await request.json();
     const { participationId, notificationType = 'telegram' } = body;
 
     if (!participationId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '参与记录ID不能为空' },
         { status: 400 }
       );
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!participation) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '中奖记录不存在' },
         { status: 404 }
       );
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingNotification) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '已经发送过中奖通知' },
         { status: 400 }
       );
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('发送中奖通知失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '服务器错误' },
       { status: 500 }
     );
@@ -145,11 +145,11 @@ export async function GET(request: NextRequest) {
     // 验证用户身份
     const authResult = await authenticateUser(request);
     if (!authResult.success) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '认证失败' },
         { status: 401 }
       );
-    }
+}
 
     const user = authResult.user;
     const { searchParams } = new URL(request.url);
@@ -157,7 +157,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
     const offset = (page - 1) * limit;
-    const status = searchParams.get('status') || 'all'; // 'all', 'sent', 'pending', 'failed'
+    const status = searchParams.get('status') || 'all'; // 'all', 'sent', 'pending', 'failed';
 
     // 构建查询条件
     let whereConditions: any = {
@@ -188,7 +188,7 @@ export async function GET(request: NextRequest) {
     const notificationList = notifications.map((notification : any) => {
       let content = {};
       try {
-        content = typeof notification.content === 'string' 
+        content : typeof notification.content === 'string' 
           ? JSON.parse(notification.content) 
           : notification.content;
       } catch (error) {
@@ -221,7 +221,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('获取中奖通知失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '服务器错误' },
       { status: 500 }
     );
@@ -373,15 +373,15 @@ function buildTelegramMessage(content: any) {
 // 计算奖金的辅助函数
 function calculatePrize(product: any, sharesCount: number): { amount: number; type: string; description: string } {
   const pricePerShare = parseFloat(product.pricePerShare.toString());
-  const fixedPrize = 10; // 固定奖金
-  const percentagePrize = pricePerShare * sharesCount * 0.1; // 10%商品价值
+  const fixedPrize = 10; // 固定奖金;
+  const percentagePrize = pricePerShare * sharesCount * 0.1; // 10%商品价值;
   
   const totalPrize = fixedPrize + percentagePrize;
   
   let prizeType = 'standard';
-  if (totalPrize >= 100) prizeType = 'jackpot';
-  else if (totalPrize >= 50) prizeType = 'major';
-  else if (totalPrize >= 20) prizeType = 'medium';
+  if (totalPrize >= 100) prizeType = 'jackpot'; {
+  else if (totalPrize >= 50) prizeType = 'major'; {
+  else if (totalPrize >= 20) prizeType = 'medium'; {
   
   return {
     amount: parseFloat(totalPrize.toFixed(2)),
@@ -404,6 +404,7 @@ async function updateUserWinStats(userId: string, participationId: string) {
     });
     
     console.log('用户中奖统计已更新:', userId);
+  }
   } catch (error) {
     console.error('更新用户统计失败:', error);
   }
@@ -413,20 +414,20 @@ async function updateUserWinStats(userId: string, participationId: string) {
 function getMultilingualProductName(product: any): string {
   if (product.nameMultilingual) {
     try {
-      const nameData = typeof product.nameMultilingual === 'string' 
+      const nameData = typeof product.nameMultilingual === 'string';
         ? JSON.parse(product.nameMultilingual) 
         : product.nameMultilingual;
       
       const languages = ['zh-CN', 'zh', 'en', 'ru', 'tg'];
       
       for (const lang of languages) {
-        if (nameData[lang] && nameData[lang].name) {
-          return nameData[lang].name;
+        if ((nameData?.lang ?? null) && (nameData?.lang ?? null).name) {
+          return (nameData?.lang ?? null).name;
         }
       }
       
-      const firstName = Object.values(nameData).find((value: any) => 
-        value && typeof value === 'object' && value.name
+      const firstName = Object.values(nameData).find((value: any) =>;
+        value && typeof value :== 'object' && value.name
       ) as any;
       
       if (firstName) {
@@ -439,3 +440,4 @@ function getMultilingualProductName(product: any): string {
 
   return product.nameZh || product.nameEn || product.nameRu || '未知商品';
 }
+}}

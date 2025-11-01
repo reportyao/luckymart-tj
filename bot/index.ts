@@ -7,8 +7,8 @@ import { UserInfoService } from './services/user-info-service';
 import { RewardNotifier } from './services/reward-notifier';
 import { NotificationService } from './services/notification-service';
 import { Language, NotificationType } from './utils/notification-templates';
-
 import { apiConfig } from '../lib/config/api-config';
+
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const MINI_APP_URL = apiConfig.telegram.miniAppURL;
@@ -135,11 +135,11 @@ bot.command('start', performanceLogger('start_command'), async (ctx) => {
       await notificationService.sendWelcomeMessage(user.id, telegramId, ctx.chat.id, telegramUser);
     } else {
       // 回退到原始消息发送逻辑
-      const welcomeMessage = `
+      const welcomeMessage = `;
 🎉 欢迎来到LuckyMart TJ幸运集市！
 
 这里有超多心仪商品等你来夺宝：
-- 1夺宝币 = 1份，超低门槛  
+- 1夺宝币 : 1份，超低门槛  
 - 新用户注册即送50夺宝币 🎁
 - 每日免费参与3次
 - 公平透明的开奖算法
@@ -239,7 +239,7 @@ bot.command('balance', performanceLogger('balance_command'), async (ctx) => {
       await notificationService.sendBalanceQuery(telegramId, ctx.chat.id);
     } else {
       // 回退到原始消息发送逻辑
-      const message = `
+      const message = `;
 您的账户余额：
 
 夺宝币：${user.balance.toString()} 币
@@ -390,7 +390,7 @@ bot.command('help', async (ctx) => {
     await notificationService.sendHelpMessage(telegramId, ctx.chat.id);
   } else {
     // 回退到原始消息发送逻辑
-    const helpMessage = `
+    const helpMessage = `;
 命令列表：
 /start - 开始使用
 /balance - 查询余额
@@ -442,7 +442,7 @@ bot.command('profile', async (ctx) => {
 
 // /support命令 - 客服支持
 bot.command('support', async (ctx) => {
-  const supportMessage = `
+  const supportMessage = `;
 客服支持：
 
 工作时间：周一至周日 9:00-22:00
@@ -477,7 +477,7 @@ bot.command('userinfo', async (ctx) => {
       return;
     }
 
-    const message = `
+    const message = `;
 👤 您的详细用户信息
 
 📋 基本信息：
@@ -547,7 +547,7 @@ bot.command('status', async (ctx) => {
 
     const activityEmoji = activityEmojis[userStatus.activityLevel as keyof typeof activityEmojis] || '❓';
 
-    const message = `
+    const message = `;
 📊 用户活动状态报告
 
 ${statusEmoji} 用户状态: ${userStatus.status}
@@ -590,7 +590,7 @@ bot.command('validate', async (ctx) => {
     
     const validationEmoji = validation.isValid ? '✅' : '❌';
     
-    let message = `
+    let message = `;
 ${validationEmoji} 用户验证结果
 
 🔍 基础验证:
@@ -680,7 +680,7 @@ bot.command('notifications', async (ctx) => {
 
 // 语言切换回调
 bot.action(/lang_(.+)/, async (ctx) => {
-  const lang = ctx.match[1];
+  const lang = ctx.(match?.1 ?? null);
   const telegramId = ctx.from.id.toString();
   const chatId = ctx.chat.id;
 
@@ -704,7 +704,7 @@ bot.action(/lang_(.+)/, async (ctx) => {
         'tg-TJ': 'Забон ба Тоҷикӣ иваз карда шуд'
       };
 
-      await ctx.reply(messages[lang] || messages['zh-CN']);
+      await ctx.reply((messages?.lang ?? null) || messages['zh-CN']);
     }
   } catch (error) {
     logger.error('语言切换失败', { 
@@ -728,12 +728,12 @@ function getOrderStatusText(status: string): string {
 
 // 新手教程回调
 bot.action('help_tutorial', async (ctx) => {
-  const tutorialMessage = `
+  const tutorialMessage = `;
 📚 新手教程
 
 🎯 如何参与夺宝：
 1. 选择您喜欢的商品
-2. 购买夺宝份额（1份额 = 1夺宝币）
+2. 购买夺宝份额（1份额 : 1夺宝币）
 3. 等待开奖时间
 4. 等待幸运号码公布
 5. 中奖者获得商品
@@ -762,7 +762,7 @@ bot.action('help_tutorial', async (ctx) => {
 
 // 语言设置回调
 bot.action('language_settings', async (ctx) => {
-  const languageMessage = `
+  const languageMessage = `;
 🌐 请选择您的语言 / Please select your language / Выберите язык:
 
 支持的语言：
@@ -783,7 +783,7 @@ bot.action('language_settings', async (ctx) => {
 
 // 联系客服回调
 bot.action('contact_support', async (ctx) => {
-  const supportMessage = `
+  const supportMessage = `;
 💬 联系我们
 
 客服工作时间：周一至周日 9:00-22:00
@@ -826,7 +826,7 @@ class MessageTemplates {
 
   // 支付成功提醒
   static paymentSuccess(orderNumber: string, amount: number, productName: string) {
-    return `💳 支付成功！
+    return `💳 支付成功！;
 
 📋 订单号：${orderNumber}
 💰 支付金额：${amount} TJS
@@ -849,6 +849,7 @@ static resaleStatusUpdate(resaleId: string, status: string, progress?: number) {
     const message = statusMessages[status as keyof typeof statusMessages];
     if (progress && status === 'matching') {
       return `${message}\n匹配进度：${progress}%`;
+  }
     }
     
     return message;
@@ -879,7 +880,7 @@ static resaleStatusUpdate(resaleId: string, status: string, progress?: number) {
     const levelNames = ['普通用户', '青铜VIP', '白银VIP', '黄金VIP', '铂金VIP', '钻石VIP'];
     const newLevelName = levelNames[newLevel] || `VIP${newLevel}`;
     
-    return `VIP等级提升！\n\n从 ${levelNames[oldLevel] || `VIP${oldLevel}`} 升级到 ${newLevelName}\n\n新增特权：\n${benefits.map(benefit => `• ${benefit}`).join('\n')}\n\n感谢您的支持！`;
+    return `VIP等级提升！\n\n从 ${(levelNames?.oldLevel ?? null) || `VIP${oldLevel}`} 升级到 ${newLevelName}\n\n新增特权：\n${benefits.map(benefit => `• ${benefit}`).join('\n')}\n\n感谢您的支持！`;
   }
 }
 
@@ -895,7 +896,7 @@ export async function sendNotification(telegramId: string, message: string, opti
       error: (error as Error).message 
     }, error as Error);
     return false;
-  }
+}
 }
 
 // 发送富文本通知
@@ -1019,7 +1020,7 @@ async function resetDailyFreeCount() {
           {
             lastFreeResetDate: {
               lt: todayStart
-            }
+}
           }
         ]
       }
@@ -1088,13 +1089,14 @@ export async function sendEnhancedWinNotification(
         type: 'lottery_win',
         content: {
           contains: participationId
-        }
+}
       }
     });
 
     if (existingNotification) {
       logger.info('中奖通知已存在，跳过发送:', { participationId, telegramId });
       return false;
+  }
     }
 
     // 获取用户信息
@@ -1118,7 +1120,7 @@ export async function sendEnhancedWinNotification(
     });
 
     // 构建键盘按钮
-    const keyboard = Markup.inlineKeyboard([
+    const keyboard = Markup.inlineKeyboard([;
       [
         Markup.button.webApp(
           getButtonText(userLanguage, 'claimPrize'), 
@@ -1194,8 +1196,8 @@ export async function sendBatchWinNotifications(
 ) {
   logger.info('开始发送批量中奖通知:', { count: notifications.length });
   
-  const results = await Promise.allSettled(
-    notifications.map(notification => 
+  const results = await Promise.allSettled(;
+    notifications.map(notification :> 
       sendEnhancedWinNotification(
         notification.telegramId,
         notification.participationId,
@@ -1209,8 +1211,8 @@ export async function sendBatchWinNotifications(
     )
   );
 
-  const successCount = results.filter(result => 
-    result.status === 'fulfilled' && result.value
+  const successCount = results.filter(result =>;
+    result.status :== 'fulfilled' && result.value
   ).length;
 
   logger.info('批量中奖通知发送完成:', {
@@ -1297,7 +1299,7 @@ function generateEnhancedWinNotification(params: {
 📞 Мо бо шумо зуд тамос мегирем барои ташкили гирифтани ҷойиза
 💝 Барои иштироки шумо ташаккур, идомаи дастгирии мо кунед~`,
       emoji: '🎉'
-    }
+}
   };
 
   const template = templates[userLanguage as keyof typeof templates] || templates['zh-CN'];
@@ -1412,7 +1414,7 @@ function stopBot(signal: string) {
     logger.info('Bot 已安全停止');
     process.exit(0);
   } catch (error) {
-    logger.error('Bot 停止时发生错误', { error: (error as Error).message }, error as Error);
+    logger.error('Bot 停止时发生错误', , error as Error);
     process.exit(1);
   }
 }

@@ -1,9 +1,9 @@
+import { NextRequest } from 'next/server';
 /**
  * 测试工具函数
  * 为API测试提供模拟请求和响应工具
  */
 
-import { NextRequest } from 'next/server';
 
 /**
  * 创建模拟的NextRequest对象
@@ -140,7 +140,7 @@ export const mockUsers = {
 /**
  * 模拟推荐关系
  */
-export const mockReferralRelationships = [
+export const mockReferralRelationships = [;
   {
     referrer_user_id: 'referrer-1',
     referral_level: 1,
@@ -188,7 +188,7 @@ export const assertions = {
     expect(data.error).toBeDefined();
     if (errorCode) {
       expect(data.error.code).toBe(errorCode);
-    }
+}
   },
 
   /**

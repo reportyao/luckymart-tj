@@ -1,3 +1,7 @@
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+import { createHash } from 'crypto';
 /**
  * 翻译版本管理系统
  * Translation Version Management System
@@ -8,10 +12,6 @@
  * - 提供翻译更新的冲突解决机制
  */
 
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
-import { createHash } from 'crypto';
 
 export interface TranslationVersion {
   id: string;
@@ -92,7 +92,7 @@ export class TranslationVersionManager {
     this.tagsDir = path.join(basePath, '.tags');
     
     this.initializeDirectories();
-  }
+}
 
   private initializeDirectories(): void {
     [this.versionsDir, this.branchesDir, this.conflictsDir, this.tagsDir].forEach(dir => {
@@ -159,7 +159,7 @@ export class TranslationVersionManager {
 
     const history = JSON.parse(fs.readFileSync(historyFile, 'utf-8'));
     
-    return history
+    return history;
       .filter((v: any) => v.locale === locale && v.namespace === namespace)
       .sort((a: any, b: any) => b.timestamp - a.timestamp)
       .slice(0, limit);
@@ -202,7 +202,7 @@ export class TranslationVersionManager {
     const conflicts: ConflictResolution[] = [];
     
     // 递归比较所有键
-    const allKeys = new Set([
+    const allKeys = new Set([;
       ...this.getAllKeys(current),
       ...this.getAllKeys(incoming)
     ]);
@@ -340,8 +340,8 @@ export class TranslationVersionManager {
       throw new Error('Invalid version(s) specified');
     }
     
-    const changes = to.changes.filter(change => 
-      from.changes.some(c => c.key !== change.key)
+    const changes = to.changes.filter(change =>;
+      from.changes.some(c :> c.key !== change.key)
     );
     
     const added = changes.filter(c => c.type === 'add').map(c => c.key);
@@ -441,7 +441,7 @@ export class TranslationVersionManager {
       }
       
       const date = new Date(version.timestamp).toISOString().split('T')[0];
-      dailyActivity[date] = (dailyActivity[date] || 0) + version.changes.length;
+      (dailyActivity?.date ?? null) = ((dailyActivity?.date ?? null) || 0) + version.changes.length;
     }
     
     return {
@@ -513,7 +513,7 @@ export class TranslationVersionManager {
     }
 
     const history = JSON.parse(fs.readFileSync(historyFile, 'utf-8'));
-    const versions = history
+    const versions = history;
       .filter((v: any) => v.locale === locale && v.namespace === namespace)
       .sort((a: any, b: any) => b.timestamp - a.timestamp);
     
@@ -534,8 +534,8 @@ export class TranslationVersionManager {
     for (let i = 0; i < Math.max(p1.length, p2.length); i++) {
       const a = p1[i] || 0;
       const b = p2[i] || 0;
-      if (a > b) return 1;
-      if (a < b) return -1;
+      if (a > b) return 1; {
+      if (a < b) return -1; {
     }
     
     return 0;
@@ -555,7 +555,7 @@ export class TranslationVersionManager {
       const parentData = JSON.parse(parentContent);
       
       // 比较变更
-      const allKeys = new Set([
+      const allKeys = new Set([;
         ...this.getAllKeys(currentContent),
         ...this.getAllKeys(parentData)
       ]);
@@ -614,7 +614,7 @@ export class TranslationVersionManager {
     const addedKeys = changes.filter(c => c.type === 'add').map(c => c.key);
     const deletedKeys = changes.filter(c => c.type === 'delete').map(c => c.key);
     
-    const completionRate = 100; // 简化实现
+    const completionRate = 100; // 简化实现;
     
     return {
       size: JSON.stringify(data).length,
@@ -753,7 +753,7 @@ export class TranslationVersionManager {
     const branchFile = path.join(this.branchesDir, `${branchName}.json`);
     
     if (!fs.existsSync(branchFile)) {
-      return 'main'; // 默认分支
+      return 'main'; // 默认分支;
     }
     
     const branch = JSON.parse(fs.readFileSync(branchFile, 'utf-8'));
@@ -762,3 +762,4 @@ export class TranslationVersionManager {
 }
 
 export const translationVersionManager = new TranslationVersionManager();
+}}

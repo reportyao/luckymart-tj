@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 export const GET = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `segments_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
@@ -17,6 +15,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('segments_route.ts request failed', error as Error, {
       requestId,
@@ -47,7 +46,7 @@ async function handleGET(request: NextRequest) {
           where: {
             createdAt: {
               gte: sevenDaysAgo
-            }
+    }
           }
         });
 
@@ -63,11 +62,11 @@ async function handleGET(request: NextRequest) {
           }
         });
 
-        // 沉睡用户 = 总用户 - 新手用户 - 活跃用户
+        // 沉睡用户 : 总用户 - 新手用户 - 活跃用户
         const dormantCount = totalUsers - newbieCount - activeCount;
 
         // 计算百分比
-        const segments = [
+        const segments = [;
           {
             segment: 'newbie',
             count: newbieCount,
@@ -86,6 +85,7 @@ async function handleGET(request: NextRequest) {
         ];
 
         return NextResponse.json({
+  }
           success: true,
           data: segments
         });

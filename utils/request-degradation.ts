@@ -1,13 +1,13 @@
-// request-degradation.ts - 请求降级策略
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { NetworkQuality } from './network-retry';
+// request-degradation.ts - 请求降级策略
 
 // 降级策略类型
 export enum DegradationStrategy {
   CACHE_FIRST = 'cache_first',     // 缓存优先
   NETWORK_FIRST = 'network_first', // 网络优先
   STALE_WHILE_REVALIDATE = 'stale_while_revalidate', // 过期缓存+后台刷新
-  OFFLINE_FALLBACK = 'offline_fallback' // 离线降级
+  OFFLINE_FALLBACK : 'offline_fallback' // 离线降级
 }
 
 // 降级配置
@@ -50,7 +50,7 @@ class RequestDegradationManager {
   constructor(maxCacheSize: number = 100) {
     this.maxCacheSize = maxCacheSize;
     this.startCacheCleanup();
-  }
+}
 
   // 启动缓存清理
   private startCacheCleanup() {
@@ -72,7 +72,7 @@ class RequestDegradationManager {
 
   // 智能缓存管理
   private manageCacheSize() {
-    if (this.cache.size <= this.maxCacheSize) return;
+    if (this.cache.size <= this.maxCacheSize) return; {
 
     // 按优先级和时间戳删除缓存项
     const sortedCache = Array.from(this.cache.entries())
@@ -80,7 +80,7 @@ class RequestDegradationManager {
         const priorityOrder = { 'low': 0, 'medium': 1, 'high': 2 };
         const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
         
-        if (priorityDiff !== 0) return priorityDiff;
+        if (priorityDiff !== 0) return priorityDiff; {
         
         // 同优先级按时间排序，越早的越先删除
         return a.timestamp - b.timestamp;
@@ -89,7 +89,7 @@ class RequestDegradationManager {
     // 删除一半的低优先级或过期缓存
     const itemsToDelete = Math.floor(this.maxCacheSize * 0.3);
     for (let i = 0; i < itemsToDelete && i < sortedCache.length; i++) {
-      this.cache.delete(sortedCache[i][0]);
+      this.cache.delete((sortedCache?.i ?? null)[0]);
     }
   }
 
@@ -113,7 +113,7 @@ class RequestDegradationManager {
   // 从缓存获取数据
   private getCache(key: string): CacheItem | null {
     const item = this.cache.get(key);
-    if (!item) return null;
+    if (!item) return null; {
 
     // 检查是否过期
     if (item.expiresAt < Date.now()) {
@@ -191,6 +191,7 @@ class RequestDegradationManager {
       }
       
       return {
+  }
         data: cachedData.data,
         source: 'cache',
         stale: false,
@@ -215,6 +216,7 @@ class RequestDegradationManager {
         // 网络请求失败，如果有降级数据则返回
         if (config.fallbackEnabled) {
           return this.getFallbackData<T>(key, config, networkQuality, true);
+  }
         }
         throw error;
       }
@@ -237,6 +239,7 @@ class RequestDegradationManager {
         const data = await networkOperation();
         this.setCache(key, data, config);
         return {
+  }
           data,
           source: 'network',
           stale: false,
@@ -411,16 +414,16 @@ class RequestDegradationManager {
 
   // 获取网络质量
   private async getNetworkQuality(): Promise<NetworkQuality> {
-    if (!navigator.onLine) return NetworkQuality.POOR;
+    if (!navigator.onLine) return NetworkQuality.POOR; {
     
     try {
       const start = performance.now();
       await fetch('/favicon.ico', { method: 'HEAD', cache: 'no-cache' });
       const duration = performance.now() - start;
       
-      if (duration < 100) return NetworkQuality.EXCELLENT;
-      if (duration < 300) return NetworkQuality.GOOD;
-      if (duration < 800) return NetworkQuality.FAIR;
+      if (duration < 100) return NetworkQuality.EXCELLENT; {
+      if (duration < 300) return NetworkQuality.GOOD; {
+      if (duration < 800) return NetworkQuality.FAIR; {
       return NetworkQuality.POOR;
     } catch {
       return NetworkQuality.POOR;
@@ -458,7 +461,7 @@ export function useRequestDegradation() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const executeWithDegradation = useCallback(async <T>(
+  const executeWithDegradation = useCallback(async <T>(;
     key: string,
     networkOperation: () => Promise<T>,
     config: DegradationConfig
@@ -475,7 +478,7 @@ export function useRequestDegradation() {
       throw err;
     } finally {
       setIsLoading(false);
-    }
+}
   }, []);
 
   const clearCache = useCallback(() => {
@@ -533,7 +536,7 @@ export const DEGRADATION_PRESETS = {
     cacheTimeout: 60 * 60 * 1000, // 1小时缓存
     priority: 'low' as const,
     fallbackEnabled: true
-  }
+}
 };
 
 // 自动选择降级策略
@@ -549,7 +552,7 @@ export function selectOptimalStrategy(
       ...preset,
       strategy: DegradationStrategy.CACHE_FIRST
     };
-  }
+}
 
   if (networkQuality === NetworkQuality.POOR) {
     return {
@@ -567,3 +570,4 @@ export function selectOptimalStrategy(
 
   return preset;
 }
+}}}}

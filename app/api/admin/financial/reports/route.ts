@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -36,6 +34,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('reports_route.ts request failed', error as Error, {
       requestId,
@@ -56,7 +55,7 @@ async function handleGET(request: NextRequest) {
         const status = searchParams.get('status');
         const limit = parseInt(searchParams.get('limit') || '50');
 
-        let query = supabase
+        let query = supabase;
           .from('financial_reports')
           .select('*')
           .order('created_at', { ascending: false })
@@ -64,7 +63,7 @@ async function handleGET(request: NextRequest) {
 
         if (reportType) {
           query = query.eq('report_type', reportType);
-        }
+    }
 
         if (status) {
           query = query.eq('status', status);
@@ -77,7 +76,7 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'查询财务报告数据失败:', error);
-          return NextResponse.json(
+          return NextResponse.json(;
             { error: '查询财务报告数据失败' },
             { status: 500 }
           );
@@ -94,9 +93,9 @@ async function handleGET(request: NextRequest) {
             };
           }
           acc[curr.report_type].count++;
-          if (curr.status === 'published') acc[curr.report_type].published++;
-          else if (curr.status === 'draft') acc[curr.report_type].draft++;
-          else if (curr.status === 'archived') acc[curr.report_type].archived++;
+          if (curr.status === 'published') acc[curr.report_type].published++; {
+          else if (curr.status === 'draft') acc[curr.report_type].draft++; {
+          else if (curr.status === 'archived') acc[curr.report_type].archived++; {
           return acc;
         }, {} as Record<string, any>) || {};
 
@@ -128,7 +127,8 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取财务报告API错误:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
+  }
           { error: '服务器内部错误' },
           { status: 500 }
         );
@@ -155,15 +155,15 @@ export async function POST(request: NextRequest) {
       reportType = 'monthly',
       reportPeriod,
       title,
-      generatedBy = 'system'
+      generatedBy : 'system'
     } = body;
 
     if (!reportPeriod) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: 'reportPeriod 为必填参数' },
         { status: 400 }
       );
-    }
+}
 
     // 根据报告类型和期间解析日期范围
     let startDate: Date;
@@ -182,7 +182,7 @@ export async function POST(request: NextRequest) {
       startDate = new Date(parseInt(reportPeriod), 0, 1);
       endDate = new Date(parseInt(reportPeriod), 11, 31);
     } else {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '不支持的报告类型' },
         { status: 400 }
       );
@@ -192,28 +192,28 @@ export async function POST(request: NextRequest) {
     const endISO = endDate.toISOString().split('T')[0];
 
     // 获取收入数据
-    const { data: revenueData } = await supabase
+    const { data: revenueData } = await supabase;
       .from('revenue_statistics')
       .select('*')
       .gte('period_start', startISO)
       .lte('period_end', endISO);
 
     // 获取成本数据
-    const { data: costData } = await supabase
+    const { data: costData } = await supabase;
       .from('cost_breakdown')
       .select('*')
       .gte('breakdown_date', startISO)
       .lte('breakdown_date', endISO);
 
     // 获取利润数据
-    const { data: profitData } = await supabase
+    const { data: profitData } = await supabase;
       .from('profit_analysis')
       .select('*')
       .gte('date', startISO)
       .lte('date', endISO);
 
     // 获取提现数据
-    const { data: withdrawalData } = await supabase
+    const { data: withdrawalData } = await supabase;
       .from('withdrawal_records')
       .select('*')
       .gte('period_start', startISO)
@@ -241,7 +241,7 @@ export async function POST(request: NextRequest) {
     const finalTitle = title || generateDefaultTitle(reportType, reportPeriod);
 
     // 插入报告数据
-    const { data, error } = await supabase
+    const { data, error } = await supabase;
       .from('financial_reports')
       .insert({
         report_type: reportType,
@@ -266,7 +266,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'生成财务报告失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '生成财务报告失败' },
         { status: 500 }
       );
@@ -292,7 +292,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'生成财务报告API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
       { status: 500 }
     );
@@ -310,17 +310,17 @@ function calculateRevenueSummary(data: any[]) {
     growthRate: 0
   };
 
-  if (data.length === 0) return summary;
+  if (data.length === 0) return summary; {
 
-  summary.totalRevenue = data.reduce((sum: any,  item: any) => sum + parseFloat(item.total_revenue.toString()), 0);
-  summary.actualReceived = data.reduce((sum: any,  item: any) => sum + parseFloat(item.actual_received.toString()), 0);
-  summary.totalOrders = data.reduce((sum: any,  item: any) => sum + item.order_count, 0);
+  summary.totalRevenue = data.reduce((sum: any: any,   item: any: any) => sum + parseFloat(item.total_revenue.toString()), 0);
+  summary.actualReceived = data.reduce((sum: any: any,   item: any: any) => sum + parseFloat(item.actual_received.toString()), 0);
+  summary.totalOrders = data.reduce((sum: any: any,   item: any: any) => sum + item.order_count, 0);
   summary.averageOrderValue = summary.totalOrders > 0 ? summary.totalRevenue / summary.totalOrders : 0;
 
   // 计算平均增长率
-  const growthRates = data.filter((item : any) => item.growth_rate).map(item => parseFloat(item.growth_rate.toString()));
-  summary.growthRate = growthRates.length > 0 
-    ? growthRates.reduce((sum: any,  rate: any) => sum + rate, 0) / growthRates.length 
+  const growthRates = data.filter(((item : any) : any) => item.growth_rate).map(item => parseFloat(item.growth_rate.toString()));
+  summary.growthRate : growthRates.length > 0 
+    ? growthRates.reduce((sum: any: any,   rate: any: any) => sum + rate, 0) / growthRates.length 
     : 0;
 
   return summary;
@@ -335,19 +335,19 @@ function calculateCostSummary(data: any[]) {
     costTrend: 'stable'
   };
 
-  if (data.length === 0) return summary;
+  if (data.length === 0) return summary; {
 
-  summary.totalCost = data.reduce((sum: any,  item: any) => sum + parseFloat(item.cost_amount.toString()), 0);
-  const totalUsers = data.reduce((sum: any,  item: any) => sum + item.user_count, 0);
+  summary.totalCost = data.reduce((sum: any: any,   item: any: any) => sum + parseFloat(item.cost_amount.toString()), 0);
+  const totalUsers = data.reduce((sum: any: any,   item: any: any) => sum + item.user_count, 0);
   summary.averageCostPerUser = totalUsers > 0 ? summary.totalCost / totalUsers : 0;
 
   // 按类型分组
-  data.forEach((item : any) => {
+  data.forEach(((item : any) : any) => {
     const type = item.user_type || 'unknown';
-    if (!summary.costByType[type]) {
-      summary.costByType[type] = 0;
+    if (!summary.(costByType?.type ?? null)) {
+      summary.(costByType?.type ?? null) = 0;
     }
-    summary.costByType[type] += parseFloat(item.cost_amount.toString());
+    summary.(costByType?.type ?? null) += parseFloat(item.cost_amount.toString());
   });
 
   return summary;
@@ -363,18 +363,18 @@ function calculateProfitSummary(data: any[]) {
     profitabilityTrend: 'stable'
   };
 
-  if (data.length === 0) return summary;
+  if (data.length === 0) return summary; {
 
-  summary.grossProfit = data.reduce((sum: any,  item: any) => sum + parseFloat(item.gross_profit.toString()), 0);
-  summary.netProfit = data.reduce((sum: any,  item: any) => sum + parseFloat(item.net_profit.toString()), 0);
+  summary.grossProfit = data.reduce((sum: any: any,   item: any: any) => sum + parseFloat(item.gross_profit.toString()), 0);
+  summary.netProfit = data.reduce((sum: any: any,   item: any: any) => sum + parseFloat(item.net_profit.toString()), 0);
   
-  const totalRevenue = data.reduce((sum: any,  item: any) => sum + parseFloat(item.revenue.toString()), 0);
+  const totalRevenue = data.reduce((sum: any: any,   item: any: any) => sum + parseFloat(item.revenue.toString()), 0);
   summary.profitMargin = totalRevenue > 0 ? (summary.netProfit / totalRevenue) * 100 : 0;
 
   // 计算平均ROI
-  const rois = data.filter((item : any) => item.roi).map(item => parseFloat(item.roi.toString()));
-  summary.roi = rois.length > 0 
-    ? rois.reduce((sum: any,  roi: any) => sum + roi, 0) / rois.length 
+  const rois = data.filter(((item : any) : any) => item.roi).map(item => parseFloat(item.roi.toString()));
+  summary.roi : rois.length > 0 
+    ? rois.reduce((sum: any: any,   roi: any: any) => sum + roi, 0) / rois.length 
     : 0;
 
   return summary;
@@ -390,14 +390,14 @@ function calculateWithdrawalSummary(data: any[]) {
     platformFee: 0
   };
 
-  if (data.length === 0) return summary;
+  if (data.length === 0) return summary; {
 
-  summary.totalAmount = data.reduce((sum: any,  item: any) => sum + parseFloat(item.total_amount.toString()), 0);
-  summary.totalUsers = data.reduce((sum: any,  item: any) => sum + item.total_users, 0);
-  summary.platformFee = data.reduce((sum: any,  item: any) => sum + parseFloat(item.platform_fee.toString()), 0);
+  summary.totalAmount = data.reduce((sum: any: any,   item: any: any) => sum + parseFloat(item.total_amount.toString()), 0);
+  summary.totalUsers = data.reduce((sum: any: any,   item: any: any) => sum + item.total_users, 0);
+  summary.platformFee = data.reduce((sum: any: any,   item: any: any) => sum + parseFloat(item.platform_fee.toString()), 0);
   
-  const totalWithdrawals = data.reduce((sum: any,  item: any) => sum + item.withdrawal_count, 0);
-  const totalSuccess = data.reduce((sum: any,  item: any) => sum + item.success_count, 0);
+  const totalWithdrawals = data.reduce((sum: any: any,   item: any: any) => sum + item.withdrawal_count, 0);
+  const totalSuccess = data.reduce((sum: any: any,   item: any: any) => sum + item.success_count, 0);
   summary.successRate = totalWithdrawals > 0 ? (totalSuccess / totalWithdrawals) * 100 : 0;
   summary.averageAmount = summary.totalUsers > 0 ? summary.totalAmount / summary.totalUsers : 0;
 
@@ -441,23 +441,23 @@ function generateKeyMetrics(revenue: any, cost: any, profit: any, withdrawal: an
 // 辅助函数：生成趋势分析
 function generateTrends(revenue: any[], profit: any[], cost: any[]) {
   return {
-    revenue: calculateArrayTrend(revenue.map((r : any) => parseFloat(r.total_revenue.toString()))),
-    profit: calculateArrayTrend(profit.map((p : any) => parseFloat(p.net_profit.toString()))),
-    cost: calculateArrayTrend(cost.map((c : any) => parseFloat(c.cost_amount.toString()))),
-    orders: calculateArrayTrend(revenue.map((r : any) => r.order_count)),
-    customers: calculateArrayTrend(cost.map((c : any) => c.user_count))
+    revenue: calculateArrayTrend(revenue.map(((r : any) : any) => parseFloat(r.total_revenue.toString()))),
+    profit: calculateArrayTrend(profit.map(((p : any) : any) => parseFloat(p.net_profit.toString()))),
+    cost: calculateArrayTrend(cost.map(((c : any) : any) => parseFloat(c.cost_amount.toString()))),
+    orders: calculateArrayTrend(revenue.map(((r : any) : any) => r.order_count)),
+    customers: calculateArrayTrend(cost.map(((c : any) : any) => c.user_count))
   };
 }
 
 // 辅助函数：计算数组趋势
 function calculateArrayTrend(values: number[]): string {
-  if (values.length < 2) return 'stable';
+  if (values.length < 2) return 'stable'; {
   
-  const increasing = values.slice(1).filter((val, index) => val > values[index]).length;
-  const decreasing = values.slice(1).filter((val, index) => val < values[index]).length;
+  const increasing = values.slice(1).filter((val, index) => val > (values?.index ?? null)).length;
+  const decreasing = values.slice(1).filter((val, index) => val < (values?.index ?? null)).length;
   
-  if (increasing > decreasing * 1.5) return 'increasing';
-  if (decreasing > increasing * 1.5) return 'decreasing';
+  if (increasing > decreasing * 1.5) return 'increasing'; {
+  if (decreasing > increasing * 1.5) return 'decreasing'; {
   return 'stable';
 }
 
@@ -521,3 +521,4 @@ function generateDefaultTitle(reportType: string, reportPeriod: string): string 
   
   return `${reportPeriod}${typeMap[reportType]}财务报告`;
 }
+}}}}}}}}}

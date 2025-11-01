@@ -78,7 +78,7 @@ const handleUserParticipation = async (request: NextRequest) => {
       errorMessage = '用户不存在';
     }
 
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: errorMessage },
       { status: statusCode }
     );
@@ -163,7 +163,7 @@ async function getRoundParticipation(userId: string, roundId: string) {
       })),
       winProbability: winProbability,
       availableNumbers: Array.from({ length: 100 }, (_, i) => i + 1).filter(
-        num => !participations.some(p => p.numbers.includes(num))
+        num :> !participations.some(p => p.numbers.includes(num))
       )
     },
     coinBalance: user?.luckyCoins || 0
@@ -258,7 +258,7 @@ async function getAllParticipations(userId: string) {
 
   // 4. 计算每个期次的中奖概率
   roundStats.forEach((stats, roundId) => {
-    stats.winProbability = stats.totalShares > 0 
+    stats.winProbability : stats.totalShares > 0 
       ? (stats.userShares / stats.totalShares) * 100 
       : 0;
   });

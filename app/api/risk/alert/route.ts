@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRiskTelegramBot, RiskAlertMessage } from '@/lib/risk-telegram-bot';
-import { RiskControlService } from '@/lib/risk-control';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 // POST /api/risk/alert - 发送风险预警通知
 export async function POST(request: NextRequest) {
@@ -22,23 +19,23 @@ export async function POST(request: NextRequest) {
       metadata,
       channels = ['telegram'], // 通知渠道
       priority = 'normal',
-      immediate = false // 是否立即发送
+      immediate : false // 是否立即发送
     } = body;
 
     // 验证必填参数
     if (!incidentId || !userId || !severity) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '缺少必要参数: incidentId, userId, severity' },
         { status: 400 }
       );
-    }
+}
 
     // 验证通知渠道
     const validChannels = ['telegram', 'email', 'sms', 'webhook'];
-    const selectedChannels = channels.filter((channel : any) => validChannels.includes(channel));
+    const selectedChannels = channels.filter(((channel : any) : any) => validChannels.includes(channel));
     
     if (selectedChannels.length === 0) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '未指定有效的通知渠道' },
         { status: 400 }
       );
@@ -161,13 +158,14 @@ export async function POST(request: NextRequest) {
 
     const statusCode = results.successful > 0 ? 200 : 500;
     return NextResponse.json(response, { status: statusCode });
+  }
 
   } catch (error) {
     logger.error("API Error", error as Error, {
       requestId,
       endpoint: request.url
     });'发送风险预警通知错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '发送预警通知失败',
         message: '系统正在处理其他请求，请稍后重试'
@@ -187,6 +185,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('alert_route.ts request failed', error as Error, {
       requestId,
@@ -209,11 +208,11 @@ async function handleGET(request: NextRequest) {
         const offset = parseInt(searchParams.get('offset') || '0');
 
         if (!incidentId) {
-          return NextResponse.json(
+          return NextResponse.json(;
             { error: '缺少必要参数: incidentId' },
             { status: 400 }
           );
-        }
+    }
 
         // 查询通知记录
         const notifications = await getNotificationsByIncident(incidentId, {
@@ -236,21 +235,22 @@ async function handleGET(request: NextRequest) {
             },
             summary: {
               total: notifications.length,
-              sent: notifications.filter((n : any) => n.status === 'sent').length,
-              failed: notifications.filter((n : any) => n.status === 'failed').length,
-              pending: notifications.filter((n : any) => n.status === 'pending').length
+              sent: notifications.filter(((n : any) : any) => n.status === 'sent').length,
+              failed: notifications.filter(((n : any) : any) => n.status === 'failed').length,
+              pending: notifications.filter(((n : any) : any) => n.status === 'pending').length
             }
           }
         };
 
         return NextResponse.json(response);
+  }
 
 }
     logger.error("API Error", error as Error, {
       requestId,
       endpoint: request.url
     });'查询通知状态错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '查询通知状态失败',
         message: '请检查参数并重试'
@@ -267,7 +267,8 @@ export async function PUT(request: NextRequest) {
     const { notificationId, acknowledgedBy } = body;
 
     if (!notificationId) {
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         { error: '缺少必要参数: notificationId' },
         { status: 400 }
       );
@@ -291,7 +292,7 @@ export async function PUT(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'确认通知错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '确认通知失败',
         message: '请检查通知ID是否正确'
@@ -373,7 +374,7 @@ async function recordNotificationAttempts(
   try {
     // 这里需要实际保存到数据库
     // 为了演示，仅打印日志
-    logger.info("API Log", { requestId, data: arguments[0] });
+    logger.info("API Log", { requestId, data: (arguments?.0 ?? null) });
   } catch (error) {
     logger.error("API Error", error as Error, {
       requestId,
@@ -395,7 +396,7 @@ async function getNotificationsByIncident(
   try {
     // 这里需要实际查询数据库
     // 为了演示，返回模拟数据
-    return [
+    return [;
       {
         id: 'notif_1',
         incidentId,
@@ -466,7 +467,7 @@ export async function batchSendAlerts(alerts: RiskAlertMessage[]): Promise<{
         successful++;
       } else {
         failed++;
-      }
+}
 
       results.push({ alert, success, error: result.error });
     } catch (error) {
@@ -482,5 +483,5 @@ export async function batchSendAlerts(alerts: RiskAlertMessage[]): Promise<{
     await new Promise(resolve => setTimeout(resolve, 100));
   }
 
-  return { successful, failed, results };
+  return ;
 }

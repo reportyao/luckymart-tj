@@ -1,10 +1,10 @@
+import * as fs from 'fs/promises';
+import * as path from 'path';
 /**
  * 塔吉克语本土化评估工具
  * 评估塔吉克语翻译的本土化程度、文化适应性和表达习惯
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
 
 interface LocalizationIssue {
   file: string;
@@ -92,7 +92,7 @@ export class TajikLocalizationEvaluator {
 
   constructor(projectRoot: string) {
     this.localesPath = path.join(projectRoot, 'src', 'locales', 'tg-TJ');
-  }
+}
 
   /**
    * 评估塔吉克语翻译的本土化程度
@@ -337,14 +337,14 @@ export class TajikLocalizationEvaluator {
 
     // 检查关键术语的使用一致性
     for (const [english, tajik] of this.tajikSpecificTerms.entries()) {
-      const variants = [
+      const variants = [;
         english.toLowerCase(),
         english.charAt(0).toUpperCase() + english.slice(1),
-        ...english.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        ...english.split('_').map(word :> word.charAt(0).toUpperCase() + word.slice(1))
       ];
 
       const foundInconsistentTerms = stringValues.filter(value => {
-        return variants.some(variant => 
+        return variants.some(variant =>;
           value.toLowerCase().includes(variant.toLowerCase()) && 
           !value.toLowerCase().includes(tajik.toLowerCase())
         );
@@ -373,7 +373,7 @@ export class TajikLocalizationEvaluator {
     const issues: LocalizationIssue[] = [];
     
     // 检查常见的语法错误
-    const grammarRules = [
+    const grammarRules = [;
       {
         pattern: /ҳиссаи ҳисса/g, // 重复词汇
         description: '发现重复的词汇',
@@ -397,7 +397,7 @@ export class TajikLocalizationEvaluator {
             key: 'grammar_check',
             issueType: 'poor_localization',
             severity: 'low',
-            description: `${rule.description}: "${matches[0]}"`,
+            description: `${rule.description}: "${(matches?.0 ?? null)}"`,
             suggestion: rule.fix,
             currentValue: value
           });
@@ -423,7 +423,7 @@ export class TajikLocalizationEvaluator {
           issueType: 'cultural_mismatch',
           severity: 'medium',
           description: `日期格式不符合塔吉克斯坦标准: "${matches[0]}"`,
-          suggestion: `请使用格式: dd.mm.yyyy (例如: ${matches[1]}.${matches[2]}.${matches[3]})`,
+          suggestion: `请使用格式: dd.mm.yyyy (例如: ${(matches?.1 ?? null)}.${(matches?.2 ?? null)}.${(matches?.3 ?? null)})`,
           currentValue: value
         });
       }
@@ -447,7 +447,7 @@ export class TajikLocalizationEvaluator {
           issueType: 'cultural_mismatch',
           severity: 'low',
           description: `数字格式不符合塔吉克斯坦标准: "${matches[0]}"`,
-          suggestion: `请使用逗号作为千位分隔符: ${matches[1].replace(/\./g, ',')}${matches[2]}`,
+          suggestion: `请使用逗号作为千位分隔符: ${(matches?.1 ?? null).replace(/\./g, ',')}${(matches?.2 ?? null)}`,
           currentValue: value
         });
       }
@@ -487,8 +487,8 @@ export class TajikLocalizationEvaluator {
     const issues: LocalizationIssue[] = [];
     
     // 检查是否使用了礼貌用语
-    const hasPoliteness = values.some(value => 
-      this.culturalAdaptationPatterns.politePhrases.some(phrase => 
+    const hasPoliteness = values.some(value =>;
+      this.culturalAdaptationPatterns.politePhrases.some(phrase :> 
         value.toLowerCase().includes(phrase)
       )
     );
@@ -514,7 +514,7 @@ export class TajikLocalizationEvaluator {
     const issues: LocalizationIssue[] = [];
     
     // 检查常见的直译问题
-    const literalPatterns = [
+    const literalPatterns = [;
       {
         pattern: /系统通知/g, // 系统通知 - 直接从中文翻译
         expected: 'Огоҳиномаи система',
@@ -577,7 +577,7 @@ export class TajikLocalizationEvaluator {
     const issues: LocalizationIssue[] = [];
     
     // 检查词汇选择的适当性
-    const vocabularyChecks = [
+    const vocabularyChecks = [;
       {
         pattern: /энергия/g, // 能量 - 在商业语境中可能不恰当
         suggested: 'қудрат',
@@ -616,6 +616,7 @@ export class TajikLocalizationEvaluator {
     try {
       const files = await fs.readdir(this.localesPath);
       return files.filter(file => file.endsWith('.json'));
+  }
     } catch (error) {
       console.error('Error reading translation files:', error);
       return [];
@@ -652,7 +653,7 @@ export class TajikLocalizationEvaluator {
    * 计算总体评分
    */
   private calculateOverallScore(fileScores: LocalizationScore[]): number {
-    if (fileScores.length === 0) return 0;
+    if (fileScores.length === 0) return 0; {
     
     const totalScore = fileScores.reduce((sum, score) => sum + score.overallScore, 0);
     return Math.round(totalScore / fileScores.length);

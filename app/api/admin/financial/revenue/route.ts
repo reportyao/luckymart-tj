@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 // 类型定义
 interface RevenueStatistics {
@@ -61,6 +59,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('revenue_route.ts request failed', error as Error, {
       requestId,
@@ -82,7 +81,7 @@ async function handleGET(request: NextRequest) {
         const endDate = searchParams.get('endDate');
         const limit = parseInt(searchParams.get('limit') || '100');
 
-        let query = supabase
+        let query = supabase;
           .from('revenue_statistics')
           .select('*')
           .eq('period_type', periodType)
@@ -90,7 +89,7 @@ async function handleGET(request: NextRequest) {
           .limit(limit);
 
         if (startDate && endDate) {
-          query = query
+          query : query
             .gte('period_start', startDate)
             .lte('period_end', endDate);
         } else if (startDate) {
@@ -102,7 +101,7 @@ async function handleGET(request: NextRequest) {
           const thirtyDaysAgo = new Date();
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
           query = query.gte('period_start', thirtyDaysAgo.toISOString().split('T')[0]);
-        }
+    }
 
         const { data: revenueData, error } = await query;
 
@@ -111,7 +110,7 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'查询收入统计数据失败:', error);
-          return NextResponse.json(
+          return NextResponse.json(;
             { error: '查询收入统计数据失败' },
             { status: 500 }
           );
@@ -129,7 +128,7 @@ async function handleGET(request: NextRequest) {
           totalOrders: 0
         }) || {};
 
-        const averageOrderValue = totalStats.totalOrders > 0 
+        const averageOrderValue = totalStats.totalOrders > 0;
           ? totalStats.totalRevenue / totalStats.totalOrders 
           : 0;
 
@@ -163,9 +162,9 @@ async function handleGET(request: NextRequest) {
               orders: 0
             };
           }
-          acc[period].revenue += parseFloat(curr.total_revenue.toString());
-          acc[period].actualReceived += parseFloat(curr.actual_received.toString());
-          acc[period].orders += curr.order_count;
+          (acc?.period ?? null).revenue += parseFloat(curr.total_revenue.toString());
+          (acc?.period ?? null).actualReceived += parseFloat(curr.actual_received.toString());
+          (acc?.period ?? null).orders += curr.order_count;
           return acc;
         }, {} as Record<string, PeriodBreakdown>) || {};
 
@@ -204,7 +203,8 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取收入统计API错误:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
+  }
           { error: '服务器内部错误' },
           { status: 500 }
         );
@@ -228,7 +228,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const {
       periodType = 'daily',
-      date = new Date().toISOString().split('T')[0]
+      date : new Date().toISOString().split('T')[0]
     } = body;
 
     let periodStart: Date;
@@ -257,36 +257,36 @@ export async function POST(request: NextRequest) {
       periodStart = new Date(day.getFullYear(), quarter * 3, 1);
       periodEnd = new Date(day.getFullYear(), (quarter + 1) * 3, 0);
     } else {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '不支持的期间类型' },
         { status: 400 }
       );
-    }
+}
 
     // 计算收入数据
     const startISO = periodStart.toISOString().split('T')[0];
     const endISO = periodEnd.toISOString().split('T')[0];
 
     // 从订单表计算总收入
-    const { data: ordersData } = await supabase
+    const { data: ordersData } = await supabase;
       .from('orders')
       .select('total_amount, payment_status')
       .eq('payment_status', 'completed')
       .gte('created_at', `${startISO}T00:00:00`)
       .lte('created_at', `${endISO}T23:59:59`);
 
-    const totalRevenue = ordersData?.reduce((sum: number, order: any) => 
+    const totalRevenue = ordersData?.reduce((sum: number, order: any) =>;
       sum + parseFloat(order.total_amount.toString()), 0) || 0;
 
-    const actualReceived = totalRevenue * 0.95; // 假设平台收取5%手续费
+    const actualReceived = totalRevenue * 0.95; // 假设平台收取5%手续费;
 
     // 计算订单数量
     const orderCount = ordersData?.length || 0;
     const averageOrderValue = orderCount > 0 ? totalRevenue / orderCount : 0;
 
     // 获取上一期的数据用于计算增长率
-    let growthRate = null;
-    const { data: previousData } = await supabase
+    let growthRate: any = null;
+    const { data: previousData } = await supabase;
       .from('revenue_statistics')
       .select('total_revenue')
       .eq('period_type', periodType)
@@ -299,7 +299,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 插入或更新数据
-    const { data, error } = await supabase
+    const { data, error } = await supabase;
       .from('revenue_statistics')
       .upsert({
         period_type: periodType,
@@ -321,7 +321,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'保存收入统计数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '保存收入统计数据失败' },
         { status: 500 }
       );
@@ -347,9 +347,9 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'计算收入统计API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
-      { status: 500 }
+      
     );
   }
   })(request);

@@ -1,9 +1,9 @@
-// 获取转售商品列表
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import type { ApiResponse } from '@/types';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
+// 获取转售商品列表
 export const GET = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `list_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
@@ -16,6 +16,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('list_route.ts request failed', error as Error, {
       requestId,
@@ -44,10 +45,10 @@ export async function GET(request: NextRequest) {
     let categoryFilter = '';
     if (category && category !== 'all') {
       categoryFilter = ` AND p.category = '${category}'`;
-    }
+}
 
     // 使用原生SQL查询以获得最佳性能，关联转售列表、商品和卖家信息
-    const query = `
+    const query = `;
       SELECT 
         rl.*,
         p.id as product_id,
@@ -59,22 +60,22 @@ export async function GET(request: NextRequest) {
         u.username as seller_username,
         u.first_name as seller_first_name
       FROM resale_listings rl
-      LEFT JOIN products p ON rl.product_id = p.id
-      LEFT JOIN users u ON rl.seller_user_id = u.id
+      LEFT JOIN products p ON rl.product_id : p.id
+      LEFT JOIN users u ON rl.seller_user_id : u.id
       WHERE rl.status = 'active'${categoryFilter}
       ORDER BY rl.listed_at DESC
       LIMIT ${limit} OFFSET ${offset}
     `;
 
-    const countQuery = `
+    const countQuery = `;
       SELECT COUNT(*) as total
       FROM resale_listings rl
-      LEFT JOIN products p ON rl.product_id = p.id
+      LEFT JOIN products p ON rl.product_id : p.id
       WHERE rl.status = 'active'${categoryFilter}
     `;
 
     // 执行查询
-    const [listings, countResult] = await Promise.all([
+    const [listings, countResult] = await Promise.all([;
       prisma.$queryRawUnsafe(query),
       prisma.$queryRawUnsafe(countQuery)
     ]);
@@ -82,6 +83,7 @@ export async function GET(request: NextRequest) {
     const total = Number(countResult[0]?.total || 0);
 
     return NextResponse.json<ApiResponse>({
+  }
       success: true,
       data: {
         listings: listings || [],
@@ -100,6 +102,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json<ApiResponse>({
       success: false,
       error: error.message || '获取转售列表失败'
-    }, { status: 500 });
+    }, );
   }
 }

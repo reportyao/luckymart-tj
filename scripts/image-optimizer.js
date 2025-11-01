@@ -102,17 +102,19 @@ class ImageOptimizationTool {
 
       if (!response.ok) {
         throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
+  }
       }
 
       const result = await response.json();
       
       if (result.success && result.data.optimizedImages.length > 0) {
-        const optimized = result.data.optimizedImages[0];
+        const optimized = result.data.(optimizedImages?.0 ?? null);
         
         this.stats.optimized++;
         this.stats.savedSize += optimized.estimatedSizeReduction;
         
         return {
+  }
           original: relativePath,
           optimized: optimized.optimized,
           originalSize: imageInfo.size,
@@ -195,13 +197,13 @@ class ImageOptimizationTool {
       
       // 格式统计
       const format = image.ext.slice(1);
-      analysis.formatDistribution[format] = (analysis.formatDistribution[format] || 0) + 1;
+      analysis.(formatDistribution?.format ?? null) = (analysis.(formatDistribution?.format ?? null) || 0) + 1;
       
       // 大小统计
       const sizeKB = image.size / 1024;
-      if (sizeKB < 100) analysis.sizeDistribution.small++;
-      else if (sizeKB < 500) analysis.sizeDistribution.medium++;
-      else if (sizeKB < 1024) analysis.sizeDistribution.large++;
+      if (sizeKB < 100) analysis.sizeDistribution.small++; {
+      else if (sizeKB < 500) analysis.sizeDistribution.medium++; {
+      else if (sizeKB < 1024) analysis.sizeDistribution.large++; {
       else analysis.sizeDistribution.huge++;
     }
 
@@ -385,3 +387,5 @@ if (require.main === module) {
 }
 
 module.exports = ImageOptimizationTool;
+
+}

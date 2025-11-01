@@ -1,15 +1,13 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { withAuth } from '@/lib/auth';
+import { invitationService } from '@/lib/services/invitation-service';
+import type { ApiResponse, CommissionQuery, CommissionResponse } from '@/types';
+import { getLogger } from '@/lib/logger';
 /**
  * 查询消费返利记录 API
  * GET /api/invitation/commission
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/auth';
-import { invitationService } from '@/lib/services/invitation-service';
-import type { ApiResponse, CommissionQuery, CommissionResponse } from '@/types';
-import { ErrorFactory, CommonErrors } from '@/lib/errors';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 
 const logger = getLogger();
@@ -99,6 +97,7 @@ async function handleGetCommission(request: NextRequest, user: any) {
 
     // 默认错误处理
     return NextResponse.json<ApiResponse>({
+  }
       success: false,
       error: '获取返利记录时发生错误，请稍后重试'
     }, { status: 500 });

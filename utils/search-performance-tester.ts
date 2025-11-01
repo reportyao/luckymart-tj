@@ -1,3 +1,6 @@
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { join } from 'path';
+import {
 /**
  * 多语言搜索性能测试工具
  * 
@@ -6,9 +9,6 @@
  * 生成搜索性能报告
  */
 
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
-import {
   ProductMultilingualService,
   MultilingualHelper,
   type SupportedLanguage,
@@ -74,7 +74,7 @@ const PERFORMANCE_THRESHOLDS = {
 };
 
 // 测试数据
-const PERFORMANCE_TEST_DATA = [
+const PERFORMANCE_TEST_DATA = [;
   {
     category: 'electronics',
     searchTerms: {
@@ -133,7 +133,7 @@ export class SearchPerformanceTester {
     
     console.log('✅ 搜索性能测试完成');
     return report;
-  }
+}
 
   /**
    * 运行基本搜索性能测试
@@ -143,7 +143,7 @@ export class SearchPerformanceTester {
 
     for (const language of SUPPORTED_LANGUAGES) {
       for (const testData of PERFORMANCE_TEST_DATA) {
-        const searchTerms = testData.searchTerms[language];
+        const searchTerms = testData.(searchTerms?.language ?? null);
         
         for (const searchTerm of searchTerms) {
           const startTime = Date.now();
@@ -167,6 +167,7 @@ export class SearchPerformanceTester {
             
             this.results.push(result);
             console.log(`  ${language}: "${searchTerm}" - ${responseTime}ms`);
+  }
             
           } catch (error) {
             const responseTime = Date.now() - startTime;
@@ -198,7 +199,7 @@ export class SearchPerformanceTester {
     console.log('🌍 运行多语言搜索准确性测试...');
 
     // 测试跨语言搜索的准确性
-    const crossLanguageTests = [
+    const crossLanguageTests = [;
       {
         searchLanguage: 'zh-CN' as SupportedLanguage,
         searchTerm: '智能手机',
@@ -220,7 +221,7 @@ export class SearchPerformanceTester {
         // 验证结果在所有预期语言中的存在性
         let accuracyScore = 0;
         for (const lang of test.expectedInLanguages) {
-          const hasMultilingualContent = products.some(product => 
+          const hasMultilingualContent = products.some(product =>;
             product._multilingual?.name?.[lang] && product._multilingual.name[lang].length > 0
           );
           if (hasMultilingualContent) {
@@ -254,7 +255,7 @@ export class SearchPerformanceTester {
   private async runSearchRelevanceTests(): Promise<void> {
     console.log('🎯 运行搜索相关性测试...');
 
-    const relevanceTests = [
+    const relevanceTests = [;
       {
         searchTerm: '手机',
         expectedTerms: ['smartphone', '手机', 'смартфон', 'smartfon'],
@@ -327,7 +328,7 @@ export class SearchPerformanceTester {
   private async runSearchStressTests(): Promise<void> {
     console.log('🔥 运行搜索压力测试...');
 
-    const stressTestScenarios = [
+    const stressTestScenarios = [;
       { requests: 50, duration: 1000 }, // 50个请求，1秒内完成
       { requests: 100, duration: 2000 }, // 100个请求，2秒内完成
     ];
@@ -424,7 +425,7 @@ export class SearchPerformanceTester {
     await new Promise(resolve => setTimeout(resolve, Math.random() * 200 + 50));
     
     // 模拟搜索结果
-    const mockResults = [
+    const mockResults = [;
       {
         id: '1',
         name: `Mock Product ${searchTerm}`,
@@ -448,7 +449,7 @@ export class SearchPerformanceTester {
    * 计算搜索相关性评分
    */
   private calculateRelevanceScore(searchTerm: string, results: any[], expectedTerms: string[] = []): number {
-    if (results.length === 0) return 0;
+    if (results.length === 0) return 0; {
     
     let totalScore = 0;
     
@@ -488,9 +489,9 @@ export class SearchPerformanceTester {
    * 根据响应时间获取性能状态
    */
   private getPerformanceStatus(responseTime: number): 'PASS' | 'FAIL' | 'WARNING' {
-    if (responseTime <= PERFORMANCE_THRESHOLDS.excellent) return 'PASS';
-    if (responseTime <= PERFORMANCE_THRESHOLDS.good) return 'PASS';
-    if (responseTime <= PERFORMANCE_THRESHOLDS.acceptable) return 'WARNING';
+    if (responseTime <= PERFORMANCE_THRESHOLDS.excellent) return 'PASS'; {
+    if (responseTime <= PERFORMANCE_THRESHOLDS.good) return 'PASS'; {
+    if (responseTime <= PERFORMANCE_THRESHOLDS.acceptable) return 'WARNING'; {
     return 'FAIL';
   }
 
@@ -626,7 +627,7 @@ export class SearchPerformanceTester {
    * 生成Markdown格式的性能报告
    */
   private generateMarkdownReport(report: PerformanceReport): string {
-    const md = [
+    const md = [;
       `# 多语言搜索性能测试报告`,
       ``,
       `**生成时间:** ${report.timestamp}`,
@@ -689,3 +690,4 @@ export async function runSearchPerformanceTests(): Promise<PerformanceReport> {
   const tester = new SearchPerformanceTester();
   return await tester.runFullTestSuite();
 }
+}}}

@@ -182,7 +182,7 @@ export const developmentConfig: FaultToleranceConfiguration = {
       cpuUsage: 80,
       errorRate: 100,
       responseTime: 5000
-    }
+}
   },
 
   autoRecovery: {
@@ -302,7 +302,7 @@ export const productionConfig: FaultToleranceConfiguration = {
       cpuUsage: 85,
       errorRate: 50,
       responseTime: 3000
-    }
+}
   },
 
   autoRecovery: {
@@ -427,7 +427,7 @@ export const testConfig: FaultToleranceConfiguration = {
       cpuUsage: 95,
       errorRate: 1000,
       responseTime: 10000
-    }
+}
   },
 
   autoRecovery: {
@@ -474,7 +474,7 @@ export function getFaultToleranceConfig(): FaultToleranceConfiguration {
     case 'development':
     default:
       return developmentConfig;
-  }
+}
 }
 
 // 配置验证器
@@ -484,7 +484,7 @@ export function validateConfig(config: FaultToleranceConfiguration): boolean {
   // 验证健康检查配置
   if (config.healthCheck.interval < 1000) {
     errors.push('Health check interval must be at least 1000ms');
-  }
+}
 
   if (config.healthCheck.timeout > config.healthCheck.interval) {
     errors.push('Health check timeout must be less than interval');
@@ -541,7 +541,7 @@ export function validateConfig(config: FaultToleranceConfiguration): boolean {
 export function watchConfigChanges(configPath: string, callback: (config: FaultToleranceConfiguration) => void) {
   if (process.env.NODE_ENV === 'production') {
     return; // 生产环境不启用配置监控
-  }
+}
 
   try {
     const fs = require('fs');

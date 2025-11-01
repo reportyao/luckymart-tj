@@ -1,11 +1,11 @@
-// request-manager.ts - 统一请求管理器
 import { RequestPriority, priorityManager, PriorityConfigManager, analyzer } from './priority-manager';
 import { concurrencyController, intelligentScheduler } from './concurrency-controller';
 import { monitoringSystem } from './request-monitor';
 import { NetworkAwareRequestQueue, QueueItemStatus } from './request-queue';
 import { NetworkRetryManager } from './network-retry';
 import { RequestDegradationManager } from './request-degradation';
-import { ApiClient, ApiResponse } from '@/lib/api-client';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+// request-manager.ts - 统一请求管理器
 
 // 请求执行选项
 export interface RequestExecutionOptions {
@@ -67,7 +67,7 @@ export class RequestManager {
     this.queueManager = NetworkAwareRequestQueue.getInstance();
     this.retryManager = NetworkRetryManager.getInstance();
     this.degradationManager = new RequestDegradationManager();
-  }
+}
 
   public static getInstance(): RequestManager {
     if (!RequestManager.instance) {
@@ -92,7 +92,7 @@ export class RequestManager {
     });
 
     // 2. 创建请求上下文
-    const requestContext = this.createRequestContext(
+    const requestContext = this.createRequestContext(;
       requestId,
       finalPriority,
       options
@@ -109,7 +109,7 @@ export class RequestManager {
 
     // 5. 执行请求
     try {
-      const result = await this.executeWithFullManagement(
+      const result = await this.executeWithFullManagement(;
         requestContext,
         operation
       );
@@ -130,7 +130,7 @@ export class RequestManager {
 
     } catch (error) {
       // 记录失败
-      const errorResult = await this.handleExecutionError(
+      const errorResult = await this.handleExecutionError(;
         requestContext,
         error as Error
       );
@@ -159,6 +159,7 @@ export class RequestManager {
       const requestInfo = await this.analyzeOperation(operation);
       const analysis = analyzer.analyzeRequest(requestInfo);
       return analysis.suggestedPriority;
+  }
     } catch {
       // 分析失败时使用默认优先级
       return RequestPriority.NORMAL;
@@ -274,6 +275,7 @@ export class RequestManager {
       const result = await operation();
       clearTimeout(timeoutId);
       return result;
+  }
     } catch (error) {
       clearTimeout(timeoutId);
       
@@ -311,6 +313,7 @@ export class RequestManager {
         });
         
         return result;
+  }
       } catch (retryError) {
         lastError = retryError as Error;
         console.warn(`Critical request retry attempt ${attempt} failed:`, retryError);
@@ -389,6 +392,7 @@ export class RequestManager {
       try {
         const degradedResult = await this.handleDegradation(context, error);
         return {
+  }
           success: true,
           data: degradedResult,
           metadata: {
@@ -581,7 +585,7 @@ export class RequestManager {
     executionTime?: number;
   } {
     // 检查是否在并发控制器中
-    const isActive = concurrencyController.getMetrics().activeByPriority[RequestPriority.CRITICAL] > 0 ||
+    const isActive = concurrencyController.getMetrics().activeByPriority[RequestPriority.CRITICAL] > 0 ||;
                     concurrencyController.getMetrics().activeByPriority[RequestPriority.NORMAL] > 0 ||
                     concurrencyController.getMetrics().activeByPriority[RequestPriority.LOW] > 0;
 
@@ -649,7 +653,6 @@ export class RequestManager {
 }
 
 // React Hook 增强版
-import { useState, useCallback, useMemo, useEffect } from 'react';
 
 export function useEnhancedApi<T>(
   apiFunction: () => Promise<T>,
@@ -685,7 +688,7 @@ export function useEnhancedApi<T>(
           trackPerformance: options.monitoring?.trackPerformance !== false,
           trackBusinessMetrics: options.monitoring?.trackBusinessMetrics !== false,
           metricName: options.monitoring?.metricName
-        }
+}
       });
 
       if (result.success) {

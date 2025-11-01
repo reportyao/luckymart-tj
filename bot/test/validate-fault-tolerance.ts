@@ -29,12 +29,12 @@ export class FaultToleranceValidator {
     
     // 输出结果
     this.printResults();
-  }
+}
 
   private async validateFileStructure(): Promise<void> {
     console.log('📁 验证文件结构...');
 
-    const requiredFiles = [
+    const requiredFiles = [;
       'enhanced-telegram-bot-launcher.ts',
       'utils/bot-daemon.ts',
       'utils/alert-manager.ts',
@@ -64,7 +64,7 @@ export class FaultToleranceValidator {
     console.log('🔧 验证组件接口...');
 
     // 检查主要接口定义
-    const interfaces = [
+    const interfaces = [;
       { name: 'BotDaemonConfig', file: 'utils/daemon-types.ts' },
       { name: 'AlertRule', file: 'utils/alert-manager.ts' },
       { name: 'HealthStatus', file: 'utils/health-monitor.ts' },

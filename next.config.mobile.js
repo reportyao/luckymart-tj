@@ -192,7 +192,7 @@ const mobileOptimizedConfig = {
 
   // PWA支持
   async headers() {
-    return [
+    return [;
       {
         source: '/(.*)',
         headers: [
@@ -246,7 +246,7 @@ const mobileOptimizedConfig = {
 
   // 重定向配置 (移动端友好)
   async redirects() {
-    return [
+    return [;
       {
         source: '/admin',
         destination: '/admin/dashboard',
@@ -262,7 +262,7 @@ const mobileOptimizedConfig = {
 
   // 中间件配置
   async rewrites() {
-    return [
+    return [;
       {
         source: '/api/mobile/:path*',
         destination: '/api/:path*'

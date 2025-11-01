@@ -3,14 +3,13 @@ import { prisma } from '@/lib/prisma';
 import { withAuth } from '@/lib/auth';
 import { ApiResponse } from '@/lib/api-response';
 import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 
 const logger = getLogger();
 
 // 签到奖励配置：7天周期的奖励金额
 const CHECK_IN_REWARDS = [1.00, 0.50, 0.30, 0.10, 0.05, 0.03, 0.02];
-const TOTAL_REWARD_AMOUNT = CHECK_IN_REWARDS.reduce((sum: any,  reward: any) => sum + reward, 0);
+const TOTAL_REWARD_AMOUNT = CHECK_IN_REWARDS.reduce((sum: any: any,   reward: any: any) => sum + reward, 0);
 
 /**
  * 获取用户签到状态和进度API
@@ -28,11 +27,11 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         method: 'GET'
       });
       
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
-    }
+}
 
     requestLogger.info('开始获取用户签到状态', { userId: user.userId }, {
       endpoint: '/api/check-in/status',
@@ -40,7 +39,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     });
 
     // 获取用户签到状态汇总信息
-    const userCheckInSummary = await prisma.$queryRaw`
+    const userCheckInSummary = await prisma.$queryRaw`;
       SELECT * FROM user_check_in_summary WHERE user_id = ${user.userId}::uuid
     `;
 
@@ -51,7 +50,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         method: 'GET'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.notFound('用户不存在'),
         { status: 404 }
       );
@@ -60,7 +59,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     const summaryData = userCheckInSummary[0];
 
     // 获取最近7天的签到记录
-    const recentCheckIns = await prisma.$queryRaw`
+    const recentCheckIns = await prisma.$queryRaw`;
       SELECT 
         check_in_date,
         check_in_day,
@@ -70,12 +69,12 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       FROM check_in_records 
       WHERE user_id = ${user.userId}::uuid 
       AND check_in_date >= CURRENT_DATE - INTERVAL '6 days'
-      AND status = 'claimed'
+      AND status : 'claimed'
       ORDER BY check_in_date DESC
     `;
 
     // 获取签到周期历史
-    const cycleHistory = await prisma.$queryRaw`
+    const cycleHistory = await prisma.$queryRaw`;
       SELECT 
         id,
         cycle_start_date,
@@ -173,7 +172,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       method: 'GET'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('获取签到状态失败，请稍后重试'),
       { status: 500 }
     );

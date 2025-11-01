@@ -1,12 +1,10 @@
-// 用户地址管理（缓存一致性版本）
 import { NextResponse } from 'next/server';
 import { userService } from '@/lib/user-service';
 import { getUserFromRequest } from '@/lib/auth';
 import type { ApiResponse, UserAddress } from '@/types';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+// 用户地址管理（缓存一致性版本）
 
 export const GET = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
@@ -20,6 +18,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('addresses-consistent_route.ts request failed', error as Error, {
       requestId,
@@ -41,7 +40,7 @@ async function handleGET(request: NextRequest) {
             success: false,
             error: '未授权访问'
           }, { status: 401 });
-        }
+    }
 
         logger.info('获取用户地址列表', { userId: user.userId });
 
@@ -60,6 +59,7 @@ async function handleGET(request: NextRequest) {
         });
     
         return NextResponse.json<ApiResponse>({
+  }
           success: false,
           error: error.message || '获取地址列表失败'
         }, { status: 500 });
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
         success: false,
         error: '未授权访问'
       }, { status: 401 });
-    }
+}
 
     const body = await request.json();
     const {
@@ -130,6 +130,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json<ApiResponse<UserAddress>>({
+  }
       success: true,
       data: newAddress,
       message: '地址添加成功'
@@ -144,6 +145,6 @@ export async function POST(request: Request) {
     return NextResponse.json<ApiResponse>({
       success: false,
       error: error.message || '添加地址失败'
-    }, { status: 500 });
+    }, );
   }
 }

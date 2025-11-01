@@ -63,6 +63,6 @@ declare module 'web-push' {
       urgency?: 'very-low' | 'low' | 'normal' | 'high';
       topic?: string;
       collapseKey?: string;
-    }
+  }
   ): Promise<SendResponse>;
 }

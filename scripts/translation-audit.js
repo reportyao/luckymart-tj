@@ -104,7 +104,7 @@ class TranslationQualityChecker {
     
     if (!fs.existsSync(filePath)) {
       this.addIssue(ISSUE_TYPES.MISSING_FILE, 'critical', `文件不存在: ${filePath}`);
-      this.results.files[fileKey] = { exists: false, issues: [] };
+      this.results.(files?.fileKey ?? null) = { exists: false, issues: [] };
       return;
     }
     
@@ -144,9 +144,10 @@ class TranslationQualityChecker {
       // 计算质量分数
       this.calculateQualityScore(fileResult);
       
-      this.results.files[fileKey] = fileResult;
+      this.results.(files?.fileKey ?? null) = fileResult;
       
       console.log(`    ${colors.green}✓${colors.reset} ${keys.length} 个键`);
+  }
       
     } catch (error) {
       this.addIssue(ISSUE_TYPES.MISSING_FILE, 'critical', `文件解析错误: ${filePath} - ${error.message}`);
@@ -214,6 +215,7 @@ class TranslationQualityChecker {
         const content = fs.readFileSync(baseFile, 'utf-8');
         const data = JSON.parse(content);
         return this.extractKeys(data);
+  }
       } catch (error) {
         return [];
       }
@@ -322,7 +324,7 @@ class TranslationQualityChecker {
     // 获取基准翻译（中文）
     const baseData = this.getBaseTranslationData();
     
-    if (!baseData) return;
+    if (!baseData) return; {
     
     const lengthIssues = [];
     
@@ -358,7 +360,7 @@ class TranslationQualityChecker {
    * 获取嵌套值
    */
   getNestedValue(obj, keyPath) {
-    return keyPath.split('.').reduce((current, key) => current && current[key], obj);
+    return keyPath.split('.').reduce((current, key) => current && (current?.key ?? null), obj);
   }
 
   /**
@@ -538,7 +540,7 @@ class TranslationQualityChecker {
     const files = Object.values(this.results.files);
     const completedFiles = files.filter(f => f.exists);
     
-    if (completedFiles.length === 0) return;
+    if (completedFiles.length === 0) return; {
     
     // 计算总体质量分数
     const totalQuality = completedFiles.reduce((sum, file) => sum + file.quality.quality, 0);
@@ -597,7 +599,7 @@ class TranslationQualityChecker {
    * 获取主要问题
    */
   getTopIssues() {
-    return this.results.issues
+    return this.results.issues;
       .sort((a, b) => {
         const severityOrder = { critical: 3, high: 2, medium: 1, low: 0 };
         return severityOrder[b.severity] - severityOrder[a.severity];
@@ -768,7 +770,7 @@ async function main() {
     process.exit(exitCode);
     
   } catch (error) {
-    console.error(`${colors.red}❌ 检查过程中发生错误: ${error.message}${colors.reset}`);
+    console.error(`$❌ 检查过程中发生错误: $$`);
     process.exit(1);
   }
 }

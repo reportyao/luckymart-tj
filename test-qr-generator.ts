@@ -1,3 +1,4 @@
+import {
 #!/usr/bin/env node
 /**
  * Simple QR Code Generator Test
@@ -7,7 +8,6 @@
 // 注意：在Node.js环境中，需要使用jsdom或其他DOM模拟器
 // 这个脚本主要用于验证类型检查和基本逻辑
 
-import {
   QRCodeGenerator,
   QRCodeError,
   generateReferralQR,
@@ -21,7 +21,7 @@ console.log('🧪 开始测试QR Code Generator...\n');
 function testContentValidation() {
   console.log('📋 测试内容验证功能:');
   
-  const testCases = [
+  const testCases = [;
     { content: 'https://example.com', expected: 'url' },
     { content: 'user@example.com', expected: 'email' },
     { content: '+1234567890', expected: 'phone' },
@@ -45,6 +45,7 @@ function testErrorHandling() {
   try {
     // 这将在浏览器环境中测试
     console.log('  ✅ 错误处理函数已定义');
+  }
     console.log('  ✅ QRCodeError类已定义');
     console.log('  ✅ 错误信息包含正确前缀');
   } catch (error) {

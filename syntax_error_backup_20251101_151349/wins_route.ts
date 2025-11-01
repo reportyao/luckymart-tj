@@ -8,11 +8,11 @@ export async function GET(request: NextRequest) {
     // 验证用户身份
     const authResult = await authenticateUser(request);
     if (!authResult.success) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '认证失败' },
         { status: 401 }
       );
-    }
+}
 
     const user = authResult.user;
     const { searchParams } = new URL(request.url);
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
     const offset = (page - 1) * limit;
-    const period = searchParams.get('period') || 'all'; // 'week', 'month', 'year', 'all'
+    const period = searchParams.get('period') || 'all'; // 'week', 'month', 'year', 'all';
 
     // 构建时间筛选条件
     let dateFilter: Date | undefined;
@@ -144,7 +144,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('获取中奖记录失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '服务器错误' },
       { status: 500 }
     );
@@ -157,18 +157,18 @@ export async function POST(request: NextRequest) {
     // 验证用户身份
     const authResult = await authenticateUser(request);
     if (!authResult.success) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '认证失败' },
         { status: 401 }
       );
-    }
+}
 
     const user = authResult.user;
     const body = await request.json();
     const { participationId, claimType = 'wallet' } = body;
 
     if (!participationId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '参与记录ID不能为空' },
         { status: 400 }
       );
@@ -191,7 +191,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!participation) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '中奖记录不存在或无权限' },
         { status: 404 }
       );
@@ -247,7 +247,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('申请领奖失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '服务器错误' },
       { status: 500 }
     );
@@ -265,8 +265,8 @@ function calculatePrize(product: any, sharesCount: number): { amount: number; ty
   const totalShares = product.totalShares;
   
   // 示例策略：固定奖金 + 比例奖金
-  const fixedPrize = 10; // 固定奖金 10 TJS
-  const percentagePrize = pricePerShare * sharesCount * 0.1; // 10% 的商品价值
+  const fixedPrize = 10; // 固定奖金 10 TJS;
+  const percentagePrize = pricePerShare * sharesCount * 0.1; // 10% 的商品价值;
   
   const totalPrize = fixedPrize + percentagePrize;
   
@@ -279,10 +279,10 @@ function calculatePrize(product: any, sharesCount: number): { amount: number; ty
 
 // 获取奖金档次的辅助函数
 function getPrizePeriod(prizeAmount: number, roundNumber: number): string {
-  if (prizeAmount >= 100) return 'jackpot'; // 大奖
-  if (prizeAmount >= 50) return 'major'; // 大奖
-  if (prizeAmount >= 20) return 'medium'; // 中奖
-  return 'minor'; // 小奖
+  if (prizeAmount >= 100) return 'jackpot'; // 大奖 {
+  if (prizeAmount >= 50) return 'major'; // 大奖 {
+  if (prizeAmount >= 20) return 'medium'; // 中奖 {
+  return 'minor'; // 小奖;
 }
 
 // 计算中奖统计数据的辅助函数
@@ -363,20 +363,20 @@ async function calculateWinStatistics(userId: string, period: string) {
 function getMultilingualProductName(product: any): string {
   if (product.nameMultilingual) {
     try {
-      const nameData = typeof product.nameMultilingual === 'string' 
+      const nameData = typeof product.nameMultilingual === 'string';
         ? JSON.parse(product.nameMultilingual) 
         : product.nameMultilingual;
       
       const languages = ['zh-CN', 'zh', 'en', 'ru', 'tg'];
       
       for (const lang of languages) {
-        if (nameData[lang] && nameData[lang].name) {
-          return nameData[lang].name;
+        if ((nameData?.lang ?? null) && (nameData?.lang ?? null).name) {
+          return (nameData?.lang ?? null).name;
         }
       }
       
-      const firstName = Object.values(nameData).find((value: any) => 
-        value && typeof value === 'object' && value.name
+      const firstName = Object.values(nameData).find((value: any) =>;
+        value && typeof value :== 'object' && value.name
       ) as any;
       
       if (firstName) {
@@ -389,3 +389,4 @@ function getMultilingualProductName(product: any): string {
 
   return product.nameZh || product.nameEn || product.nameRu || '未知商品';
 }
+}}}

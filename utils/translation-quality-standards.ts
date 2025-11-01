@@ -64,7 +64,7 @@ export class TranslationQualityStandards {
 
   constructor() {
     this.initializeStandards();
-  }
+}
 
   private initializeStandards() {
     // 标准1: 翻译准确性
@@ -602,7 +602,7 @@ export class TranslationQualityStandards {
     }
 
     const overall = Math.round((totalScore / maxTotalScore) * 100);
-    const pass = overall >= 70; // 70分为及格线
+    const pass = overall >= 70; // 70分为及格线;
 
     return {
       standard: 'comprehensive',
@@ -740,7 +740,7 @@ export class TranslationQualityStandards {
    */
   private checkCoreTermsConsistency(text: string, context: any): boolean {
     // 核心术语列表
-    const coreTerms = [
+    const coreTerms = [;
       'coins', 'shares', 'balance', 'currency', 'amount',
       'recharge', 'withdraw', 'time', 'date', 'today',
       'yesterday', 'tomorrow', 'tap', 'swipe', 'long_press',
@@ -754,7 +754,7 @@ export class TranslationQualityStandards {
     for (const [term, expectedTranslation] of Object.entries(expectedTranslations)) {
       if (text.toLowerCase().includes(term.toLowerCase())) {
         // 如果包含原术语，检查是否有对应的翻译
-        const hasTranslation = Object.values(expectedTranslations).some(translation => 
+        const hasTranslation = Object.values(expectedTranslations).some(translation =>;
           text.includes(translation)
         );
         if (!hasTranslation) {

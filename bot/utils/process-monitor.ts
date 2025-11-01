@@ -1,11 +1,11 @@
+import { EventEmitter } from 'events';
+import { logger, errorTracker } from './logger';
+import { healthMonitor, HealthStatus } from './health-monitor';
 /**
  * 进程监控和自动重启系统
  * 确保Bot稳定运行，监控资源使用，自动恢复异常状态
  */
 
-import { EventEmitter } from 'events';
-import { logger, errorTracker } from './logger';
-import { healthMonitor, HealthStatus } from './health-monitor';
 
 export interface ProcessMetrics {
   uptime: number;
@@ -59,7 +59,7 @@ export class ProcessMonitor extends EventEmitter {
     };
 
     this.startMonitoring();
-  }
+}
 
   // 开始监控
   public startMonitoring() {
@@ -267,7 +267,7 @@ export class ProcessMonitor extends EventEmitter {
   }
 
   private isCpuUsageHigh(metrics: ProcessMetrics): boolean {
-    const cpuUsage = (metrics.cpuUsage.user + metrics.cpuUsage.system) / 1000000; // 转换为秒
+    const cpuUsage = (metrics.cpuUsage.user + metrics.cpuUsage.system) / 1000000; // 转换为秒;
     const cpuPercentage = (cpuUsage / metrics.uptime) * 100;
     
     return cpuPercentage > this.config.cpuThreshold;
@@ -277,14 +277,14 @@ export class ProcessMonitor extends EventEmitter {
     const memUsage = process.memoryUsage();
     const heapUsedMB = memUsage.heapUsed / 1024 / 1024;
     
-    return heapUsedMB > this.config.memoryThreshold * 1.5; // 150% 阈值
+    return heapUsedMB > this.config.memoryThreshold * 1.5; // 150% 阈值;
   }
 
   private shouldRestartDueToCpu(): boolean {
     const cpuUsage = (this.lastMetrics?.cpuUsage.user || 0) + (this.lastMetrics?.cpuUsage.system || 0);
     const cpuPercentage = cpuUsage / 1000000 / (this.lastMetrics?.uptime || 1) * 100;
     
-    return cpuPercentage > this.config.cpuThreshold * 1.2; // 120% 阈值
+    return cpuPercentage > this.config.cpuThreshold * 1.2; // 120% 阈值;
   }
 
   private shouldGracefulRestart(): boolean {

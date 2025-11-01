@@ -1,14 +1,14 @@
-/**
- * Telegram Bot 推送性能测试
- * 测试大量消息的批量发送性能，验证推送频率和限制控制，测试消息丢失和重试处理
- */
-
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
 import { performance } from 'perf_hooks';
 import { MessageQueue } from '../bot/utils/message-queue';
 import { faultToleranceManager } from '../bot/utils/fault-tolerance-manager';
 import { logger } from '../bot/utils/logger';
 import { NotificationTemplateManager, Language, NotificationType } from '../bot/utils/notification-templates';
+/**
+ * Telegram Bot 推送性能测试
+ * 测试大量消息的批量发送性能，验证推送频率和限制控制，测试消息丢失和重试处理
+ */
+
 
 interface PerformanceMetrics {
   testName: string;
@@ -183,7 +183,7 @@ class PerformanceTestRunner {
 
     const startTime = performance.now();
     const memoryBefore = process.memoryUsage();
-    const testDuration = 5000; // 5秒测试
+    const testDuration = 5000; // 5秒测试;
     const targetRate = this.pushConfig.rateLimit.messagesPerSecond;
     const messageIds: string[] = [];
     const errorDetails: Array<{ messageId: string; error: string; timestamp: number }> = [];
@@ -391,7 +391,7 @@ class PerformanceTestRunner {
       
       // 为每个用户组并发发送消息
       const groupPromises = userGroups.map(async (userGroup, groupIndex) => {
-        const groupResults = await Promise.allSettled(
+        const groupResults = await Promise.allSettled(;
           userGroup.map(async (userId, messageIndex) => {
             const messageId = `concurrent_${groupIndex}_${messageIndex}_${Date.now()}`;
             const startLatency = performance.now();
@@ -594,7 +594,7 @@ class PerformanceTestRunner {
   }
 
   private async waitForMessageProcessing(expectedCount: number): Promise<void> {
-    const maxWaitTime = 30000; // 30秒超时
+    const maxWaitTime = 30000; // 30秒超时;
     const startTime = Date.now();
     const messageQueue = faultToleranceManager.getMessageQueue();
 
@@ -659,7 +659,7 @@ class PerformanceTestRunner {
     const totalDuration = this.metrics.reduce((sum, m) => sum + m.duration, 0);
     const overallSuccessRate = this.metrics.reduce((sum, m) => sum + m.successRate, 0) / totalTests;
     
-    let report = `# Telegram Bot 推送性能测试报告
+    let report = `# Telegram Bot 推送性能测试报告;
 
 ## 测试概览
 - 总测试数量: ${totalTests}

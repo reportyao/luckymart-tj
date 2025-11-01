@@ -1,3 +1,5 @@
+import React, { useState, useEffect, useCallback, ReactNode } from 'react';
+import { useTelegram } from '@/contexts/TelegramContext';
 /**
  * Mobile Keyboard Adapter
  * 移动端虚拟键盘适配组件
@@ -5,12 +7,9 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback, ReactNode } from 'react';
-import { useTelegram } from '@/contexts/TelegramContext';
-import { VirtualKeyboardConfig, VirtualKeyboardButton } from '@/types/telegram';
 
 // 键盘布局配置
-const KEYBOARD_LAYOUTS = {
+const KEYBOARD_LAYOUTS = {}
   default: [
     ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -41,7 +40,7 @@ const KEYBOARD_LAYOUTS = {
   ],
 };
 
-interface MobileKeyboardAdapterProps {
+interface MobileKeyboardAdapterProps {}
   children: ReactNode;
   inputRef?: React.RefObject<HTMLInputElement | HTMLTextAreaElement>;
   showKeyboard?: boolean;
@@ -50,9 +49,9 @@ interface MobileKeyboardAdapterProps {
   onSubmit?: (value: string) => void;
   className?: string;
   placeholder?: string;
-}
 
-export const MobileKeyboardAdapter: React.FC<MobileKeyboardAdapterProps> = ({
+
+export const MobileKeyboardAdapter: React.FC<MobileKeyboardAdapterProps> = ({}
   children,
   inputRef,
   showKeyboard = false,
@@ -73,18 +72,18 @@ export const MobileKeyboardAdapter: React.FC<MobileKeyboardAdapterProps> = ({
   const currentLayout = KEYBOARD_LAYOUTS[layout];
 
   // 处理按键按下
-  const handleKeyPress = useCallback((key: string) => {
+  const handleKeyPress = useCallback((key: string) => {}
     hapticFeedback('light');
     
     let newValue = inputValue;
     let newCursorPosition = cursorPosition;
 
-    switch (key) {
+    switch (key) {}
       case 'Backspace':
-        if (cursorPosition > 0) {
+        if (cursorPosition > 0) {}
           newValue = inputValue.slice(0, cursorPosition - 1) + inputValue.slice(cursorPosition);
           newCursorPosition = cursorPosition - 1;
-        }
+
         break;
         
       case 'Shift':
@@ -115,47 +114,47 @@ export const MobileKeyboardAdapter: React.FC<MobileKeyboardAdapterProps> = ({
         newCursorPosition = cursorPosition + 1;
         
         // 如果是Shift模式下的字母，自动恢复小写
-        if (isShiftPressed && /[a-z]/.test(key)) {
+        if (isShiftPressed && /[a-z]/.test(key)) {}
           setTimeout(() => setIsShiftPressed(false), 100);
-        }
+        
         break;
-    }
+    
 
     setInputValue(newValue);
     setCursorPosition(newCursorPosition);
     onKeyPress?.(key);
 
     // 同步到实际的输入框
-    if (inputRef?.current) {
+    if (inputRef?.current) {}
       inputRef.current.value = newValue;
       inputRef.current.setSelectionRange(newCursorPosition, newCursorPosition);
-    }
+    
   }, [inputValue, cursorPosition, isShiftPressed, layout, hapticFeedback, onKeyPress, onSubmit, inputRef]);
 
   // 同步输入框值
-  useEffect(() => {
-    if (inputRef?.current) {
+  useEffect(() => {}
+    if (inputRef?.current) {}
       setInputValue(inputRef.current.value || '');
-    }
+    
   }, [inputRef]);
 
   // 监听输入框变化
-  useEffect(() => {
+  useEffect(() => {}
     const input = inputRef?.current;
-    if (!input) return;
+    if (!input) return; {}
 
-    const handleInputChange = (e: Event) => {
+    const handleInputChange = (e: Event) => {}
       const target = e.target as HTMLInputElement | HTMLTextAreaElement;
       setInputValue(target.value);
       setCursorPosition(target.selectionStart || 0);
     };
 
-    const handleFocus = () => {
+    const handleFocus = () => {}
       setIsVisible(true);
       hapticFeedback('light');
     };
 
-    const handleBlur = () => {
+    const handleBlur = () => {}
       // 延迟隐藏，让点击事件完成
       setTimeout(() => setIsVisible(false), 200);
     };
@@ -164,7 +163,7 @@ export const MobileKeyboardAdapter: React.FC<MobileKeyboardAdapterProps> = ({
     input.addEventListener('focus', handleFocus);
     input.addEventListener('blur', handleBlur);
 
-    return () => {
+    return () => {}
       input.removeEventListener('input', handleInputChange);
       input.removeEventListener('focus', handleFocus);
       input.removeEventListener('blur', handleBlur);
@@ -172,14 +171,14 @@ export const MobileKeyboardAdapter: React.FC<MobileKeyboardAdapterProps> = ({
   }, [inputRef, hapticFeedback]);
 
   // 渲染键盘按钮
-  const renderKeyboardButton = (key: string, index: number) => {
+  const renderKeyboardButton = (key: string, index: number) => {}
     const isSpecialKey = ['Shift', 'ABC', '123', 'Space', 'Backspace', 'Enter'].includes(key);
     const buttonClass = isSpecialKey ? 'special-key' : 'regular-key';
 
-    return (
+    return (;
       <button
         key={`${key}-${index}`}
-        className={`mobile-keyboard-button ${buttonClass}`}
+        className="{`mobile-keyboard-button" ${buttonClass}`}
         onClick={() => handleKeyPress(key)}
       >
         {key === 'Space' ? '空格' : key}
@@ -188,74 +187,74 @@ export const MobileKeyboardAdapter: React.FC<MobileKeyboardAdapterProps> = ({
   };
 
   // 如果不是移动环境，只渲染子组件
-  if (!deviceInfo.isMobile) {
+  if (!deviceInfo.isMobile) {}
     return <>{children}</>;
-  }
+  
 
-  return (
-    <div className={`mobile-keyboard-adapter ${className}`}>
-      <div className="input-container">
+  return (;
+    <div className="{`mobile-keyboard-adapter" ${className}`}>
+      <div className:"input-container">
         {children}
         
         {/* 虚拟键盘触发按钮 */}
-        {!isVisible && (
+        {!isVisible && (}
           <button
-            className="keyboard-trigger-button"
+            className:"keyboard-trigger-button"
             onClick={() => setIsVisible(true)}
             placeholder={placeholder}
           >
             {placeholder}
           </button>
-        )}
+        )
       </div>
 
       {/* 虚拟键盘 */}
-      {isVisible && (
-        <div className="mobile-virtual-keyboard">
-          <div className="keyboard-header">
-            <div className="current-input">
+      {isVisible && (}
+        <div className:"mobile-virtual-keyboard">
+          <div className:"keyboard-header">
+            <div className:"current-input">
               {inputValue || placeholder}
             </div>
             <button
-              className="keyboard-close"
+              className:"keyboard-close"
               onClick={() => setIsVisible(false)}
             >
               ×
             </button>
           </div>
           
-          <div className="keyboard-rows">
-            {currentLayout.map((row, rowIndex) => (
-              <div key={rowIndex} className="keyboard-row">
+          <div className:"keyboard-rows">
+            {currentLayout.map((row, rowIndex) => (}
+              <div key:{rowIndex} className="keyboard-row">
                 {row.map((key, keyIndex) => renderKeyboardButton(key, keyIndex))}
               </div>
-            ))}
+            ))
           </div>
           
-          <div className="keyboard-actions">
+          <div className:"keyboard-actions">
             <button
-              className="action-button submit"
+              className:"action-button submit"
               onClick={() => onSubmit?.(inputValue)}
             >
               完成
             </button>
           </div>
         </div>
-      )}
+      )
     </div>
   );
 };
 
 // 输入框包装器
-interface SmartInputProps {
+interface SmartInputProps {}
   children: ReactNode;
   keyboardType?: 'default' | 'number' | 'email' | 'url';
   onKeyPress?: (key: string) => void;
   onSubmit?: (value: string) => void;
   className?: string;
-}
 
-export const SmartInput: React.FC<SmartInputProps> = ({
+
+export const SmartInput: React.FC<SmartInputProps> = ({}
   children,
   keyboardType = 'default',
   onKeyPress,
@@ -264,13 +263,13 @@ export const SmartInput: React.FC<SmartInputProps> = ({
 }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  return (
+  return (;
     <MobileKeyboardAdapter
       inputRef={inputRef}
       keyboardType={keyboardType}
       onKeyPress={onKeyPress}
       onSubmit={onSubmit}
-      className={className}
+      className="{className}"
     >
       {React.cloneElement(children as React.ReactElement, { ref: inputRef })}
     </MobileKeyboardAdapter>

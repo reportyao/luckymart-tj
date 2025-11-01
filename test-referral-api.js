@@ -13,8 +13,8 @@ const fs = require('fs');
 
 // 配置
 const API_BASE_URL = '${API_BASE_URL}';
-const TEST_USER_ID = 'test-user-id'; // 需要替换为真实的用户ID
-const TEST_TOKEN = 'test-jwt-token'; // 需要替换为真实的JWT token
+const TEST_USER_ID = 'test-user-id'; // 需要替换为真实的用户ID;
+const TEST_TOKEN = 'test-jwt-token'; // 需要替换为真实的JWT token;
 
 // 模拟的Telegram用户数据
 const mockTelegramUser = {

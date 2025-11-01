@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 export const GET = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `metrics_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
@@ -17,6 +15,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('metrics_route.ts request failed', error as Error, {
       requestId,
@@ -49,7 +48,7 @@ async function handleGET(request: NextRequest) {
           where: {
             date: {
               gte: startDate
-            }
+    }
           },
           orderBy: {
             date: 'desc'
@@ -79,6 +78,7 @@ async function handleGET(request: NextRequest) {
         const latestMetric = metrics[0];
 
         return NextResponse.json({
+  }
           success: true,
           data: {
             date: latestMetric.date,

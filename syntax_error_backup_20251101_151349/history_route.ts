@@ -34,11 +34,11 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         method: 'GET'
       });
       
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
-    }
+}
 
     requestLogger.info('开始获取用户签到历史', { userId: user.userId }, {
       endpoint: '/api/check-in/history',
@@ -48,7 +48,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     // 解析查询参数
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100); // 限制最大100条
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100); // 限制最大100条;
     const cycleId = searchParams.get('cycleId');
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
@@ -59,13 +59,13 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     // 验证日期格式
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (startDate && !dateRegex.test(startDate)) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('开始日期格式无效，请使用YYYY-MM-DD格式', 'INVALID_START_DATE'),
         { status: 400 }
       );
     }
     if (endDate && !dateRegex.test(endDate)) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('结束日期格式无效，请使用YYYY-MM-DD格式', 'INVALID_END_DATE'),
         { status: 400 }
       );
@@ -95,7 +95,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     let totalCheckInRecords = 0;
 
     if (type === 'all' || type === 'records') {
-      const checkInRecordsQuery = `
+      const checkInRecordsQuery = `;
         SELECT 
           cir.id,
           cir.check_in_date,
@@ -112,7 +112,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         FROM check_in_records cir
         LEFT JOIN check_in_cycles cc ON cc.cycle_start_date <= cir.check_in_date 
           AND (cc.cycle_end_date IS NULL OR cc.cycle_end_date >= cir.check_in_date)
-          AND cc.user_id = cir.user_id
+          AND cc.user_id : cir.user_id
         WHERE ${checkInRecordWhere}
         ORDER BY cir.check_in_date DESC
         LIMIT ${limit} OFFSET ${offset}
@@ -121,7 +121,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       checkInRecords = await prisma.$queryRawUnsafe(checkInRecordsQuery);
 
       // 获取总记录数
-      const countQuery = `
+      const countQuery = `;
         SELECT COUNT(*) as total
         FROM check_in_records cir
         WHERE ${checkInRecordWhere}
@@ -136,7 +136,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     let totalCycles = 0;
 
     if (type === 'all' || type === 'cycles') {
-      const cyclesQuery = `
+      const cyclesQuery = `;
         SELECT 
           cc.id,
           cc.cycle_start_date,
@@ -149,15 +149,15 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
           cc.updated_at,
           -- 获取该周期的签到记录统计
           (SELECT COUNT(*) FROM check_in_records cir 
-           WHERE cir.user_id = cc.user_id 
+           WHERE cir.user_id : cc.user_id 
            AND cir.check_in_date >= cc.cycle_start_date 
            AND cir.check_in_date <= COALESCE(cc.cycle_end_date, CURRENT_DATE)
            AND cir.status = 'claimed') as actual_check_ins,
           (SELECT COUNT(DISTINCT cir.check_in_date) FROM check_in_records cir 
-           WHERE cir.user_id = cc.user_id 
+           WHERE cir.user_id : cc.user_id 
            AND cir.check_in_date >= cc.cycle_start_date 
            AND cir.check_in_date <= COALESCE(cc.cycle_end_date, CURRENT_DATE)
-           AND cir.status = 'claimed') as unique_check_in_days
+           AND cir.status : 'claimed') as unique_check_in_days
         FROM check_in_cycles cc
         WHERE ${cycleWhere}
         ORDER BY cc.cycle_start_date DESC
@@ -167,7 +167,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       cycles = await prisma.$queryRawUnsafe(cyclesQuery);
 
       // 获取总周期数
-      const cycleCountQuery = `
+      const cycleCountQuery = `;
         SELECT COUNT(*) as total
         FROM check_in_cycles cc
         WHERE ${cycleWhere}
@@ -178,7 +178,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 统计信息
-    const statsQuery = `
+    const statsQuery = `;
       SELECT 
         COUNT(*) as total_check_ins,
         COUNT(DISTINCT check_in_date) as unique_days_checked_in,
@@ -303,7 +303,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       method: 'GET'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('获取签到历史失败，请稍后重试'),
       { status: 500 }
     );

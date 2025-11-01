@@ -1,18 +1,13 @@
-// 管理员 - 订单管理
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
 import { rewardTrigger } from '@/lib/reward-trigger-manager';
 import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';
-import { createOrderValidationMiddleware, ORDER_VALIDATION_MIDDLEWARES } from '@/lib/order-validation-middleware';
-import { ErrorFactory } from '@/lib/errors';
-
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+// 管理员 - 订单管理
+
 
 // 订单状态更新请求体
 interface OrderUpdateRequest {
@@ -40,6 +35,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('orders_route.ts request failed', error as Error, {
       requestId,
@@ -68,10 +64,10 @@ async function handleGET(request: NextRequest) {
         const where: any = {};
         if (status) {
           where.status = status;
-        }
+    }
 
         // 获取订单列表和总数
-        const [orders, total] = await Promise.all([
+        const [orders, total] = await Promise.all([;
           prisma.orders.findMany({
             where,
             include: {
@@ -136,7 +132,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必填参数：orderId'
       }, { status: 400 });
-    }
+}
 
     // 生成幂等性请求ID
     const idempotencyKey = `order_update_${orderId}_${updateType}_${Date.now()}`;
@@ -378,4 +374,5 @@ export async function POST(request: NextRequest) {
       }, { status: 500 });
     }
   })(request);
+}
 }

@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { RiskControlService } from '@/lib/risk-control';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
 export const GET = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `events_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
@@ -15,6 +14,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('events_route.ts request failed', error as Error, {
       requestId,
@@ -50,17 +50,17 @@ async function handleGET(request: NextRequest) {
 
         // 构建查询条件
         const where: any = {};
-        if (userId) where.userId = userId;
-        if (status) where.status = status;
-        if (severity) where.severity = severity;
-        if (incidentType) where.incident_type = incidentType;
+        if (userId) where.userId = userId; {
+        if (status) where.status = status; {
+        if (severity) where.severity = severity; {
+        if (incidentType) where.incident_type = incidentType; {
     
         // 日期范围过滤
         if (dateFrom || dateTo) {
           where.createdAt = {};
           if (dateFrom) {
             where.createdAt.gte = new Date(dateFrom);
-          }
+    }
           if (dateTo) {
             where.createdAt.lte = new Date(dateTo);
           }
@@ -68,7 +68,7 @@ async function handleGET(request: NextRequest) {
 
         // 搜索过滤
         if (search) {
-          where.OR = [
+          where.OR : [
             { title: { contains: search, mode: 'insensitive' } },
             { description: { contains: search, mode: 'insensitive' } },
             { userId: { contains: search, mode: 'insensitive' } }
@@ -85,8 +85,8 @@ async function handleGET(request: NextRequest) {
         });
 
         // 转换数据格式并添加额外信息
-        const incidentsWithDetails = await Promise.all(
-          result.incidents.map(async (incident: any) => {
+        const incidentsWithDetails = await Promise.all(;
+          result.incidents.map((async (incident: any) : any) => {
             // 获取相关的风险处理记录
             const actions = await getRiskActionsForIncident(incident.id);
         
@@ -94,7 +94,7 @@ async function handleGET(request: NextRequest) {
             const notifications = await getNotificationsForIncident(incident.id);
         
             // 计算事件持续时间
-            const duration = incident.resolved_at 
+            const duration = incident.resolved_at;
               ? new Date(incident.resolved_at).getTime() - new Date(incident.created_at).getTime()
               : new Date().getTime() - new Date(incident.created_at).getTime();
         
@@ -144,13 +144,14 @@ async function handleGET(request: NextRequest) {
         };
 
         return NextResponse.json(response);
+  }
 
       } catch (error) {
         logger.error("API Error", error as Error, {
           requestId,
           endpoint: request.url
         });'查询风险事件错误:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
           {
             error: '查询风险事件失败',
             message: '系统正在处理其他请求，请稍后重试'
@@ -177,7 +178,8 @@ export async function POST(request: NextRequest) {
 
     // 验证必填参数
     if (!userId || !incidentType || !title) {
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         { error: '缺少必要参数: userId, incidentType, title' },
         { status: 400 }
       );
@@ -226,7 +228,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'创建风险事件错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '创建风险事件失败',
         message: '请检查参数格式并重试'
@@ -249,14 +251,14 @@ export async function PUT(request: NextRequest) {
     } = body;
 
     if (!incidentId || !status) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '缺少必要参数: incidentId, status' },
         { status: 400 }
       );
-    }
+}
 
     // 更新事件状态
-    const updatedIncident = await updateIncidentStatus(
+    const updatedIncident = await updateIncidentStatus(;
       incidentId,
       status,
       assignedTo,
@@ -279,7 +281,7 @@ export async function PUT(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'更新风险事件错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         error: '更新风险事件失败',
         message: '请检查事件ID和状态是否正确'
@@ -440,3 +442,4 @@ async function updateIncidentStatus(
     throw error;
   }
 }
+}}

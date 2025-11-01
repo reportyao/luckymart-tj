@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -8,17 +6,18 @@ import CheckinButton from '@/components/checkin/CheckinButton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Coins, Calendar, Trophy, TrendingUp } from 'lucide-react';
-import { format } from 'date-fns';
 import { zhCN, tg } from 'date-fns/locale';
+'use client';
 
-interface CheckinStatus {
-  user: {
+
+interface CheckinStatus {}
+  user: {}
     userId: string;
     username: string | null;
     firstName: string;
     luckyCoins: number;
   };
-  todayStatus: {
+  todayStatus: {}
     date: string;
     isCheckedIn: boolean;
     canCheckIn: boolean;
@@ -26,28 +25,28 @@ interface CheckinStatus {
     rewardAmount: number;
     nextRewardDay: number;
   };
-  cycleInfo: {
+  cycleInfo: {}
     currentStreak: number;
     cycleProgress: number;
     isCycleCompleted: boolean;
     rewardConfig: number[];
     totalRewardAmount: number;
   };
-  calendar: Array<{
+  calendar: Array<{}
     date: string;
     day: number | null;
     reward: number | null;
     isCheckedIn: boolean;
     isToday: boolean;
   }>;
-  statistics: {
+  statistics: {}
     totalCheckIns: number;
     maxConsecutiveDays: number;
     totalEarned: number;
   };
-}
 
-function CheckinPage() {
+
+function CheckinPage() {}
   const { user, token } = useAuth();
   const { language } = useLanguage();
   const [checkinStatus, setCheckinStatus] = useState<CheckinStatus | null>(null);
@@ -55,8 +54,8 @@ function CheckinPage() {
   const [error, setError] = useState<string | null>(null);
 
   // 多语言翻译
-  const translations = {
-    'zh-CN': {
+  const translations = {}
+    'zh-CN': {}
       title: '每日签到',
       subtitle: '坚持签到，赢取丰厚奖励',
       consecutiveDays: '连续签到',
@@ -78,7 +77,7 @@ function CheckinPage() {
       progress: '进度',
       calendar: '签到日历'
     },
-    'tg-TJ': {
+    'tg-TJ': {}
       title: 'Рӯзмарра Қайд кардан',
       subtitle: 'Қайд карданро идома диҳед, мукофотҳои зиёд гиред',
       consecutiveDays: 'Рӯзҳои пайдарпай',
@@ -99,72 +98,72 @@ function CheckinPage() {
       nextReward: 'Мукофоти навбатӣ',
       progress: 'Пешрафт',
       calendar: 'Тақвими қайдкунӣ'
-    }
+    
   };
 
   const t = translations[language] || translations['zh-CN'];
 
   // 获取签到状态
-  const fetchCheckinStatus = async () => {
-    if (!token) {
+  const fetchCheckinStatus = async () => {}
+    if (!token) {}
       setError('未登录');
       setLoading(false);
       return;
-    }
+    
 
-    try {
+    try {}
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/checkin/status', {
-        headers: {
+      const response = await fetch('/api/checkin/status', {}
+        headers: {}
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        
       });
 
       const data = await response.json();
 
-      if (data.success) {
+      if (data.success) {}
         setCheckinStatus(data.data);
       } else {
         setError(data.error || '获取签到状态失败');
-      }
+      
     } catch (err) {
       console.error('获取签到状态失败:', err);
       setError('网络错误，请检查网络连接');
     } finally {
       setLoading(false);
-    }
+    
   };
 
   // 签到成功回调
-  const handleCheckinSuccess = () => {
+  const handleCheckinSuccess = () => {}
     fetchCheckinStatus(); // 重新获取状态
   };
 
-  useEffect(() => {
+  useEffect(() => {}
     fetchCheckinStatus();
   }, [token]);
 
-  if (loading) {
-    return (
-      <div className="container mx-auto p-4 max-w-4xl">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+  if (loading) {}
+    return (;
+      <div className:"container mx-auto p-4 max-w-4xl">
+        <div className:"flex items-center justify-center min-h-[400px]">
+          <div className:"text-center">
+            <div className:"animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-gray-600">{t.loading}</p>
           </div>
         </div>
       </div>
     );
-  }
+  
 
-  if (error) {
-    return (
-      <div className="container mx-auto p-4 max-w-4xl">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
+  if (error) {}
+    return (;
+      <div className:"container mx-auto p-4 max-w-4xl">
+        <div className:"flex items-center justify-center min-h-[400px]">
+          <div className:"text-center">
             <p className="text-red-600 mb-4">{t.error}: {error}</p>
             <button
               onClick={fetchCheckinStatus}
@@ -176,18 +175,18 @@ function CheckinPage() {
         </div>
       </div>
     );
-  }
+  
 
-  if (!checkinStatus) {
+  if (!checkinStatus) {}
     return null;
-  }
+  
 
   const { user: userInfo, todayStatus, cycleInfo, statistics } = checkinStatus;
 
-  return (
-    <div className="container mx-auto p-4 max-w-6xl space-y-6">
+  return (;
+    <div className:"container mx-auto p-4 max-w-6xl space-y-6">
       {/* 页面标题 */}
-      <div className="text-center space-y-2">
+      <div className:"text-center space-y-2">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           {t.title}
         </h1>
@@ -198,16 +197,16 @@ function CheckinPage() {
 
       {/* 用户信息卡片 */}
       <Card>
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-2">
-            <Coins className="h-5 w-5 text-yellow-500" />
+        <CardHeader className:"pb-4">
+          <CardTitle className:"flex items-center gap-2">
+            <Coins className:"h-5 w-5 text-yellow-500" />
             {t.luckyCoins}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
             {userInfo.luckyCoins.toFixed(2)} 
-            <span className="text-sm text-gray-500 ml-2">Som</span>
+            <span className:"text-sm text-gray-500 ml-2">Som</span>
           </div>
         </CardContent>
       </Card>
@@ -216,8 +215,8 @@ function CheckinPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* 今日奖励 */}
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
+          <CardContent className:"p-4">
+            <div className:"flex items-center gap-3">
               <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
                 <Coins className="h-4 w-4 text-green-600 dark:text-green-400" />
               </div>
@@ -235,8 +234,8 @@ function CheckinPage() {
 
         {/* 连续签到 */}
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
+          <CardContent className:"p-4">
+            <div className:"flex items-center gap-3">
               <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
                 <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
               </div>
@@ -254,8 +253,8 @@ function CheckinPage() {
 
         {/* 累计获得 */}
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
+          <CardContent className:"p-4">
+            <div className:"flex items-center gap-3">
               <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
                 <Trophy className="h-4 w-4 text-purple-600 dark:text-purple-400" />
               </div>
@@ -273,8 +272,8 @@ function CheckinPage() {
 
         {/* 最长连续 */}
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
+          <CardContent className:"p-4">
+            <div className:"flex items-center gap-3">
               <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
                 <Calendar className="h-4 w-4 text-orange-600 dark:text-orange-400" />
               </div>
@@ -294,19 +293,19 @@ function CheckinPage() {
       {/* 进度指示器和签到按钮 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
+          <CardTitle className:"flex items-center justify-between">
             <span>{t.progress}</span>
             <Badge variant="secondary">
               {cycleInfo.cycleProgress}/7
             </Badge>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className:"space-y-4">
           {/* 进度条 */}
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className:"w-full bg-gray-200 rounded-full h-2">
             <div 
-              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(cycleInfo.cycleProgress / 7) * 100}%` }}
+              className:"bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-300"
+              style="{{ width: `${(cycleInfo.cycleProgress / 7) * 100}"%` }}
             />
           </div>
 
@@ -322,14 +321,14 @@ function CheckinPage() {
           />
 
           {/* 完成周期提示 */}
-          {cycleInfo.isCycleCompleted && (
-            <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white p-4 rounded-lg text-center">
+          {cycleInfo.isCycleCompleted && (}
+            <div className:"bg-gradient-to-r from-green-500 to-blue-600 text-white p-4 rounded-lg text-center">
               <p className="font-semibold">{t.cycleCompleted}</p>
-              <p className="text-sm opacity-90 mt-1">
+              <p className:"text-sm opacity-90 mt-1">
                 {t.totalReward}: {cycleInfo.totalRewardAmount} Som
               </p>
             </div>
-          )}
+          )
         </CardContent>
       </Card>
 
@@ -353,29 +352,29 @@ function CheckinPage() {
           <CardTitle>{t.totalReward}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-7 gap-2">
-            {cycleInfo.rewardConfig.map((reward, index) => (
+          <div className:"grid grid-cols-7 gap-2">
+            {cycleInfo.rewardConfig.map((reward, index) => (}
               <div
                 key={index}
-                className={`text-center p-3 rounded-lg border-2 ${
+                className="{`text-center" p-3 rounded-lg border-2 ${}}`
                   index < cycleInfo.cycleProgress
                     ? 'bg-green-100 border-green-300 text-green-800'
                     : index === cycleInfo.cycleProgress
                     ? 'bg-blue-100 border-blue-300 text-blue-800 ring-2 ring-blue-400'
                     : 'bg-gray-100 border-gray-300 text-gray-600'
-                }`}
+
               >
-                <div className="text-xs font-medium mb-1">
+                <div className:"text-xs font-medium mb-1">
                   {t.day.replace('{days}', (index + 1).toString())}
                 </div>
-                <div className="text-lg font-bold">
+                <div className:"text-lg font-bold">
                   {reward}
                 </div>
-                <div className="text-xs opacity-75">Som</div>
+                <div className:"text-xs opacity-75">Som</div>
               </div>
-            ))}
+            ))
           </div>
-          <div className="mt-4 text-center">
+          <div className:"mt-4 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               {t.totalReward}: {cycleInfo.totalRewardAmount} Som
             </p>
@@ -384,4 +383,3 @@ function CheckinPage() {
       </Card>
     </div>
   );
-}

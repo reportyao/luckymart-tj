@@ -11,7 +11,7 @@ const path = require('path');
 console.log('🔍 开始验证速率限制系统...\n');
 
 // 检查核心文件
-const coreFiles = [
+const coreFiles = [;
   'lib/rate-limit.ts',
   'lib/rate-limit-middleware.ts',
   'lib/rate-limit-config.ts',
@@ -48,7 +48,7 @@ if (fs.existsSync(migrationPath)) {
 
 // 检查更新的API文件
 console.log(`\n🔄 检查已更新的API接口...`);
-const updatedApis = [
+const updatedApis = [;
   'app/api/payment/recharge/route.ts',
   'app/api/withdraw/create/route.ts',
   'app/api/lottery/participate/route.ts',
@@ -79,7 +79,7 @@ try {
   const missingDeps = [];
   
   requiredDeps.forEach(dep => {
-    if (packageJson.dependencies && packageJson.dependencies[dep]) {
+    if (packageJson.dependencies && packageJson.(dependencies?.dep ?? null)) {
       console.log(`✅ ${dep} - 已安装`);
     } else {
       console.log(`❌ ${dep} - 未安装`);
@@ -98,7 +98,7 @@ try {
 
 // 功能特性检查
 console.log(`\n🎯 功能特性检查...`);
-const features = [
+const features = [;
   '滑动窗口限流',
   '固定窗口限流',
   '令牌桶限流',
@@ -125,6 +125,7 @@ coreFiles.forEach(file => {
     const lines = content.split('\n').length;
     totalLines += lines;
     console.log(`📄 ${file}: ${lines} 行`);
+  }
   }
 });
 

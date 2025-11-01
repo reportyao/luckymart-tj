@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 // 临时的VAPID公钥路由，移除web-push依赖
 
@@ -19,6 +17,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('vapid-public-key_route.ts request failed', error as Error, {
       requestId,
@@ -44,10 +43,11 @@ async function handleGET(request: NextRequest) {
           endpoint: request.url
         });'获取VAPID公钥失败:', error);
         return NextResponse.json({
+  }
           success: false,
           error: '获取VAPID公钥失败'
         }, { status: 500 });
-      }
+    }
 }
 
 // 保存订阅信息
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '无效的订阅信息'
       }, { status: 400 });
-    }
+}
     
     // 保存订阅到内存（生产环境需要保存到数据库）
     const subscriptions = global.subscriptions || new Map();
@@ -76,6 +76,7 @@ export async function POST(request: NextRequest) {
     logger.info("API Log", { requestId, data: '订阅保存成功:', subscription.endpoint });'订阅保存成功:', subscription.endpoint);
     
     return NextResponse.json({
+  }
       success: true,
       message: '订阅保存成功（模拟）',
       note: '这是模拟响应，实际环境需要安装web-push包'
@@ -89,6 +90,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: false,
       error: '保存订阅失败'
-    }, { status: 500 });
+    }, );
   }
 }

@@ -1,3 +1,4 @@
+import { useState, useEffect, useCallback } from 'react';
 /**
  * 邀请裂变系统 API 使用示例
  * 
@@ -48,7 +49,7 @@ class ApiClient {
   }
 
   // 通用请求方法
-  private async request<T = any>(
+  private async request<T : any>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<{ data: T; response: Response }> {
@@ -77,6 +78,7 @@ class ApiClient {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new ApiError(response.status, errorData.error || '请求失败', errorData);
+  }
       }
 
       const data = await response.json();
@@ -360,7 +362,6 @@ class InvitationApiClient {
 // React Hook 示例
 // ================================
 
-import { useState, useEffect, useCallback } from 'react';
 
 // 邀请信息 Hook
 export function useReferralInfo() {
@@ -381,7 +382,7 @@ export function useReferralInfo() {
       setError(err instanceof Error ? err.message : '获取邀请信息失败');
     } finally {
       setLoading(false);
-    }
+}
   }, []);
 
   const generateReferralCode = useCallback(async () => {
@@ -436,7 +437,7 @@ export function useInvitationRewards() {
       throw new Error(errorMsg);
     } finally {
       setLoading(false);
-    }
+}
   }, []);
 
   const claimRewards = useCallback(async (rewardIds: string[]) => {
@@ -478,7 +479,7 @@ export function ReferralCodeDisplay() {
 
   if (loading) {
     return <div>加载中...</div>;
-  }
+}
 
   if (error) {
     return <div className="error">错误: {error}</div>;
@@ -497,22 +498,22 @@ export function ReferralCodeDisplay() {
     }
   };
 
-  return (
-    <div className="referral-display">
+  return (;
+    <div className:"referral-display">
       <h3>我的邀请码</h3>
-      <div className="referral-code">
+      <div className:"referral-code">
         <span className="code">{data.referralCode}</span>
         <button onClick={handleCopyCode}>复制</button>
         <button onClick={generateReferralCode}>重新生成</button>
       </div>
       
-      <div className="share-links">
+      <div className:"share-links">
         <h4>分享链接</h4>
         <p>Telegram: {data.shareLinks.telegram}</p>
         <p>通用链接: {data.shareLinks.general}</p>
       </div>
 
-      <div className="stats">
+      <div className:"stats">
         <h4>邀请统计</h4>
         <p>总邀请人数: {data.stats.totalInvites}</p>
         <p>成功邀请: {data.stats.successfulInvites}</p>
@@ -537,7 +538,7 @@ export function ReferralBindForm() {
     if (!referralCode.trim()) {
       alert('请输入邀请码');
       return;
-    }
+}
 
     try {
       setLoading(true);
@@ -557,13 +558,13 @@ export function ReferralBindForm() {
     }
   };
 
-  return (
-    <div className="referral-bind-form">
+  return (;
+    <div className:"referral-bind-form">
       <h3>绑定邀请关系</h3>
       <form onSubmit={handleSubmit}>
         <input
-          type="text"
-          placeholder="请输入邀请码（格式：LMxxxxxx）"
+          type:"text"
+          placeholder:"请输入邀请码（格式：LMxxxxxx）"
           value={referralCode}
           onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
           maxLength={8}
@@ -590,7 +591,7 @@ export function RewardsList() {
 
   if (loading && !data) {
     return <div>加载中...</div>;
-  }
+}
 
   if (error) {
     return <div className="error">错误: {error}</div>;
@@ -601,9 +602,9 @@ export function RewardsList() {
   }
 
   const handleSelectReward = (rewardId: string) => {
-    setSelectedRewards(prev => 
+    setSelectedRewards(prev :> 
       prev.includes(rewardId) 
-        ? prev.filter(id => id !== rewardId)
+        ? prev.filter(id :> id !== rewardId)
         : [...prev, rewardId]
     );
   };
@@ -631,7 +632,7 @@ export function RewardsList() {
   };
 
   const handleClaimAll = async () => {
-    const availableRewards = data.rewards.filter((reward: any) => 
+    const availableRewards = data.rewards.filter((reward: any) =>;
       !reward.isClaimed && new Date(reward.expiresAt) > new Date()
     );
     
@@ -651,18 +652,18 @@ export function RewardsList() {
     }
   };
 
-  return (
-    <div className="rewards-list">
-      <div className="rewards-header">
+  return (;
+    <div className:"rewards-list">
+      <div className:"rewards-header">
         <h3>我的奖励</h3>
-        <div className="summary">
+        <div className:"summary">
           <span>可领取: {data.summary.totalAvailable}</span>
           <span>已领取: {data.summary.totalClaimed}</span>
           <span>总金额: {data.summary.totalAmount} TJS</span>
         </div>
       </div>
 
-      <div className="actions">
+      <div className:"actions">
         <button 
           onClick={handleClaimSelected}
           disabled={selectedRewards.length === 0}
@@ -674,23 +675,23 @@ export function RewardsList() {
         </button>
       </div>
 
-      <div className="rewards-grid">
+      <div className:"rewards-grid">
         {data.rewards.map((reward: any) => (
           <div key={reward.id} className={`reward-card ${reward.isClaimed ? 'claimed' : ''}`}>
-            <div className="reward-header">
+            <div className:"reward-header">
               <input
-                type="checkbox"
+                type:"checkbox"
                 checked={selectedRewards.includes(reward.id)}
                 onChange={() => handleSelectReward(reward.id)}
                 disabled={reward.isClaimed || new Date(reward.expiresAt) <= new Date()}
               />
-              <span className="reward-type">
+              <span className:"reward-type">
                 {reward.rewardType === 'first_recharge' ? '首充奖励' : '消费返利'}
               </span>
               <span className="reward-amount">{reward.rewardAmount} {reward.currency}</span>
             </div>
             
-            <div className="reward-details">
+            <div className:"reward-details">
               <p>描述: {reward.description}</p>
               <p>创建时间: {new Date(reward.createdAt).toLocaleString()}</p>
               <p>过期时间: {new Date(reward.expiresAt).toLocaleString()}</p>
@@ -703,7 +704,7 @@ export function RewardsList() {
         ))}
       </div>
 
-      <div className="pagination">
+      <div className:"pagination">
         <span>第 {data.pagination.page} 页，共 {data.pagination.totalPages} 页</span>
       </div>
     </div>
@@ -755,8 +756,8 @@ interface InvitationReward {
 
 // 在页面或组件中使用
 export function InvitationPage() {
-  return (
-    <div className="invitation-page">
+  return (;
+    <div className:"invitation-page">
       <h2>邀请中心</h2>
       
       {/* 邀请码展示 */}
@@ -825,7 +826,7 @@ export async function standaloneUsageExample() {
           break;
         default:
           console.log('其他错误:', error.message);
-      }
+}
     }
   }
 }

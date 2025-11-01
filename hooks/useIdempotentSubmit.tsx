@@ -1,31 +1,31 @@
+import { useState, useCallback, useRef } from 'react';
 /**
  * 防重复提交Hook
  * 用于前端防止重复点击按钮
  */
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
 
-export interface UseIdempotentSubmitOptions {
+export interface UseIdempotentSubmitOptions {}
   timeout?: number;
   enabled?: boolean;
   onStart?: () => void;
   onEnd?: () => void;
   onError?: (error: any) => void;
-}
 
-export interface UseIdempotentSubmitReturn {
+
+export interface UseIdempotentSubmitReturn {}
   isSubmitting: boolean;
   submit: (callback: () => Promise<any>) => Promise<any>;
   canSubmit: boolean;
   lastError: any;
   reset: () => void;
-}
+
 
 export function useIdempotentSubmit(
   options: UseIdempotentSubmitOptions = {}
-): UseIdempotentSubmitReturn {
-  const {
+): UseIdempotentSubmitReturn {}
+  const {}
     timeout = 3000,
     enabled = true,
     onStart,
@@ -38,33 +38,33 @@ export function useIdempotentSubmit(
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const requestIdRef = useRef<string | null>(null);
 
-  const clearTimeoutIfExists = useCallback(() => {
-    if (timeoutRef.current) {
+  const clearTimeoutIfExists = useCallback(() => {}
+    if (timeoutRef.current) {}
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
-    }
+
   }, []);
 
-  const reset = useCallback(() => {
+  const reset = useCallback(() => {}
     setIsSubmitting(false);
     setLastError(null);
     clearTimeoutIfExists();
     requestIdRef.current = null;
   }, [clearTimeoutIfExists]);
 
-  const submit = useCallback(async (callback: () => Promise<any>): Promise<any> => {
-    if (!enabled) {
+  const submit = useCallback(async (callback: () => Promise<any>): Promise<any> => {}
+    if (!enabled) {}
       return callback();
-    }
+    
 
-    if (isSubmitting) {
+    if (isSubmitting) {}
       throw new Error('操作正在进行中，请稍候');
-    }
+    
 
     const requestId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     requestIdRef.current = requestId;
 
-    try {
+    try {}
       setIsSubmitting(true);
       setLastError(null);
       onStart?.();
@@ -72,13 +72,14 @@ export function useIdempotentSubmit(
       const result = callback();
 
       clearTimeoutIfExists();
-      timeoutRef.current = setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {}
         setIsSubmitting(false);
         requestIdRef.current = null;
         onEnd?.();
       }, timeout);
 
       return result;
+  
 
     } catch (error) {
       setLastError(error);
@@ -86,26 +87,26 @@ export function useIdempotentSubmit(
       requestIdRef.current = null;
       onError?.(error);
       throw error;
-    }
+    
   }, [isSubmitting, enabled, timeout, onStart, onEnd, onError, clearTimeoutIfExists]);
 
-  return {
+  return {}
     isSubmitting,
     submit,
     canSubmit: !isSubmitting && enabled,
     lastError,
     reset
   };
-}
 
-interface IdempotentButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+
+interface IdempotentButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
   children: React.ReactNode;
   loadingText?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
   useIdempotentSubmitOptions?: UseIdempotentSubmitOptions;
-}
 
-export function IdempotentButton({
+
+export function IdempotentButton({}
   children,
   loadingText = '处理中...',
   onClick,
@@ -115,38 +116,38 @@ export function IdempotentButton({
 }: IdempotentButtonProps) {
   const { isSubmitting, submit, lastError } = useIdempotentSubmit(useIdempotentSubmitOptions);
 
-  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (onClick) {
+  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {}
+    if (onClick) {}
       await submit(() => onClick(event));
-    }
+
   };
 
-  return (
+  return (;
     <button
       {...props}
       onClick={handleClick}
       disabled={disabled || isSubmitting}
-      data-testid="idempotent-button"
+      data-testid:"idempotent-button"
     >
       {isSubmitting ? loadingText : children}
-      {lastError && (
-        <span style={{ color: 'red', marginLeft: '8px' }}>
+      {lastError && (}
+        <span style="{{ color: 'red', marginLeft: '8px' }"}>
           (失败)
         </span>
-      )}
+      )
     </button>
   );
-}
 
-export function useBatchIdempotentSubmit() {
+
+export function useBatchIdempotentSubmit() {}
   const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
   const [processedItems, setProcessedItems] = useState<Set<string>>(new Set());
   const [failedItems, setFailedItems] = useState<Set<string>>(new Set());
 
-  const submitBatch = useCallback(async (
+  const submitBatch = useCallback(async (;
     items: string[],
     processor: (item: string) => Promise<any>
-  ): Promise<{ results: Record<string, any>; success: number; failed: number }> => {
+  ): Promise<{ results: Record<string, any>; success: number; failed: number }> => {}
     setIsBatchSubmitting(true);
     setProcessedItems(new Set());
     setFailedItems(new Set());
@@ -155,12 +156,12 @@ export function useBatchIdempotentSubmit() {
     let success = 0;
     let failed = 0;
 
-    const processItems = async () => {
-      for (const item of items) {
-        try {
-          if (processedItems.has(item) || failedItems.has(item)) {
+    const processItems = async () => {}
+      for (const item of items) {}
+        try {}
+          if (processedItems.has(item) || failedItems.has(item)) {}
             continue;
-          }
+
 
           const result = await processor(item);
           results[item] = result;
@@ -170,20 +171,19 @@ export function useBatchIdempotentSubmit() {
           results[item] = error instanceof Error ? error : new Error('未知错误');
           setFailedItems(prev => new Set([...prev, item]));
           failed++;
-        }
-      }
+        
+      
     };
 
-    return processItems().then(() => {
+    return processItems().then(() => {}
       setIsBatchSubmitting(false);
       return { results, success, failed };
     });
   }, [processedItems, failedItems]);
 
-  return {
+  return {}
     isBatchSubmitting,
     processedItems: Array.from(processedItems),
     failedItems: Array.from(failedItems),
     submitBatch
   };
-}

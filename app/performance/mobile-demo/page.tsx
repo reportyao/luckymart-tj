@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
 import LazyImage from '@/components/performance/LazyImage';
@@ -8,10 +6,12 @@ import SkeletonCard, { SkeletonContainer, SkeletonGrid, SkeletonList } from '@/c
 import PerformanceMonitor from '@/components/performance/PerformanceMonitor';
 import { createLazyComponent, useSmartPreloader, useRoutePreloader } from '@/components/performance/CodeSplitOptimizer';
 import { cn } from '@/lib/utils';
+'use client';
+
 
 // 模拟数据生成器
-const generateMockProducts = (count: number): ProductItem[] => {
-  return Array.from({ length: count }, (_, i) => ({
+const generateMockProducts = (count: number): ProductItem[] => {}
+  return Array.from({ length: count }, (_, i) => ({}
     id: `product-${i + 1}`,
     name: `高性能产品 ${i + 1}`,
     price: Math.floor(Math.random() * 500) + 50,
@@ -26,8 +26,8 @@ const generateMockProducts = (count: number): ProductItem[] => {
   }));
 };
 
-const generateMockUsers = (count: number): UserItem[] => {
-  return Array.from({ length: count }, (_, i) => ({
+const generateMockUsers = (count: number): UserItem[] => {}
+  return Array.from({ length: count }, (_, i) => ({}
     id: `user-${i + 1}`,
     name: `用户${i + 1}`,
     avatar: `https://i.pravatar.cc/100?img=${i + 1}`,
@@ -41,16 +41,16 @@ const generateMockUsers = (count: number): UserItem[] => {
 };
 
 // 懒加载组件示例
-const LazyChartComponent = createLazyComponent(
+const LazyChartComponent = createLazyComponent(;
   () => import('@/components/ui/chart'),
-  {
+  {}
     fallback: <SkeletonCard variant="chart" />,
     preload: true,
     preloadDelay: 2000
-  }
+  
 );
 
-const MobilePerformanceDemo: React.FC = () => {
+const MobilePerformanceDemo: React.FC = () => {}
   const [activeTab, setActiveTab] = useState<'overview' | 'images' | 'virtual-list' | 'skeleton' | 'lazy-loading'>('overview');
   const [isLoading, setIsLoading] = useState(true);
   const [products] = useState(() => generateMockProducts(100));
@@ -58,7 +58,7 @@ const MobilePerformanceDemo: React.FC = () => {
   const [showMonitor, setShowMonitor] = useState(false);
   
   // 性能监控
-  const { metrics, isCollecting, collectMetrics } = usePerformanceMonitor({
+  const { metrics, isCollecting, collectMetrics } = usePerformanceMonitor({}
     endpoint: '/api/performance',
     enableNavigationTiming: true,
     enableResourceTiming: true,
@@ -72,8 +72,8 @@ const MobilePerformanceDemo: React.FC = () => {
   const { preloadCurrentRoute } = useRoutePreloader();
 
   // 模拟数据加载
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  useEffect(() => {}
+    const timer = setTimeout(() => {}
       setIsLoading(false);
     }, 2000);
     
@@ -81,10 +81,10 @@ const MobilePerformanceDemo: React.FC = () => {
   }, []);
 
   // 性能测试函数
-  const runPerformanceTest = useCallback(async (testType: string) => {
+  const runPerformanceTest = useCallback(async (testType: string) => {}
     console.log(`运行性能测试: ${testType}`);
     
-    switch (testType) {
+    switch (testType) {}
       case 'collect-metrics':
         await collectMetrics();
         break;
@@ -103,10 +103,10 @@ const MobilePerformanceDemo: React.FC = () => {
         console.time('图片懒加载');
         setTimeout(() => console.timeEnd('图片懒加载'), 50);
         break;
-    }
+    
   }, [collectMetrics, smartPreload]);
 
-  const tabs = [
+  const tabs = [;
     { id: 'overview', name: '概览', icon: '📊' },
     { id: 'images', name: '图片懒加载', icon: '🖼️' },
     { id: 'virtual-list', name: '虚拟滚动', icon: '📋' },
@@ -114,16 +114,16 @@ const MobilePerformanceDemo: React.FC = () => {
     { id: 'lazy-loading', name: '代码分割', icon: '⚡' }
   ];
 
-  return (
+  return (;
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* 页面头部 */}
       <div className="bg-white dark:bg-gray-800 shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className:"flex items-center justify-between h-16">
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">
               移动端性能优化演示
             </h1>
-            <div className="flex items-center space-x-4">
+            <div className:"flex items-center space-x-4">
               {/* 性能监控开关 */}
               <button
                 onClick={() => setShowMonitor(!showMonitor)}
@@ -151,30 +151,30 @@ const MobilePerformanceDemo: React.FC = () => {
       {/* 标签导航 */}
       <div className="bg-white dark:bg-gray-800 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8 overflow-x-auto">
-            {tabs.map(tab => (
+          <nav className:"flex space-x-8 overflow-x-auto">
+            {tabs.map(tab :> (}
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={cn(
+                className="{cn("}
                   'flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap',
-                  activeTab === tab.id
+                  activeTab :== tab.id
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                )}
+                )
               >
                 <span>{tab.icon}</span>
                 <span>{tab.name}</span>
               </button>
-            ))}
+            ))
           </nav>
         </div>
       </div>
 
       {/* 页面内容 */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'overview' && (
-          <div className="space-y-6">
+        {activeTab :== 'overview' && (}
+          <div className:"space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 性能优化概览
@@ -183,28 +183,28 @@ const MobilePerformanceDemo: React.FC = () => {
               {/* 性能指标 */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div className="bg-blue-50 dark:bg-blue-900 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className:"text-2xl font-bold text-blue-600">
                     {metrics.fcp ? `${Math.round(metrics.fcp)}ms` : 'N/A'}
                   </div>
-                  <div className="text-sm text-blue-600">首次内容绘制</div>
+                  <div className:"text-sm text-blue-600">首次内容绘制</div>
                 </div>
                 <div className="bg-green-50 dark:bg-green-900 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">
+                  <div className:"text-2xl font-bold text-green-600">
                     {metrics.lcp ? `${Math.round(metrics.lcp)}ms` : 'N/A'}
                   </div>
-                  <div className="text-sm text-green-600">最大内容绘制</div>
+                  <div className:"text-sm text-green-600">最大内容绘制</div>
                 </div>
                 <div className="bg-yellow-50 dark:bg-yellow-900 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-yellow-600">
+                  <div className:"text-2xl font-bold text-yellow-600">
                     {metrics.fid ? `${Math.round(metrics.fid)}ms` : 'N/A'}
                   </div>
-                  <div className="text-sm text-yellow-600">首次输入延迟</div>
+                  <div className:"text-sm text-yellow-600">首次输入延迟</div>
                 </div>
                 <div className="bg-purple-50 dark:bg-purple-900 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">
+                  <div className:"text-2xl font-bold text-purple-600">
                     {metrics.cls ? metrics.cls.toFixed(3) : 'N/A'}
                   </div>
-                  <div className="text-sm text-purple-600">累积布局偏移</div>
+                  <div className:"text-sm text-purple-600">累积布局偏移</div>
                 </div>
               </div>
 
@@ -242,7 +242,7 @@ const MobilePerformanceDemo: React.FC = () => {
               </div>
 
               {/* 性能测试按钮 */}
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className:"mt-6 flex flex-wrap gap-3">
                 <button
                   onClick={() => runPerformanceTest('collect-metrics')}
                   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -265,38 +265,38 @@ const MobilePerformanceDemo: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
+        )
 
-        {activeTab === 'images' && (
-          <div className="space-y-6">
+        {activeTab :== 'images' && (}
+          <div className:"space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 图片懒加载系统
               </h2>
               
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {products.slice(0, 12).map((product) => (
-                  <div key={product.id} className="border rounded-lg overflow-hidden">
+                {products.slice(0, 12).map((product) => (}
+                  <div key:{product.id} className="border rounded-lg overflow-hidden">
                     <LazyImage
                       src={product.image}
                       alt={product.name}
-                      placeholder="/images/placeholder.png"
-                      className="w-full h-48"
+                      placeholder:"/images/placeholder.png"
+                      className:"w-full h-48"
                       aspectRatio={1}
                       quality={75}
                       onLoad={() => console.log(`图片加载完成: ${product.name}`)}
                       onError={() => console.error(`图片加载失败: ${product.name}`)}
                     />
-                    <div className="p-3">
-                      <h3 className="font-medium text-sm text-gray-900 truncate">
+                    <div className:"p-3">
+                      <h3 className:"font-medium text-sm text-gray-900 truncate">
                         {product.name}
                       </h3>
-                      <p className="text-red-600 font-bold">
+                      <p className:"text-red-600 font-bold">
                         ¥{product.price}
                       </p>
                     </div>
                   </div>
-                ))}
+                ))
               </div>
 
               <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
@@ -313,16 +313,16 @@ const MobilePerformanceDemo: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
+        )
 
-        {activeTab === 'virtual-list' && (
-          <div className="space-y-6">
+        {activeTab :== 'virtual-list' && (}
+          <div className:"space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 虚拟滚动系统
               </h2>
               
-              <div className="mb-4 flex gap-4">
+              <div className:"mb-4 flex gap-4">
                 <button
                   onClick={() => runPerformanceTest('measure-virtual-list')}
                   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -332,11 +332,11 @@ const MobilePerformanceDemo: React.FC = () => {
               </div>
 
               {/* 产品虚拟列表 */}
-              <div className="mb-8">
+              <div className:"mb-8">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                   产品虚拟列表 (100个产品)
                 </h3>
-                <div className="border rounded-lg max-h-96 overflow-hidden">
+                <div className:"border rounded-lg max-h-96 overflow-hidden">
                   <VirtualProductList
                     products={products}
                     containerHeight={384}
@@ -347,11 +347,11 @@ const MobilePerformanceDemo: React.FC = () => {
               </div>
 
               {/* 用户虚拟列表 */}
-              <div className="mb-8">
+              <div className:"mb-8">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                   用户虚拟列表 (200个用户)
                 </h3>
-                <div className="border rounded-lg max-h-96 overflow-hidden">
+                <div className:"border rounded-lg max-h-96 overflow-hidden">
                   <VirtualUserList
                     users={users}
                     containerHeight={384}
@@ -374,16 +374,16 @@ const MobilePerformanceDemo: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
+        )
 
-        {activeTab === 'skeleton' && (
-          <div className="space-y-6">
+        {activeTab === 'skeleton' && (}
+          <div className:"space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 骨架屏系统
               </h2>
               
-              <div className="space-y-8">
+              <div className:"space-y-8">
                 {/* 不同类型的骨架屏 */}
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
@@ -423,12 +423,12 @@ const MobilePerformanceDemo: React.FC = () => {
                   </h3>
                   <SkeletonContainer 
                     isLoading={isLoading} 
-                    minHeight="200px"
+                    minHeight:"200px"
                     fallback={<SkeletonCard variant="list" />}
                   >
-                    <div className="p-4">
-                      <h4 className="font-medium">真实内容</h4>
-                      <p className="text-gray-600">这里是实际的内容...</p>
+                    <div className:"p-4">
+                      <h4 className:"font-medium">真实内容</h4>
+                      <p className:"text-gray-600">这里是实际的内容...</p>
                     </div>
                   </SkeletonContainer>
                 </div>
@@ -448,22 +448,22 @@ const MobilePerformanceDemo: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
+        )
 
-        {activeTab === 'lazy-loading' && (
-          <div className="space-y-6">
+        {activeTab :== 'lazy-loading' && (}
+          <div className:"space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                 代码分割和懒加载
               </h2>
               
-              <div className="space-y-6">
+              <div className:"space-y-6">
                 {/* 懒加载组件 */}
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                     懒加载组件演示
                   </h3>
-                  <div className="border rounded-lg p-4 min-h-64">
+                  <div className:"border rounded-lg p-4 min-h-64">
                     <LazyChartComponent />
                   </div>
                 </div>
@@ -474,7 +474,7 @@ const MobilePerformanceDemo: React.FC = () => {
                     智能预加载状态
                   </h3>
                   <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded">
-                    <div className="flex items-center space-x-4 text-sm">
+                    <div className:"flex items-center space-x-4 text-sm">
                       <span>网络状态: <strong>{shouldPreload ? '良好' : '较差'}</strong></span>
                       <span>预加载: <strong>{shouldPreload ? '已启用' : '已禁用'}</strong></span>
                     </div>
@@ -486,7 +486,7 @@ const MobilePerformanceDemo: React.FC = () => {
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                     性能测试
                   </h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className:"grid grid-cols-2 gap-4">
                     <button
                       onClick={() => runPerformanceTest('measure-image-loading')}
                       className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -517,7 +517,7 @@ const MobilePerformanceDemo: React.FC = () => {
               </div>
             </div>
           </div>
-        )}
+        )
       </div>
 
       {/* 底部说明 */}
@@ -525,7 +525,7 @@ const MobilePerformanceDemo: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-sm text-gray-500 dark:text-gray-400">
             <p>移动端性能优化系统 - LuckyMart TJ 平台</p>
-            <p className="mt-1">
+            <p className:"mt-1">
               通过图片懒加载、虚拟滚动、骨架屏、代码分割等技术，大幅提升移动端性能
             </p>
           </div>

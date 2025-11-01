@@ -15,7 +15,7 @@ export async function DELETE(request: NextRequest) {
         success: false,
         error: '缺少端点参数'
       }, { status: 400 });
-    }
+}
     
     // 检查订阅是否存在
     if (global.subscriptions && global.subscriptions.has(endpoint)) {
@@ -37,8 +37,9 @@ export async function DELETE(request: NextRequest) {
   } catch (error) {
     console.error('删除订阅失败:', error);
     return NextResponse.json({
+  }
       success: false,
       error: '删除订阅失败'
-    }, { status: 500 });
+    }, );
   }
 }

@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 
 // 临时的通知测试路由，移除web-push依赖
@@ -14,13 +12,14 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '无效的订阅信息'
       }, { status: 400 });
-    }
+}
     
     // 模拟通知发送
-    logger.info("API Log", { requestId, data: arguments[0] }).toISOString()
+    logger.info("API Log", { requestId, data: (arguments?.0 ?? null) }).toISOString()
     });
     
     return NextResponse.json({
+  }
       success: true,
       message: '测试通知发送成功（模拟）',
       statusCode: 200,
@@ -36,6 +35,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : '发送通知失败'
-    }, { status: 500 });
+    }, );
   }
 }

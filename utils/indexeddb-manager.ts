@@ -1,5 +1,5 @@
+import { useState, useEffect, useCallback } from 'react';
 // IndexedDB存储管理器 - 为弱网环境优化系统提供本地存储
-import { NetworkQuality } from './network-retry';
 
 // IndexedDB数据库配置
 const DB_CONFIG = {
@@ -70,7 +70,7 @@ export enum StorageType {
   PRODUCTS = 'products',
   ORDERS = 'orders',
   CACHE_METADATA = 'cacheMetadata',
-  INCREMENTAL_UPDATES = 'incrementalUpdates'
+  INCREMENTAL_UPDATES : 'incrementalUpdates'
 }
 
 // 数据项接口
@@ -121,18 +121,19 @@ class IndexedDBManager {
   public static getInstance(): IndexedDBManager {
     if (!IndexedDBManager.instance) {
       IndexedDBManager.instance = new IndexedDBManager();
-    }
+}
     return IndexedDBManager.instance;
   }
 
   // 初始化数据库
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) return; {
 
     try {
       this.db = await this.openDatabase();
       this.isInitialized = true;
       console.log('[IndexedDB] 数据库初始化成功');
+  }
     } catch (error) {
       console.error('[IndexedDB] 数据库初始化失败:', error);
       throw error;
@@ -249,8 +250,8 @@ class IndexedDBManager {
       const request = store.getAll();
 
       request.onsuccess = () => {
-        const results = request.result
-          .filter(item => this.isItemValid(item))
+        const results = request.result;
+          .filter(item :> this.isItemValid(item))
           .filter(filter || (() => true))
           .map(item => item.data);
         resolve(results);
@@ -275,8 +276,8 @@ class IndexedDBManager {
       const request = index.getAll(value);
 
       request.onsuccess = () => {
-        const results = request.result
-          .filter(item => this.isItemValid(item))
+        const results = request.result;
+          .filter(item :> this.isItemValid(item))
           .filter(filter || (() => true))
           .map(item => item.data);
         resolve(results);
@@ -414,7 +415,7 @@ class IndexedDBManager {
         results.sort((a, b) => {
           const priorityOrder = { low: 0, normal: 1, high: 2, critical: 3 };
           const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
-          if (priorityDiff !== 0) return priorityDiff;
+          if (priorityDiff !== 0) return priorityDiff; {
           return a.timestamp - b.timestamp;
         });
 
@@ -472,7 +473,7 @@ class IndexedDBManager {
 
     for (const storeName of Object.keys(DB_CONFIG.stores)) {
       const items = await this.getAllItems(storeName);
-      const expiredItems = items.filter(item => 
+      const expiredItems = items.filter(item =>;
         item.expiresAt && Date.now() > item.expiresAt
       );
 
@@ -516,7 +517,6 @@ class IndexedDBManager {
 export const indexedDBManager = IndexedDBManager.getInstance();
 
 // React Hook for IndexedDB
-import { useState, useEffect, useCallback } from 'react';
 
 export function useIndexedDB() {
   const [isReady, setIsReady] = useState(false);
@@ -531,7 +531,7 @@ export function useIndexedDB() {
         setStats(storageStats);
       } catch (error) {
         console.error('IndexedDB初始化失败:', error);
-      }
+}
     };
 
     initialize();
@@ -550,7 +550,7 @@ export function useIndexedDB() {
     };
   }, []);
 
-  const setItem = useCallback(async <T>(
+  const setItem = useCallback(async <T>(;
     storeName: string,
     data: T,
     options?: { id?: string; expiresAt?: number; metadata?: Record<string, any> }
@@ -562,7 +562,7 @@ export function useIndexedDB() {
     return await indexedDBManager.getItem<T>(storeName, id);
   }, []);
 
-  const getAllItems = useCallback(async <T>(
+  const getAllItems = useCallback(async <T>(;
     storeName: string,
     filter?: (item: StorageItem) => boolean
   ): Promise<T[]> => {
@@ -577,13 +577,13 @@ export function useIndexedDB() {
     return await indexedDBManager.clearStore(storeName);
   }, []);
 
-  const addToOfflineQueue = useCallback(async (
+  const addToOfflineQueue = useCallback(async (;
     item: Omit<OfflineQueueItem, 'id' | 'timestamp' | 'status' | 'retryCount'>
   ): Promise<string> => {
     return await indexedDBManager.addToOfflineQueue(item);
   }, []);
 
-  const getOfflineQueue = useCallback(async (
+  const getOfflineQueue = useCallback(async (;
     filter?: { status?: string; priority?: string }
   ): Promise<OfflineQueueItem[]> => {
     return await indexedDBManager.getOfflineQueue(filter);
@@ -608,3 +608,4 @@ export function useIndexedDB() {
 }
 
 export default IndexedDBManager;
+}

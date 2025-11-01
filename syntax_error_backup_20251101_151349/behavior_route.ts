@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import { getLogger } from '@/lib/logger';
-
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -35,7 +34,7 @@ export async function GET(request: NextRequest) {
     
     if (userId) {
       whereConditions.user_id = userId;
-    }
+}
     
     if (behaviorType) {
       whereConditions.behavior_type = behaviorType;
@@ -52,7 +51,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 获取行为日志数据
-    const [behaviorLogs, totalCount] = await Promise.all([
+    const [behaviorLogs, totalCount] = await Promise.all([;
       prisma.userBehaviorLogs.findMany({
         where: whereConditions,
         orderBy: { created_at: 'desc' },
@@ -107,6 +106,7 @@ export async function GET(request: NextRequest) {
     } catch (error: any) {
       logger.error('获取用户行为统计失败', error as Error);
       return NextResponse.json({
+  }
         success: false,
         error: error.message || '获取用户行为统计失败'
       }, { status: 500 });
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必需参数：userId 和 behaviorType'
       }, { status: 400 });
-    }
+}
 
     // 验证用户是否存在
     const user = await prisma.users.findUnique({
@@ -185,6 +185,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
+  }
       success: true,
       data: behaviorLog,
       message: '行为记录成功'
@@ -232,7 +233,7 @@ async function getBehaviorStatistics(whereConditions: any) {
   });
 
   // 获取行为趋势（最近30天）
-  const behaviorTrends = await prisma.$queryRaw`
+  const behaviorTrends = await prisma.$queryRaw`;
     SELECT 
       DATE(created_at) as date,
       behavior_type,
@@ -257,13 +258,13 @@ async function getBehaviorStatistics(whereConditions: any) {
  * 获取行为热力图数据
  */
 async function getBehaviorHeatmapData(whereConditions: any) {
-  const heatmapData = await prisma.$queryRaw`
+  const heatmapData = await prisma.$queryRaw`;
     SELECT 
       EXTRACT(hour FROM created_at) as hour,
       EXTRACT(dow FROM created_at) as day_of_week,
       COUNT(*) as count
     FROM user_behavior_logs
-    WHERE ${whereConditions.user_id ? `user_id = '${whereConditions.user_id}' AND` : ''}
+    WHERE $' AND` : ''}
       created_at >= NOW() - INTERVAL '30 days'
     GROUP BY EXTRACT(hour FROM created_at), EXTRACT(dow FROM created_at)
     ORDER BY hour, day_of_week

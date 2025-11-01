@@ -94,6 +94,7 @@ class AdminRewardConfigTester {
       const response = await axios.get(`${this.baseUrl}/api/admin/reward-config`, config);
       
       console.log(`✅ ${testName} - 成功`);
+  }
       console.log(`   状态码: ${response.status}`);
       console.log(`   数据条数: ${response.data.data?.configs?.length || 0}`);
       console.log(`   总页数: ${response.data.data?.pagination?.totalPages || 0}`);
@@ -151,8 +152,8 @@ class AdminRewardConfigTester {
     
     // 验证配置项结构
     if (data.data.configs.length > 0) {
-      const config = data.data.configs[0];
-      const requiredConfigFields = [
+      const config = data.data.(configs?.0 ?? null);
+      const requiredConfigFields = [;
         'id', 'config_key', 'config_name', 'config_description',
         'reward_amount', 'is_active', 'updated_at'
       ];
@@ -160,6 +161,7 @@ class AdminRewardConfigTester {
       for (const field of requiredConfigFields) {
         if (!(field in config)) {
           throw new Error(`配置项缺少字段: ${field}`);
+  }
         }
       }
     }
@@ -199,7 +201,7 @@ class AdminRewardConfigTester {
   async testParameterValidation(token) {
     console.log('\n🧪 测试: 参数验证');
     
-    const invalidParams = [
+    const invalidParams = [;
       { page: 'invalid' },
       { limit: 'invalid' },
       { page: -1 },
@@ -287,6 +289,7 @@ class AdminRewardConfigTester {
       try {
         const response = await axios.options(`${this.baseUrl}/api/admin/reward-config`);
         console.log('✅ API端点存在且支持OPTIONS请求');
+  }
         console.log(`   允许的方法: ${response.headers['access-control-allow-methods'] || 'N/A'}`);
       } catch (error) {
         console.log('❌ API端点不存在或无法访问');

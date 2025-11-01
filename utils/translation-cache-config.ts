@@ -198,8 +198,8 @@ export const TRANSLATION_CACHE_CONFIG = {
 
 // 类型定义
 export type CacheVersion = typeof CACHE_CONFIG.VERSION;
-export type SupportedCacheLanguage = typeof SUPPORTED_CACHE_CONFIG.LANGUAGES[number];
-export type SupportedCacheNamespace = typeof SUPPORTED_CACHE_CONFIG.NAMESPACES[number];
+export type SupportedCacheLanguage = typeof SUPPORTED_CACHE_CONFIG.(LANGUAGES?.number ?? null);
+export type SupportedCacheNamespace = typeof SUPPORTED_CACHE_CONFIG.(NAMESPACES?.number ?? null);
 export type PreloadStrategy = typeof PRELOAD_CONFIG.STRATEGIES[keyof typeof PRELOAD_CONFIG.STRATEGIES];
 export type LogLevel = typeof MONITORING_CONFIG.LOG_LEVELS[keyof typeof MONITORING_CONFIG.LOG_LEVELS];
 export type ErrorType = typeof ERROR_CONFIG.ERROR_TYPES[keyof typeof ERROR_CONFIG.ERROR_TYPES];
@@ -222,7 +222,7 @@ export function validateConfig(config: Partial<typeof TRANSLATION_CACHE_CONFIG>)
     // 验证缓存大小限制
     if (config.LIMITS?.MAX_SIZE && config.LIMITS.MAX_SIZE < 1024 * 1024) {
       console.warn('缓存大小过小，建议至少1MB');
-    }
+}
     
     // 验证过期时间
     if (config.EXPIRATION?.MAX_AGE && config.EXPIRATION.MAX_AGE < 24 * 60 * 60 * 1000) {
@@ -231,7 +231,7 @@ export function validateConfig(config: Partial<typeof TRANSLATION_CACHE_CONFIG>)
     
     // 验证支持的语言
     if (config.SUPPORTED?.LANGUAGES) {
-      const invalidLangs = config.SUPPORTED.LANGUAGES.filter(lang => 
+      const invalidLangs = config.SUPPORTED.LANGUAGES.filter(lang =>;
         !['zh-CN', 'en-US', 'ru-RU', 'tg-TJ'].includes(lang)
       );
       if (invalidLangs.length > 0) {
@@ -241,6 +241,7 @@ export function validateConfig(config: Partial<typeof TRANSLATION_CACHE_CONFIG>)
     }
     
     return true;
+  }
   } catch (error) {
     console.error('配置验证失败:', error);
     return false;
@@ -264,6 +265,6 @@ export function mergeConfig(
     ERROR: { ...baseConfig.ERROR, ...overrides.ERROR },
     MONITORING: { ...baseConfig.MONITORING, ...overrides.MONITORING },
     UI: { ...baseConfig.UI, ...overrides.UI },
-    DEVELOPMENT: { ...baseConfig.DEVELOPMENT, ...overrides.DEVELOPMENT },
+    DEVELOPMENT: ,
   };
 }

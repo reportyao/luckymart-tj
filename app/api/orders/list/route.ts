@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { validateOrder, validateOrderQuery } from '@/lib/order-validator';
-import { CommonErrors } from '@/lib/errors';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
 export const GET = withErrorHandling(async (request: NextRequest) => {
@@ -17,6 +16,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('list_route.ts request failed', error as Error, {
       requestId,
@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
+}
     }
 
     const token = authHeader.substring(7);
@@ -47,8 +48,8 @@ export async function GET(request: NextRequest) {
     
     const validationResult = validateOrderQuery(queryData);
     if (!validationResult.isValid) {
-      const errorMessages = validationResult.errors.map((e : any) => e.message).join('; ');
-      return NextResponse.json(
+      const errorMessages = validationResult.errors.map(((e : any) : any) => e.message).join('; ');
+      return NextResponse.json(;
         { error: '查询参数验证失败', details: errorMessages },
         { status: 400 }
       );
@@ -74,7 +75,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 查询订单和关联信息，使用关联查询避免N+1问题
-    const [orders, total, products] = await Promise.all([
+    const [orders, total, products] = await Promise.all([;
       prisma.orders.findMany({
         where,
         skip,
@@ -85,19 +86,20 @@ export async function GET(request: NextRequest) {
       prisma.orders.count({ where }),
       // 预加载所有相关商品信息
       prisma.products.findMany({
-        where: { id: { in: orders.map((o : any) => o.productId).filter(Boolean) } },
+        where: { id: { in: orders.map(((o : any) : any) => o.productId).filter(Boolean) } },
         select: { id: true, nameZh: true, nameEn: true, images: true }
       })
     ]);
 
     // 创建商品映射表
-    const productMap = new Map(products.map((p : any) => [p.id, p]));
+    const productMap = new Map(products.map(((p : any) : any) => [p.id, p]));
 
     // 格式化订单数据，使用映射表避免循环查找
-    const formattedOrders = orders.map((order : any) => {
+    const formattedOrders = orders.map(((order : any) : any) => {
       const product = order.productId ? productMap.get(order.productId) : null;
       
       return {
+  }
         id: order.id,
         orderNumber: order.orderNumber,
         type: order.type,
@@ -110,7 +112,7 @@ export async function GET(request: NextRequest) {
         product: product ? {
           id: product.id,
           name: product.nameZh,
-          image: product.images[0] || null
+          image: product.(images?.0 ?? null) || null
         } : null
       };
     });
@@ -133,9 +135,9 @@ export async function GET(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'Get orders error:', error);
-    return NextResponse.json(
-      { error: '获取订单列表失败', message: error.message },
-      { status: 500 }
+    return NextResponse.json(;
+      ,
+      
     );
   }
 }

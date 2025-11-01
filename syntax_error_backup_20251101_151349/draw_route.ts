@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     
     if (authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: '无权限' }, { status: 403 });
-    }
+}
 
     // 执行开奖
     const results = await checkAndDrawFullRounds();
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Auto draw error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '自动开奖失败', message: error.message },
       { status: 500 }
     );
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     
     if (authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: '无权限' }, { status: 403 });
-    }
+}
 
     const { prisma } = await import('@/lib/prisma');
     
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 手动获取产品信息
-    const roundsWithProducts = await Promise.all(
+    const roundsWithProducts = await Promise.all(;
       fullRounds.map(async (r) : any => {
         const product = await prisma.products.findUnique({
           where: { id: r.productId },
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Get pending draws error:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '获取待开奖列表失败', message: error.message },
       { status: 500 }
     );

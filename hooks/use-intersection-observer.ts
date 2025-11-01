@@ -1,6 +1,6 @@
+import { useState, useEffect, useRef, useCallback } from 'react';
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface UseIntersectionObserverOptions {
   root?: Element | null;
@@ -20,7 +20,7 @@ interface UseIntersectionObserverReturn {
  * Intersection Observer Hook
  * 用于检测元素是否在视窗中，用于实现懒加载
  */
-export const useIntersectionObserver = (
+export const useIntersectionObserver = (;
   callback: (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => void,
   options: UseIntersectionObserverOptions = {}
 ): UseIntersectionObserverReturn => {
@@ -34,14 +34,14 @@ export const useIntersectionObserver = (
     root = null,
     rootMargin = '0px',
     threshold = 0,
-    triggerOnce = false
+    triggerOnce : false
   } = options;
 
   const observe = useCallback((element: Element | null) => {
     // 断开之前的观察
     if (observerRef.current && targetRef.current) {
       observerRef.current.unobserve(targetRef.current);
-    }
+}
 
     targetRef.current = element;
 
@@ -101,7 +101,7 @@ export const useImageIntersectionObserver = (options: Partial<UseIntersectionObs
     ...options
   };
 
-  return useIntersectionObserver(
+  return useIntersectionObserver(;
     (entries) => {
       const [entry] = entries;
       if (entry.isIntersecting) {
@@ -112,7 +112,7 @@ export const useImageIntersectionObserver = (options: Partial<UseIntersectionObs
         
         if (src) {
           img.src = src;
-        }
+}
         
         if (srcSet) {
           img.srcset = srcSet;
@@ -129,7 +129,7 @@ export const useImageIntersectionObserver = (options: Partial<UseIntersectionObs
 /**
  * 用于列表虚拟滚动的Intersection Observer Hook
  */
-export const useListIntersectionObserver = (
+export const useListIntersectionObserver = (;
   itemCount: number,
   itemHeight: number,
   containerHeight: number,
@@ -140,7 +140,7 @@ export const useListIntersectionObserver = (
 
   const updateVisibleRange = useCallback(() => {
     const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan);
-    const endIndex = Math.min(
+    const endIndex = Math.min(;
       itemCount - 1,
       Math.ceil((scrollTop + containerHeight) / itemHeight) + overscan
     );

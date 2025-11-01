@@ -1,3 +1,5 @@
+import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
+import {
 /**
  * 产品多语言搜索测试
  * 
@@ -6,8 +8,6 @@
  * 检查产品分类和标签的本地化搜索
  */
 
-import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
-import {
   ProductMultilingualService,
   MultilingualHelper,
   type SupportedLanguage,
@@ -18,7 +18,7 @@ import {
 const LANGUAGES: SupportedLanguage[] = ['zh-CN', 'en-US', 'ru-RU', 'tg-TJ'];
 
 // 模拟产品数据库
-const MOCK_PRODUCTS = [
+const MOCK_PRODUCTS = [;
   {
     id: 'product-001',
     nameMultilingual: {
@@ -234,14 +234,14 @@ describe('产品多语言搜索测试', () => {
         offset: 0,
       });
 
-      const matchedProducts = products.filter(product =>
+      const matchedProducts = products.filter(product =>;
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
       expect(matchedProducts.length).toBeGreaterThan(0);
       
       if (matchedProducts.length > 0) {
-        expect(matchedProducts[0].name).toContain('iPhone');
+        expect((matchedProducts?.0 ?? null).name).toContain('iPhone');
       }
     });
   });
@@ -256,12 +256,12 @@ describe('产品多语言搜索测试', () => {
       };
 
       for (const [language, term] of Object.entries(searchTerms)) {
-        const products = await ProductMultilingualService.getProductsByLanguage(
+        const products = await ProductMultilingualService.getProductsByLanguage(;
           language as SupportedLanguage,
           { limit: 10, offset: 0 }
         );
 
-        const matchedProducts = products.filter(product =>
+        const matchedProducts = products.filter(product =>;
           product.description.toLowerCase().includes(term.toLowerCase())
         );
 
@@ -291,7 +291,7 @@ describe('产品多语言搜索测试', () => {
       };
 
       for (const [language, category] of Object.entries(categorySearchTerms)) {
-        const products = await ProductMultilingualService.getProductsByLanguage(
+        const products = await ProductMultilingualService.getProductsByLanguage(;
           language as SupportedLanguage,
           {
             category,
@@ -324,7 +324,7 @@ describe('产品多语言搜索测试', () => {
       // 验证所有产品都属于电子产品类别
       const expectedCategories = ['Smartphones', 'Audio Devices', 'Sports Equipment'];
       products.forEach((product) => {
-        expect(expectedCategories.some(cat => 
+        expect(expectedCategories.some(cat :> 
           product.category.toLowerCase().includes(cat.toLowerCase())
         )).toBe(true);
       });
@@ -333,7 +333,7 @@ describe('产品多语言搜索测试', () => {
 
   describe('产品标签本地化搜索', () => {
     test('应能通过标签搜索产品', async () => {
-      const tagSearchTests = [
+      const tagSearchTests = [;
         { tag: 'Apple', language: 'en-US' as SupportedLanguage },
         { tag: '苹果', language: 'zh-CN' as SupportedLanguage },
         { tag: 'Sony', language: 'en-US' as SupportedLanguage },
@@ -348,7 +348,7 @@ describe('产品多语言搜索测试', () => {
 
         const matchedProducts = products.filter(product => {
           const productTags = product._multilingual?.tags?.[test.language] || [];
-          return productTags.some((tag: string) =>
+          return productTags.some((tag: string) =>;
             tag.toLowerCase().includes(test.tag.toLowerCase())
           );
         });
@@ -366,7 +366,7 @@ describe('产品多语言搜索测试', () => {
       };
 
       for (const [language, tags] of Object.entries(multiTagSearch)) {
-        const products = await ProductMultilingualService.getProductsByLanguage(
+        const products = await ProductMultilingualService.getProductsByLanguage(;
           language as SupportedLanguage,
           { limit: 10, offset: 0 }
         );
@@ -374,7 +374,7 @@ describe('产品多语言搜索测试', () => {
         const matchedProducts = products.filter(product => {
           const productTags = product._multilingual?.tags?.[language as SupportedLanguage] || [];
           // 产品必须包含所有搜索标签
-          return tags.every((tag: string) =>
+          return tags.every((tag: string) =>;
             productTags.some((productTag: string) =>
               productTag.toLowerCase().includes(tag.toLowerCase())
             )
@@ -404,7 +404,7 @@ describe('产品多语言搜索测试', () => {
             'tg-TJ': 'Нав',
           };
           
-          expect(product.marketingBadge).toBe(expectedBadges[language]);
+          expect(product.marketingBadge).toBe((expectedBadges?.language ?? null));
         }
       }
     });
@@ -443,7 +443,7 @@ describe('产品多语言搜索测试', () => {
 
     test('应能根据语言优先级返回合适的图片', async () => {
       const productWithLocalizedImages = {
-        ...MOCK_PRODUCTS[0],
+        ...(MOCK_PRODUCTS?.0 ?? null),
         imagesByLanguage: {
           'zh-CN': '/images/iphone15pro-zh.jpg',
           'en-US': '/images/iphone15pro-en.jpg',
@@ -454,8 +454,8 @@ describe('产品多语言搜索测试', () => {
 
       // 模拟多语言图片选择逻辑
       for (const language of LANGUAGES) {
-        const image = productWithLocalizedImages.imagesByLanguage[language] || 
-                     productWithLocalizedImages.images[0];
+        const image = productWithLocalizedImages.(imagesByLanguage?.language ?? null) ||;
+                     productWithLocalizedImages.(images?.0 ?? null);
         
         expect(image).toBeDefined();
         expect(typeof image).toBe('string');
@@ -474,7 +474,7 @@ describe('产品多语言搜索测试', () => {
       // 验证排序逻辑（这里模拟排序，实际项目中可能需要额外的排序参数）
       const sortedProducts = [...products].sort((a, b) => a.marketPrice - b.marketPrice);
       
-      expect(sortedProducts[0].marketPrice).toBeLessThanOrEqual(sortedProducts[1].marketPrice);
+      expect((sortedProducts?.0 ?? null).marketPrice).toBeLessThanOrEqual((sortedProducts?.1 ?? null).marketPrice);
       expect(sortedProducts[1].marketPrice).toBeLessThanOrEqual(sortedProducts[2]?.marketPrice || 0);
     });
 

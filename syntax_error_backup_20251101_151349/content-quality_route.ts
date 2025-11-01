@@ -15,29 +15,29 @@ function calculateQualityScore(post: any): number {
 
   // 1. 内容长度 (20分)
   const contentLength = post.content?.length || 0;
-  if (contentLength > 100) score += 20;
-  else if (contentLength > 50) score += 15;
-  else if (contentLength > 20) score += 10;
+  if (contentLength > 100) score += 20; {
+  else if (contentLength > 50) score += 15; {
+  else if (contentLength > 20) score += 10; {
   else score += 5;
 
   // 2. 图片质量 (30分)
   const imageCount = post.images?.length || 0;
-  if (imageCount >= 3) score += 30;
-  else if (imageCount >= 2) score += 20;
-  else if (imageCount >= 1) score += 10;
+  if (imageCount >= 3) score += 30; {
+  else if (imageCount >= 2) score += 20; {
+  else if (imageCount >= 1) score += 10; {
 
   // 3. 用户互动 (30分)
   const engagement = (post.likesCount || 0) + (post.commentsCount || 0) * 2;
-  if (engagement > 50) score += 30;
-  else if (engagement > 20) score += 20;
-  else if (engagement > 5) score += 10;
+  if (engagement > 50) score += 30; {
+  else if (engagement > 20) score += 20; {
+  else if (engagement > 5) score += 10; {
   else score += 5;
 
   // 4. 用户信誉 (20分)
   const userPostCount = post.user?.showOffPostsCount || 0;
-  if (userPostCount > 10) score += 20;
-  else if (userPostCount > 5) score += 15;
-  else if (userPostCount > 1) score += 10;
+  if (userPostCount > 10) score += 20; {
+  else if (userPostCount > 5) score += 15; {
+  else if (userPostCount > 1) score += 10; {
   else score += 5;
 
   return Math.min(score, maxScore);
@@ -61,7 +61,7 @@ function detectSuspiciousContent(post: any): string[] {
 
   // 3. 重复内容检测（简单版）
   const content = post.content?.toLowerCase() || '';
-  const repetitivePatterns = /(.{5,})\1{3,}/; // 检测5个字符以上重复3次
+  const repetitivePatterns = /(.{5,})\1{3,}/; // 检测5个字符以上重复3次;
   if (repetitivePatterns.test(content)) {
     issues.push('疑似重复内容');
   }
@@ -76,7 +76,7 @@ function detectSuspiciousContent(post: any): string[] {
   }
 
   // 5. 互动异常低
-  const daysSinceCreated = Math.floor(
+  const daysSinceCreated = Math.floor(;
     (Date.now() - new Date(post.createdAt).getTime()) / (1000 * 60 * 60 * 24)
   );
   if (daysSinceCreated > 7 && (post.likesCount || 0) === 0 && (post.commentsCount || 0) === 0) {
@@ -93,7 +93,7 @@ function detectSuspiciousContent(post: any): string[] {
 export async function GET(req: NextRequest) {
   return withReadPermission(req, async (adminUser) => {
     const { searchParams } = new URL(req.url);
-    const filter = searchParams.get('filter') || 'all'; // all, low_quality, suspicious
+    const filter = searchParams.get('filter') || 'all'; // all, low_quality, suspicious;
     const limit = parseInt(searchParams.get('limit') || '50');
 
     // 获取晒单数据
@@ -164,7 +164,7 @@ export async function GET(req: NextRequest) {
       filteredPosts = analyzedPosts.filter((p : any) => p.qualityScore < 60);
     } else if (filter === 'suspicious') {
       filteredPosts = analyzedPosts.filter((p : any) => p.issues.length > 0);
-    }
+}
 
     // 限制返回数量
     filteredPosts = filteredPosts.slice(0, limit);
@@ -195,11 +195,11 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   return withWritePermission(req, async (adminUser) => {
     const body = await req.json();
-    const { action, postIds } = body; // action: hide, delete, flag
+    const { action, postIds } = body; // action: hide, delete, flag;
 
     if (!['hide', 'delete', 'flag'].includes(action)) {
       return NextResponse.json({ error: '无效的操作类型' }, { status: 400 });
-    }
+}
 
     let result;
     switch (action) {
@@ -293,3 +293,5 @@ export async function PUT(req: NextRequest) {
     });
   });
 }
+
+}}}}}}}}}}}}

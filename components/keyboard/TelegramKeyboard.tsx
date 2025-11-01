@@ -1,3 +1,6 @@
+import React, { useState, useEffect, useRef, useCallback, ReactNode } from 'react';
+import { useTelegram } from '@/contexts/TelegramContext';
+import { KeyboardType, KeyboardActionType, VirtualKeyboardConfig, VirtualKeyboardButton } from '@/types/telegram';
 /**
  * Telegram Keyboard Components
  * Telegram键盘适配组件，支持虚拟键盘和输入优化
@@ -5,19 +8,16 @@
 
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, ReactNode } from 'react';
-import { useTelegram } from '@/contexts/TelegramContext';
-import { KeyboardType, KeyboardActionType, VirtualKeyboardConfig, VirtualKeyboardButton } from '@/types/telegram';
 
 // 键盘状态钩子
-const useKeyboardVisibility = () => {
+const useKeyboardVisibility = () => {}
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+  useEffect(() => {}
+    if (typeof window === 'undefined') return; {}
 
-    const updateKeyboardHeight = () => {
+    const updateKeyboardHeight = () => {}
       const viewportHeight = window.visualViewport?.height || window.innerHeight;
       const windowHeight = window.innerHeight;
       const heightDiff = windowHeight - viewportHeight;
@@ -28,27 +28,27 @@ const useKeyboardVisibility = () => {
 
     updateKeyboardHeight();
 
-    if (window.visualViewport) {
+    if (window.visualViewport) {}
       window.visualViewport.addEventListener('resize', updateKeyboardHeight);
       return () => window.visualViewport.removeEventListener('resize', updateKeyboardHeight);
     } else {
       window.addEventListener('resize', updateKeyboardHeight);
       return () => window.removeEventListener('resize', updateKeyboardHeight);
-    }
+    
   }, []);
 
   return { keyboardHeight, isKeyboardVisible };
 };
 
 // Telegram键盘组件
-interface TelegramKeyboardProps {
+interface TelegramKeyboardProps {}
   children: ReactNode;
   className?: string;
   preventScroll?: boolean;
   adjustPan?: boolean;
-}
 
-export const TelegramKeyboard: React.FC<TelegramKeyboardProps> = ({
+
+export const TelegramKeyboard: React.FC<TelegramKeyboardProps> = ({}
   children,
   className = '',
   preventScroll = true,
@@ -59,53 +59,53 @@ export const TelegramKeyboard: React.FC<TelegramKeyboardProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   // 处理键盘显示时的滚动调整
-  useEffect(() => {
-    if (typeof window === 'undefined' || !preventScroll) return;
+  useEffect(() => {}
+    if (typeof window === 'undefined' || !preventScroll) return; {}
 
-    const preventDefault = (e: Event) => {
-      if (isKeyboardVisible) {
+    const preventDefault = (e: Event) => {}
+      if (isKeyboardVisible) {}
         e.preventDefault();
-      }
+
     };
 
-    if (adjustPan) {
+    if (adjustPan) {}
       // 调整视口以避免键盘遮挡
-      if (isKeyboardVisible && containerRef.current) {
+      if (isKeyboardVisible && containerRef.current) {}
         const container = containerRef.current;
         const focusedElement = document.activeElement;
         
-        if (focusedElement && container.contains(focusedElement as Node)) {
-          setTimeout(() => {
-            focusedElement.scrollIntoView({
+        if (focusedElement && container.contains(focusedElement as Node)) {}
+          setTimeout(() => {}
+            focusedElement.scrollIntoView({}
               behavior: 'smooth',
               block: 'center',
             });
           }, 100);
-        }
-      }
-    }
+        
+      
+    
 
     // 防止在键盘显示时滚动
     document.addEventListener('touchmove', preventDefault, { passive: false });
     
-    return () => {
+    return () => {}
       document.removeEventListener('touchmove', preventDefault);
     };
   }, [isKeyboardVisible, preventScroll, adjustPan]);
 
-  const containerClasses = [
+  const containerClasses = [;
     'telegram-keyboard-container',
     isKeyboardVisible && 'keyboard-visible',
     className,
   ].filter(Boolean).join(' ');
 
-  return (
+  return (;
     <div 
       ref={containerRef}
-      className={containerClasses}
-      style={{
+      className="{containerClasses}"
+      style={{}}
         paddingBottom: isKeyboardVisible ? `${keyboardHeight}px` : '0px',
-      }}
+
     >
       {children}
     </div>
@@ -113,7 +113,7 @@ export const TelegramKeyboard: React.FC<TelegramKeyboardProps> = ({
 };
 
 // 输入框适配组件
-interface KeyboardInputProps {
+interface KeyboardInputProps {}
   type?: KeyboardType;
   placeholder?: string;
   value?: string;
@@ -125,9 +125,9 @@ interface KeyboardInputProps {
   required?: boolean;
   maxLength?: number;
   disabled?: boolean;
-}
 
-export const KeyboardInput: React.FC<KeyboardInputProps> = ({
+
+export const KeyboardInput: React.FC<KeyboardInputProps> = ({}
   type = KeyboardType.TEXT,
   placeholder,
   value = '',
@@ -144,8 +144,8 @@ export const KeyboardInput: React.FC<KeyboardInputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // 输入模式配置
-  const getInputMode = () => {
-    switch (type) {
+  const getInputMode = () => {}
+    switch (type) {}
       case KeyboardType.NUMBER:
         return 'numeric';
       case KeyboardType.EMAIL:
@@ -158,37 +158,37 @@ export const KeyboardInput: React.FC<KeyboardInputProps> = ({
         return 'search';
       default:
         return 'text';
-    }
+
   };
 
   // 处理聚焦
-  const handleFocus = useCallback(() => {
+  const handleFocus = useCallback(() => {}
     hapticFeedback('light');
     onFocus?.();
   }, [hapticFeedback, onFocus]);
 
   // 处理失焦
-  const handleBlur = useCallback(() => {
+  const handleBlur = useCallback(() => {}
     onBlur?.();
   }, [onBlur]);
 
-  const inputClasses = [
+  const inputClasses = [;
     'telegram-keyboard-input',
     `keyboard-type-${type}`,
     className,
   ].filter(Boolean).join(' ');
 
-  return (
+  return (;
     <input
       ref={inputRef}
-      type="text"
+      type:"text"
       inputMode={getInputMode()}
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange?.(e.target.value)}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      className={inputClasses}
+      className="{inputClasses}"
       autoFocus={autoFocus}
       required={required}
       maxLength={maxLength}
@@ -198,13 +198,13 @@ export const KeyboardInput: React.FC<KeyboardInputProps> = ({
 };
 
 // 虚拟键盘组件
-interface VirtualKeyboardProps {
+interface VirtualKeyboardProps {}
   config: VirtualKeyboardConfig;
   onKeyPress?: (key: string) => void;
   className?: string;
-}
 
-export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
+
+export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({}
   config,
   onKeyPress,
   className = '',
@@ -214,15 +214,15 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
   const [cursorPosition, setCursorPosition] = useState(0);
 
   // 处理按键按下
-  const handleKeyPress = useCallback((key: string) => {
+  const handleKeyPress = useCallback((key: string) => {}
     hapticFeedback('light');
     
-    if (key === 'backspace') {
-      if (cursorPosition > 0) {
+    if (key === 'backspace') {}
+      if (cursorPosition > 0) {}
         const newValue = inputValue.slice(0, cursorPosition - 1) + inputValue.slice(cursorPosition);
         setInputValue(newValue);
         setCursorPosition(cursorPosition - 1);
-      }
+
     } else if (key === 'clear') {
       setInputValue('');
       setCursorPosition(0);
@@ -232,47 +232,47 @@ export const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
       const newValue = inputValue.slice(0, cursorPosition) + key + inputValue.slice(cursorPosition);
       setInputValue(newValue);
       setCursorPosition(cursorPosition + 1);
-    }
+    
     
     onKeyPress?.(key);
   }, [inputValue, cursorPosition, hapticFeedback, onKeyPress]);
 
-  if (!config.isVisible) return null;
+  if (!config.isVisible) return null; {}
 
-  const keyboardClasses = [
+  const keyboardClasses = [;
     'virtual-keyboard',
     `layout-${config.layout}`,
     className,
   ].filter(Boolean).join(' ');
 
-  return (
-    <div className={keyboardClasses} style={{ height: `${config.height}px` }}>
-      <div className="virtual-keyboard-content">
-        {config.buttons.map((button, index) => (
+  return (;
+    <div className={keyboardClasses} style="{{ height: `${config.height}"px` }}>
+      <div className:"virtual-keyboard-content">
+        {config.buttons.map((button, index) => (}
           <button
             key={index}
-            className={`virtual-keyboard-button ${button.type || 'default'} ${button.className || ''}`}
-            style={{ gridColumn: `span ${button.span || 1}` }}
+            className="{`virtual-keyboard-button" ${button.type || 'default'} ${button.className || ''}`}
+            style="{{ gridColumn: `span ${button.span || 1}"` }}
             onClick={() => handleKeyPress(button.text)}
           >
             {button.text}
           </button>
-        ))}
+        ))
       </div>
     </div>
   );
 };
 
 // 键盘操作按钮组件
-interface KeyboardActionProps {
+interface KeyboardActionProps {}
   type: KeyboardActionType;
   text?: string;
   onClick: () => void;
   disabled?: boolean;
   className?: string;
-}
 
-export const KeyboardAction: React.FC<KeyboardActionProps> = ({
+
+export const KeyboardAction: React.FC<KeyboardActionProps> = ({}
   type,
   text,
   onClick,
@@ -281,13 +281,13 @@ export const KeyboardAction: React.FC<KeyboardActionProps> = ({
 }) => {
   const { hapticFeedback } = useTelegram();
 
-  const handleClick = () => {
+  const handleClick = () => {}
     hapticFeedback('medium');
     onClick();
   };
 
-  const getDefaultText = () => {
-    switch (type) {
+  const getDefaultText = () => {}
+    switch (type) {}
       case KeyboardActionType.DONE: return '完成';
       case KeyboardActionType.NEXT: return '下一步';
       case KeyboardActionType.PREV: return '上一步';
@@ -295,18 +295,18 @@ export const KeyboardAction: React.FC<KeyboardActionProps> = ({
       case KeyboardActionType.SEARCH: return '搜索';
       case KeyboardActionType.SEND: return '发送';
       default: return text || '确定';
-    }
+
   };
 
-  const actionClasses = [
+  const actionClasses = [;
     'keyboard-action-button',
     `action-${type}`,
     className,
   ].filter(Boolean).join(' ');
 
-  return (
+  return (;
     <button
-      className={actionClasses}
+      className="{actionClasses}"
       onClick={handleClick}
       disabled={disabled}
     >

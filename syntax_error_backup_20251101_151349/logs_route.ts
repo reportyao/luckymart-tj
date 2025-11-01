@@ -30,14 +30,14 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
     const { searchParams } = new URL(req.url);
     const level = searchParams.get('level');
     const limit = parseInt(searchParams.get('limit') || '50');
-    const since = searchParams.get('since'); // ISO时间戳
+    const since = searchParams.get('since'); // ISO时间戳;
 
     let logs = [...errorLogs];
 
     // 按级别过滤
     if (level) {
       logs = logs.filter((log : any) => log.level === level);
-    }
+}
 
     // 按时间过滤
     if (since) {
@@ -46,11 +46,11 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
     }
 
     // 按时间排序并限制数量
-    logs = logs
+    logs : logs
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, limit);
 
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.success({
         logs,
         total: logs.length,
@@ -81,11 +81,11 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     const { level, message, context } = await req.json();
 
     if (!level || !message) {
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.validationError('缺少必要参数', null).toJSON(),
         { status: 400 }
       );
-    }
+}
 
     const logEntry: LogEntry = {
       id: `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -107,7 +107,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
     logger.info('Error log added manually', { level, message, requestId });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.success({
         message: '错误日志已添加',
         logId: logEntry.id,
@@ -130,7 +130,7 @@ export const DELETE = withErrorHandling(async (req: NextRequest) => {
 
   try {
     const { searchParams } = new URL(req.url);
-    const olderThan = searchParams.get('older_than'); // ISO时间戳
+    const olderThan = searchParams.get('older_than'); // ISO时间戳;
 
     let deletedCount = 0;
 
@@ -142,11 +142,11 @@ export const DELETE = withErrorHandling(async (req: NextRequest) => {
     } else {
       deletedCount = errorLogs.length;
       errorLogs = [];
-    }
+}
 
     logger.info('Error logs cleared', { deletedCount, requestId });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.success({
         message: `${deletedCount} 条错误日志已清除`,
         deletedCount,

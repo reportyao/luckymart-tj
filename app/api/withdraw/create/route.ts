@@ -1,4 +1,3 @@
-// 创建提现申请
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
@@ -7,7 +6,7 @@ import { validationEngine } from '@/lib/validation';
 import { withRateLimit, withdrawRateLimit } from '@/lib/rate-limit-middleware';
 import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
 import type { ApiResponse, WithdrawRequest } from '@/types';
-import { getLogger } from '@/lib/logger';
+// 创建提现申请
 
 // 应用速率限制的提现处理函数
 const handleWithdrawRequest = async (request: NextRequest) => {
@@ -65,7 +64,7 @@ const handleWithdrawRequest = async (request: NextRequest) => {
     }
 
     // 查询用户余额
-    const { data: userData, error: userError } = await supabaseAdmin
+    const { data: userData, error: userError } = await supabaseAdmin;
       .from('users')
       .select('platform_balance')
       .eq('id', user.userId)
@@ -77,12 +76,12 @@ const handleWithdrawRequest = async (request: NextRequest) => {
 
     // 获取系统验证配置
     try {
-      const { data: settings } = await supabaseAdmin
+      const { data: settings } = await supabaseAdmin;
         .from('system_validation_settings')
         .select('*');
       
       if (settings) {
-        const config = settings.reduce((acc: any,  setting: any) => {
+        const config = settings.reduce((acc: any: any,   setting: any: any) => {
           acc[setting.setting_key] = setting.parsed_value;
           return acc;
         }, {} as any);
@@ -168,6 +167,7 @@ const handleWithdrawRequest = async (request: NextRequest) => {
     });
 
     return NextResponse.json<ApiResponse>({
+  }
       success: false,
       error: error.message || '创建提现申请失败'
     }, { status: 500 });
@@ -197,4 +197,4 @@ const processRequest = withRateLimit(handleWithdrawRequest, withdrawRateLimit({
 }));
 
 // 导出主处理函数
-export { processRequest as POST };
+export ;

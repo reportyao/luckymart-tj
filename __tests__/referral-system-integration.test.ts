@@ -1,10 +1,10 @@
+import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { TestDataGenerator, PerformanceTester } from './test-config';
 /**
  * 核心邀请业务流程集成测试
  * 测试整个邀请系统的完整业务流程
  */
 
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { TestDataGenerator, PerformanceTester } from './test-config';
 
 // 模拟数据库操作
 jest.mock('@prisma/client', () => ({
@@ -144,7 +144,7 @@ describe('核心邀请业务流程集成测试', () => {
       mockPrisma.$transaction.mockResolvedValue([invitee, referralRecord]);
 
       // 执行邀请注册流程
-      const result = await mockPrisma.$transaction([
+      const result = await mockPrisma.$transaction([;
         mockPrisma.users.create({ data: invitee }),
         mockPrisma.referrals.create({ 
           data: {
@@ -156,8 +156,8 @@ describe('核心邀请业务流程集成测试', () => {
       ]);
 
       expect(result).toHaveLength(2);
-      expect(result[0]).toBe(invitee);
-      expect(result[1]).toBe(referralRecord);
+      expect((result?.0 ?? null)).toBe(invitee);
+      expect((result?.1 ?? null)).toBe(referralRecord);
     });
 
     test('邀请奖励发放流程', async () => {
@@ -305,7 +305,7 @@ describe('核心邀请业务流程集成测试', () => {
         return user;
       };
 
-      const { results, totalTime, averageTime } = await PerformanceTester.testConcurrency(
+      const { results, totalTime, averageTime } = await PerformanceTester.testConcurrency(;
         () => registerUser(Math.floor(Math.random() * concurrentRegistrations)),
         concurrentRegistrations
       );
@@ -319,7 +319,7 @@ describe('核心邀请业务流程集成测试', () => {
   describe('邀请数据一致性测试', () => {
     test('邀请关系数据一致性', async () => {
       // 测试邀请链的完整性
-      const referralChain = [
+      const referralChain = [;
         { id: 'level-1', inviterId: 'root', inviteeId: 'user-1', level: 1 },
         { id: 'level-2', inviterId: 'user-1', inviteeId: 'user-2', level: 2 },
         { id: 'level-3', inviterId: 'user-2', inviteeId: 'user-3', level: 3 },
@@ -412,7 +412,7 @@ describe('核心邀请业务流程集成测试', () => {
 
     test('邀请奖励计算溢出保护', async () => {
       // 测试极端情况下的奖励计算
-      const maxSpent = Number.MAX_SAFE_INTEGER / 1000000; // 避免溢出
+      const maxSpent = Number.MAX_SAFE_INTEGER / 1000000; // 避免溢出;
       const rewardRate = 0.1;
       
       let calculatedReward: number;

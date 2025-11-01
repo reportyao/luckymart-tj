@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { auth } from '@/lib/auth';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 export const GET = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
@@ -18,6 +15,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('posts_route.ts request failed', error as Error, {
       requestId,
@@ -35,8 +33,8 @@ async function handleGET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '20');
-        const sort = searchParams.get('sort') || 'latest'; // latest | hottest
-        const userId = searchParams.get('user_id'); // 可选：获取特定用户的晒单
+        const sort = searchParams.get('sort') || 'latest'; // latest | hottest;
+        const userId = searchParams.get('user_id'); // 可选：获取特定用户的晒单;
 
         const skip = (page - 1) * limit;
 
@@ -45,7 +43,7 @@ async function handleGET(request: NextRequest) {
           orderBy = { hotScore: 'desc' };
         } else {
           orderBy = { createdAt: 'desc' };
-        }
+    }
 
         // 构建查询条件
         const where: any = {
@@ -56,7 +54,7 @@ async function handleGET(request: NextRequest) {
           where.userId = userId;
         }
 
-        const [posts, total] = await Promise.all([
+        const [posts, total] = await Promise.all([;
           prisma.showOffPosts.findMany({
             where,
             include: {
@@ -102,7 +100,7 @@ async function handleGET(request: NextRequest) {
         const hasMore = page < totalPages;
 
         // 格式化返回数据
-        const formattedPosts = posts.map((post : any) => ({
+        const formattedPosts = posts.map(((post : any) : any) => ({
           id: post.id,
           user: {
             id: post.user.id,
@@ -152,7 +150,7 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取晒单列表失败:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '获取晒单列表失败' },
           { status: 500 }
         );
@@ -165,18 +163,18 @@ export async function POST(request: NextRequest) {
     // 验证用户身份
     const session = await auth();
     if (!session?.user) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '请先登录' },
         { status: 401 }
       );
-    }
+}
 
     const body = await request.json();
     const { roundId, participationId, content, images } = body;
 
     // 验证必需字段
     if (!roundId || !participationId || !images) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少必需字段' },
         { status: 400 }
       );
@@ -184,7 +182,7 @@ export async function POST(request: NextRequest) {
 
     // 验证图片数量
     if (!Array.isArray(images) || images.length === 0 || images.length > 9) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '图片数量必须为1-9张' },
         { status: 400 }
       );
@@ -192,7 +190,7 @@ export async function POST(request: NextRequest) {
 
     // 验证文字长度
     if (content && (content.length < 20 || content.length > 200)) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '文字内容长度必须在20-200字符之间' },
         { status: 400 }
       );
@@ -211,7 +209,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!participation || participation.roundId !== roundId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '未找到中奖记录或参数错误' },
         { status: 400 }
       );
@@ -223,7 +221,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingPost) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '该中奖记录已经晒单过了' },
         { status: 400 }
       );
@@ -265,7 +263,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'发布晒单失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '发布晒单失败' },
       { status: 500 }
     );
@@ -275,7 +273,7 @@ export async function POST(request: NextRequest) {
 // 基础自动审核逻辑
 async function performAutoReview(content: string | null, images: string[]): Promise<boolean> {
   // 基础敏感词过滤（实际项目中应该使用更复杂的审核服务）
-  const sensitiveWords = ['广告', '垃圾', '诈骗', '违禁']; // 简化示例
+  const sensitiveWords = ['广告', '垃圾', '诈骗', '违禁']; // 简化示例;
   
   if (content) {
     for (const word of sensitiveWords) {

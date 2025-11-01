@@ -15,7 +15,7 @@ if (fs.existsSync(tsconfigPath)) {
   const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, 'utf8'));
   
   // 检查关键严格模式选项
-  const strictOptions = [
+  const strictOptions = [;
     'strict',
     'noImplicitAny', 
     'strictNullChecks',
@@ -26,7 +26,7 @@ if (fs.existsSync(tsconfigPath)) {
   
   let allEnabled = true;
   strictOptions.forEach(option => {
-    if (!tsconfig.compilerOptions[option]) {
+    if (!tsconfig.(compilerOptions?.option ?? null)) {
       console.log(`❌ ${option} 未启用`);
       allEnabled = false;
     } else {
@@ -48,7 +48,7 @@ if (fs.existsSync(eslintPath)) {
   const eslintContent = fs.readFileSync(eslintPath, 'utf8');
   
   // 检查关键规则
-  const rules = [
+  const rules = [;
     '@typescript-eslint/no-unused-vars',
     '@typescript-eslint/no-explicit-any',
     'no-console',
@@ -75,7 +75,7 @@ const packagePath = path.join(__dirname, '../package.json');
 if (fs.existsSync(packagePath)) {
   const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
   
-  const scripts = [
+  const scripts = [;
     'type-check',
     'lint',
     'lint:fix', 
@@ -86,7 +86,7 @@ if (fs.existsSync(packagePath)) {
   ];
   
   scripts.forEach(script => {
-    if (packageJson.scripts[script]) {
+    if (packageJson.(scripts?.script ?? null)) {
       console.log(`✅ npm 脚本已配置: ${script}`);
     } else {
       console.log(`❌ npm 脚本未配置: ${script}`);
@@ -99,7 +99,7 @@ if (fs.existsSync(packagePath)) {
 // 4. 检查脚本文件
 console.log('\n4. 检查脚本文件...');
 const scriptsDir = path.join(__dirname, '../scripts');
-const requiredScripts = [
+const requiredScripts = [;
   'check-types.ts',
   'pre-commit-check.sh'
 ];
@@ -115,7 +115,7 @@ requiredScripts.forEach(script => {
 
 // 5. 检查文档文件
 console.log('\n5. 检查文档文件...');
-const docs = [
+const docs = [;
   'STATIC_ANALYSIS_GUIDE.md',
   'GIT_COMMIT_GUIDE.md'
 ];

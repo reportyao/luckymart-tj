@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { requireAdminPermission } from '@/lib/admin-auth-middleware';
 import { withErrorHandling } from '@/lib/middleware';
 import { getLogger } from '@/lib/logger';
 import { respond } from '@/lib/responses';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -24,7 +22,7 @@ const withDeletePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取所有商品
 export const GET = withErrorHandling(async (request: NextRequest) => {
-  return withReadPermission(async (request: any, admin: any) => {
+  return withReadPermission(async (request: any: any, admin: any: any) => {
     const logger = getLogger();
 
     try {
@@ -43,7 +41,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       });
 
       const responseData = {
-        products: products.map((p : any) => ({
+        products: products.map(((p : any) : any) => ({
           id: p.id,
           nameZh: p.nameZh,
           nameEn: p.nameEn,
@@ -63,9 +61,9 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
         })),
         stats: {
           total: products.length,
-          active: products.filter((p : any) => p.status === 'active').length,
-          inactive: products.filter((p : any) => p.status === 'inactive').length
-        }
+          active: products.filter(((p : any) : any) => p.status === 'active').length,
+          inactive: products.filter(((p : any) : any) => p.status === 'inactive').length
+}
       }
     });
       };
@@ -78,7 +76,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
         method: 'GET'
       });
 
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.success(responseData).toJSON()
       );
 
@@ -91,7 +89,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
         method: 'GET'
       });
 
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('DATABASE_QUERY_FAILED', '获取商品列表失败').toJSON(),
         { status: 500 }
       );
@@ -101,7 +99,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
 // POST - 创建商品
 export const POST = withErrorHandling(async (request: NextRequest) => {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const logger = getLogger();
 
     try {
@@ -135,11 +133,11 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
     // 验证必填字段
     if (!nameZh || !nameEn || !nameRu || !marketPrice || !totalShares) {
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.validationError('缺少必填字段').toJSON(),
         { status: 400 }
       );
-    }
+}
 
     // 创建商品
     const product = await prisma.products.create({
@@ -198,7 +196,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
       method: 'POST'
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.success(responseData).toJSON()
     );
 
@@ -213,7 +211,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
         method: 'POST'
       });
 
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('DATABASE_QUERY_FAILED', '创建商品失败').toJSON(),
         { status: 500 }
       );
@@ -223,7 +221,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
 
 // PUT - 更新商品
 export const PUT = withErrorHandling(async (request: NextRequest) => {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const logger = getLogger();
 
     try {
@@ -231,11 +229,11 @@ export const PUT = withErrorHandling(async (request: NextRequest) => {
       const { productId, ...updateData } = body;
 
       if (!productId) {
-        return NextResponse.json(
+        return NextResponse.json(;
           respond.validationError('缺少商品ID').toJSON(),
           { status: 400 }
         );
-      }
+}
 
       logger.info('更新商品请求', { 
         productId,
@@ -247,19 +245,19 @@ export const PUT = withErrorHandling(async (request: NextRequest) => {
 
     // 构建更新数据
     const data: any = {};
-    if (updateData.nameZh) {data.nameZh = updateData.nameZh;}
-    if (updateData.nameEn) {data.nameEn = updateData.nameEn;}
-    if (updateData.nameRu) {data.nameRu = updateData.nameRu;}
-    if (updateData.descriptionZh !== undefined) {data.descriptionZh = updateData.descriptionZh;}
-    if (updateData.descriptionEn !== undefined) {data.descriptionEn = updateData.descriptionEn;}
-    if (updateData.descriptionRu !== undefined) {data.descriptionRu = updateData.descriptionRu;}
-    if (updateData.images) {data.images = updateData.images;}
-    if (updateData.marketPrice) {data.marketPrice = parseFloat(updateData.marketPrice);}
-    if (updateData.totalShares) {data.totalShares = parseInt(updateData.totalShares);}
-    if (updateData.pricePerShare) {data.pricePerShare = parseFloat(updateData.pricePerShare);}
-    if (updateData.category) {data.category = updateData.category;}
-    if (updateData.stock !== undefined) {data.stock = parseInt(updateData.stock);}
-    if (updateData.status) {data.status = updateData.status;}
+    if (updateData.nameZh) {data.nameZh = updateData.nameZh;} {
+    if (updateData.nameEn) {data.nameEn = updateData.nameEn;} {
+    if (updateData.nameRu) {data.nameRu = updateData.nameRu;} {
+    if (updateData.descriptionZh !== undefined) {data.descriptionZh = updateData.descriptionZh;} {
+    if (updateData.descriptionEn !== undefined) {data.descriptionEn = updateData.descriptionEn;} {
+    if (updateData.descriptionRu !== undefined) {data.descriptionRu = updateData.descriptionRu;} {
+    if (updateData.images) {data.images = updateData.images;} {
+    if (updateData.marketPrice) {data.marketPrice = parseFloat(updateData.marketPrice);} {
+    if (updateData.totalShares) {data.totalShares = parseInt(updateData.totalShares);} {
+    if (updateData.pricePerShare) {data.pricePerShare = parseFloat(updateData.pricePerShare);} {
+    if (updateData.category) {data.category = updateData.category;} {
+    if (updateData.stock !== undefined) {data.stock = parseInt(updateData.stock);} {
+    if (updateData.status) {data.status = updateData.status;} {
 
     // 更新商品
     await prisma.products.update({
@@ -277,7 +275,7 @@ export const PUT = withErrorHandling(async (request: NextRequest) => {
         method: 'PUT'
       });
 
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.success(responseData).toJSON()
       );
 
@@ -291,7 +289,7 @@ export const PUT = withErrorHandling(async (request: NextRequest) => {
         method: 'PUT'
       });
 
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('DATABASE_QUERY_FAILED', '更新商品失败').toJSON(),
         { status: 500 }
       );
@@ -301,7 +299,7 @@ export const PUT = withErrorHandling(async (request: NextRequest) => {
 
 // DELETE - 删除商品
 export const DELETE = withErrorHandling(async (request: NextRequest) => {
-  return withDeletePermission(async (request: any, admin: any) => {
+  return withDeletePermission(async (request: any: any, admin: any: any => {
     const logger = getLogger();
 
     try {
@@ -310,11 +308,11 @@ export const DELETE = withErrorHandling(async (request: NextRequest) => {
       const productId = searchParams.get('productId');
 
       if (!productId) {
-        return NextResponse.json(
+        return NextResponse.json(;
           respond.validationError('缺少商品ID').toJSON(),
           { status: 400 }
         );
-      }
+}
 
       logger.info('删除商品请求', { productId }, {
         endpoint: '/api/admin/products',
@@ -330,7 +328,7 @@ export const DELETE = withErrorHandling(async (request: NextRequest) => {
     });
 
       if (activeRounds) {
-        return NextResponse.json(
+        return NextResponse.json(;
           respond.customError('INVALID_OPERATION', '该商品有进行中的抽奖，无法删除').toJSON(),
           { status: 400 }
         );
@@ -348,7 +346,7 @@ export const DELETE = withErrorHandling(async (request: NextRequest) => {
         method: 'DELETE'
       });
 
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.success(responseData).toJSON()
       );
 
@@ -361,10 +359,12 @@ export const DELETE = withErrorHandling(async (request: NextRequest) => {
         method: 'DELETE'
       });
 
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('DATABASE_QUERY_FAILED', '删除商品失败').toJSON(),
         { status: 500 }
       );
     }
   })(request);
 }
+
+}}}}}}}}}}}

@@ -1,11 +1,11 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { withRateLimit, applyRateLimit } from '@/lib/rate-limit-middleware';
+import { RATE_LIMIT_PRESETS } from '@/lib/rate-limit';
 /**
  * 速率限制使用示例
  * 展示如何在API路由中应用不同的速率限制策略
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { withRateLimit, applyRateLimit } from '@/lib/rate-limit-middleware';
-import { RATE_LIMIT_PRESETS } from '@/lib/rate-limit';
 
 // 示例1: 使用装饰器模式添加速率限制
 export async function POST_withDecorator(request: NextRequest) {
@@ -17,11 +17,11 @@ export async function POST_withDecorator(request: NextRequest) {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '处理失败' },
       { status: 500 }
     );
-  }
+}
 }
 
 // 应用充值接口的速率限制
@@ -29,7 +29,7 @@ export const POST = withRateLimit(POST_withDecorator, {
   config: RATE_LIMIT_PRESETS.RECHARGE,
   customHeaders: true,
   onLimitExceeded: async (result, request) => {
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: '操作过于频繁，请稍后再试',
@@ -37,7 +37,7 @@ export const POST = withRateLimit(POST_withDecorator, {
           limit: result.totalHits + result.remaining,
           remaining: result.remaining,
           resetTime: new Date(result.resetTime).toISOString()
-        }
+}
       },
       {
         status: 429,
@@ -55,7 +55,7 @@ export const POST = withRateLimit(POST_withDecorator, {
 // 示例2: 使用便捷函数
 const handleUserProfile = applyRateLimit('general', {
   onLimitExceeded: async (result, request) => {
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: '请求过于频繁',
@@ -74,7 +74,7 @@ export async function GET_userProfile(request: NextRequest) {
       id: '123',
       name: '示例用户',
       email: 'example@example.com'
-    }
+}
   });
 }
 
@@ -98,12 +98,13 @@ export async function POST_customLimit(request: NextRequest) {
         limit: info.limit,
         hits: info.hits
       });
-    }
+}
   };
 
   return withRateLimit(async (req) => {
     // 模拟处理逻辑
     return NextResponse.json({
+  }
       success: true,
       message: '自定义限流处理成功'
     });
@@ -116,13 +117,13 @@ export async function POST_customLimit(request: NextRequest) {
 // 示例4: 多层速率限制（基于用户等级）
 export async function POST_multiTier(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
-  let userLevel = 'free'; // 默认免费用户
+  let userLevel = 'free'; // 默认免费用户;
   
   // 模拟解析用户等级
   if (authHeader) {
     // 这里可以解析JWT或查询数据库
     userLevel = 'premium'; // 假设是付费用户
-  }
+}
 
   // 根据用户等级应用不同的限制
   let config;
@@ -162,7 +163,7 @@ export async function POST_multiTier(request: NextRequest) {
     config,
     customHeaders: true,
     onLimitExceeded: async (result, request) => {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: `${userLevel}用户请求过于频繁`,
@@ -189,7 +190,7 @@ export async function GET_conditionalLimit(request: NextRequest) {
   const isHighPriority = url.searchParams.get('priority') === 'high';
   
   // 高优先级请求使用更严格的限制
-  const config = isHighPriority 
+  const config = isHighPriority;
     ? RATE_LIMIT_PRESETS.PAYMENT_CRITICAL
     : RATE_LIMIT_PRESETS.GENERAL_API;
 
@@ -205,7 +206,7 @@ export async function GET_conditionalLimit(request: NextRequest) {
     config,
     customHeaders: true,
     onLimitExceeded: async (result, request) => {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: `${isHighPriority ? '高优先级' : '普通'}请求过于频繁`,
@@ -215,7 +216,7 @@ export async function GET_conditionalLimit(request: NextRequest) {
           status: 429,
           headers: {
             'X-Priority': isHighPriority ? 'high' : 'normal'
-          }
+}
         }
       );
     }
@@ -235,11 +236,11 @@ export async function POST_batchRequests(request: NextRequest) {
     const { requests } = body;
     
     if (!Array.isArray(requests) || requests.length > 50) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '批量请求数量无效' },
         { status: 400 }
       );
-    }
+}
 
     // 模拟批量处理
     const results = requests.map((item, index) => ({
@@ -259,7 +260,7 @@ export async function POST_batchRequests(request: NextRequest) {
     config,
     customHeaders: true,
     onLimitExceeded: async (result, request) => {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: '批量请求过于频繁，请稍后再试',
@@ -293,7 +294,7 @@ export const Examples = {
  *    export const GET = withRateLimit(handler, { config: customConfig });
  * 
  * 3. 便捷预设：
- *    export const POST = applyRateLimit('auth', { /* options *\/ });
+ *    export const POST = applyRateLimit('auth', );
  * 
  * 4. 预置类型：
  *    - 'payment': 支付接口极严格限制

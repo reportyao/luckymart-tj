@@ -1,5 +1,4 @@
 import { describe, test, expect, beforeAll, afterAll, jest } from '@jest/globals';
-import { prisma } from '@/lib/prisma';
 
 // Integration test for complete show-off system workflow
 describe('Show-off System Integration Tests', () => {
@@ -62,7 +61,7 @@ describe('Show-off System Integration Tests', () => {
         viewsCount: 100,
       };
 
-      const calculatedHotness =
+      const calculatedHotness =;
         postWithEngagement.likesCount * weights.likes +
         postWithEngagement.commentsCount * weights.comments +
         postWithEngagement.viewsCount * weights.views;
@@ -89,7 +88,7 @@ describe('Show-off System Integration Tests', () => {
 
     test('should handle batch audit workflow', async () => {
       // Step 1: 模拟多个待审核晒单
-      const pendingPosts = [
+      const pendingPosts = [;
         { id: 'post-1', status: 'pending', content: '优质内容1' },
         { id: 'post-2', status: 'pending', content: '优质内容2' },
         { id: 'post-3', status: 'pending', content: '广告内容' },
@@ -99,7 +98,7 @@ describe('Show-off System Integration Tests', () => {
 
       // Step 2: 批量通过前两个
       const approvedIds = ['post-1', 'post-2'];
-      const approvedPosts = pendingPosts
+      const approvedPosts = pendingPosts;
         .filter((p) => approvedIds.includes(p.id))
         .map((p) => ({ ...p, status: 'approved' }));
 
@@ -108,7 +107,7 @@ describe('Show-off System Integration Tests', () => {
 
       // Step 3: 拒绝最后一个
       const rejectedPost = {
-        ...pendingPosts[2],
+        ...(pendingPosts?.2 ?? null),
         status: 'rejected',
         rejectReason: '包含广告内容',
       };
@@ -134,7 +133,7 @@ describe('Show-off System Integration Tests', () => {
 
     test('should handle hotness recalculation workflow', async () => {
       // Step 1: 模拟已有晒单数据
-      const existingPosts = [
+      const existingPosts = [;
         {
           id: 'post-1',
           likesCount: 50,
@@ -163,12 +162,12 @@ describe('Show-off System Integration Tests', () => {
 
       // Step 3: 重新计算热度
       const recalculatedPosts = existingPosts.map((post) => {
-        const daysSinceCreated = Math.floor(
+        const daysSinceCreated = Math.floor(;
           (Date.now() - post.createdAt.getTime()) / (1000 * 60 * 60 * 24)
         );
         const timeDecay = Math.pow(newWeights.time_decay, daysSinceCreated);
 
-        const newHotness = Math.round(
+        const newHotness = Math.round(;
           ((post.likesCount || 0) * newWeights.likes +
             (post.commentsCount || 0) * newWeights.comments +
             (post.viewsCount || 0) * newWeights.views) *
@@ -182,17 +181,17 @@ describe('Show-off System Integration Tests', () => {
       });
 
       // Verify hotness was recalculated with time decay
-      expect(recalculatedPosts[0].hotnessScore).toBeGreaterThan(0);
-      expect(recalculatedPosts[1].hotnessScore).toBeGreaterThan(0);
+      expect((recalculatedPosts?.0 ?? null).hotnessScore).toBeGreaterThan(0);
+      expect((recalculatedPosts?.1 ?? null).hotnessScore).toBeGreaterThan(0);
       // Post 1 (2 days old) should have higher hotness than Post 2 (5 days old) with same base engagement
-      expect(recalculatedPosts[0].hotnessScore).toBeGreaterThan(
-        recalculatedPosts[1].hotnessScore
+      expect((recalculatedPosts?.0 ?? null).hotnessScore).toBeGreaterThan(
+        (recalculatedPosts?.1 ?? null).hotnessScore
       );
     });
 
     test('should handle content quality detection workflow', async () => {
       // Step 1: 模拟不同质量的晒单
-      const posts = [
+      const posts = [;
         {
           id: 'post-high',
           content: '非常详细的中奖感想,我参与了这次活动并中奖了,真的很开心!',
@@ -224,27 +223,27 @@ describe('Show-off System Integration Tests', () => {
         let score = 0;
 
         // Content length
-        if (post.content.length > 100) score += 20;
-        else if (post.content.length > 50) score += 15;
-        else if (post.content.length > 20) score += 10;
+        if (post.content.length > 100) score += 20; {
+        else if (post.content.length > 50) score += 15; {
+        else if (post.content.length > 20) score += 10; {
         else score += 5;
 
         // Image count
-        if (post.images.length >= 3) score += 30;
-        else if (post.images.length >= 2) score += 20;
-        else if (post.images.length >= 1) score += 10;
+        if (post.images.length >= 3) score += 30; {
+        else if (post.images.length >= 2) score += 20; {
+        else if (post.images.length >= 1) score += 10; {
 
         // Engagement
         const engagement = post.likesCount + post.commentsCount * 2;
-        if (engagement > 50) score += 30;
-        else if (engagement > 20) score += 20;
-        else if (engagement > 5) score += 10;
+        if (engagement > 50) score += 30; {
+        else if (engagement > 20) score += 20; {
+        else if (engagement > 5) score += 10; {
         else score += 5;
 
         // User reputation
-        if (post.user.postsCount > 10) score += 20;
-        else if (post.user.postsCount > 5) score += 15;
-        else if (post.user.postsCount > 1) score += 10;
+        if (post.user.postsCount > 10) score += 20; {
+        else if (post.user.postsCount > 5) score += 15; {
+        else if (post.user.postsCount > 1) score += 10; {
         else score += 5;
 
         return Math.min(score, 100);
@@ -255,16 +254,16 @@ describe('Show-off System Integration Tests', () => {
         score: calculateQuality(post),
       }));
 
-      expect(qualityScores[0].score).toBeGreaterThan(70); // High quality
-      expect(qualityScores[1].score).toBeLessThan(40); // Low quality
-      expect(qualityScores[2].score).toBeLessThan(50); // Suspicious
+      expect((qualityScores?.0 ?? null).score).toBeGreaterThan(70); // High quality
+      expect((qualityScores?.1 ?? null).score).toBeLessThan(40); // Low quality
+      expect((qualityScores?.2 ?? null).score).toBeLessThan(50); // Suspicious
 
       // Step 3: 检测可疑内容
       const detectSuspicious = (post: any) => {
         const issues: string[] = [];
 
-        if (post.content.length < 10) issues.push('内容过短');
-        if (post.images.length === 0) issues.push('缺少图片');
+        if (post.content.length < 10) issues.push('内容过短'); {
+        if (post.images.length === 0) issues.push('缺少图片'); {
 
         const sensitiveWords = ['微信', 'QQ', '广告'];
         for (const word of sensitiveWords) {
@@ -281,7 +280,7 @@ describe('Show-off System Integration Tests', () => {
       expect(suspiciousIssues.some((issue) => issue.includes('微信'))).toBe(true);
 
       // Step 4: 自动处理低质量内容
-      const lowQualityPosts = qualityScores
+      const lowQualityPosts = qualityScores;
         .filter((p) => p.score < 40)
         .map((p) => p.id);
 
@@ -314,25 +313,25 @@ describe('Show-off System Integration Tests', () => {
       expect(updatedPosition.current).toBeLessThanOrEqual(updatedPosition.maxCount);
 
       // Step 3: 调整推荐优先级
-      const recommendations = [
+      const recommendations = [;
         { id: 'rec-1', priority: 5 },
         { id: 'rec-2', priority: 10 },
         { id: 'rec-3', priority: 8 },
       ];
 
-      const reorderedRecommendations = recommendations
+      const reorderedRecommendations = recommendations;
         .sort((a, b) => b.priority - a.priority)
         .map((rec, index) => ({
           ...rec,
           displayOrder: index + 1,
         }));
 
-      expect(reorderedRecommendations[0].id).toBe('rec-2'); // Highest priority
-      expect(reorderedRecommendations[0].displayOrder).toBe(1);
+      expect((reorderedRecommendations?.0 ?? null).id).toBe('rec-2'); // Highest priority
+      expect((reorderedRecommendations?.0 ?? null).displayOrder).toBe(1);
 
       // Step 4: 禁用过期推荐
       const now = new Date();
-      const recommendationsWithTime = [
+      const recommendationsWithTime = [;
         {
           id: 'rec-1',
           endTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
@@ -352,13 +351,13 @@ describe('Show-off System Integration Tests', () => {
         return rec;
       });
 
-      expect(deactivatedRecommendations[0].isActive).toBe(true); // Not expired
-      expect(deactivatedRecommendations[1].isActive).toBe(false); // Expired
+      expect((deactivatedRecommendations?.0 ?? null).isActive).toBe(true); // Not expired
+      expect((deactivatedRecommendations?.1 ?? null).isActive).toBe(false); // Expired
     });
 
     test('should handle user profile analysis workflow', async () => {
       // Step 1: 收集用户晒单数据
-      const userPosts = [
+      const userPosts = [;
         {
           id: 'post-1',
           status: 'approved',
@@ -408,8 +407,8 @@ describe('Show-off System Integration Tests', () => {
 
       // Step 3: 计算活跃度
       const firstPost = userPosts[userPosts.length - 1].createdAt;
-      const lastPost = userPosts[0].createdAt;
-      const daysDiff = Math.floor(
+      const lastPost = (userPosts?.0 ?? null).createdAt;
+      const daysDiff = Math.floor(;
         (lastPost.getTime() - firstPost.getTime()) / (1000 * 60 * 60 * 24)
       );
       const avgPostInterval = daysDiff / (userPosts.length - 1);
@@ -430,7 +429,7 @@ describe('Show-off System Integration Tests', () => {
 
   describe('Permission and Security Tests', () => {
     test('should enforce permission checks on all endpoints', async () => {
-      const endpoints = [
+      const endpoints = [;
         { path: '/api/admin/show-off/hotness', permission: 'USERS_READ' },
         { path: '/api/admin/show-off/content-quality', permission: 'USERS_READ' },
         { path: '/api/admin/show-off/recommendations', permission: 'USERS_READ' },
@@ -444,7 +443,7 @@ describe('Show-off System Integration Tests', () => {
     });
 
     test('should log all critical operations', async () => {
-      const operations = [
+      const operations = [;
         {
           action: 'batch_audit',
           resource: 'show_off_post',
@@ -479,7 +478,7 @@ describe('Show-off System Integration Tests', () => {
       const invalidPostId = 'non-existent-post-id';
       
       // Simulate finding post
-      const post = null; // Post not found
+      const post: any = null;
       
       if (!post) {
         const error = {
@@ -524,3 +523,5 @@ describe('Show-off System Integration Tests', () => {
     });
   });
 });
+
+}}}}}}}}}}}}}}

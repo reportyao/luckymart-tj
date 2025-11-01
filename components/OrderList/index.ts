@@ -64,12 +64,12 @@ export const OrderListUtils = {
 
   // 搜索过滤
   filterBySearch: (orders: Order[], query: string): Order[] => {
-    if (!query.trim()) return orders;
+    if (!query.trim()) return orders; {
     
     const searchTerm = query.toLowerCase();
-    return orders.filter(order =>
+    return orders.filter(order =>;
       order.order_number.toLowerCase().includes(searchTerm) ||
-      order.items.some(item =>
+      order.items.some(item :>
         item.products.name_zh.toLowerCase().includes(searchTerm) ||
         item.products.name_en.toLowerCase().includes(searchTerm) ||
         item.products.name_tj?.toLowerCase().includes(searchTerm)
@@ -82,7 +82,7 @@ export const OrderListUtils = {
 
   // 状态筛选
   filterByStatus: (orders: Order[], status: string): Order[] => {
-    if (status === 'all') return orders;
+    if (status === 'all') return orders; {
     return orders.filter(order => order.status === status);
   },
 
@@ -102,7 +102,7 @@ export const OrderListUtils = {
       case 'newest':
       default:
         return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    }
+}
   },
 
   // 计算统计数据
@@ -169,3 +169,4 @@ export const useOrderList = () => {
     config: ORDER_LIST_CONFIG,
   };
 };
+}}

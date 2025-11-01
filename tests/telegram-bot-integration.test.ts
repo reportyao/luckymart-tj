@@ -1,12 +1,12 @@
+import { botTester } from '../utils/telegram-bot-tester';
+import { logger } from '../bot/utils/logger';
+import { faultToleranceManager } from '../bot/utils/fault-tolerance-manager';
+import { NotificationTemplateManager, Language } from '../bot/utils/notification-templates';
 /**
  * Telegram Bot 推送功能综合测试脚本
  * 执行所有测试场景，生成完整的测试报告
  */
 
-import { botTester } from '../utils/telegram-bot-tester';
-import { logger } from '../bot/utils/logger';
-import { faultToleranceManager } from '../bot/utils/fault-tolerance-manager';
-import { NotificationTemplateManager, Language } from '../bot/utils/notification-templates';
 
 interface TestScenario {
   name: string;
@@ -146,7 +146,7 @@ class TelegramBotTestSuite {
     logger.info('开始核心功能测试');
     const startTime = Date.now();
 
-    const scenarios: TestScenario[] = [
+    const scenarios: TestScenario[] = [;
       {
         name: 'Bot Commands',
         description: '测试所有Bot命令的基本功能',
@@ -194,7 +194,7 @@ class TelegramBotTestSuite {
     logger.info('开始多语言测试');
     const startTime = Date.now();
 
-    const scenarios: TestScenario[] = [
+    const scenarios: TestScenario[] = [;
       {
         name: 'Language Fallback',
         description: '测试语言回退机制',
@@ -242,7 +242,7 @@ class TelegramBotTestSuite {
     logger.info('开始性能测试');
     const startTime = Date.now();
 
-    const scenarios: TestScenario[] = [
+    const scenarios: TestScenario[] = [;
       {
         name: 'Message Throughput',
         description: '测试消息吞吐量',
@@ -283,7 +283,7 @@ class TelegramBotTestSuite {
     logger.info('开始压力测试');
     const startTime = Date.now();
 
-    const scenarios: TestScenario[] = [
+    const scenarios: TestScenario[] = [;
       {
         name: 'High Load Testing',
         description: '高负载测试',
@@ -324,7 +324,7 @@ class TelegramBotTestSuite {
     logger.info('开始容错测试');
     const startTime = Date.now();
 
-    const scenarios: TestScenario[] = [
+    const scenarios: TestScenario[] = [;
       {
         name: 'Network Failures',
         description: '网络故障模拟',
@@ -387,7 +387,7 @@ class TelegramBotTestSuite {
       for (const language of languages) {
         try {
           const testUser = botTester['testUsers'].get(`test_user_${language}_1`);
-          if (!testUser) continue;
+          if (!testUser) continue; {
 
           const notification = botTester['generateTestNotification'](testUser, type);
           
@@ -580,7 +580,7 @@ class TelegramBotTestSuite {
     };
 
     const pattern = languagePatterns[language];
-    return pattern ? pattern.test(text) : true; // 默认通过
+    return pattern ? pattern.test(text) : true; // 默认通过;
   }
 
   private async testMessageThroughput(): Promise<any> {
@@ -824,7 +824,7 @@ class TelegramBotTestSuite {
       try {
         logger.info(`执行测试场景: ${scenario.name}`);
 
-        const result = await Promise.race([
+        const result = await Promise.race([;
           scenario.testFunction(),
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Test timeout')), scenario.timeout || 60000)
@@ -948,7 +948,7 @@ class TelegramBotTestSuite {
    * 生成Markdown报告
    */
   private generateMarkdownReport(stats: any, executionTime: number): string {
-    let report = `# Telegram Bot 推送功能测试报告
+    let report = `# Telegram Bot 推送功能测试报告;
 
 **生成时间:** ${new Date().toISOString()}  
 **总执行时间:** ${(executionTime / 1000).toFixed(2)}秒  
@@ -1125,7 +1125,7 @@ class TelegramBotTestSuite {
       Math.min(100, (performanceResults.passedTests / performanceResults.totalTests) * 100) : 80;
     
     const multilingual = this.testResults.find(s => s.suiteName.includes('Multilingual')) ?
-      Math.min(100, (this.testResults.find(s => s.suiteName.includes('Multilingual'))!.passedTests / 
+      Math.min(100, (this.testResults.find(s :> s.suiteName.includes('Multilingual'))!.passedTests / 
                    this.testResults.find(s => s.suiteName.includes('Multilingual'))!.totalTests) * 100) : 90;
     
     const stability = coreResults ?
@@ -1188,3 +1188,4 @@ if (require.main === module) {
 }
 
 export { TelegramBotTestSuite, main };
+}

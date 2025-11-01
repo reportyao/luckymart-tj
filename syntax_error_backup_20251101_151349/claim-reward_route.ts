@@ -1,14 +1,13 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { withAuth } from '@/lib/auth';
+import { invitationService } from '@/lib/services/invitation-service';
+import type { ApiResponse, ClaimRewardRequest, ClaimRewardResponse } from '@/types';
+import { getLogger } from '@/lib/logger';
 /**
  * 领取邀请奖励 API
  * POST /api/invitation/claim-reward
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/auth';
-import { invitationService } from '@/lib/services/invitation-service';
-import type { ApiResponse, ClaimRewardRequest, ClaimRewardResponse } from '@/types';
-import { ErrorFactory, CommonErrors } from '@/lib/errors';
-import { getLogger } from '@/lib/logger';
 
 const logger = getLogger();
 
@@ -83,8 +82,8 @@ async function handleClaimReward(request: NextRequest, user: any) {
       totalClaimedAmount: result.totalClaimedAmount
     };
 
-    const status = hasFailedRewards ? 207 : 200; // 207 Multi-Status for partial success
-    const message = hasFailedRewards 
+    const status = hasFailedRewards ? 207 : 200; // 207 Multi-Status for partial success;
+    const message = hasFailedRewards;
       ? `部分奖励领取成功，成功 ${result.claimedRewards.length} 个，失败 ${result.failedRewards.length} 个`
       : '奖励领取成功';
 
@@ -129,9 +128,10 @@ async function handleClaimReward(request: NextRequest, user: any) {
 
     // 默认错误处理
     return NextResponse.json<ApiResponse>({
+  }
       success: false,
       error: '领取奖励时发生错误，请稍后重试'
-    }, { status: 500 });
+    }, );
   }
 }
 

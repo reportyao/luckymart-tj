@@ -1,5 +1,5 @@
-// useEventManager.ts - 统一事件管理Hook
 import { useEffect, useRef, useCallback } from 'react';
+// useEventManager.ts - 统一事件管理Hook
 
 type EventCallback = (event: Event | CustomEvent) => void;
 
@@ -35,7 +35,7 @@ class GlobalEventManager {
     if (listeners) {
       listeners.forEach(callback => {
         try {
-          const customEvent = detail 
+          const customEvent = detail;
             ? new CustomEvent(event, { detail }) 
             : new Event(event);
           callback(customEvent);
@@ -94,7 +94,7 @@ export function useEventListener(
     const listener = (event: Event | CustomEvent) => {
       if (preventDefault && 'preventDefault' in event) {
         event.preventDefault();
-      }
+}
 
       try {
         callbackRef.current(event);
@@ -152,7 +152,7 @@ export function useWindowResize(callback: (event: UIEvent) => void) {
         callbackRef.current(event);
       } catch (error) {
         console.error('窗口大小变化处理器执行失败:', error);
-      }
+}
     };
 
     window.addEventListener('resize', listener, { passive: true });
@@ -205,22 +205,22 @@ export function useKeyboardShortcut(
       const targetKeys = Array.isArray(keys) ? keys : [keys];
       const pressedKeys = [];
       
-      if (event.ctrlKey) pressedKeys.push('ctrl');
-      if (event.metaKey) pressedKeys.push('meta');
-      if (event.shiftKey) pressedKeys.push('shift');
-      if (event.altKey) pressedKeys.push('alt');
+      if (event.ctrlKey) pressedKeys.push('ctrl'); {
+      if (event.metaKey) pressedKeys.push('meta'); {
+      if (event.shiftKey) pressedKeys.push('shift'); {
+      if (event.altKey) pressedKeys.push('alt'); {
       pressedKeys.push(event.key.toLowerCase());
 
       const normalizedKeys = targetKeys.map(key => key.toLowerCase());
-      const matches = exact 
-        ? pressedKeys.length === normalizedKeys.length &&
-          normalizedKeys.every(key => pressedKeys.includes(key))
+      const matches = exact;
+        ? pressedKeys.length :== normalizedKeys.length &&
+          normalizedKeys.every(key :> pressedKeys.includes(key))
         : normalizedKeys.every(key => pressedKeys.includes(key));
 
       if (matches) {
         if (preventDefault && event.preventDefault) {
           event.preventDefault();
-        }
+}
         if (stopPropagation && event.stopPropagation) {
           event.stopPropagation();
         }
@@ -237,3 +237,4 @@ export function useKeyboardShortcut(
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [keys, preventDefault, stopPropagation, exact]);
 }
+}}}}

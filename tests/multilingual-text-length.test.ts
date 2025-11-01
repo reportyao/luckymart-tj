@@ -1,14 +1,14 @@
-/**
- * 多语言文本长度测试
- * 测试中文、英文、俄文、塔吉克语文本在不同尺寸下的显示效果
- */
-
 import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 import { MobileText } from '../components/MobileText';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../src/i18n';
 import type { SupportedLanguage } from '../src/i18n/config';
+/**
+ * 多语言文本长度测试
+ * 测试中文、英文、俄文、塔吉克语文本在不同尺寸下的显示效果
+ */
+
 
 // 确保 JSX 编译正确
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -102,7 +102,7 @@ export const TEST_TEXTS: Record<SupportedLanguage, Record<string, string>> = {
 };
 
 // 屏幕尺寸配置
-export const SCREEN_SIZES: ScreenSizeConfiguration[] = [
+export const SCREEN_SIZES: ScreenSizeConfiguration[] = [;
   { name: 'iPhone SE', width: 320, height: 568, pixelRatio: 2 },
   { name: 'iPhone 12', width: 390, height: 844, pixelRatio: 3 },
   { name: 'iPhone 12 Pro Max', width: 428, height: 926, pixelRatio: 3 },
@@ -114,7 +114,7 @@ export const SCREEN_SIZES: ScreenSizeConfiguration[] = [
 ];
 
 // 测试用例配置
-export const TEXT_LENGTH_TEST_CASES: TextLengthTestCase[] = [
+export const TEXT_LENGTH_TEST_CASES: TextLengthTestCase[] = [;
   // 中文测试用例
   {
     language: 'zh-CN',
@@ -265,14 +265,14 @@ describe('多语言文本长度测试', () => {
 
   describe('基本文本截断测试', () => {
     test('中文文本截断测试', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
-            text="这是一个很长的中文文本需要截断处理" 
-            context="content"
+            text:"这是一个很长的中文文本需要截断处理" 
+            context:"content"
             enableTruncation={true}
             maxChars={15}
-            ellipsis="..."
+            ellipsis:"..."
           />
         </I18nextProvider>
       );
@@ -286,14 +286,14 @@ describe('多语言文本长度测试', () => {
     });
 
     test('英文文本截断测试', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
-            text="This is a very long English text that needs truncation" 
-            context="content"
+            text:"This is a very long English text that needs truncation" 
+            context:"content"
             enableTruncation={true}
             maxChars={25}
-            ellipsis="..."
+            ellipsis:"..."
           />
         </I18nextProvider>
       );
@@ -307,14 +307,14 @@ describe('多语言文本长度测试', () => {
     });
 
     test('俄文文本截断测试', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
-            text="Это очень длинный русский текст для мобильных устройств" 
-            context="content"
+            text:"Это очень длинный русский текст для мобильных устройств" 
+            context:"content"
             enableTruncation={true}
             maxChars={20}
-            ellipsis="..."
+            ellipsis:"..."
           />
         </I18nextProvider>
       );
@@ -328,14 +328,14 @@ describe('多语言文本长度测试', () => {
     });
 
     test('塔吉克语文本截断测试', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
-            text="Ин матни дарози тоҷикӣ барои дастгоҳҳои мобилӣ аст" 
-            context="content"
+            text:"Ин матни дарози тоҷикӣ барои дастгоҳҳои мобилӣ аст" 
+            context:"content"
             enableTruncation={true}
             maxChars={18}
-            ellipsis="..."
+            ellipsis:"..."
           />
         </I18nextProvider>
       );
@@ -354,18 +354,18 @@ describe('多语言文本长度测试', () => {
       test(`${screenSize.name} (${screenSize.width}x${screenSize.height}) 中文文本适配测试`, () => {
         mockScreenSize(screenSize.width, screenSize.height);
         
-        const testTexts = [
+        const testTexts = [;
           { text: '短文本', maxChars: 10 },
           { text: '这是一个中等长度的中文文本测试', maxChars: 20 },
           { text: '这是一个非常长的中文文本需要在移动设备上进行适配和优化显示', maxChars: 30 },
         ];
         
         testTexts.forEach(({ text, maxChars }) => {
-          const { container } = render(
+          const { container } = render(;
             <I18nextProvider i18n={i18n}>
               <MobileText 
                 text={text}
-                context="content"
+                context:"content"
                 enableTruncation={true}
                 maxChars={maxChars}
               />
@@ -376,31 +376,31 @@ describe('多语言文本长度测试', () => {
           expect(mobileText).toBeInTheDocument();
           
           const textContent = mobileText?.textContent || '';
-          const expectedMaxLength = maxChars + 3; // + "..."
+          const expectedMaxLength = maxChars + 3; // + "...";
           
           if (text.length > maxChars) {
             expect(textContent.length).toBeLessThanOrEqual(expectedMaxLength);
           } else {
             expect(textContent).toBe(text);
-          }
+}
         });
       });
 
       test(`${screenSize.name} (${screenSize.width}x${screenSize.height}) 英文文本适配测试`, () => {
         mockScreenSize(screenSize.width, screenSize.height);
         
-        const testTexts = [
+        const testTexts = [;
           { text: 'Short text', maxChars: 12 },
           { text: 'This is a medium length English text for mobile testing', maxChars: 30 },
           { text: 'This is a very long English text that needs proper adaptation for mobile devices', maxChars: 40 },
         ];
         
         testTexts.forEach(({ text, maxChars }) => {
-          const { container } = render(
+          const { container } = render(;
             <I18nextProvider i18n={i18n}>
               <MobileText 
                 text={text}
-                context="content"
+                context:"content"
                 enableTruncation={true}
                 maxChars={maxChars}
               />
@@ -411,7 +411,7 @@ describe('多语言文本长度测试', () => {
           expect(mobileText).toBeInTheDocument();
           
           const textContent = mobileText?.textContent || '';
-          const expectedMaxLength = maxChars + 3; // + "..."
+          const expectedMaxLength = maxChars + 3; // + "...";
           
           if (text.length > maxChars) {
             expect(textContent.length).toBeLessThanOrEqual(expectedMaxLength);
@@ -428,10 +428,10 @@ describe('多语言文本长度测试', () => {
     
     contexts.forEach(context => {
       test(`${context} 上下文中文文本测试`, () => {
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <MobileText 
-              text="这是一个用于测试的文本内容"
+              text:"这是一个用于测试的文本内容"
               context={context}
               enableTruncation={true}
             />
@@ -453,14 +453,14 @@ describe('多语言文本长度测试', () => {
 
   describe('智能截断算法测试', () => {
     test('中文智能截断 - 按字符截断', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
-            text="这是一个很长的中文文本，需要在适当的位置截断"
-            context="content"
+            text:"这是一个很长的中文文本，需要在适当的位置截断"
+            context:"content"
             enableTruncation={true}
             maxChars={15}
-            ellipsis="..."
+            ellipsis:"..."
           />
         </I18nextProvider>
       );
@@ -474,14 +474,14 @@ describe('多语言文本长度测试', () => {
     });
 
     test('英文智能截断 - 考虑单词边界', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
-            text="This is a very long English text that needs intelligent truncation"
-            context="content"
+            text:"This is a very long English text that needs intelligent truncation"
+            context:"content"
             enableTruncation={true}
             maxChars={30}
-            ellipsis="..."
+            ellipsis:"..."
           />
         </I18nextProvider>
       );
@@ -496,14 +496,14 @@ describe('多语言文本长度测试', () => {
     });
 
     test('俄文智能截断 - 考虑西里尔字母特性', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
-            text="Это очень длинный русский текст для мобильных устройств"
-            context="content"
+            text:"Это очень длинный русский текст для мобильных устройств"
+            context:"content"
             enableTruncation={true}
             maxChars={25}
-            ellipsis="..."
+            ellipsis:"..."
           />
         </I18nextProvider>
       );
@@ -516,14 +516,14 @@ describe('多语言文本长度测试', () => {
     });
 
     test('塔吉克语智能截断', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
-            text="Ин матни дарози тоҷикӣ барои дастгоҳҳои мобилӣ лозим аст"
-            context="content"
+            text:"Ин матни дарози тоҷикӣ барои дастгоҳҳои мобилӣ лозим аст"
+            context:"content"
             enableTruncation={true}
             maxChars={20}
-            ellipsis="..."
+            ellipsis:"..."
           />
         </I18nextProvider>
       );
@@ -540,7 +540,7 @@ describe('多语言文本长度测试', () => {
     test('大量文本渲染性能测试', () => {
       const startTime = performance.now();
       
-      const testTexts = Array.from({ length: 100 }, (_, i) => 
+      const testTexts = Array.from({ length: 100 }, (_, i) =>;
         `测试文本 ${i} - 这是一个非常长的中文文本内容用于性能测试`
       );
       
@@ -549,7 +549,7 @@ describe('多语言文本长度测试', () => {
           <I18nextProvider i18n={i18n}>
             <MobileText 
               text={text}
-              context="content"
+              context:"content"
               enableTruncation={true}
               maxChars={25}
             />
@@ -575,8 +575,8 @@ describe('多语言文本长度测试', () => {
         render(
           <I18nextProvider i18n={i18n}>
             <MobileText 
-              text="多语言测试文本"
-              context="content"
+              text:"多语言测试文本"
+              context:"content"
               enableTruncation={true}
               maxChars={20}
             />
@@ -594,11 +594,11 @@ describe('多语言文本长度测试', () => {
 
   describe('边界条件测试', () => {
     test('空文本处理测试', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
-            text=""
-            context="content"
+            text:""
+            context:"content"
             enableTruncation={true}
             maxChars={10}
           />
@@ -611,11 +611,11 @@ describe('多语言文本长度测试', () => {
     });
 
     test('单字符文本测试', () => {
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
-            text="中"
-            context="content"
+            text:"中"
+            context:"content"
             enableTruncation={true}
             maxChars={10}
           />
@@ -630,11 +630,11 @@ describe('多语言文本长度测试', () => {
     test('极大长度文本测试', () => {
       const longText = '测试文本'.repeat(1000);
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
             text={longText}
-            context="content"
+            context:"content"
             enableTruncation={true}
             maxChars={50}
           />
@@ -651,11 +651,11 @@ describe('多语言文本长度测试', () => {
     test('禁用截断测试', () => {
       const longText = '这是一个很长的中文文本不应该被截断';
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
             text={longText}
-            context="content"
+            context:"content"
             enableTruncation={false}
             maxChars={10}
           />
@@ -674,11 +674,11 @@ describe('多语言文本长度测试', () => {
     test('包含标点符号的文本测试', () => {
       const textWithPunctuation = '这是一个包含，：！？。标点符号的测试文本';
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
             text={textWithPunctuation}
-            context="content"
+            context:"content"
             enableTruncation={true}
             maxChars={20}
           />
@@ -696,11 +696,11 @@ describe('多语言文本长度测试', () => {
     test('包含数字和字母的混合文本测试', () => {
       const mixedText = 'Product ABC123这是一个混合文本测试案例';
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
             text={mixedText}
-            context="content"
+            context:"content"
             enableTruncation={true}
             maxChars={15}
           />
@@ -716,7 +716,7 @@ describe('多语言文本长度测试', () => {
 
   describe('响应式文本适配测试', () => {
     test('响应式断点文本适配测试', () => {
-      const responsiveConfigs = [
+      const responsiveConfigs = [;
         { width: 320, expectedMaxChars: 10 },
         { width: 768, expectedMaxChars: 20 },
         { width: 1024, expectedMaxChars: 30 },
@@ -725,11 +725,11 @@ describe('多语言文本长度测试', () => {
       responsiveConfigs.forEach(({ width, expectedMaxChars }) => {
         mockScreenSize(width, 600);
         
-        const { container } = render(
+        const { container } = render(;
           <I18nextProvider i18n={i18n}>
             <MobileText 
-              text="这是一个响应式文本适配测试案例"
-              context="content"
+              text:"这是一个响应式文本适配测试案例"
+              context:"content"
               enableTruncation={true}
               responsive={{
                 enabled: true,
@@ -760,7 +760,7 @@ export const runMultilingualTextLengthTests = async (): Promise<MultilingualText
       
       const startTime = performance.now();
       
-      const { container } = render(
+      const { container } = render(;
         <I18nextProvider i18n={i18n}>
           <MobileText 
             text={testCase.originalText}
@@ -791,7 +791,7 @@ export const runMultilingualTextLengthTests = async (): Promise<MultilingualText
       };
       
       results.push(result);
-    }
+}
   }
   
   return results;

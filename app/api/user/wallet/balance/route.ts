@@ -3,8 +3,6 @@ import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const prisma = new PrismaClient();
 
@@ -19,6 +17,7 @@ function verifyToken(req: NextRequest) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
     return decoded;
+  }
   } catch (error) {
     return null;
   }
@@ -34,6 +33,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('balance_route.ts request failed', error as Error, {
       requestId,
@@ -51,11 +51,11 @@ async function handleGET(request: NextRequest) {
         const decoded = verifyToken(req);
     
         if (!decoded) {
-          return NextResponse.json(
+          return NextResponse.json(;
             { success: false, error: '未授权访问' },
             { status: 401 }
           );
-        }
+    }
 
         const { userId } = decoded;
 
@@ -71,7 +71,7 @@ async function handleGET(request: NextRequest) {
         });
 
         if (!user) {
-          return NextResponse.json(
+          return NextResponse.json(;
             { success: false, error: '用户不存在' },
             { status: 404 }
           );
@@ -91,9 +91,9 @@ async function handleGET(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'获取钱包余额失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '获取余额失败' },
-      { status: 500 }
+      
     );
   }
 }

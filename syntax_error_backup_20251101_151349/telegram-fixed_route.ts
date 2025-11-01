@@ -6,9 +6,7 @@ import { createRequestTracker, trackPerformance } from '@/lib/request-tracker';
 import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';
 import { respond } from '@/lib/responses';
-import { CommonErrors } from '@/lib/errors';
 import { UnifiedTimezoneUtils, FREE_COUNT_RULES } from '@/lib/timezone-config';
-import { NextResponseHelper } from '@/lib/api-response';
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
   const tracker = createRequestTracker(req);
@@ -28,11 +26,11 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
     if (!initData) {
       logger.warn('Missing initData parameter', { requestId, traceId });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.validationError('缺少initData参数', 'initData').toJSON(),
         { status: 400 }
       );
-    }
+}
 
     // 验证Telegram WebApp数据
     let telegramUser;
@@ -44,7 +42,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
         requestId, 
         traceId 
       });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.validationError('Telegram认证数据无效').toJSON(),
         { status: 400 }
       );
@@ -131,7 +129,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     } else {
       // 老用户检查是否需要重置免费次数
       const tajikistanNow = UnifiedTimezoneUtils.getCurrentTime();
-      const isNewDay = UnifiedTimezoneUtils.getCurrentTime().toISOString().split('T')[0] !== 
+      const isNewDay = UnifiedTimezoneUtils.getCurrentTime().toISOString().split('T')[0] !==;
         user.lastFreeResetDate.toISOString().split('T')[0];
       
       if (isNewDay) {
@@ -165,7 +163,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
       token = generateJWT(user.id, user.telegramId.toString());
     } catch (error) {
       logger.error('Failed to generate JWT token', error as Error, { userId: user.id });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('INTERNAL_ERROR', '生成认证令牌失败').toJSON(),
         { status: 500 }
       );
@@ -179,7 +177,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     monitor.increment('auth_success_total', 1, { method: 'telegram' });
 
     // 返回成功响应
-    return NextResponse.json(
+    return NextResponse.json(;
+  }
       respond.success({
         token,
         user: {

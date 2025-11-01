@@ -142,7 +142,7 @@ const handleActiveRounds = async (request: NextRequest) => {
       executionTime: Date.now() - startTime
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         success: false,
         error: '获取抽奖期次失败',

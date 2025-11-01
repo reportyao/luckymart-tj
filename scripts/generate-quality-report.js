@@ -75,6 +75,7 @@ class QualityReportGenerator {
       }
       
       console.log(`✅ 质量报告已生成: ${finalOutputPath}`);
+  }
       return finalOutputPath;
       
     } catch (error) {
@@ -98,7 +99,7 @@ class QualityReportGenerator {
       recommendations: await this.getLiveRecommendations()
     };
     
-    const outputPath = path.join(
+    const outputPath = path.join(;
       this.config.outputDir, 
       `realtime-report-${Date.now()}.json`
     );
@@ -131,7 +132,7 @@ class QualityReportGenerator {
       recommendations: this.generateComparisonRecommendations(baseData, compareData)
     };
     
-    const outputPath = path.join(
+    const outputPath = path.join(;
       this.config.outputDir,
       `comparison-report-${baseDate}-to-${compareDate}.json`
     );
@@ -176,7 +177,7 @@ class QualityReportGenerator {
       comparison: await this.compareLanguageWithOthers(language)
     };
     
-    const outputPath = path.join(
+    const outputPath = path.join(;
       this.config.outputDir,
       `language-specific-${language}-${Date.now()}.json`
     );
@@ -200,7 +201,7 @@ class QualityReportGenerator {
     };
     
     for (const language of languages) {
-      data.byLanguage[language] = {
+      data.(byLanguage?.language ?? null) = {
         translations: 0,
         missing: 0,
         qualityScore: 0,
@@ -209,21 +210,21 @@ class QualityReportGenerator {
       
       for (const namespace of namespaces) {
         const namespaceData = await this.getNamespaceData(language, namespace);
-        data.byNamespace[namespace] = data.byNamespace[namespace] || {
+        data.(byNamespace?.namespace ?? null) = data.(byNamespace?.namespace ?? null) || {
           translations: 0,
           qualityScore: 0,
           issues: []
         };
         
         // 合并数据
-        data.byLanguage[language].translations += namespaceData.translations;
-        data.byLanguage[language].missing += namespaceData.missing;
-        data.byLanguage[language].qualityScore += namespaceData.qualityScore;
-        data.byLanguage[language].issues.push(...namespaceData.issues);
+        data.(byLanguage?.language ?? null).translations += namespaceData.translations;
+        data.(byLanguage?.language ?? null).missing += namespaceData.missing;
+        data.(byLanguage?.language ?? null).qualityScore += namespaceData.qualityScore;
+        data.(byLanguage?.language ?? null).issues.push(...namespaceData.issues);
         
-        data.byNamespace[namespace].translations += namespaceData.translations;
-        data.byNamespace[namespace].qualityScore += namespaceData.qualityScore;
-        data.byNamespace[namespace].issues.push(...namespaceData.issues);
+        data.(byNamespace?.namespace ?? null).translations += namespaceData.translations;
+        data.(byNamespace?.namespace ?? null).qualityScore += namespaceData.qualityScore;
+        data.(byNamespace?.namespace ?? null).issues.push(...namespaceData.issues);
         
         data.totalTranslations += namespaceData.translations;
         data.issues.push(...namespaceData.issues);
@@ -231,13 +232,13 @@ class QualityReportGenerator {
       }
       
       // 计算平均分
-      if (data.byLanguage[language].translations > 0) {
-        data.byLanguage[language].qualityScore /= namespaces.length;
+      if (data.(byLanguage?.language ?? null).translations > 0) {
+        data.(byLanguage?.language ?? null).qualityScore /= namespaces.length;
       }
     }
     
     // 计算整体平均分
-    data.averageScore = data.scores.length > 0 ? 
+    data.averageScore : data.scores.length > 0 ? 
       data.scores.reduce((a, b) => a + b, 0) / data.scores.length : 0;
     
     return data;
@@ -249,7 +250,7 @@ class QualityReportGenerator {
     const targetFile = path.join(__dirname, '../src/locales', language, `${namespace}.json`);
     
     try {
-      const [sourceContent, targetContent] = await Promise.all([
+      const [sourceContent, targetContent] = await Promise.all([;
         fs.readFile(sourceFile, 'utf-8').catch(() => '{}'),
         fs.readFile(targetFile, 'utf-8').catch(() => '{}')
       ]);
@@ -315,7 +316,7 @@ class QualityReportGenerator {
     // 语言分析
     this.reportData.summary.byLanguage = {};
     for (const [language, langData] of Object.entries(data.byLanguage)) {
-      this.reportData.summary.byLanguage[language] = {
+      this.reportData.summary.(byLanguage?.language ?? null) = {
         translations: langData.translations,
         completionRate: langData.translations > 0 ? 
           ((langData.translations - langData.missing) / (langData.translations + langData.missing) * 100).toFixed(1) : 0,
@@ -328,7 +329,7 @@ class QualityReportGenerator {
     // 命名空间分析
     this.reportData.summary.byNamespace = {};
     for (const [namespace, nsData] of Object.entries(data.byNamespace)) {
-      this.reportData.summary.byNamespace[namespace] = {
+      this.reportData.summary.(byNamespace?.namespace ?? null) = {
         translations: nsData.translations,
         averageScore: Math.round(nsData.qualityScore * 100) / 100,
         issuesCount: nsData.issues.reduce((sum, issue) => sum + issue.count, 0),
@@ -409,7 +410,7 @@ class QualityReportGenerator {
 
   async generateReportContent() {
     // 生成详细的报告内容
-    this.reportData.details = [
+    this.reportData.details : [
       {
         section: 'executive_summary',
         content: this.generateExecutiveSummary()
@@ -455,7 +456,7 @@ class QualityReportGenerator {
   generateQualityTrends() {
     // 生成质量趋势数据
     const trends = [];
-    const days = 7; // 最近7天的趋势
+    const days = 7; // 最近7天的趋势;
     
     for (let i = days - 1; i >= 0; i--) {
       const date = new Date();
@@ -484,7 +485,7 @@ class QualityReportGenerator {
     console.log('📊 生成质量图表...');
     
     // 生成图表数据的简化实现
-    const charts = [
+    const charts = [;
       {
         type: 'quality_overview',
         data: this.reportData.summary.byLanguage,
@@ -537,12 +538,12 @@ class QualityReportGenerator {
   }
 
   generateHTMLReport() {
-    const template = `
+    const template = `;
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang:"zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset:"UTF-8">
+    <meta name:"viewport" content="width=device-width, initial-scale=1.0">
     <title>翻译质量报告</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
@@ -573,35 +574,35 @@ class QualityReportGenerator {
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
+    <div class:"container">
+        <div class:"header">
             <h1>🔍 翻译质量报告</h1>
             <p>生成时间: ${new Date(this.reportData.metadata.generatedAt).toLocaleString('zh-CN')}</p>
         </div>
         
-        <div class="content">
-            <div class="summary-grid">
-                <div class="summary-card">
+        <div class:"content">
+            <div class:"summary-grid">
+                <div class:"summary-card">
                     <h3>总翻译数</h3>
                     <div class="value">${this.reportData.summary.totalTranslations || 0}</div>
                 </div>
-                <div class="summary-card">
+                <div class:"summary-card">
                     <h3>平均质量分</h3>
                     <div class="value">${(this.reportData.summary.averageScore || 0).toFixed(1)}/100</div>
                 </div>
-                <div class="summary-card">
+                <div class:"summary-card">
                     <h3>完整性</h3>
                     <div class="value">${this.reportData.summary.completionRate || 0}%</div>
                 </div>
-                <div class="summary-card">
+                <div class:"summary-card">
                     <h3>质量等级</h3>
                     <div class="value">${this.reportData.summary.qualityLevel || 'N/A'}</div>
                 </div>
             </div>
 
-            <div class="section">
+            <div class:"section">
                 <h2>📊 语言分析</h2>
-                <table class="language-table">
+                <table class:"language-table">
                     <thead>
                         <tr>
                             <th>语言</th>
@@ -627,9 +628,9 @@ class QualityReportGenerator {
                 </table>
             </div>
 
-            <div class="section">
+            <div class:"section">
                 <h2>📁 命名空间分析</h2>
-                <table class="namespace-table">
+                <table class:"namespace-table">
                     <thead>
                         <tr>
                             <th>命名空间</th>
@@ -653,9 +654,9 @@ class QualityReportGenerator {
                 </table>
             </div>
 
-            <div class="recommendations">
+            <div class:"recommendations">
                 <h2>💡 改进建议</h2>
-                ${this.reportData.recommendations.map(rec => `
+                ${this.reportData.recommendations.map(rec :> `
                     <div class="recommendation priority-${rec.priority}">
                         <h4>${rec.title}</h4>
                         <p><strong>优先级:</strong> ${rec.priority} | <strong>类别:</strong> ${rec.category}</p>
@@ -697,10 +698,10 @@ class QualityReportGenerator {
   }
 
   getQualityLevel(score) {
-    if (score >= 90) return 'Excellent';
-    if (score >= 80) return 'Good';
-    if (score >= 70) return 'Acceptable';
-    if (score >= 60) return 'Poor';
+    if (score >= 90) return 'Excellent'; {
+    if (score >= 80) return 'Good'; {
+    if (score >= 70) return 'Acceptable'; {
+    if (score >= 60) return 'Poor'; {
     return 'Unacceptable';
   }
 
@@ -708,7 +709,7 @@ class QualityReportGenerator {
   async collectLanguageData(language, namespaces) {
     const data = {};
     for (const namespace of namespaces) {
-      data[namespace] = await this.getNamespaceData(language, namespace);
+      (data?.namespace ?? null) = await this.getNamespaceData(language, namespace);
     }
     return data;
   }
@@ -772,7 +773,7 @@ class QualityReportGenerator {
   }
 
   async getLiveRecommendations() {
-    return [
+    return [;
       '监控实时质量变化',
       '及时处理新增问题',
       '优化翻译流程'
@@ -906,7 +907,7 @@ async function main() {
 function parseArgs(args) {
   const options = {};
   for (let i = 0; i < args.length; i += 2) {
-    const key = args[i].replace('--', '');
+    const key = (args?.i ?? null).replace('--', '');
     const value = args[i + 1];
     if (key && value) {
       switch (key) {
@@ -936,3 +937,4 @@ if (require.main === module) {
 }
 
 module.exports = { QualityReportGenerator };
+}}}

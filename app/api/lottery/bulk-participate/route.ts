@@ -32,7 +32,7 @@ const handleBulkParticipate = async (request: NextRequest) => {
 
     // 参数验证
     if (!roundId || !quantity) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '参数不完整：roundId和quantity都是必需的' }, 
         { status: 400 }
       );
@@ -40,7 +40,7 @@ const handleBulkParticipate = async (request: NextRequest) => {
 
     // 验证数量范围（批量购买限制1-10份）
     if (typeof quantity !== 'number' || quantity < 1 || quantity > 10) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '批量购买份数必须在1-10份之间' }, 
         { status: 400 }
       );
@@ -97,9 +97,9 @@ const handleBulkParticipate = async (request: NextRequest) => {
 
       // 3. 计算批量折扣
       const getDiscount = (shares: number) => {
-        if (shares >= 10) return 0.9; // 10份9折
-        if (shares >= 5) return 0.95; // 5份9.5折
-        return 1; // 无折扣
+        if (shares >= 10) return 0.9; // 10份9折 {
+        if (shares >= 5) return 0.95; // 5份9.5折 {
+        return 1; // 无折扣;
       };
 
       const discount = getDiscount(quantity);
@@ -124,7 +124,7 @@ const handleBulkParticipate = async (request: NextRequest) => {
         }
       });
 
-      const currentSharesCount = currentParticipation.reduce((sum: any,  p: any) => sum + p.sharesCount, 0);
+      const currentSharesCount = currentParticipation.reduce((sum: any: any,   p: any: any) => sum + p.sharesCount, 0);
 
       // 5. 创建参与记录
       const participation = await tx.participations.create({
@@ -241,6 +241,7 @@ const handleBulkParticipate = async (request: NextRequest) => {
     });
 
     return NextResponse.json({
+  }
       success: true,
       data: result,
       message: '批量购买成功！'
@@ -274,7 +275,7 @@ const handleBulkParticipate = async (request: NextRequest) => {
       errorMessage = '未授权访问';
     }
 
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: errorMessage },
       { status: statusCode }
     );
@@ -293,7 +294,7 @@ const processRequest = withRateLimit(handleBulkParticipate, lotteryRateLimit({
       resetTime: result.resetTime
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: '参与抽奖过于频繁，请稍后再试',
@@ -317,3 +318,4 @@ const processRequest = withRateLimit(handleBulkParticipate, lotteryRateLimit({
 
 // 导出主处理函数
 export { processRequest as POST };
+}

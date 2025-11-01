@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '无效的订阅信息'
       }, { status: 400 });
-    }
+}
     
     // 准备通知载荷
     const notificationPayload = {
@@ -121,8 +121,9 @@ export async function POST(request: NextRequest) {
     console.error('发送测试通知失败:', error);
     
     return NextResponse.json({
+  }
       success: false,
       error: error instanceof Error ? error.message : '发送通知失败'
-    }, { status: 500 });
+    }, );
   }
 }

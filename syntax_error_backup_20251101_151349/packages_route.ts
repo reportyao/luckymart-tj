@@ -1,3 +1,8 @@
+import { NextRequest, NextResponse } from 'next/server';
+import {
+import { withAuth } from '@/lib/auth';
+import { getLogger } from '@/lib/logger';
+import { prisma } from '@/lib/prisma';
 /**
  * 充值包API路由 - 多语言版本
  * 
@@ -5,14 +10,9 @@
  * 集成首充奖励系统，显示各档位对应的首充奖励
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import {
   RechargePackageMultilingualService,
   type SupportedLanguage,
 } from '@/lib/services/multilingual-query';
-import { withAuth } from '@/lib/auth';
-import { getLogger } from '@/lib/logger';
-import { prisma } from '@/lib/prisma';
 
 // 首充奖励配置
 const FIRST_RECHARGE_REWARDS = {
@@ -49,6 +49,7 @@ async function checkFirstRechargeEligibility(userId: string): Promise<{
   } catch (error) {
     console.error('检查首充资格失败:', error);
     return {
+  }
       isEligible: false,
       hasFirstRecharge: false
     };
@@ -115,7 +116,8 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     // 验证语言参数
     const validLanguages: SupportedLanguage[] = ['zh-CN', 'en-US', 'ru-RU', 'tg-TJ'];
     if (!validLanguages.includes(language)) {
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         {
           success: false,
           error: {
@@ -171,8 +173,8 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     // 按推荐度和价格排序
     enhancedPackages.sort((a, b) => {
       // 推荐项目优先
-      if (a.recommended && !b.recommended) return -1;
-      if (!a.recommended && b.recommended) return 1;
+      if (a.recommended && !b.recommended) return -1; {
+      if (!a.recommended && b.recommended) return 1; {
       
       // 同级别按价格排序
       return Number(a.price) - Number(b.price);
@@ -204,7 +206,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       error: error.message
     });
     
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: {

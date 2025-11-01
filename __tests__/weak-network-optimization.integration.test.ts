@@ -1,11 +1,11 @@
+import { describe, test, expect } from '@jest/globals';
+import * as fs from 'fs';
+import * as path from 'path';
 /**
  * 弱网环境优化系统 - 简化集成测试
  * 主要验证文件结构和基本功能
  */
 
-import { describe, test, expect } from '@jest/globals';
-import * as fs from 'fs';
-import * as path from 'path';
 
 describe('弱网环境优化系统 - 核心文件验证', () => {
   const basePath = path.join(__dirname, '..');
@@ -127,7 +127,7 @@ describe('弱网环境优化系统 - 功能模块验证', () => {
     
     // 检查缓存策略实现
     const strategies = ['CACHE_FIRST', 'NETWORK_FIRST', 'STALE_WHILE_REVALIDATE'];
-    const foundStrategies = strategies.filter(strategy => 
+    const foundStrategies = strategies.filter(strategy =>;
       swContent.includes(strategy)
     );
     
@@ -147,7 +147,7 @@ describe('弱网环境优化系统 - 功能模块验证', () => {
     const dbContent = fs.readFileSync(dbPath, 'utf8');
     
     const operations = ['get', 'put', 'post', 'delete'];
-    const foundOperations = operations.filter(op => 
+    const foundOperations = operations.filter(op =>;
       dbContent.includes(op) || dbContent.includes(`'${op}'`)
     );
     
@@ -168,7 +168,7 @@ describe('弱网环境优化系统 - 代码质量验证', () => {
   const basePath = path.join(__dirname, '..');
   
   test('所有核心文件应该都有合理的代码量', () => {
-    const files = [
+    const files = [;
       'public/sw.js',
       'utils/indexeddb-manager.ts',
       'components/NetworkAwareServiceWorker.tsx',
@@ -189,7 +189,7 @@ describe('弱网环境优化系统 - 代码质量验证', () => {
   });
 
   test('组件应该正确使用TypeScript类型', () => {
-    const components = [
+    const components = [;
       'components/NetworkAwareServiceWorker.tsx',
       'components/CacheManager.tsx',
       'components/RetryButton.tsx',
@@ -206,7 +206,7 @@ describe('弱网环境优化系统 - 代码质量验证', () => {
   });
 
   test('工具类应该正确导出', () => {
-    const utils = [
+    const utils = [;
       'utils/indexeddb-manager.ts',
       'utils/api-optimizer.ts',
     ];

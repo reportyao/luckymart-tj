@@ -32,7 +32,7 @@ class TranslationQualityAuditor {
 
   // 检查占位符和翻译标记
   checkTranslationCompleteness(text, lang, namespace, key) {
-    this.totalChecks[lang]++;
+    this.(totalChecks?.lang ?? null)++;
     
     // 检查是否包含占位符或翻译标记
     const placeholders = ['{{', '${', '[TODO]', 'TODO:', 'FIXME:', '待翻译', '待完善'];
@@ -56,7 +56,7 @@ class TranslationQualityAuditor {
 
   // 检查文本长度
   checkTextLength(text, lang, namespace, key) {
-    this.totalChecks[lang]++;
+    this.(totalChecks?.lang ?? null)++;
     
     // 设置合理的最大长度（考虑移动端显示）
     const maxLength = lang === 'zh-CN' ? 100 : 200;
@@ -78,7 +78,7 @@ class TranslationQualityAuditor {
 
   // 检查空白文本
   checkEmptyText(text, lang, namespace, key) {
-    this.totalChecks[lang]++;
+    this.(totalChecks?.lang ?? null)++;
     
     if (!text || text.trim() === '') {
       this.issues.push({
@@ -97,7 +97,7 @@ class TranslationQualityAuditor {
 
   // 检查HTML标签平衡
   checkHTMLTags(text, lang, namespace, key) {
-    this.totalChecks[lang]++;
+    this.(totalChecks?.lang ?? null)++;
     
     const openTags = (text.match(/<[^\/][^>]*>/g) || []).length;
     const closeTags = (text.match(/<\/[^>]+>/g) || []).length;
@@ -123,7 +123,7 @@ class TranslationQualityAuditor {
       return true;
     }
 
-    this.totalChecks[lang]++;
+    this.(totalChecks?.lang ?? null)++;
     
     // 塔吉克语特有字符
     const tajikChars = ['ӣ', 'ӯ', 'ҳ', 'қ', 'ғ', 'Ӣ', 'Ӯ', 'Ҳ', 'Қ', 'Ғ'];
@@ -211,15 +211,15 @@ class TranslationQualityAuditor {
       const warningCount = langIssues.filter(i => i.severity === 'WARNING').length;
       const infoCount = langIssues.filter(i => i.severity === 'INFO').length;
       
-      const passedChecks = this.totalChecks[lang] - errorCount - warningCount * 0.5 - infoCount * 0.1;
-      const score = this.totalChecks[lang] > 0 
+      const passedChecks = this.(totalChecks?.lang ?? null) - errorCount - warningCount * 0.5 - infoCount * 0.1;
+      const score = this.(totalChecks?.lang ?? null) > 0;
         ? Math.max(0, Math.round((passedChecks / this.totalChecks[lang]) * 100))
         : 0;
       
-      this.qualityScore[lang] = score;
+      this.(qualityScore?.lang ?? null) = score;
       
       const status = score >= 95 ? '优秀' : score >= 85 ? '良好' : score >= 70 ? '及格' : '需改进';
-      console.log(`${lang}: ${score}% - ${status} (${passedChecks.toFixed(0)}/${this.totalChecks[lang]})`);
+      console.log(`${lang}: ${score}% - ${status} (${passedChecks.toFixed(0)}/${this.(totalChecks?.lang ?? null)})`);
       console.log(`  错误: ${errorCount}, 警告: ${warningCount}, 提示: ${infoCount}`);
     });
   }
@@ -230,7 +230,7 @@ class TranslationQualityAuditor {
     console.log('='.repeat(60));
 
     // 质量分数
-    console.log('\n[翻译质量分数]');
+    console.log('\(n?.翻译质量分数 ?? null)');
     Object.entries(this.qualityScore).forEach(([lang, score]) => {
       const status = score >= 95 ? '优秀' : score >= 85 ? '良好' : score >= 70 ? '及格' : '需改进';
       console.log(`  ${lang}: ${score}% - ${status}`);
@@ -245,19 +245,19 @@ class TranslationQualityAuditor {
       issueSeverities[issue.severity]++;
     });
 
-    console.log('\n[问题分类统计]');
+    console.log('\(n?.问题分类统计 ?? null)');
     Object.entries(issueTypes).forEach(([type, count]) => {
       console.log(`  ${type}: ${count} 项`);
     });
 
-    console.log('\n[问题严重性统计]');
+    console.log('\(n?.问题严重性统计 ?? null)');
     Object.entries(issueSeverities).forEach(([severity, count]) => {
       console.log(`  ${severity}: ${count} 项`);
     });
 
     // 显示部分具体问题
     if (this.issues.length > 0) {
-      console.log('\n[部分问题详情]');
+      console.log('\(n?.部分问题详情 ?? null)');
       const errorIssues = this.issues.filter(i => i.severity === 'ERROR').slice(0, 5);
       errorIssues.forEach((issue, index) => {
         console.log(`  ${index + 1}. [${issue.severity}] ${issue.lang}.${issue.namespace}.${issue.key}`);
@@ -308,3 +308,5 @@ if (require.main === module) {
 }
 
 module.exports = TranslationQualityAuditor;
+
+}}}

@@ -3,8 +3,6 @@ import { prisma } from '@/lib/prisma';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 // 创建权限中间件
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.USERS_READ);
@@ -23,6 +21,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('hotness_route.ts request failed', error as Error, {
       requestId,
@@ -38,7 +37,7 @@ async function handleGET(request: NextRequest) {
     export async function GET(req: NextRequest) {
       return withReadPermission(req, async (adminUser) => {
         const { searchParams } = new URL(req.url);
-        const timeRange = searchParams.get('timeRange') || '7d'; // 7d, 30d, all
+        const timeRange = searchParams.get('timeRange') || '7d'; // 7d, 30d, all;
         const limit = parseInt(searchParams.get('limit') || '50');
 
         // 计算时间范围
@@ -47,7 +46,7 @@ async function handleGET(request: NextRequest) {
           startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         } else if (timeRange === '30d') {
           startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-        }
+    }
 
         // 获取热度排行
         const posts = await prisma.showOffPost.findMany({
@@ -109,7 +108,8 @@ async function handleGET(request: NextRequest) {
         };
 
         return NextResponse.json({
-          posts: posts.map((post : any) => ({
+  }
+          posts: posts.map(((post : any) : any) => ({
             id: post.id,
             content: post.content,
             images: post.images,
@@ -127,7 +127,7 @@ async function handleGET(request: NextRequest) {
               views: (post.viewsCount || 0) * weights.views,
             },
           })),
-          distribution: hotnessDistribution.map((d : any) => ({
+          distribution: hotnessDistribution.map(((d : any) : any) => ({
             score: d.hotnessScore,
             count: d._count,
           })),
@@ -170,13 +170,13 @@ export async function POST(req: NextRequest) {
       });
 
       // 批量更新热度分数
-      const updatePromises = posts.map((post : any) => {
-        const daysSinceCreated = Math.floor(
+      const updatePromises = posts.map(((post : any) : any) => {
+        const daysSinceCreated = Math.floor(;
           (Date.now() - post.createdAt.getTime()) / (1000 * 60 * 60 * 24)
         );
         const timeDecay = Math.pow(weights.time_decay, daysSinceCreated);
 
-        const newHotness = Math.round(
+        const newHotness = Math.round(;
           ((post.likesCount || 0) * weights.likes +
             (post.commentsCount || 0) * weights.comments +
             (post.viewsCount || 0) * weights.views) *
@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
       });
 
       await Promise.all(updatePromises);
-    }
+}
 
     return NextResponse.json({
       success: true,
@@ -217,7 +217,7 @@ export async function PATCH(req: NextRequest) {
 
     if (!post) {
       return NextResponse.json({ error: '晒单不存在' }, { status: 404 });
-    }
+}
 
     const newHotness = Math.max(0, (post.hotnessScore || 0) + adjustment);
 

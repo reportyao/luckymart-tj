@@ -14,13 +14,13 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
     if (!refreshToken) {
       logger.warn('Missing refresh token', { requestId });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.validationError('缺少刷新令牌', 'refreshToken').toJSON(),
         { 
           status: 401,
           headers: {
             'WWW-Authenticate': 'Bearer realm="refresh_token_required"'
-          }
+}
         }
       );
     }
@@ -29,7 +29,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     const decoded = verifyRefreshToken(refreshToken);
     if (!decoded) {
       logger.warn('Invalid refresh token', { requestId, userId: 'unknown' });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.validationError('无效的刷新令牌').toJSON(),
         { 
           status: 401,
@@ -44,7 +44,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     const tokenPair = generateTokenPair(decoded.userId, decoded.telegramId);
 
     // 设置响应
-    const response = NextResponse.json(
+    const response = NextResponse.json(;
       respond.success({
         accessToken: tokenPair.accessToken,
         expiresIn: tokenPair.expiresIn,
@@ -79,11 +79,12 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     });
 
     return response;
+  }
 
   } catch (error) {
     logger.error('Token refresh error', error as Error, { requestId });
     
-    return NextResponse.json(
+    return NextResponse.json(;
       respond.customError('INTERNAL_ERROR', 'Token刷新失败').toJSON(),
       { 
         status: 500,

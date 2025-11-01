@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getLogger } from '@/lib/logger';
 
 // 保存订阅信息到全局存储
 interface Subscription {
@@ -27,7 +26,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '无效的订阅信息'
       }, { status: 400 });
-    }
+}
     
     // 初始化全局订阅存储
     if (!global.subscriptions) {
@@ -58,8 +57,9 @@ export async function POST(request: NextRequest) {
       endpoint: request.url
     });'保存订阅失败:', error);
     return NextResponse.json({
+  }
       success: false,
       error: '保存订阅失败'
-    }, { status: 500 });
+    }, );
   }
 }

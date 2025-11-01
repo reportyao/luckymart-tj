@@ -73,10 +73,10 @@ export function detectLanguage(text: string): Language {
   const chinesePattern = /[\u4e00-\u9fff]/;
   const englishPattern = /^[a-zA-Z\s]*$/;
   
-  if (tajikPattern.test(text)) return 'tg';
-  if (russianPattern.test(text)) return 'ru';
-  if (chinesePattern.test(text)) return 'zh';
-  if (englishPattern.test(text)) return 'en';
+  if (tajikPattern.test(text)) return 'tg'; {
+  if (russianPattern.test(text)) return 'ru'; {
+  if (chinesePattern.test(text)) return 'zh'; {
+  if (englishPattern.test(text)) return 'en'; {
   
   // 默认返回塔吉克语（项目默认语言）
   return 'tg';
@@ -115,7 +115,7 @@ export function calculateTextMetrics(
   } else {
     // 俄文和塔吉克语：按字符计算，但有额外的字符间距
     estimatedWidth = charCount * config.avgCharWidth * config.compressionRatio;
-  }
+}
   
   // 估算文本高度
   const linesNeeded = Math.ceil(estimatedWidth / maxWidth) || 1;
@@ -160,7 +160,7 @@ export function smartTruncate(
   
   if (text.length <= maxChars) {
     return text;
-  }
+}
   
   let truncated = text.substring(0, maxChars);
   
@@ -207,7 +207,7 @@ export function getRecommendedClasses(
       break;
     default:
       break;
-  }
+}
   
   // 添加截断类
   if (metrics.recommendedTruncation === 'single') {
@@ -242,7 +242,7 @@ export function getResponsiveFontSize(
   } else if (screenWidth >= 768) {
     // 平板或更大
     size *= 1.1;
-  }
+}
   
   // 根据语言调整
   const languageMultiplier = {
@@ -291,7 +291,7 @@ export function needsSpecialHandling(
     recommendedContainer = 'lg';
   } else {
     recommendedContainer = 'xl';
-  }
+}
   
   return {
     needsBreakWord,
@@ -338,7 +338,7 @@ export function generateInlineStyles(
       styles.fontWeight = 600;
       styles.fontSize = `${Math.max(fontSize - 2, 8)}px`;
       break;
-  }
+}
   
   // 根据语言特性添加样式
   if (specialHandling.needsBreakWord) {
@@ -403,7 +403,7 @@ export function getDeviceInfo(): {
       isDarkMode: false,
       prefersReducedMotion: false,
     };
-  }
+}
   
   return {
     isMobile: window.innerWidth < 768,
@@ -468,7 +468,7 @@ export function batchAnalyzeTexts(
     const detectedLang = language || detectLanguage(text);
     const metrics = calculateTextMetrics(text, detectedLang, options);
     const classes = getRecommendedClasses(text, detectedLang, context as any);
-    const optimizedText = metrics.isTooLong 
+    const optimizedText = metrics.isTooLong;
       ? smartTruncate(text, detectedLang, options.maxChars || 20)
       : text;
     
@@ -483,3 +483,4 @@ export function batchAnalyzeTexts(
     };
   });
 }
+}}}}

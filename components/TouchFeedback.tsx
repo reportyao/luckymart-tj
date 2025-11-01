@@ -1,11 +1,11 @@
-'use client';
-
 import React, { useEffect, useState, useRef, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGestureI18n } from '../hooks/use-gesture-i18n';
 import { GestureEvent, GestureState } from '../utils/gesture-translations';
+'use client';
 
-interface TouchFeedbackProps {
+
+interface TouchFeedbackProps {}
   /** 子组件 */
   children: ReactNode;
   
@@ -49,15 +49,15 @@ interface TouchFeedbackProps {
   showFeedbackText?: boolean;
   
   /** 多语言反馈文本 */
-  feedbackTexts?: {
+  feedbackTexts?: {}
     touch?: string;
     press?: string;
     success?: string;
     error?: string;
   };
-}
 
-const TouchFeedback: React.FC<TouchFeedbackProps> = ({
+
+const TouchFeedback: React.FC<TouchFeedbackProps> = ({}
   children,
   type = 'ripple',
   hapticIntensity = 'light',
@@ -82,7 +82,7 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
   const longPressTimer = useRef<NodeJS.Timeout>();
   const touchStartTime = useRef<number>(0);
   
-  const {
+  const {}
     getSuccessText,
     getErrorText,
     getActionText,
@@ -95,17 +95,17 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
     enableVisual: visualFeedback,
     longPressDuration: 500,
   }, {
-    onTap: (event) => {
+    onTap: (event) => {}
       updateGestureState('success');
       triggerFeedback('tap', hapticIntensity);
       onSuccess?.();
     },
-    onLongPress: (event) => {
+    onLongPress: (event) => {}
       updateGestureState('success');
       triggerFeedback('success', 'medium');
       onSuccess?.();
     },
-    onGestureFailed: () => {
+    onGestureFailed: () => {}
       updateGestureState('failed');
       triggerFeedback('error', hapticIntensity);
       onFailed?.();
@@ -113,13 +113,13 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
   });
 
   // 获取反馈文本
-  const getFeedbackText = (state: GestureState): string => {
-    if (feedbackTexts?.touch && state === 'active') return feedbackTexts.touch;
-    if (feedbackTexts?.press && state === 'press') return feedbackTexts.press;
-    if (feedbackTexts?.success && state === 'success') return feedbackTexts.success;
-    if (feedbackTexts?.error && state === 'failed') return feedbackTexts.error;
+  const getFeedbackText = (state: GestureState): string => {}
+    if (feedbackTexts?.touch && state === 'active') return feedbackTexts.touch; {}
+    if (feedbackTexts?.press && state === 'press') return feedbackTexts.press; {}
+    if (feedbackTexts?.success && state === 'success') return feedbackTexts.success; {}
+    if (feedbackTexts?.error && state === 'failed') return feedbackTexts.error; {}
     
-    switch (state) {
+    switch (state) {}
       case 'active':
         return getActionText('tap');
       case 'press':
@@ -130,15 +130,15 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
         return getErrorText('invalid');
       default:
         return '';
-    }
+    
   };
 
   // 触摸开始
-  const handleTouchStart = (event: React.TouchEvent | React.MouseEvent) => {
-    if (disabled) return;
+  const handleTouchStart = (event: React.TouchEvent | React.MouseEvent) => {}
+    if (disabled) return; {}
     
     const touch = 'touches' in event ? event.touches[0] : null;
-    if (!touch) return;
+    if (!touch) return; {}
     
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const x = touch.clientX - rect.left;
@@ -150,7 +150,7 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
     
     updateGestureState('active');
     
-    const gestureEvent: GestureEvent = {
+    const gestureEvent: GestureEvent = {}
       type: 'tap',
       position: { x, y },
       timestamp: Date.now(),
@@ -159,12 +159,12 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
     onTouchStart?.(gestureEvent);
     
     // 设置长按检测
-    longPressTimer.current = setTimeout(() => {
-      if (Date.now() - touchStartTime.current >= 500) {
+    longPressTimer.current = setTimeout(() => {}
+      if (Date.now() - touchStartTime.current >= 500) {}
         updateGestureState('press');
         setFeedbackText(getActionText('long'));
         
-        const longPressEvent: GestureEvent = {
+        const longPressEvent: GestureEvent = {}
           type: 'press',
           position: { x, y },
           duration: 500,
@@ -172,13 +172,13 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
         };
         
         onLongPress?.(longPressEvent);
-      }
+      
     }, 500);
   };
 
   // 触摸结束
-  const handleTouchEnd = (event: React.TouchEvent | React.MouseEvent) => {
-    if (disabled) return;
+  const handleTouchEnd = (event: React.TouchEvent | React.MouseEvent) => {}
+    if (disabled) return; {}
     
     clearTimeout(longPressTimer.current);
     
@@ -192,7 +192,7 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
     setIsPressed(false);
     setFeedbackText('');
     
-    const gestureEvent: GestureEvent = {
+    const gestureEvent: GestureEvent = {}
       type: duration > 500 ? 'press' : 'tap',
       position: { x, y },
       duration,
@@ -203,8 +203,8 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
   };
 
   // 触摸取消
-  const handleTouchCancel = () => {
-    if (disabled) return;
+  const handleTouchCancel = () => {}
+    if (disabled) return; {}
     
     clearTimeout(longPressTimer.current);
     setIsPressed(false);
@@ -213,33 +213,33 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
   };
 
   // 渲染涟漪效果
-  const renderRipple = () => (
-    <AnimatePresence>
-      {isPressed && (
+  const renderRipple = () => (;
+return     <AnimatePresence>
+      {isPressed && (}
         <motion.div
-          className="absolute inset-0 pointer-events-none"
+          className:"absolute inset-0 pointer-events-none"
           initial={{ scale: 0, opacity: 1 }}
           animate={{ scale: 4, opacity: 0 }}
           exit={{ opacity: 0 }}
           transition={{ duration: duration / 1000, ease: 'easeOut' }}
         >
           <div
-            className="w-full h-full rounded-full border-2 border-blue-500"
-            style={{
+            className:"w-full h-full rounded-full border-2 border-blue-500"
+            style={{}}
               position: 'absolute',
               left: feedbackPosition.x - 16,
               top: feedbackPosition.y - 16,
-            }}
+
           />
         </motion.div>
-      )}
+      )
     </AnimatePresence>
   );
 
   // 渲染缩放效果
-  const renderScale = () => (
-    <motion.div
-      className="w-full h-full"
+  const renderScale = () => (;
+return     <motion.div
+      className:"w-full h-full"
       animate={isPressed ? { scale: 0.95 } : { scale: 1 }}
       transition={{ duration: duration / 1000, ease: 'easeOut' }}
     >
@@ -248,16 +248,16 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
   );
 
   // 渲染发光效果
-  const renderGlow = () => (
-    <motion.div
-      className="w-full h-full relative"
-      animate={isPressed ? { 
+  const renderGlow = () => (;
+return     <motion.div
+      className:"w-full h-full relative"
+      animate={isPressed ? { }}
         boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)',
         filter: 'brightness(1.1)'
       } : { 
         boxShadow: '0 0 0px rgba(59, 130, 246, 0)',
         filter: 'brightness(1)'
-      }}
+
       transition={{ duration: duration / 1000, ease: 'easeOut' }}
     >
       {children}
@@ -265,9 +265,9 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
   );
 
   // 渲染颜色变化效果
-  const renderColor = () => (
-    <motion.div
-      className="w-full h-full"
+  const renderColor = () => (;
+return     <motion.div
+      className:"w-full h-full"
       animate={isPressed ? { backgroundColor: 'rgba(59, 130, 246, 0.1)' } : { backgroundColor: 'transparent' }}
       transition={{ duration: duration / 1000, ease: 'easeOut' }}
     >
@@ -276,16 +276,16 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
   );
 
   // 渲染自定义效果
-  const renderCustom = () => {
-    if (!customFeedback) return null;
+  const renderCustom = () => {}
+    if (!customFeedback) return null; {}
     return customFeedback(gestureState);
   };
 
   // 获取反馈组件
-  const renderFeedback = () => {
-    if (customFeedback) return renderCustom();
+  const renderFeedback = () => {}
+    if (customFeedback) return renderCustom(); {}
     
-    switch (type) {
+    switch (type) {}
       case 'ripple':
         return renderRipple();
       case 'scale':
@@ -296,31 +296,31 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
         return renderColor();
       default:
         return children;
-    }
+    
   };
 
   // 获取容器样式
-  const getContainerStyle = (): React.CSSProperties => {
-    const baseStyle: React.CSSProperties = {
+  const getContainerStyle = (): React.CSSProperties => {}
+    const baseStyle: React.CSSProperties = {}
       position: 'relative',
       overflow: 'hidden',
     };
     
-    if (feedbackStyle) {
+    if (feedbackStyle) {}
       Object.assign(baseStyle, feedbackStyle);
-    }
+    
     
     return baseStyle;
   };
 
-  return (
+  return (;
     <div
-      className={`
+      className="{`"}`
         relative inline-block select-none
         ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
         ${className}
-      `}
-      style={getContainerStyle()}
+      ``
+      style="{getContainerStyle()}"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchCancel}
@@ -335,34 +335,34 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
       {type !== 'ripple' && type !== 'custom' && renderFeedback()}
       
       {/* 手势状态指示器 */}
-      <div className="absolute top-1 right-1 z-10">
-        {gestureState === 'active' && (
+      <div className:"absolute top-1 right-1 z-10">
+        {gestureState :== 'active' && (}
           <motion.div
-            className="w-2 h-2 luckymart-bg-primary rounded-full"
+            className:"w-2 h-2 luckymart-bg-primary rounded-full"
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 1 }}
           />
-        )}
-        {gestureState === 'press' && (
+        )
+        {gestureState :== 'press' && (}
           <motion.div
-            className="w-2 h-2 bg-purple-500 rounded-full"
+            className:"w-2 h-2 bg-purple-500 rounded-full"
             animate={{ scale: [1, 1.5, 1] }}
             transition={{ repeat: Infinity, duration: 0.5 }}
           />
-        )}
-        {gestureState === 'success' && (
-          <div className="w-2 h-2 luckymart-bg-success rounded-full" />
-        )}
-        {gestureState === 'failed' && (
-          <div className="w-2 h-2 luckymart-bg-error rounded-full" />
-        )}
+        )
+        {gestureState :== 'success' && (}
+          <div className:"w-2 h-2 luckymart-bg-success rounded-full" />
+        )
+        {gestureState :== 'failed' && (}
+          <div className:"w-2 h-2 luckymart-bg-error rounded-full" />
+        )
       </div>
 
       {/* 反馈文本 */}
       <AnimatePresence>
-        {showFeedbackText && feedbackText && (
+        {showFeedbackText && feedbackText && (}
           <motion.div
-            className="absolute inset-0 luckymart-layout-flex luckymart-layout-center justify-center bg-black bg-opacity-50 text-white luckymart-text-sm luckymart-rounded"
+            className:"absolute inset-0 luckymart-layout-flex luckymart-layout-center justify-center bg-black bg-opacity-50 text-white luckymart-text-sm luckymart-rounded"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -370,20 +370,20 @@ const TouchFeedback: React.FC<TouchFeedbackProps> = ({
           >
             {feedbackText}
           </motion.div>
-        )}
+        )
       </AnimatePresence>
 
       {/* 触摸区域高亮 */}
       <AnimatePresence>
-        {isPressed && (
+        {isPressed && (}
           <motion.div
-            className="absolute inset-0 luckymart-bg-primary bg-opacity-10 pointer-events-none"
+            className:"absolute inset-0 luckymart-bg-primary bg-opacity-10 pointer-events-none"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.1 }}
           />
-        )}
+        )
       </AnimatePresence>
     </div>
   );

@@ -1,13 +1,13 @@
-/**
- * 多语言通知服务
- * 基于翻译文件动态生成多语言Telegram消息
- */
-
 import { Telegraf, Context, Markup } from 'telegraf';
 import { prisma } from '../../lib/prisma';
 import { logger } from '../utils/logger';
 import { Language, NotificationType } from '../utils/notification-templates';
 import { apiConfig } from '../../lib/config/api-config';
+/**
+ * 多语言通知服务
+ * 基于翻译文件动态生成多语言Telegram消息
+ */
+
 
 interface BotTranslation {
   bot: {
@@ -47,7 +47,7 @@ export class NotificationService {
 
     this.loadTranslations();
     this.startMessageProcessor();
-  }
+}
 
   /**
    * 加载翻译文件
@@ -83,7 +83,7 @@ export class NotificationService {
     const translation = this.translations.get(language);
     if (!translation) {
       logger.warn(`翻译文件未找到: ${language}`);
-      return key; // 返回键作为fallback
+      return key; // 返回键作为fallback;
     }
 
     const keys = key.split('.');
@@ -127,6 +127,7 @@ export class NotificationService {
       if (!user) {
         logger.warn(`用户未找到: ${telegramId}`);
         return false;
+  }
       }
 
       const language = this.getUserLanguage(user.language);
@@ -145,7 +146,7 @@ export class NotificationService {
         language_settings: this.getTranslation(language, 'bot.welcome.buttons.language_settings')
       };
 
-      const keyboard = Markup.inlineKeyboard([
+      const keyboard = Markup.inlineKeyboard([;
         [Markup.button.webApp(buttonTexts.enter_market, apiConfig.telegram.miniAppURL)],
         [Markup.button.callback(buttonTexts.tutorial, 'help_tutorial')],
         [Markup.button.callback(buttonTexts.language_settings, 'language_settings')]
@@ -190,7 +191,7 @@ export class NotificationService {
         browse_products: this.getTranslation(language, 'bot.registration_reward.buttons.browse_products')
       };
 
-      const keyboard = Markup.inlineKeyboard([
+      const keyboard = Markup.inlineKeyboard([;
         [Markup.button.webApp(buttonTexts.start_lottery, apiConfig.telegram.miniAppURL)],
         [Markup.button.webApp(buttonTexts.browse_products, apiConfig.telegram.miniAppURL)]
       ]);
@@ -236,7 +237,7 @@ export class NotificationService {
       };
 
       const appUrl = apiConfig.telegram.miniAppURL;
-      const keyboard = Markup.inlineKeyboard([
+      const keyboard = Markup.inlineKeyboard([;
         [Markup.button.webApp(buttonTexts.recharge, `${appUrl}/recharge`)],
         [Markup.button.webApp(buttonTexts.orders, `${appUrl}/orders`)]
       ]);
@@ -291,7 +292,7 @@ export class NotificationService {
 
       const buttonText = this.getTranslation(language, 'bot.orders.buttons.all_orders');
       const appUrl = apiConfig.telegram.miniAppURL;
-      const keyboard = Markup.inlineKeyboard([
+      const keyboard = Markup.inlineKeyboard([;
         [Markup.button.webApp(buttonText, `${appUrl}/orders`)]
       ]);
 
@@ -323,7 +324,7 @@ export class NotificationService {
       };
 
       const appUrl = apiConfig.telegram.miniAppURL;
-      const keyboard = Markup.inlineKeyboard([
+      const keyboard = Markup.inlineKeyboard([;
         [Markup.button.webApp(buttonTexts.tutorial, `${appUrl}/tutorial`)],
         [Markup.button.url(buttonTexts.contact_support, 'https://t.me/luckymart_support')]
       ]);
@@ -351,7 +352,7 @@ export class NotificationService {
         tajik: this.getTranslation(Language.TJ, 'bot.language_selection.buttons.tajik')
       };
 
-      const keyboard = Markup.inlineKeyboard([
+      const keyboard = Markup.inlineKeyboard([;
         [Markup.button.callback(buttonTexts.chinese, 'lang_zh-CN')],
         [Markup.button.callback(buttonTexts.english, 'lang_en-US')],
         [Markup.button.callback(buttonTexts.russian, 'lang_ru-RU')],
@@ -518,7 +519,7 @@ export class NotificationService {
           // 重试逻辑
           if (message.retryCount < this.options.maxRetries) {
             message.retryCount++;
-            const delay = Math.min(
+            const delay = Math.min(;
               this.options.initialDelay * Math.pow(this.options.backoffMultiplier, message.retryCount),
               this.options.maxDelay
             );

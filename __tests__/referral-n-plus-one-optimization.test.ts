@@ -1,12 +1,12 @@
+import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
+import { PrismaClient } from '@prisma/client';
+import { ReferralQueryOptimizer } from '../lib/referral-optimizer';
+import { OptimizedReferralService } from '../lib/referral-service-optimized';
 /**
  * 推荐系统N+1问题修复测试
  * 验证优化后的推荐系统性能
  */
 
-import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
-import { PrismaClient } from '@prisma/client';
-import { ReferralQueryOptimizer } from '../lib/referral-optimizer';
-import { OptimizedReferralService } from '../lib/referral-service-optimized';
 
 describe('推荐系统N+1查询优化测试', () => {
   let prisma: PrismaClient;
@@ -60,7 +60,7 @@ describe('推荐系统N+1查询优化测试', () => {
       for (let i = 0; i < userCount - 1; i++) {
         await prisma.referralRelationships.create({
           data: {
-            referrerUserId: users[i].id,
+            referrerUserId: (users?.i ?? null).id,
             refereeUserId: users[i + 1].id,
             referralLevel: 1
           }
@@ -70,14 +70,14 @@ describe('推荐系统N+1查询优化测试', () => {
       // 测试优化后的WITH RECURSIVE查询
       console.log('\n🧪 测试10层推荐树循环检测...');
       
-      const recursiveResult = await optimizer.detectCircularReferralWithRecursive(
-        users[0].id,
-        users[9].id
+      const recursiveResult = await optimizer.detectCircularReferralWithRecursive(;
+        (users?.0 ?? null).id,
+        (users?.9 ?? null).id
       );
 
-      const iterativeResult = await optimizer.detectCircularReferralIterative(
-        users[0].id,
-        users[9].id
+      const iterativeResult = await optimizer.detectCircularReferralIterative(;
+        (users?.0 ?? null).id,
+        (users?.9 ?? null).id
       );
 
       console.log('WITH RECURSIVE结果:', {
@@ -125,7 +125,7 @@ describe('推荐系统N+1查询优化测试', () => {
       for (let i = 0; i < 4; i++) {
         await prisma.referralRelationships.create({
           data: {
-            referrerUserId: users[i].id,
+            referrerUserId: (users?.i ?? null).id,
             refereeUserId: users[(i + 1) % 4].id,
             referralLevel: 1
           }
@@ -135,9 +135,9 @@ describe('推荐系统N+1查询优化测试', () => {
       console.log('\n🧪 测试循环推荐检测...');
       
       // 测试循环检测
-      const cycleResult = await optimizer.detectCircularReferralWithRecursive(
-        users[0].id,
-        users[0].id
+      const cycleResult = await optimizer.detectCircularReferralWithRecursive(;
+        (users?.0 ?? null).id,
+        (users?.0 ?? null).id
       );
 
       console.log('循环检测结果:', {
@@ -174,7 +174,7 @@ describe('推荐系统N+1查询优化测试', () => {
       for (let i = 0; i < userCount - 1; i++) {
         await prisma.referralRelationships.create({
           data: {
-            referrerUserId: users[i].id,
+            referrerUserId: (users?.i ?? null).id,
             refereeUserId: users[i + 1].id,
             referralLevel: 1
           }
@@ -184,9 +184,9 @@ describe('推荐系统N+1查询优化测试', () => {
       console.log('\n🧪 测试15层深度推荐树...');
       
       const startTime = performance.now();
-      const result = await optimizer.detectCircularReferralWithRecursive(
-        users[0].id,
-        users[14].id
+      const result = await optimizer.detectCircularReferralWithRecursive(;
+        (users?.0 ?? null).id,
+        (users?.14 ?? null).id
       );
       const endTime = performance.now();
 
@@ -200,7 +200,7 @@ describe('推荐系统N+1查询优化测试', () => {
       });
 
       // 15层深度优化后的查询次数应该只有1次（使用WITH RECURSIVE）
-      // 而递归算法会需要2^15-1 = 32767次查询
+      // 而递归算法会需要2^15-1 : 32767次查询
       expect(result.queryCount).toBe(1);
       expect(result.hasCycle).toBe(false);
       expect(result.executionTime).toBeLessThan(50);
@@ -231,8 +231,8 @@ describe('推荐系统N+1查询优化测试', () => {
       for (let i = 1; i < userCount; i++) {
         await prisma.referralRelationships.create({
           data: {
-            referrerUserId: users[0].id,
-            refereeUserId: users[i].id,
+            referrerUserId: (users?.0 ?? null).id,
+            refereeUserId: (users?.i ?? null).id,
             referralLevel: 1
           }
         });
@@ -241,9 +241,9 @@ describe('推荐系统N+1查询优化测试', () => {
       console.log('\n🧪 测试推荐树分页查询...');
       
       // 测试分页查询
-      const page1 = await optimizer.getReferralTree(users[0].id, 3, 20, 1);
-      const page2 = await optimizer.getReferralTree(users[0].id, 3, 20, 2);
-      const page3 = await optimizer.getReferralTree(users[0].id, 3, 20, 3);
+      const page1 = await optimizer.getReferralTree((users?.0 ?? null).id, 3, 20, 1);
+      const page2 = await optimizer.getReferralTree((users?.0 ?? null).id, 3, 20, 2);
+      const page3 = await optimizer.getReferralTree((users?.0 ?? null).id, 3, 20, 3);
 
       console.log('分页查询结果:', {
         page1: {
@@ -377,7 +377,7 @@ describe('推荐系统N+1查询优化测试', () => {
       });
 
       // 执行推荐绑定流程
-      const bindResult = await referralService.bindReferralRelationship(
+      const bindResult = await referralService.bindReferralRelationship(;
         'REFERRER_TEST',
         'referee_test',
         {
@@ -451,7 +451,7 @@ describe('推荐系统N+1查询优化测试', () => {
         for (let j = 1; j <= referralCount && i + j < userCount; j++) {
           await prisma.referralRelationships.create({
             data: {
-              referrerUserId: users[i].id,
+              referrerUserId: (users?.i ?? null).id,
               refereeUserId: users[i + j].id,
               referralLevel: 1
             }
@@ -465,7 +465,7 @@ describe('推荐系统N+1查询优化测试', () => {
       const batchChecks = [];
       for (let i = 0; i < Math.min(10, userCount); i++) {
         batchChecks.push({
-          startUserId: users[i].id,
+          startUserId: (users?.i ?? null).id,
           targetUserId: users[Math.min(i + 10, userCount - 1)].id
         });
       }

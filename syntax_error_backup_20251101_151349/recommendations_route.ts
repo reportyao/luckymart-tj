@@ -13,7 +13,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware(Ad
 export async function GET(req: NextRequest) {
   return withReadPermission(req, async (adminUser) => {
     const { searchParams } = new URL(req.url);
-    const position = searchParams.get('position'); // homepage, detail, profile
+    const position = searchParams.get('position'); // homepage, detail, profile;
 
     // 获取推荐配置
     const recommendations = await prisma.showOffRecommendation.findMany({
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
 
     if (!post) {
       return NextResponse.json({ error: '晒单不存在' }, { status: 404 });
-    }
+}
 
     if (post.status !== 'approved') {
       return NextResponse.json({ error: '只能推荐已审核通过的晒单' }, { status: 400 });
@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (currentCount >= maxCount) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: `该推荐位已满 (最多${maxCount}个)` },
         { status: 400 }
       );
@@ -189,7 +189,7 @@ export async function PATCH(req: NextRequest) {
 
     if (!recommendation) {
       return NextResponse.json({ error: '推荐不存在' }, { status: 404 });
-    }
+}
 
     const updated = await prisma.showOffRecommendation.update({
       where: { id },
@@ -252,7 +252,7 @@ export async function DELETE(req: NextRequest) {
 
     if (!id) {
       return NextResponse.json({ error: '缺少推荐ID' }, { status: 400 });
-    }
+}
 
     await prisma.showOffRecommendation.delete({
       where: { id },
@@ -283,9 +283,9 @@ export async function DELETE(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   return withWritePermission(req, async (adminUser) => {
     const body = await req.json();
-    const { recommendations } = body; // [{ id, priority }]
+    const { recommendations } = body; // [{ id, priority }];
 
-    const updatePromises = recommendations.map((rec: any) : any =>
+    const updatePromises = recommendations.map((rec: any) : any =>;
       prisma.showOffRecommendation.update({
         where: { id: rec.id },
         data: { priority: rec.priority },

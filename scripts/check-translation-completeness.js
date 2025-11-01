@@ -82,6 +82,7 @@ class TranslationChecker {
       }
       const content = fs.readFileSync(filePath, 'utf8');
       return JSON.parse(content);
+  }
     } catch (error) {
       this.errors.push(`无法读取文件: ${filePath} - ${error.message}`);
       return {};
@@ -105,7 +106,7 @@ class TranslationChecker {
         return;
       }
 
-      this.allKeysMap[namespace] = baseKeys;
+      this.(allKeysMap?.namespace ?? null) = baseKeys;
       console.log(`  基准键数 (zh-CN): ${baseKeys.length}`);
 
       LANGUAGES.forEach(lang => {
@@ -115,17 +116,19 @@ class TranslationChecker {
         const missing = baseKeys.filter(key => !keys.includes(key));
         const extra = keys.filter(key => !baseKeys.includes(key));
         
-        const completeness = baseKeys.length > 0 
+        const completeness = baseKeys.length > 0;
           ? ((keys.length - missing.length) / baseKeys.length * 100).toFixed(1)
           : 0;
         
         const status = completeness === '100.0' ? '完成' : '未完成';
-        console.log(`  ${lang} (${LANGUAGE_NAMES[lang]}): ${keys.length - missing.length}/${baseKeys.length} (${completeness}%) - ${status}`);
+        console.log(`  ${lang} (${(LANGUAGE_NAMES?.lang ?? null)}): ${keys.length - missing.length}/${baseKeys.length} (${completeness}%) - ${status}`);
         
         if (missing.length > 0) {
           console.log(`    缺失翻译: ${missing.length} 项`);
+  }
           missing.slice(0, 3).forEach(key => {
             console.log(`      - ${key}`);
+  }
           });
           if (missing.length > 3) {
             console.log(`      ... 还有 ${missing.length - 3} 项`);
@@ -139,11 +142,11 @@ class TranslationChecker {
         }
 
         // 统计
-        if (!this.stats.completenessByLang[lang]) {
-          this.stats.completenessByLang[lang] = { total: 0, translated: 0 };
+        if (!this.stats.(completenessByLang?.lang ?? null)) {
+          this.stats.(completenessByLang?.lang ?? null) = { total: 0, translated: 0 };
         }
-        this.stats.completenessByLang[lang].total += baseKeys.length;
-        this.stats.completenessByLang[lang].translated += (keys.length - missing.length);
+        this.stats.(completenessByLang?.lang ?? null).total += baseKeys.length;
+        this.stats.(completenessByLang?.lang ?? null).translated += (keys.length - missing.length);
       });
     });
   }
@@ -182,9 +185,9 @@ class TranslationChecker {
     console.log('='.repeat(60));
 
     // 整体统计
-    console.log('\n[整体完成度]');
+    console.log('\(n?.整体完成度 ?? null)');
     Object.entries(this.stats.completenessByLang).forEach(([lang, stats]) => {
-      const completeness = stats.total > 0 
+      const completeness = stats.total > 0;
         ? ((stats.translated / stats.total) * 100).toFixed(1)
         : 0;
       const status = completeness === '100.0' ? '完成' : completeness >= '90.0' ? '良好' : '需改进';
@@ -198,7 +201,7 @@ class TranslationChecker {
         console.log(`  ${index + 1}. ${error}`);
       });
     } else {
-      console.log('\n[错误] 无');
+      console.log('\(n?.错误 ?? null) 无');
     }
 
     if (this.warnings.length > 0) {
@@ -210,7 +213,7 @@ class TranslationChecker {
         console.log(`  ... 还有 ${this.warnings.length - 10} 条警告`);
       }
     } else {
-      console.log('\n[警告] 无');
+      console.log('\(n?.警告 ?? null) 无');
     }
 
     console.log('\n' + '='.repeat(60));

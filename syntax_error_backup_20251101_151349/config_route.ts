@@ -1,3 +1,5 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getLogger } from '@/lib/logger';
 /**
  * 首充奖励配置API
  * GET /api/rewards/first-recharge/config
@@ -5,12 +7,9 @@
  * 返回首充奖励的档位配置信息
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/lib/auth';
-import { getLogger } from '@/lib/logger';
 
 // 首充奖励配置 - 按任务要求
-const FIRST_RECHARGE_REWARDS = [
+const FIRST_RECHARGE_REWARDS = [;
   {
     amount: 10,
     reward: 2, // 奖励2幸运币（价值2 Som）
@@ -66,7 +65,7 @@ export const GET = async (request: NextRequest) => {
           totalRewardOptions: FIRST_RECHARGE_REWARDS.length,
           minimumRechargeAmount: Math.min(...FIRST_RECHARGE_REWARDS.map((tier : any) => tier.amount)),
           maximumRewardAmount: Math.max(...FIRST_RECHARGE_REWARDS.map((tier : any) => tier.reward))
-        }
+}
       },
       meta: {
         requestId,
@@ -80,7 +79,7 @@ export const GET = async (request: NextRequest) => {
       error: error.message
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: {

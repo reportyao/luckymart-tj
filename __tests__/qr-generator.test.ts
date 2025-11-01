@@ -1,9 +1,9 @@
+import {
 /**
  * QR Code Generator Tests
  * 二维码生成器测试
  */
 
-import {
   QRCodeGenerator,
   QRCodeError,
   generateReferralQR,
@@ -141,7 +141,7 @@ describe('QRCodeGenerator', () => {
 
   describe('快捷方法测试', () => {
     test('generateReferralQR 快捷方法', async () => {
-      const result = await generateReferralQR(
+      const result = await generateReferralQR(;
         'https://example.com',
         'REF123',
         { campaign: 'test', source: 'test_source' }
@@ -163,7 +163,7 @@ describe('QRCodeGenerator', () => {
     });
 
     test('应该处理超长内容错误', async () => {
-      const longContent = 'A'.repeat(5000); // 很长的内容
+      const longContent = 'A'.repeat(5000); // 很长的内容;
       await expect(
         QRCodeGenerator.generate(longContent)
       ).rejects.toThrow(QRCodeError);
@@ -221,7 +221,7 @@ describe('QRCodeGenerator', () => {
     });
 
     test('应该能处理批量生成', async () => {
-      const promises = Array.from({ length: 5 }, (_, i) =>
+      const promises = Array.from({ length: 5 }, (_, i) =>;
         QRCodeGenerator.generate(`Batch Test ${i}`)
       );
       

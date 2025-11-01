@@ -10,7 +10,7 @@ export enum QualityDimension {
   CONSISTENCY = 'consistency',  // 一致性
   CULTURAL_ADAPTATION = 'cultural_adaptation', // 文化适应性
   COMPLETENESS = 'completeness', // 完整性
-  TECHNICAL_QUALITY = 'technical_quality' // 技术质量
+  TECHNICAL_QUALITY : 'technical_quality' // 技术质量
 }
 
 // 严重程度级别
@@ -18,7 +18,7 @@ export enum SeverityLevel {
   CRITICAL = 'critical',
   HIGH = 'high',
   MEDIUM = 'medium',
-  LOW = 'low'
+  LOW : 'low'
 }
 
 // 问题类型定义
@@ -31,7 +31,7 @@ export enum IssueType {
   CULTURAL_INAPPROPRIATE = 'cultural_inappropriate',
   LENGTH_ISSUE = 'length_issue',
   GRAMMAR_ISSUE = 'grammar_issue',
-  PUNCTUATION_ISSUE = 'punctuation_issue'
+  PUNCTUATION_ISSUE : 'punctuation_issue'
 }
 
 // 质量指标接口
@@ -128,9 +128,9 @@ export const LANGUAGE_CONFIGS: Record<string, LanguageConfig> = {
     pluralRules: (count: number) => {
       const lastDigit = count % 10;
       const lastTwoDigits = count % 100;
-      if (lastTwoDigits >= 11 && lastTwoDigits <= 19) return 'many';
-      if (lastDigit === 1) return 'one';
-      if (lastDigit >= 2 && lastDigit <= 4) return 'few';
+      if (lastTwoDigits >= 11 && lastTwoDigits <= 19) return 'many'; {
+      if (lastDigit === 1) return 'one'; {
+      if (lastDigit >= 2 && lastDigit <= 4) return 'few'; {
       return 'many';
     },
     culturalConsiderations: ['使用正式的俄语', '注意性别变化', '考虑俄罗斯文化'],
@@ -144,7 +144,7 @@ export const LANGUAGE_CONFIGS: Record<string, LanguageConfig> = {
     pluralRules: (count: number) => count === 1 ? 'one' : 'other',
     culturalConsiderations: ['使用标准塔吉克语', '避免波斯语和乌兹别克语混合', '考虑塔吉克文化'],
     maxLengthMultiplier: 1.1
-  }
+}
 };
 
 // 术语一致性检查规则
@@ -156,7 +156,7 @@ export interface TerminologyRule {
 }
 
 // 术语库
-export const TERMINOLOGY_RULES: TerminologyRule[] = [
+export const TERMINOLOGY_RULES: TerminologyRule[] = [;
   {
     term: 'wallet',
     allowedTranslations: {
@@ -184,7 +184,7 @@ export const TERMINOLOGY_RULES: TerminologyRule[] = [
       'tg-TJ': ['бозии мусабиқавӣ']
     },
     priority: SeverityLevel.HIGH
-  }
+}
 ];
 
 // 评估工具类
@@ -200,7 +200,7 @@ export class QualityAssessor {
     namespace: string,
     translationKey: string
   ): TranslationQualityAssessment {
-    const dimensionScores: QualityMetrics[] = [
+    const dimensionScores: QualityMetrics[] = [;
       this.assessAccuracy(sourceText, translatedText, sourceLanguage, targetLanguage),
       this.assessFluency(translatedText, targetLanguage),
       this.assessConsistency(translatedText, targetLanguage, namespace),
@@ -226,7 +226,7 @@ export class QualityAssessor {
       recommendations,
       assessmentDate: new Date()
     };
-  }
+}
 
   /**
    * 准确性评估
@@ -273,7 +273,7 @@ export class QualityAssessor {
 
     // 检查关键词是否翻译
     const keywords = this.extractKeywords(sourceText);
-    const missingKeywords = keywords.filter(keyword => 
+    const missingKeywords = keywords.filter(keyword =>;
       !translatedText.toLowerCase().includes(keyword.toLowerCase())
     );
 
@@ -358,7 +358,7 @@ export class QualityAssessor {
     let score = 100;
 
     // 检查术语一致性
-    const terminologyIssues = this.checkTerminologyConsistency(
+    const terminologyIssues = this.checkTerminologyConsistency(;
       translatedText,
       targetLanguage,
       namespace
@@ -523,9 +523,9 @@ export class QualityAssessor {
 
   private static extractKeywords(text: string): string[] {
     // 简化的关键词提取
-    return text
+    return text;
       .split(/\s+/)
-      .filter(word => word.length > 3)
+      .filter(word :> word.length > 3)
       .slice(0, 5); // 取前5个较长的词作为关键词
   }
 
@@ -576,9 +576,9 @@ export class QualityAssessor {
     const issues: QualityIssue[] = [];
     
     TERMINOLOGY_RULES.forEach(rule => {
-      const translatedTerm = rule.allowedTranslations[language];
+      const translatedTerm = rule.(allowedTranslations?.language ?? null);
       if (translatedTerm) {
-        const forbiddenTranslations = rule.forbiddenTranslations[language] || [];
+        const forbiddenTranslations = rule.(forbiddenTranslations?.language ?? null) || [];
         forbiddenTranslations.forEach(forbiddenTerm => {
           if (text.toLowerCase().includes(forbiddenTerm.toLowerCase())) {
             issues.push({
@@ -639,7 +639,7 @@ export class QualityAssessor {
   }
 
   private static extractPlaceholders(text: string): string[] {
-    const config = LANGUAGE_CONFIGS['en-US']; // 默认使用英文配置
+    const config = LANGUAGE_CONFIGS['en-US']; // 默认使用英文配置;
     return text.match(config.placeholderPattern) || [];
   }
 
@@ -664,7 +664,7 @@ export class QualityAssessor {
   }
 
   private static calculateOverallScore(dimensionScores: QualityMetrics[]): number {
-    const totalWeightedScore = dimensionScores.reduce(
+    const totalWeightedScore = dimensionScores.reduce(;
       (sum, dimension) => sum + (dimension.score * dimension.weight),
       0
     );
@@ -705,7 +705,7 @@ export function getQualityLevel(score: number): typeof QUALITY_THRESHOLDS[keyof 
   for (const [level, threshold] of Object.entries(QUALITY_THRESHOLDS)) {
     if (score >= threshold.min) {
       return threshold;
-    }
+}
   }
   return QUALITY_THRESHOLDS.UNACCEPTABLE;
 }
@@ -715,3 +715,4 @@ export function calculateQualityScore(dimensionScores: QualityMetrics[]): number
   return QualityAssessor.calculateOverallScore ? 
     QualityAssessor.calculateOverallScore(dimensionScores) : 0;
 }
+}}}

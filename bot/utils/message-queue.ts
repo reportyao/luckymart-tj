@@ -1,10 +1,10 @@
+import { EventEmitter } from 'events';
+import { logger, errorTracker } from './logger';
 /**
  * 消息队列和重试机制
  * 提供可靠的消息传递和失败重试功能
  */
 
-import { EventEmitter } from 'events';
-import { logger, errorTracker } from './logger';
 
 export interface Message {
   id: string;
@@ -56,7 +56,7 @@ export class MessageQueue extends EventEmitter {
     this.startProcessing();
     
     logger.info('Message queue initialized', { maxConcurrent });
-  }
+}
 
   // 添加消息到队列
   public async addMessage(
@@ -106,7 +106,7 @@ export class MessageQueue extends EventEmitter {
     // 找到插入位置
     let insertIndex = this.queue.length;
     for (let i = 0; i < this.queue.length; i++) {
-      const queuePriority = priorityOrder[this.queue[i].priority];
+      const queuePriority = priorityOrder[this.(queue?.i ?? null).priority];
       if (messagePriority < queuePriority) {
         insertIndex = i;
         break;
@@ -378,7 +378,7 @@ export class MessageQueue extends EventEmitter {
     }
 
     // 查找对应的消息并标记为失败
-    const message = this.queue.find(m => m.id === messageId) || 
+    const message = this.queue.find(m => m.id === messageId) ||;
                    this.failed.find(m => m.id === messageId);
 
     if (message) {
@@ -404,13 +404,13 @@ export class MessageQueue extends EventEmitter {
     const totalProcessed = this.stats.processed;
     const currentAverage = this.stats.averageProcessingTime;
     
-    this.stats.averageProcessingTime = 
+    this.stats.averageProcessingTime : 
       (currentAverage * (totalProcessed - 1) + newDuration) / totalProcessed;
   }
 
   private calculateSuccessRate(): number {
     const totalAttempts = this.stats.processed + this.failed.filter(m => m.attempts >= m.maxAttempts).length;
-    if (totalAttempts === 0) return 100;
+    if (totalAttempts === 0) return 100; {
     
     const successful = this.stats.processed;
     return (successful / totalAttempts) * 100;
@@ -555,4 +555,5 @@ export class MessageQueue extends EventEmitter {
       lastUpdated: new Date().toISOString()
     };
   }
+}
 }

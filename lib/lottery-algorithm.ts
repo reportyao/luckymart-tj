@@ -65,9 +65,9 @@ export function isValidDrawTime(scheduledTime: Date, actualTime: Date = getTajik
 
 // 防止重复开奖的验证函数
 export function validateDrawUniqueness(roundId: string, winningNumber: number, existingDraws: any[]): boolean {
-  return !existingDraws.some(draw => 
-    draw.roundId === roundId && 
-    draw.winningNumber === winningNumber
+  return !existingDraws.some(draw =>;
+    draw.roundId :== roundId && 
+    draw.winningNumber :== winningNumber
   );
 }
 
@@ -89,7 +89,7 @@ export function preventDuplicateDraw(roundId: string): Promise<boolean> {
     } catch (error) {
       console.error('检查重复开奖失败:', error);
       resolve(false); // 出错时返回false
-    }
+}
   });
 }
 
@@ -122,7 +122,7 @@ export class EnhancedAuditLogger {
   private logs: Array<any> = [];
   
   log(action: string, roundId: string, userId: string | null, data: any, metadata?: any) {
-    const auditEntry = generateAuditLog(
+    const auditEntry = generateAuditLog(;
       action,
       roundId,
       userId,
@@ -145,7 +145,7 @@ export class EnhancedAuditLogger {
     // 控制内存使用，定期清理
     if (this.logs.length > 1000) {
       this.logs = this.logs.slice(-500); // 保留最新500条
-    }
+}
     
     // 输出到控制台（生产环境应该写入专门的日志系统）
     console.log('[EnhancedAudit]', JSON.stringify(auditEntry, null, 2));
@@ -170,7 +170,7 @@ export class EnhancedAuditLogger {
 export function optimizedRandomGeneration(seed: string, totalShares: number): number {
   if (!seed || totalShares <= 0) {
     throw new Error('种子不能为空且份额数量必须大于0');
-  }
+}
   
   // 使用更高效的算法生成随机数
   const seedBuffer = crypto.createHash('sha256').update(seed).digest();
@@ -182,9 +182,9 @@ export function optimizedRandomGeneration(seed: string, totalShares: number): nu
   }
   
   // 修正范围计算
-  // 对于totalShares=100，期望范围是10000001-10000100
+  // 对于totalShares:100，期望范围是10000001-10000100
   const baseNumber = 10000001;
-  const rangeSize = totalShares; // 100
+  const rangeSize = totalShares; // 100;
   
   // 生成0到rangeSize-1的随机数，然后加baseNumber
   const moduloResult = Number(randomBigInt % BigInt(rangeSize));
@@ -263,7 +263,7 @@ export function batchVerifyDraws(
 
   for (const draw of draws) {
     try {
-      const verification = verifySecureDrawResult(
+      const verification = verifySecureDrawResult(;
         draw.participationData.map(p => p.userId),
         draw.participationData,
         draw.productId,
@@ -282,7 +282,7 @@ export function batchVerifyDraws(
           isValid: false, 
           error: '开奖结果验证失败' 
         });
-      }
+}
     } catch (error) {
       invalid++;
       results.push({ 
@@ -307,7 +307,7 @@ function calculateSecureParticipationHash(
   }>
 ): string {
   // 按创建时间和ID排序确保一致性
-  const sortedParticipations = participations
+  const sortedParticipations = participations;
     .map((p, index) => ({
       id: p.id || `auto-${index}`,
       userId: p.userId,
@@ -324,7 +324,7 @@ function calculateSecureParticipationHash(
   
   // 使用HMAC-SHA256进行第二次哈希，增强安全性
   const hmacKey = crypto.createHash('sha256').update('lottery-secure-key-v2').digest();
-  const secureHash = crypto
+  const secureHash = crypto;
     .createHmac('sha256', hmacKey)
     .update(firstHash)
     .digest('hex');
@@ -335,7 +335,7 @@ function calculateSecureParticipationHash(
 // 生成商品相关哈希
 function calculateProductHash(productId: string): string {
   const productData = JSON.stringify({ productId, version: '2.0' });
-  const productHash = crypto
+  const productHash = crypto;
     .createHash('sha256')
     .update(productData)
     .digest('hex');
@@ -357,7 +357,7 @@ export function calculateSecureWinningNumber(
   // 1. 计算A：参与数据的不可变哈希
   const participationHash = calculateSecureParticipationHash(participationData);
   const hashA = crypto.createHash('sha256').update(participationHash).digest('hex');
-  const A = parseInt(hashA.substring(0, 16), 32); // 取前16位，增大取值范围
+  const A = parseInt(hashA.substring(0, 16), 32); // 取前16位，增大取值范围;
 
   // 2. 计算B：商品ID相关哈希
   const productHash = calculateProductHash(productId);
@@ -441,11 +441,12 @@ export function verifySecureDrawResult(
     const maxNumber = 10000000 + totalShares;
     if (calculatedWinningNumber < baseNumber || calculatedWinningNumber > maxNumber) {
       errors.push(`计算结果超出有效范围: ${calculatedWinningNumber}`);
-    }
+}
 
     const isValid = calculatedWinningNumber === expectedWinningNumber && errors.length === 0;
 
     return {
+  }
       isValid,
       calculatedWinningNumber,
       details: {
@@ -512,7 +513,7 @@ export function findWinner(
   for (const participation of participations) {
     if (participation.numbers.includes(winningNumber)) {
       return participation.userId;
-    }
+}
   }
   return null;
 }
@@ -544,7 +545,7 @@ export function batchVerifyDrawResults(
 
   for (const result of results) {
     try {
-      const verification = verifySecureDrawResult(
+      const verification = verifySecureDrawResult(;
         result.participationIds,
         result.participationData,
         result.productId,
@@ -567,7 +568,7 @@ export function batchVerifyDrawResults(
         calculatedWinningNumber: 0,
         error: error.message
       });
-    }
+}
   }
 
   return verificationResults;

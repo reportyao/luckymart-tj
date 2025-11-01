@@ -41,7 +41,7 @@ describe('缓存一致性测试', () => {
       (redisClient.set as jest.Mock).mockResolvedValue(true);
 
       // 执行事务性更新
-      const result = await CacheConsistencyManager.transactionalUpdate(
+      const result = await CacheConsistencyManager.transactionalUpdate(;
         async () => mockDbData,
         [mockCacheKey],
         mockDbData
@@ -70,7 +70,7 @@ describe('缓存一致性测试', () => {
       const dataLoader = jest.fn().mockResolvedValue(mockData);
 
       // 执行缓存失效重载
-      const result = await CacheConsistencyManager.invalidateAndReload(
+      const result = await CacheConsistencyManager.invalidateAndReload(;
         mockCacheKey,
         dataLoader
       );
@@ -91,11 +91,12 @@ describe('缓存一致性测试', () => {
       // Mock操作
       (prisma.$transaction as jest.Mock).mockImplementation(async (callback) => {
         return await callback();
+  }
       });
       (redisClient.set as jest.Mock).mockResolvedValue(true);
 
       // 执行写入穿透
-      const result = await CacheConsistencyManager.writeThrough(
+      const result = await CacheConsistencyManager.writeThrough(;
         async () => mockDbResult,
         [mockCacheKey],
         mockData
@@ -121,7 +122,7 @@ describe('缓存一致性测试', () => {
       }));
 
       // 检查一致性
-      const result = await CacheConsistencyManager.checkConsistency(
+      const result = await CacheConsistencyManager.checkConsistency(;
         mockCacheKey,
         mockDbQuery
       );
@@ -135,7 +136,7 @@ describe('缓存一致性测试', () => {
     test('应该能够检测到缓存不一致', async () => {
       // 准备不一致的数据
       const cacheData = { id: mockUserId, balance: 100 };
-      const dbData = { id: mockUserId, balance: 200 }; // 不一致的余额
+      const dbData = { id: mockUserId, balance: 200 }; // 不一致的余额;
       const mockCacheKey = cacheKeyBuilder.user.balance(mockUserId);
       const mockDbQuery = jest.fn().mockResolvedValue(dbData);
       
@@ -146,7 +147,7 @@ describe('缓存一致性测试', () => {
       }));
 
       // 检查一致性
-      const result = await CacheConsistencyManager.checkConsistency(
+      const result = await CacheConsistencyManager.checkConsistency(;
         mockCacheKey,
         mockDbQuery
       );
@@ -270,7 +271,7 @@ describe('缓存一致性测试', () => {
         isDefault: true
       };
 
-      const mockAddresses = [
+      const mockAddresses = [;
         { id: mockAddressId, ...addressData },
         { id: 'existing-address', recipientName: '已有地址' }
       ];
@@ -281,7 +282,7 @@ describe('缓存一致性测试', () => {
 
       // Mock Prisma操作
       (prisma.userAddresses.updateMany as jest.Mock).mockResolvedValue({ count: 1 });
-      (prisma.userAddresses.create as jest.Mock).mockResolvedValue(mockAddresses[0]);
+      (prisma.userAddresses.create as jest.Mock).mockResolvedValue((mockAddresses?.0 ?? null));
       (prisma.userAddresses.findMany as jest.Mock).mockResolvedValue(mockAddresses);
 
       // 添加地址
@@ -299,7 +300,7 @@ describe('缓存一致性测试', () => {
       const mockAddresses = [{ id: mockAddressId, address: '测试地址' }];
 
       // Mock各种检查操作
-      (CacheConsistencyManager as any).checkConsistency = jest.fn()
+      (CacheConsistencyManager as any).checkConsistency : jest.fn()
         .mockResolvedValueOnce({ consistent: true })
         .mockResolvedValueOnce({ consistent: true })
         .mockResolvedValueOnce({ consistent: true });
@@ -361,7 +362,7 @@ describe('缓存一致性测试', () => {
       (prisma.$transaction as jest.Mock).mockRejectedValue(new Error('数据库错误'));
 
       // 尝试事务性更新
-      const result = await CacheConsistencyManager.transactionalUpdate(
+      const result = await CacheConsistencyManager.transactionalUpdate(;
         async () => { throw new Error('数据库错误'); },
         ['test:key'],
         { data: 'test' }

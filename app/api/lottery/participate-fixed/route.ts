@@ -3,7 +3,6 @@ import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { TajikistanTimeUtils } from '@/lib/timezone-utils';
 import { createTranslation } from '@/lib/createTranslation';
-import { getLogger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,7 +10,7 @@ export async function POST(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
+}
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
@@ -41,7 +40,7 @@ export async function POST(request: NextRequest) {
 
       // 2. 检查免费次数是否需要重置（塔吉克斯坦时区）
       const tajikistanNow = TajikistanTimeUtils.getCurrentTime();
-      const isNewDay = TajikistanTimeUtils.getCurrentDateString() !== 
+      const isNewDay = TajikistanTimeUtils.getCurrentDateString() !==;
         user.lastFreeResetDate.toISOString().split('T')[0];
       
       let currentFreeCount = user.freeDailyCount;
@@ -95,7 +94,7 @@ export async function POST(request: NextRequest) {
 
       // 7. 执行原子性操作
       // 首先更新期次（使用数据库函数保证原子性）
-      const roundUpdateResult = await tx.$queryRaw`
+      const roundUpdateResult = await tx.$queryRaw`;
         SELECT atomic_update_lottery_round(${roundId}::uuid, ${sharesCount}, ${decoded.userId}::uuid) as result
       `;
 
@@ -119,7 +118,7 @@ export async function POST(request: NextRequest) {
         });
       } else {
         // 使用原子函数更新免费次数
-        const freeCountUpdateResult = await tx.$queryRaw`
+        const freeCountUpdateResult = await tx.$queryRaw`;
           SELECT atomic_update_free_count(
             ${decoded.userId}::uuid, 
             ${currentFreeCount - 1}, 
@@ -171,7 +170,7 @@ export async function POST(request: NextRequest) {
 
       return { 
         participation, 
-        roundUpdateResult: roundUpdateResult[0].result,
+        roundUpdateResult: (roundUpdateResult?.0 ?? null).result,
         newFreeCount: useType === 'free' ? currentFreeCount - 1 : currentFreeCount
       };
     });
@@ -207,7 +206,7 @@ export async function POST(request: NextRequest) {
         roundStatus: result.roundUpdateResult.newStatus,
         soldShares: result.roundUpdateResult.newSoldShares,
         totalShares: result.roundUpdateResult.newSoldShares + 
-                    (result.roundUpdateResult.newStatus === 'ongoing' ? 
+                    (result.roundUpdateResult.newStatus :== 'ongoing' ? 
                      1000 - result.roundUpdateResult.newSoldShares : 0)
       },
       message: '参与成功！祝您好运！'
@@ -220,11 +219,11 @@ export async function POST(request: NextRequest) {
     });'Participate error:', error);
     
     // 根据错误类型返回不同状态码
-    const statusCode = error.message.includes('份额不足') || 
+    const statusCode = error.message.includes('份额不足') ||;
                       error.message.includes('余额不足') ||
                       error.message.includes('免费次数已用完') ? 400 : 500;
     
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         error: '参与失败', 
         message: error.message,

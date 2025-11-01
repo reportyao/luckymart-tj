@@ -3,15 +3,13 @@ import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withReadPermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
 const withWritePermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
 // 模拟风控规则数据
-const mockRiskRules = [
+const mockRiskRules = [;
   {
     id: 'RR001',
     name: '异常登录检测',
@@ -68,6 +66,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('risk-rules_route.ts request failed', error as Error, {
       requestId,
@@ -81,7 +80,7 @@ async function handleGET(request: NextRequest) {
     ];
 
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
       try {
         const { searchParams } = new URL(request.url);
         const page = parseInt(searchParams.get('page') || '1');
@@ -94,16 +93,16 @@ async function handleGET(request: NextRequest) {
         let filteredRules = mockRiskRules;
 
         if (category && category !== 'all') {
-          filteredRules = filteredRules.filter((rule : any) => rule.category === category);
-        }
+          filteredRules = filteredRules.filter(((rule : any) : any) => rule.category === category);
+    }
 
         if (isActive !== null && isActive !== 'all') {
           const active = isActive === 'active';
-          filteredRules = filteredRules.filter((rule : any) => rule.isActive === active);
+          filteredRules = filteredRules.filter(((rule : any) : any) => rule.isActive === active);
         }
 
         if (search) {
-          filteredRules = filteredRules.filter((rule : any) => 
+          filteredRules = filteredRules.filter(((rule : any) : any) => 
             rule.name.toLowerCase().includes(search.toLowerCase()) ||
             rule.description.toLowerCase().includes(search.toLowerCase())
           );
@@ -129,7 +128,8 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取风控规则失败:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
+  }
           { success: false, error: '获取数据失败' },
           { status: 500 }
         );
@@ -138,17 +138,17 @@ async function handleGET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
   try {
     const body = await request.json();
     const { name, description, category, riskType, condition, threshold, action, isActive } = body;
 
     if (!name || !description || !riskType || !condition || threshold === undefined) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少必需参数' },
         { status: 400 }
       );
-    }
+}
 
     const now = new Date().toISOString();
     const newRule = {
@@ -179,7 +179,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'创建风控规则失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '创建失败' },
       { status: 500 }
     );
@@ -188,28 +188,28 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
   try {
     const body = await request.json();
     const { ruleId, updates } = body;
 
     if (!ruleId || !updates) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少必需参数' },
         { status: 400 }
       );
-    }
+}
 
     const ruleIndex = mockRiskRules.findIndex(rule => rule.id === ruleId);
     if (ruleIndex === -1) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '规则不存在' },
         { status: 404 }
       );
     }
 
     const updatedRule = {
-      ...mockRiskRules[ruleIndex],
+      ...(mockRiskRules?.ruleIndex ?? null),
       ...updates,
       lastModified: new Date().toISOString()
     };
@@ -226,7 +226,7 @@ export async function PATCH(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'更新风控规则失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '更新失败' },
       { status: 500 }
     );
@@ -235,21 +235,21 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const ruleId = searchParams.get('ruleId');
 
     if (!ruleId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少规则ID' },
         { status: 400 }
       );
-    }
+}
 
     const ruleIndex = mockRiskRules.findIndex(rule => rule.id === ruleId);
     if (ruleIndex === -1) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '规则不存在' },
         { status: 404 }
       );
@@ -266,7 +266,7 @@ export async function DELETE(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'删除风控规则失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '删除失败' },
       { status: 500 }
     );

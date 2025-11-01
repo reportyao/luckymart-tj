@@ -1,5 +1,5 @@
-// 移动端组件通用类型定义
 import React from 'react';
+// 移动端组件通用类型定义
 
 // 基础组件属性
 export interface MobileComponentProps {

@@ -1,18 +1,18 @@
-'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { X, Download, Smartphone, Monitor } from 'lucide-react';
+'use client';
 
-interface BeforeInstallPromptEvent extends Event {
+
+interface BeforeInstallPromptEvent extends Event {}
   readonly platforms: string[];
-  readonly userChoice: Promise<{
+  readonly userChoice: Promise<{}
     outcome: 'accepted' | 'dismissed';
     platform: string;
   }>;
   prompt(): Promise<void>;
-}
 
-interface PWAInstallerProps {
+
+interface PWAInstallerProps {}
   className?: string;
   autoPrompt?: boolean;
   promptDelay?: number;
@@ -23,38 +23,38 @@ interface PWAInstallerProps {
   onPromptShown?: () => void;
   onPromptDismissed?: () => void;
   customInstructions?: string[];
-}
 
-function PWAInstaller() {
+
+function PWAInstaller() {}
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [installChoice, setInstallChoice] = useState<'accepted' | 'dismissed' | null>(null);
 
-  useEffect(() => {
+  useEffect(() => {}
     // 检查是否已经安装
-    const checkInstallStatus = () => {
-      if (window.matchMedia('(display-mode: standalone)').matches) {
+    const checkInstallStatus = () => {}
+      if (window.matchMedia('(display-mode: standalone)').matches) {}
         setIsInstalled(true);
-      }
+      
     };
 
     // 监听安装提示事件
-    const handleBeforeInstallPrompt = (e: Event) => {
+    const handleBeforeInstallPrompt = (e: Event) => {}
       e.preventDefault();
       const event = e as BeforeInstallPromptEvent;
       setDeferredPrompt(event);
       setIsInstallable(true);
       
       // 显示安装提示（延迟3秒后显示）
-      setTimeout(() => {
+      setTimeout(() => {}
         setShowInstallPrompt(true);
       }, 3000);
     };
 
     // 监听应用安装事件
-    const handleAppInstalled = () => {
+    const handleAppInstalled = () => {}
       setIsInstalled(true);
       setIsInstallable(false);
       setShowInstallPrompt(false);
@@ -68,34 +68,34 @@ function PWAInstaller() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
 
-    return () => {
+    return () => {}
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
-  const handleInstallClick = useCallback(async () => {
-    if (!deferredPrompt) return;
+  const handleInstallClick = useCallback(async () => {}
+    if (!deferredPrompt) return; {}
 
-    try {
+    try {}
       await deferredPrompt.prompt();
       const choiceResult = await deferredPrompt.userChoice;
       
       setInstallChoice(choiceResult.outcome);
       
-      if (choiceResult.outcome === 'accepted') {
+      if (choiceResult.outcome === 'accepted') {}
         setIsInstalled(true);
         setIsInstallable(false);
         setShowInstallPrompt(false);
-      }
+      
       
       setDeferredPrompt(null);
     } catch (error) {
       console.error('安装失败:', error);
-    }
+    
   }, [deferredPrompt]);
 
-  const handleDismiss = useCallback(() => {
+  const handleDismiss = useCallback(() => {}
     setShowInstallPrompt(false);
     setInstallChoice('dismissed');
     
@@ -104,31 +104,32 @@ function PWAInstaller() {
   }, []);
 
   // 检查是否应该显示提示
-  const shouldShowPrompt = () => {
-    if (isInstalled || !isInstallable || !deferredPrompt) {
+  const shouldShowPrompt = () => {}
+    if (isInstalled || !isInstallable || !deferredPrompt) {}
       return false;
-    }
+    
     
     // 检查24小时冷却期
     const dismissed = localStorage.getItem('pwa-install-dismissed');
-    if (dismissed) {
+    if (dismissed) {}
       const dismissedTime = parseInt(dismissed);
       const now = Date.now();
       const oneDayInMs = 24 * 60 * 60 * 1000;
       
-      if (now - dismissedTime < oneDayInMs) {
+      if (now - dismissedTime < oneDayInMs) {}
         return false;
-      }
-    }
+  
+      
+    
     
     return showInstallPrompt;
   };
 
-  const getInstallInstructions = () => {
+  const getInstallInstructions = () => {}
     const userAgent = navigator.userAgent.toLowerCase();
     
-    if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
-      return {
+    if (userAgent.includes('iphone') || userAgent.includes('ipad')) {}
+      return {}
         icon: <Smartphone className="luckymart-size-md luckymart-size-md" />,
         title: '添加到主屏幕',
         steps: [
@@ -137,10 +138,10 @@ function PWAInstaller() {
           '确认添加应用'
         ]
       };
-    }
     
-    if (userAgent.includes('android')) {
-      return {
+    
+    if (userAgent.includes('android')) {}
+      return {}
         icon: <Smartphone className="luckymart-size-md luckymart-size-md" />,
         title: '安装应用',
         steps: [
@@ -149,9 +150,9 @@ function PWAInstaller() {
           '确认安装应用'
         ]
       };
-    }
     
-    return {
+    
+    return {}
       icon: <Monitor className="luckymart-size-md luckymart-size-md" />,
       title: '安装应用',
       steps: [
@@ -162,70 +163,70 @@ function PWAInstaller() {
     };
   };
 
-  if (!shouldShowPrompt()) {
+  if (!shouldShowPrompt()) {}
     return null;
-  }
+  
 
   const instructions = getInstallInstructions();
 
-  return (
+  return (;
     <>
       {/* 背景遮罩 */}
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
+      <div className:"fixed inset-0 bg-black bg-opacity-50 z-40" />
       
       {/* 安装提示卡片 */}
-      <div className="fixed bottom-4 left-4 right-4 luckymart-bg-white luckymart-rounded-lg shadow-2xl luckymart-border luckymart-border-light z-50 max-w-sm mx-auto">
-        <div className="luckymart-padding-md">
+      <div className:"fixed bottom-4 left-4 right-4 luckymart-bg-white luckymart-rounded-lg shadow-2xl luckymart-border luckymart-border-light z-50 max-w-sm mx-auto">
+        <div className:"luckymart-padding-md">
           {/* 关闭按钮 */}
           <button
             onClick={handleDismiss}
             className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <X className="luckymart-size-sm luckymart-size-sm" />
+            <X className:"luckymart-size-sm luckymart-size-sm" />
           </button>
           
           {/* 图标和标题 */}
-          <div className="luckymart-layout-flex luckymart-layout-center mb-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 luckymart-rounded-lg luckymart-layout-flex luckymart-layout-center justify-center text-white">
+          <div className:"luckymart-layout-flex luckymart-layout-center mb-3">
+            <div className:"flex-shrink-0 w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 luckymart-rounded-lg luckymart-layout-flex luckymart-layout-center justify-center text-white">
               {instructions.icon}
             </div>
-            <div className="ml-3">
-              <h3 className="luckymart-text-lg font-semibold text-gray-900">
+            <div className:"ml-3">
+              <h3 className:"luckymart-text-lg font-semibold text-gray-900">
                 {instructions.title}
               </h3>
-              <p className="luckymart-text-sm text-gray-600">
+              <p className:"luckymart-text-sm text-gray-600">
                 LuckyMart-TJ 乐享商城
               </p>
             </div>
           </div>
           
           {/* 描述 */}
-          <p className="luckymart-text-sm text-gray-700 luckymart-spacing-md">
+          <p className:"luckymart-text-sm text-gray-700 luckymart-spacing-md">
             获得更好的购物体验，享受原生应用般的流畅操作
           </p>
           
           {/* 安装步骤 */}
-          <div className="luckymart-spacing-md">
-            <h4 className="luckymart-text-sm luckymart-font-medium text-gray-900 mb-2">安装步骤：</h4>
-            <ol className="text-xs text-gray-600 space-y-1">
-              {instructions.steps.map((step, index) => (
-                <li key={index} className="luckymart-layout-flex items-start">
-                  <span className="inline-block w-4 h-4 bg-indigo-100 text-indigo-600 rounded-full luckymart-text-center text-xs leading-4 mr-2 flex-shrink-0 mt-0.5">
+          <div className:"luckymart-spacing-md">
+            <h4 className:"luckymart-text-sm luckymart-font-medium text-gray-900 mb-2">安装步骤：</h4>
+            <ol className:"text-xs text-gray-600 space-y-1">
+              {instructions.steps.map((step, index) => (}
+                <li key:{index} className="luckymart-layout-flex items-start">
+                  <span className:"inline-block w-4 h-4 bg-indigo-100 text-indigo-600 rounded-full luckymart-text-center text-xs leading-4 mr-2 flex-shrink-0 mt-0.5">
                     {index + 1}
                   </span>
                   {step}
                 </li>
-              ))}
+              ))
             </ol>
           </div>
           
           {/* 操作按钮 */}
-          <div className="luckymart-layout-flex luckymart-spacing-sm">
+          <div className:"luckymart-layout-flex luckymart-spacing-sm">
             <button
               onClick={handleInstallClick}
               className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-2 px-4 luckymart-rounded-lg luckymart-text-sm luckymart-font-medium hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 luckymart-layout-flex luckymart-layout-center justify-center"
             >
-              <Download className="w-4 h-4 mr-1" />
+              <Download className:"w-4 h-4 mr-1" />
               安装应用
             </button>
             <button
@@ -239,4 +240,3 @@ function PWAInstaller() {
       </div>
     </>
   );
-}

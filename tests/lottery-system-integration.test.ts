@@ -1,13 +1,13 @@
-/**
- * 抽奖系统集成测试
- * 测试API端点、数据库操作和算法集成的完整流程
- */
-
 import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
 import { prisma } from '@/lib/prisma';
 import { performLotteryDraw, triggerImmediateDraw } from '@/lib/lottery';
 import { calculateSecureWinningNumber, findWinner } from '@/lib/lottery-algorithm';
 import { getTajikistanTime } from '@/lib/lottery-algorithm';
+/**
+ * 抽奖系统集成测试
+ * 测试API端点、数据库操作和算法集成的完整流程
+ */
+
 
 // 测试数据
 const testProductId = 'test-product-lottery-integration';
@@ -185,7 +185,7 @@ describe('抽奖系统集成测试', () => {
     });
 
     test('应该验证开奖算法的不可预测性', () => {
-      const participations = [
+      const participations = [;
         {
           id: 'test-1',
           userId: 'user-1',
@@ -203,14 +203,14 @@ describe('抽奖系统集成测试', () => {
       ];
 
       // 多次运行相同数据应该产生相同结果
-      const result1 = calculateSecureWinningNumber(
+      const result1 = calculateSecureWinningNumber(;
         participations.map(p => p.id),
         participations,
         testProductId,
         10
       );
 
-      const result2 = calculateSecureWinningNumber(
+      const result2 = calculateSecureWinningNumber(;
         participations.map(p => p.id),
         participations,
         testProductId,
@@ -226,7 +226,7 @@ describe('抽奖系统集成测试', () => {
     });
 
     test('应该正确查找中奖者', () => {
-      const participations = [
+      const participations = [;
         { userId: 'user-1', numbers: [10000001] },
         { userId: 'user-2', numbers: [10000002] },
         { userId: 'user-3', numbers: [10000003] }

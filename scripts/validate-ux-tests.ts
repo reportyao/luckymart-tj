@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 #!/usr/bin/env node
 
 /**
@@ -6,8 +8,6 @@
  * 验证创建的测试文件是否正常工作
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
 
 interface ValidationResult {
   file: string;
@@ -50,7 +50,7 @@ async function validateUXTests(): Promise<void> {
 async function validateFileExistence(): Promise<ValidationResult[]> {
   const results: ValidationResult[] = [];
   
-  const filesToCheck = [
+  const filesToCheck = [;
     {
       path: './tests/user-experience.test.ts',
       description: '用户体验测试套件'
@@ -108,7 +108,7 @@ async function validateFileStructure(): Promise<ValidationResult[]> {
     const uxTestContent = fs.readFileSync('./tests/user-experience.test.ts', 'utf8');
     
     // 检查关键组件
-    const requiredComponents = [
+    const requiredComponents = [;
       'UXTester',
       'runUXTests',
       'UXTestReport',
@@ -167,7 +167,7 @@ async function validateFileStructure(): Promise<ValidationResult[]> {
   try {
     const accessibilityContent = fs.readFileSync('./tests/accessibility.test.ts', 'utf8');
     
-    const requiredAccessibilityComponents = [
+    const requiredAccessibilityComponents = [;
       'AccessibilityTester',
       'runAccessibilityTests',
       'AccessibilityComplianceReport',
@@ -226,7 +226,7 @@ async function validateFileStructure(): Promise<ValidationResult[]> {
   try {
     const uxEvaluatorContent = fs.readFileSync('./utils/ux-evaluator.ts', 'utf8');
     
-    const requiredEvaluatorComponents = [
+    const requiredEvaluatorComponents = [;
       'UXEvaluator',
       'UserBehavior',
       'UserFeedback',
@@ -407,7 +407,7 @@ async function validateTestLogic(): Promise<ValidationResult[]> {
     
     // 检查WCAG四个原则覆盖
     const principles = ['perceivable', 'operable', 'understandable', 'robust'];
-    const coveredPrinciples = principles.filter(principle => 
+    const coveredPrinciples = principles.filter(principle =>;
       accessibilityContent.includes(principle) || 
       accessibilityContent.includes(principle.charAt(0).toUpperCase() + principle.slice(1))
     );
@@ -441,7 +441,7 @@ async function validateTestLogic(): Promise<ValidationResult[]> {
     const uxEvaluatorContent = fs.readFileSync('./utils/ux-evaluator.ts', 'utf8');
     
     // 检查核心功能
-    const coreFeatures = [
+    const coreFeatures = [;
       'trackEvent',
       'recordFeedback', 
       'startJourney',
@@ -449,7 +449,7 @@ async function validateTestLogic(): Promise<ValidationResult[]> {
       'generateOptimizations'
     ];
 
-    const implementedFeatures = coreFeatures.filter(feature => 
+    const implementedFeatures = coreFeatures.filter(feature =>;
       uxEvaluatorContent.includes(feature)
     );
 

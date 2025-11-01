@@ -1,9 +1,10 @@
-// 更新和删除地址（增强安全版本）
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import type { ApiResponse, UserAddress } from '@/types';
 import {
+import { AppError, ErrorFactory } from '@/lib/errors';
+// 更新和删除地址（增强安全版本）
   validateAndSanitizeName,
   validateAndSanitizePhone,
   validateAndSanitizeAddress,
@@ -15,8 +16,6 @@ import {
   RateLimitChecker,
   maskSensitiveData
 } from '@/lib/security-validation';
-import { AppError, ErrorFactory } from '@/lib/errors';
-import { getLogger } from '@/lib/logger';
 
 // 速率限制检查器
 const rateLimitChecker = new RateLimitChecker();
@@ -43,7 +42,7 @@ export async function PUT(
         status: 400,
         headers: setSecurityResponseHeaders(new Headers())
       });
-    }
+}
 
     const addressId = validateIdParam(params.id);
     
@@ -63,7 +62,7 @@ export async function PUT(
     const clientIP = getClientIP(request);
     const rateLimitKey = `${user.userId}:${clientIP}:address_update:${addressId}`;
     
-    const rateLimitResult = rateLimitChecker.check(
+    const rateLimitResult = rateLimitChecker.check(;
       rateLimitKey,
       ADDRESS_OPERATION_LIMITS.UPDATE.limit,
       ADDRESS_OPERATION_LIMITS.UPDATE.windowMs
@@ -81,7 +80,7 @@ export async function PUT(
 
     // 4. 请求体解析和大小限制
     const contentLength = request.headers.get('content-length');
-    if (contentLength && parseInt(contentLength) > 10 * 1024) { // 10KB限制
+    if (contentLength && parseInt(contentLength) > 10 * 1024) { // 10KB限制 {
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '请求数据过大'
@@ -168,7 +167,7 @@ export async function PUT(
     }
 
     // 7. 权限验证：检查地址归属
-    const { data: existingAddress, error: checkError } = await supabaseAdmin
+    const { data: existingAddress, error: checkError } = await supabaseAdmin;
       .from('user_addresses')
       .select('*')
       .eq('id', addressId)
@@ -188,7 +187,7 @@ export async function PUT(
     // 8. 业务逻辑验证
     // 如果设置为默认地址，先取消其他默认地址
     if (updateData.isDefault === true && !existingAddress.isDefault) {
-      const { error: updateError } = await supabaseAdmin
+      const { error: updateError } = await supabaseAdmin;
         .from('user_addresses')
         .update({ isDefault: false })
         .eq('userId', user.userId);
@@ -203,7 +202,7 @@ export async function PUT(
     }
 
     // 9. 更新地址
-    const { data: updatedAddress, error } = await supabaseAdmin
+    const { data: updatedAddress, error } = await supabaseAdmin;
       .from('user_addresses')
       .update(updateData)
       .eq('id', addressId)
@@ -313,7 +312,7 @@ export async function DELETE(
         status: 400,
         headers: setSecurityResponseHeaders(new Headers())
       });
-    }
+}
 
     const addressId = validateIdParam(params.id);
     
@@ -333,7 +332,7 @@ export async function DELETE(
     const clientIP = getClientIP(request);
     const rateLimitKey = `${user.userId}:${clientIP}:address_delete:${addressId}`;
     
-    const rateLimitResult = rateLimitChecker.check(
+    const rateLimitResult = rateLimitChecker.check(;
       rateLimitKey,
       ADDRESS_OPERATION_LIMITS.DELETE.limit,
       ADDRESS_OPERATION_LIMITS.DELETE.windowMs
@@ -350,7 +349,7 @@ export async function DELETE(
     }
 
     // 4. 权限验证：检查地址归属
-    const { data: existingAddress, error: checkError } = await supabaseAdmin
+    const { data: existingAddress, error: checkError } = await supabaseAdmin;
       .from('user_addresses')
       .select('*')
       .eq('id', addressId)
@@ -371,7 +370,7 @@ export async function DELETE(
     // 检查是否为默认地址，如果是则需要特殊处理
     if (existingAddress.isDefault) {
       // 查询用户是否还有其他地址
-      const { data: otherAddresses } = await supabaseAdmin
+      const { data: otherAddresses } = await supabaseAdmin;
         .from('user_addresses')
         .select('id, isDefault')
         .eq('userId', user.userId)
@@ -390,10 +389,10 @@ export async function DELETE(
 
       // 如果有其他地址，将第一个设置为默认地址
       if (otherAddresses.length > 0) {
-        const { error: updateError } = await supabaseAdmin
+        const { error: updateError } = await supabaseAdmin;
           .from('user_addresses')
           .update({ isDefault: true })
-          .eq('id', otherAddresses[0].id);
+          .eq('id', (otherAddresses?.0 ?? null).id);
 
         if (updateError) {
           logger.error("API Error", error as Error, {
@@ -405,7 +404,7 @@ export async function DELETE(
     }
 
     // 6. 删除地址（使用软删除或硬删除策略）
-    const { error } = await supabaseAdmin
+    const { error } = await supabaseAdmin;
       .from('user_addresses')
       .delete()
       .eq('id', addressId)
@@ -426,7 +425,7 @@ export async function DELETE(
     }
 
     // 7. 验证删除是否成功
-    const { data: verifyAddress } = await supabaseAdmin
+    const { data: verifyAddress } = await supabaseAdmin;
       .from('user_addresses')
       .select('id')
       .eq('id', addressId)
@@ -489,7 +488,7 @@ export async function DELETE(
   }
 }
 
-// ============= 工具函数 =============
+// :============ 工具函数 =============
 
 /**
  * 手机号脱敏
@@ -558,4 +557,5 @@ async function logUserActivity(activity: {
       endpoint: request.url
     });'记录用户活动失败:', error);
   }
+}
 }

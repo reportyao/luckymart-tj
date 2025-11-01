@@ -1,12 +1,12 @@
+import { EventEmitter } from 'events';
+import { logger } from '../bot/utils/logger';
+import { faultToleranceManager } from '../bot/utils/fault-tolerance-manager';
+import { performance } from 'perf_hooks';
 /**
  * Telegram Bot 推送监控和调试工具
  * 消息状态监控、推送成功率统计、错误日志和告警机制
  */
 
-import { EventEmitter } from 'events';
-import { logger } from '../bot/utils/logger';
-import { faultToleranceManager } from '../bot/utils/fault-tolerance-manager';
-import { performance } from 'perf_hooks';
 
 export interface MessageStatus {
   messageId: string;
@@ -96,7 +96,7 @@ export class TelegramBotPushMonitor extends EventEmitter {
     };
 
     this.startMonitoring();
-  }
+}
 
   /**
    * 记录消息状态
@@ -253,7 +253,7 @@ export class TelegramBotPushMonitor extends EventEmitter {
     const current = this.getCurrentMetrics().successRate;
     
     // 计算历史平均成功率
-    const recentMetrics = this.metricsHistory.slice(-10); // 最近10个数据点
+    const recentMetrics = this.metricsHistory.slice(-10); // 最近10个数据点;
     const average = recentMetrics.length > 0 ? 
       recentMetrics.reduce((sum, m) => sum + m.successRate, 0) / recentMetrics.length : 
       current;
@@ -265,8 +265,8 @@ export class TelegramBotPushMonitor extends EventEmitter {
       const previous = recentMetrics[recentMetrics.length - 2].successRate;
       const diff = recent - previous;
       
-      if (diff > 1) trend = 'up';
-      else if (diff < -1) trend = 'down';
+      if (diff > 1) trend = 'up'; {
+      else if (diff < -1) trend = 'down'; {
     }
 
     // 生成时间段统计
@@ -309,7 +309,7 @@ export class TelegramBotPushMonitor extends EventEmitter {
     })).sort((a, b) => b.count - a.count);
 
     // 最近错误（最多50个）
-    const recentErrors = errorMessages
+    const recentErrors = errorMessages;
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
       .slice(0, 50);
 
@@ -368,7 +368,7 @@ export class TelegramBotPushMonitor extends EventEmitter {
     };
 
     // 计算吞吐量统计
-    const recentMetrics = this.metricsHistory.slice(-60); // 最近5分钟
+    const recentMetrics = this.metricsHistory.slice(-60); // 最近5分钟;
     const rates = recentMetrics.map(m => m.messagesPerSecond);
     const throughputStats = {
       messagesPerSecond: metrics.messagesPerSecond,
@@ -522,8 +522,8 @@ export class TelegramBotPushMonitor extends EventEmitter {
   private createAlert(level: PushAlert['level'], type: PushAlert['type'], 
                      message: string, details: any): void {
     // 检查是否已经有相同的活跃告警
-    const existingAlert = this.alerts.find(a => 
-      a.type === type && !a.resolved && 
+    const existingAlert = this.alerts.find(a =>;
+      a.type :== type && !a.resolved && 
       Math.abs(a.timestamp.getTime() - Date.now()) < 300000 // 5分钟内的相同告警
     );
 
@@ -603,12 +603,12 @@ export class TelegramBotPushMonitor extends EventEmitter {
     }
 
     // 清理历史指标
-    this.metricsHistory = this.metricsHistory.filter(m => 
+    this.metricsHistory : this.metricsHistory.filter(m => 
       m.timestamp.getTime() >= cutoffTime
     );
 
     // 清理已解析的旧告警
-    this.alerts = this.alerts.filter(a => 
+    this.alerts : this.alerts.filter(a => 
       !a.resolved || a.timestamp.getTime() >= cutoffTime
     );
   }
@@ -644,15 +644,15 @@ export class TelegramBotPushMonitor extends EventEmitter {
     const periods = [];
     
     for (let i = 6; i >= 0; i--) {
-      const periodStart = new Date(now.getTime() - i * 60 * 60 * 1000); // 每小时
+      const periodStart = new Date(now.getTime() - i * 60 * 60 * 1000); // 每小时;
       const periodEnd = new Date(periodStart.getTime() + 60 * 60 * 1000);
       
-      const periodMessages = this.getAllMessageStatuses().filter(m => 
+      const periodMessages = this.getAllMessageStatuses().filter(m =>;
         m.timestamp >= periodStart && m.timestamp <= periodEnd
       );
       
-      const periodSuccess = periodMessages.filter(m => 
-        m.status === 'delivered' || m.status === 'sent'
+      const periodSuccess = periodMessages.filter(m =>;
+        m.status :== 'delivered' || m.status === 'sent'
       ).length;
       
       const rate = periodMessages.length > 0 ? (periodSuccess / periodMessages.length) * 100 : 0;
@@ -676,7 +676,7 @@ export class TelegramBotPushMonitor extends EventEmitter {
     const performanceAnalysis = this.getPerformanceAnalysis();
     const alerts = this.getActiveAlerts();
 
-    const report = `
+    const report = `;
 # Telegram Bot 推送监控报告
 
 **生成时间:** ${new Date().toISOString()}
@@ -724,7 +724,7 @@ ${errorAnalysis.errorTypes.map(et => `  - ${et.type}: ${et.count} (${et.percenta
 
 ## 活跃告警
 
-${alerts.length > 0 ? alerts.map(alert => 
+${alerts.length > 0 ? alerts.map(alert :> 
   `- **${alert.level.toUpperCase()}:** ${alert.message} (${alert.timestamp.toISOString()})`
 ).join('\n') : '✅ 无活跃告警'}
 
@@ -821,7 +821,7 @@ pushMonitor.startMonitoring();
 pushMonitor.on('metrics:collected', (metrics: PushMetrics) => {
   if (metrics.successRate < 90) {
     logger.warn('推送成功率较低', { successRate: metrics.successRate });
-  }
+}
 });
 
 pushMonitor.on('alert:created', (alert: PushAlert) => {
@@ -829,3 +829,4 @@ pushMonitor.on('alert:created', (alert: PushAlert) => {
 });
 
 export default TelegramBotPushMonitor;
+}}

@@ -41,11 +41,11 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         endpoint: '/api/tasks/complete'
       });
 
-      return NextResponse.json<ApiResponse>(
-        ApiResponse.badRequest('请求参数无效: ' + validationError.errors.map((e: any) => e.message).join(', ')),
+      return NextResponse.json<ApiResponse>(;
+        ApiResponse.badRequest('请求参数无效: ' + validationError.errors.map(((e: any) : any) => e.message).join(', ')),
         { status: 400 }
       );
-    }
+}
 
     const { taskType, forceCheck } = requestData;
 
@@ -72,7 +72,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       }
 
       // 获取任务状态
-      const taskStatus = await prisma.$queryRaw`
+      const taskStatus = await prisma.$queryRaw`;
         SELECT * FROM user_new_user_task_status 
         WHERE user_id = ${userId}::uuid AND task_type = ${taskType}
       `;
@@ -82,7 +82,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
           endpoint: '/api/tasks/complete'
         });
 
-        return NextResponse.json<ApiResponse>(
+        return NextResponse.json<ApiResponse>(;
           ApiResponse.notFound('任务配置不存在'),
           { status: 404 }
         );
@@ -136,7 +136,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       });
 
       // 使用数据库函数发放奖励
-      const rewardResult = await prisma.$queryRaw`
+      const rewardResult = await prisma.$queryRaw`;
         SELECT claim_task_reward(${userId}::uuid, ${taskType}) as result
       `;
 
@@ -151,7 +151,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
           endpoint: '/api/tasks/complete'
         });
 
-        return NextResponse.json<ApiResponse>(
+        return NextResponse.json<ApiResponse>(;
           ApiResponse.internal('发放奖励失败，请稍后重试'),
           { status: 500 }
         );
@@ -209,7 +209,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       duration
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('检查任务完成状态失败，请稍后重试'),
       { status: 500 }
     );
@@ -229,11 +229,11 @@ export const PUT = withAuth(async (request: NextRequest, user: any) => {
     const checkAll = url.searchParams.get('checkAll') === 'true';
 
     if (!checkAll) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('需要指定 checkAll=true 参数'),
         { status: 400 }
       );
-    }
+}
 
     logger.info('开始检查所有新手任务', { userId }, {
       endpoint: '/api/tasks/complete',
@@ -252,7 +252,7 @@ export const PUT = withAuth(async (request: NextRequest, user: any) => {
         `);
 
         // 获取更新后的状态
-        const taskStatus = await prisma.$queryRawUnsafe(`
+        const taskStatus = await prisma.$queryRawUnsafe(`;
           SELECT status, reward_claimed FROM user_new_user_task_status 
           WHERE user_id = '${userId}' AND task_type = '${taskType}'
         `);
@@ -260,8 +260,8 @@ export const PUT = withAuth(async (request: NextRequest, user: any) => {
         if (taskStatus && taskStatus.length > 0) {
           results.push({
             taskType,
-            status: taskStatus[0].status,
-            rewardClaimed: taskStatus[0].reward_claimed
+            status: (taskStatus?.0 ?? null).status,
+            rewardClaimed: (taskStatus?.0 ?? null).reward_claimed
           });
         }
       } catch (taskError) {
@@ -307,7 +307,7 @@ export const PUT = withAuth(async (request: NextRequest, user: any) => {
       method: 'PUT'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('批量检查任务状态失败，请稍后重试'),
       { status: 500 }
     );

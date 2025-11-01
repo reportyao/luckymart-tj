@@ -1,5 +1,5 @@
-// 成本监控系统API测试
 import { createClient } from '@supabase/supabase-js';
+// 成本监控系统API测试
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -28,6 +28,7 @@ async function testCostMonitoringAPIs() {
     await testCostCalculationFunctions();
     
     console.log('\n✅ 所有API测试完成！');
+  }
     
   } catch (error) {
     console.error('❌ 测试失败:', error);
@@ -83,7 +84,7 @@ async function testROIAnalysisAPI() {
   
   // GET请求 - 获取ROI分析数据
   const today = new Date().toISOString().split('T')[0];
-  const response = await fetch(
+  const response = await fetch(;
     `${API_BASE}/roi?startDate=${today}&endDate=${today}&limit=10`,
     {
       headers: {
@@ -130,7 +131,7 @@ async function testCostBreakdownAPI() {
   
   // GET请求 - 获取成本细分数据
   const today = new Date().toISOString().split('T')[0];
-  const response = await fetch(
+  const response = await fetch(;
     `${API_BASE}/breakdown?startDate=${today}&endDate=${today}`,
     {
       headers: {
@@ -203,7 +204,7 @@ async function testCostCalculationFunctions() {
   const today = new Date().toISOString().split('T')[0];
   
   // 测试激励成本计算函数
-  const { data: incentiveData, error: incentiveError } = await supabase
+  const { data: incentiveData, error: incentiveError } = await supabase;
     .rpc('calculate_daily_incentive_cost', { target_date: today });
   
   if (incentiveError) {
@@ -213,7 +214,7 @@ async function testCostCalculationFunctions() {
   }
   
   // 测试邀请裂变成本计算函数
-  const { data: referralData, error: referralError } = await supabase
+  const { data: referralData, error: referralError } = await supabase;
     .rpc('calculate_daily_referral_cost', { target_date: today });
   
   if (referralError) {
@@ -223,7 +224,7 @@ async function testCostCalculationFunctions() {
   }
   
   // 测试成本数据聚合函数
-  const { data: aggregateData, error: aggregateError } = await supabase
+  const { data: aggregateData, error: aggregateError } = await supabase;
     .rpc('aggregate_daily_cost_statistics', { target_date: today });
   
   if (aggregateError) {
@@ -240,7 +241,7 @@ async function testDatabaseConnection() {
   console.log('🗄️ 测试数据库连接...');
   
   // 测试基本表查询
-  const { data, error } = await supabase
+  const { data, error } = await supabase;
     .from('cost_statistics')
     .select('count')
     .limit(1);
@@ -261,6 +262,7 @@ async function main() {
     const dbConnected = await testDatabaseConnection();
     if (!dbConnected) {
       throw new Error('数据库连接失败，终止测试');
+  }
     }
     
     // 运行API测试
@@ -277,4 +279,4 @@ if (require.main === module) {
   main().catch(console.error);
 }
 
-export { testCostMonitoringAPIs, testDatabaseConnection };
+export ;

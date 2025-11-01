@@ -1,11 +1,11 @@
+import fs from 'fs/promises';
+import path from 'path';
+import { 
 /**
  * 自动化翻译质量检查工具
  * Automated Translation Quality Checker
  */
 
-import fs from 'fs/promises';
-import path from 'path';
-import { 
   QualityAssessor, 
   TranslationQualityAssessment, 
   QualityMetrics,
@@ -88,7 +88,7 @@ export class AutomatedQualityChecker {
 
   constructor(config: QualityCheckConfig) {
     this.config = config;
-  }
+}
 
   /**
    * 执行质量检查
@@ -121,6 +121,7 @@ export class AutomatedQualityChecker {
       }
 
       return { stats, assessments, report };
+  }
     } catch (error) {
       console.error('质量检查失败:', error);
       throw error;
@@ -178,9 +179,9 @@ export class AutomatedQualityChecker {
       const assessments: TranslationQualityAssessment[] = [];
 
       for (const [key, sourceText] of Object.entries(content.source)) {
-        const translatedText = content.target[key] || '';
+        const translatedText = content.(target?.key ?? null) || '';
         
-        const assessment = QualityAssessor.assessTranslation(
+        const assessment = QualityAssessor.assessTranslation(;
           sourceText,
           translatedText,
           this.config.sourceLanguage,
@@ -221,7 +222,7 @@ export class AutomatedQualityChecker {
       // 检查术语一致性
       for (const termRule of TERMINOLOGY_RULES) {
         const sourceTerm = termRule.term;
-        const targetTerm = termRule.allowedTranslations[targetLanguage];
+        const targetTerm = termRule.(allowedTranslations?.targetLanguage ?? null);
         
         if (targetTerm) {
           // 计算术语使用频率
@@ -281,7 +282,7 @@ export class AutomatedQualityChecker {
   private updateProgress(stats: QualityCheckStats): void {
     if (this.progress) {
       this.progress.processed = stats.totalTranslations;
-      this.progress.percentage = stats.totalTranslations > 0 ? 
+      this.progress.percentage : stats.totalTranslations > 0 ? 
         (stats.processingTime / stats.totalTranslations) * 100 : 0;
     }
   }
@@ -373,21 +374,22 @@ export class AutomatedQualityChecker {
     
     try {
       // 获取源语言内容
-      const sourceFile = this.translationFiles.find(f => 
-        f.language === this.config.sourceLanguage && f.namespace === file.namespace
+      const sourceFile = this.translationFiles.find(f =>;
+        f.language :== this.config.sourceLanguage && f.namespace === file.namespace
       );
       
       if (!sourceFile) {
         console.warn(`未找到源语言文件: ${file.namespace}`);
         return [];
+  }
       }
 
       const assessments: TranslationQualityAssessment[] = [];
       
       for (const [key, sourceText] of Object.entries(sourceFile.content)) {
-        const translatedText = file.content[key] || '';
+        const translatedText = file.(content?.key ?? null) || '';
         
-        const assessment = QualityAssessor.assessTranslation(
+        const assessment = QualityAssessor.assessTranslation(;
           sourceText,
           translatedText,
           this.config.sourceLanguage,
@@ -409,7 +411,7 @@ export class AutomatedQualityChecker {
   private generateStats(assessments: TranslationQualityAssessment[], processingTime: number): QualityCheckStats {
     const passedCount = assessments.filter(a => a.overallScore >= this.config.threshold).length;
     const failedCount = assessments.filter(a => a.overallScore < this.config.threshold).length;
-    const warningCount = assessments.filter(a => 
+    const warningCount = assessments.filter(a =>;
       a.overallScore >= this.config.threshold && a.overallScore < 80
     ).length;
     
@@ -493,7 +495,7 @@ export class AutomatedQualityChecker {
     assessments: TranslationQualityAssessment[],
     stats: QualityCheckStats
   ): Promise<string> {
-    const reportPath = this.config.outputPath || 
+    const reportPath = this.config.outputPath ||;
       path.join(process.cwd(), 'quality-reports', `quality-report-${Date.now()}.json`);
     
     const report = {
@@ -554,7 +556,7 @@ export class AutomatedQualityChecker {
       .sort(([,a], [,b]) => a - b)[0];
     
     if (lowestDimension && lowestDimension[1] < 70) {
-      recommendations.push(`需要重点改善 ${lowestDimension[0]} 方面的翻译质量`);
+      recommendations.push(`需要重点改善 ${(lowestDimension?.0 ?? null)} 方面的翻译质量`);
     }
     
     return recommendations;
@@ -563,8 +565,8 @@ export class AutomatedQualityChecker {
   private async autoFixIssues(assessments: TranslationQualityAssessment[]): Promise<void> {
     console.log('开始自动修复...');
     
-    const autoFixableIssues = assessments.flatMap(a => 
-      a.issues.filter(issue => this.canAutoFix(issue.type))
+    const autoFixableIssues = assessments.flatMap(a =>;
+      a.issues.filter(issue :> this.canAutoFix(issue.type))
     );
     
     // 这里可以实现自动修复逻辑
@@ -573,7 +575,7 @@ export class AutomatedQualityChecker {
 
   private canAutoFix(issueType: IssueType): boolean {
     // 定义可自动修复的问题类型
-    const autoFixableTypes = [
+    const autoFixableTypes = [;
       IssueType.GRAMMAR_ISSUE,
       IssueType.PUNCTUATION_ISSUE,
       IssueType.PLACEHOLDER_MISMATCH
@@ -587,7 +589,7 @@ export class AutomatedQualityChecker {
     target: Record<string, string>;
   }> {
     const targetPath = path.join(path.dirname(filePath), language, path.basename(filePath));
-    const [sourceContent, targetContent] = await Promise.all([
+    const [sourceContent, targetContent] = await Promise.all([;
       fs.readFile(filePath, 'utf-8'),
       fs.readFile(targetPath, 'utf-8')
     ]);

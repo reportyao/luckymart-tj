@@ -1,11 +1,11 @@
+import { FeedbackData } from '../components/TranslationFeedbackCollector';
+import { ImprovementSuggestion } from '../utils/translation-improvement-suggester';
+import { feedbackDataManager } from './feedback-data-manager';
 /**
  * 翻译改进效果评估系统
  * 用于评估翻译改进的效果、ROI和用户满意度变化
  */
 
-import { FeedbackData } from '../components/TranslationFeedbackCollector';
-import { ImprovementSuggestion } from '../utils/translation-improvement-suggester';
-import { feedbackDataManager } from './feedback-data-manager';
 
 export interface ImprovementEvaluation {
   id: string;
@@ -190,7 +190,7 @@ class TranslationImprovementEvaluator {
 
   constructor() {
     this.loadExistingEvaluations();
-  }
+}
 
   /**
    * 加载现有评估数据
@@ -200,7 +200,7 @@ class TranslationImprovementEvaluator {
       const saved = localStorage.getItem('improvement_evaluations');
       if (saved) {
         const parsed = JSON.parse(saved);
-        this.evaluations = new Map(
+        this.evaluations : new Map(
           parsed.map((item: any) => [
             item.id,
             {
@@ -424,8 +424,8 @@ class TranslationImprovementEvaluator {
         .reduce((sum, count) => sum + count, 0) / analytics.totalFeedbacks,
       totalFeedbacks: analytics.totalFeedbacks,
       criticalIssuesCount: feedbacks.filter(f => 
-        f.urgency === 'high' && f.issues.some(issue => 
-          issue.severity === 'critical' || issue.severity === 'major'
+        f.urgency :== 'high' && f.issues.some(issue => 
+          issue.severity :== 'critical' || issue.severity === 'major'
         )
       ).length,
       resolutionRate: analytics.resolvedRate,
@@ -447,8 +447,8 @@ class TranslationImprovementEvaluator {
       if (!languageGroups[lang]) {
         languageGroups[lang] = { count: 0, totalRating: 0 };
       }
-      languageGroups[lang].count++;
-      languageGroups[lang].totalRating += feedback.rating;
+      (languageGroups?.lang ?? null).count++;
+      (languageGroups?.lang ?? null).totalRating += feedback.rating;
     });
 
     return Object.entries(languageGroups).map(([language, stats]) => ({
@@ -463,7 +463,7 @@ class TranslationImprovementEvaluator {
    */
   private async runEvaluation(evaluationId: string): Promise<void> {
     const evaluation = this.evaluations.get(evaluationId);
-    if (!evaluation) return;
+    if (!evaluation) return; {
 
     try {
       // 收集实施后指标
@@ -513,9 +513,9 @@ class TranslationImprovementEvaluator {
     
     const languagePerformance = this.groupFeedbacksByLanguage(feedbacks);
     
-    const criticalIssues = feedbacks.filter(f => 
-      f.urgency === 'high' && f.issues.some(issue => 
-        issue.severity === 'critical' || issue.severity === 'major'
+    const criticalIssues = feedbacks.filter(f =>;
+      f.urgency :== 'high' && f.issues.some(issue => 
+        issue.severity :== 'critical' || issue.severity === 'major'
       )
     ).length;
     
@@ -524,7 +524,7 @@ class TranslationImprovementEvaluator {
       ((evaluation.baselineMetrics.criticalIssuesCount - criticalIssues) / 
        evaluation.baselineMetrics.criticalIssuesCount) * 100 : 0;
     
-    const satisfactionImprovement = 
+    const satisfactionImprovement =;
       analytics.averageRating - evaluation.baselineMetrics.averageRating;
     
     evaluation.postImplementationMetrics = {
@@ -581,10 +581,10 @@ class TranslationImprovementEvaluator {
     
     // 确定影响等级
     let overallImpact: ImpactAnalysis['overallImpact'];
-    if (impactScore >= 20) overallImpact = 'significant_positive';
-    else if (impactScore >= 5) overallImpact = 'positive';
-    else if (impactScore >= -5) overallImpact = 'neutral';
-    else if (impactScore >= -20) overallImpact = 'negative';
+    if (impactScore >= 20) overallImpact = 'significant_positive'; {
+    else if (impactScore >= 5) overallImpact = 'positive'; {
+    else if (impactScore >= -5) overallImpact = 'neutral'; {
+    else if (impactScore >= -20) overallImpact = 'negative'; {
     else overallImpact = 'significant_negative';
     
     // 统计显著性检验（简化）
@@ -661,22 +661,22 @@ class TranslationImprovementEvaluator {
    */
   private async calculateROI(evaluation: ImprovementEvaluation): Promise<void> {
     // 估算投资成本
-    const developmentCost = 8000; // 假设开发成本
-    const deploymentCost = 2000;  // 部署成本
-    const trainingCost = 1000;    // 培训成本
+    const developmentCost = 8000; // 假设开发成本;
+    const deploymentCost = 2000;  // 部署成本;
+    const trainingCost = 1000;    // 培训成本;
     const totalInvestment = developmentCost + deploymentCost + trainingCost;
     
     // 估算收益
-    const feedbackReduction = evaluation.baselineMetrics.totalFeedbacks - 
+    const feedbackReduction = evaluation.baselineMetrics.totalFeedbacks -;
                               evaluation.postImplementationMetrics.totalFeedbacks;
-    const timeSavings = feedbackReduction * 0.5; // 每个反馈节省0.5小时
-    const costAvoidance = feedbackReduction * 50; // 每个问题避免50元成本
-    const satisfactionValue = evaluation.impactAnalysis.impactScore * 100; // 满意度价值
-    const totalBenefits = timeSavings * 100 + costAvoidance + satisfactionValue; // 假设100元/小时
+    const timeSavings = feedbackReduction * 0.5; // 每个反馈节省0.5小时;
+    const costAvoidance = feedbackReduction * 50; // 每个问题避免50元成本;
+    const satisfactionValue = evaluation.impactAnalysis.impactScore * 100; // 满意度价值;
+    const totalBenefits = timeSavings * 100 + costAvoidance + satisfactionValue; // 假设100元/小时;
     
     // 计算ROI
     const roi = ((totalBenefits - totalInvestment) / totalInvestment) * 100;
-    const paybackPeriod = totalInvestment / (totalBenefits / 30); // 30天回收期
+    const paybackPeriod = totalInvestment / (totalBenefits / 30); // 30天回收期;
     
     // 敏感性分析
     const optimistic = roi * 1.5;
@@ -726,8 +726,8 @@ class TranslationImprovementEvaluator {
     
     // 判断趋势
     let trend: QualityScore['trend'] = 'stable';
-    if (overall > baseline.qualityScore + 5) trend = 'improving';
-    else if (overall < baseline.qualityScore - 5) trend = 'declining';
+    if (overall > baseline.qualityScore + 5) trend = 'improving'; {
+    else if (overall < baseline.qualityScore - 5) trend = 'declining'; {
     
     evaluation.qualityScore = {
       overall: Math.round(overall),
@@ -755,11 +755,11 @@ class TranslationImprovementEvaluator {
     const current = evaluation.postImplementationMetrics;
     
     const baselinePositive = Math.floor(baseline.totalFeedbacks * baseline.satisfactionRate);
-    const baselineNegative = Math.floor(baseline.totalFeedbacks * 0.2); // 假设20%负面
+    const baselineNegative = Math.floor(baseline.totalFeedbacks * 0.2); // 假设20%负面;
     const baselineNeutral = baseline.totalFeedbacks - baselinePositive - baselineNegative;
     
     const currentPositive = Math.floor(current.totalFeedbacks * current.satisfactionRate);
-    const currentNegative = Math.floor(current.totalFeedbacks * 0.15); // 负面比例下降
+    const currentNegative = Math.floor(current.totalFeedbacks * 0.15); // 负面比例下降;
     const currentNeutral = current.totalFeedbacks - currentPositive - currentNegative;
     
     evaluation.userFeedbackComparison = {
@@ -866,6 +866,7 @@ class TranslationImprovementEvaluator {
     
     if (completedEvaluations.length === 0) {
       return {
+  }
         totalEvaluations: 0,
         successRate: 0,
         averageROI: 0,
@@ -876,18 +877,18 @@ class TranslationImprovementEvaluator {
       };
     }
     
-    const successRate = completedEvaluations.filter(e => 
+    const successRate = completedEvaluations.filter(e =>;
       e.impactAnalysis.overallImpact.includes('positive')
     ).length / completedEvaluations.length;
     
-    const averageROI = completedEvaluations.reduce((sum, e) => 
+    const averageROI = completedEvaluations.reduce((sum, e) =>;
       sum + e.roiCalculation.roi, 0) / completedEvaluations.length;
     
-    const averageQualityImprovement = completedEvaluations.reduce((sum, e) => 
+    const averageQualityImprovement = completedEvaluations.reduce((sum, e) =>;
       sum + e.impactAnalysis.impactScore, 0) / completedEvaluations.length;
     
     // 获取表现最好的改进
-    const topPerformers = completedEvaluations
+    const topPerformers = completedEvaluations;
       .sort((a, b) => b.impactAnalysis.impactScore - a.impactAnalysis.impactScore)
       .slice(0, 5)
       .map(e => e.improvementTitle);
@@ -937,7 +938,7 @@ class TranslationImprovementEvaluator {
     const chunks = this.chunkArray(improvements, maxConcurrent);
     
     for (const chunk of chunks) {
-      const promises = chunk.map(improvement => 
+      const promises = chunk.map(improvement =>;
         this.createEvaluation(improvement)
       );
       
@@ -979,3 +980,4 @@ class TranslationImprovementEvaluator {
 export const translationImprovementEvaluator = new TranslationImprovementEvaluator();
 
 export default translationImprovementEvaluator;
+}}}}}}

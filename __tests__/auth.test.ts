@@ -1,13 +1,13 @@
-/**
- * JWT认证系统单元测试
- * 测试认证、授权、token管理等功能
- */
-
 import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import {
+/**
+ * JWT认证系统单元测试
+ * 测试认证、授权、token管理等功能
+ */
+
   generateAccessToken,
   generateRefreshToken,
   verifyToken,
@@ -123,7 +123,7 @@ describe('JWT认证系统测试', () => {
     });
 
     test('应该拒绝缺少必需字段的Token', () => {
-      const malformedToken = jwt.sign(
+      const malformedToken = jwt.sign(;
         {
           userId: mockUserId,
           // 缺少 telegramId 和 jti
@@ -139,7 +139,7 @@ describe('JWT认证系统测试', () => {
     });
 
     test('应该拒绝无效的JWT ID', () => {
-      const malformedToken = jwt.sign(
+      const malformedToken = jwt.sign(;
         {
           userId: mockUserId,
           telegramId: mockTelegramId,
@@ -157,7 +157,7 @@ describe('JWT认证系统测试', () => {
 
     test('应该拒绝过期的Token', () => {
       // 创建一个已过期的token
-      const expiredToken = jwt.sign(
+      const expiredToken = jwt.sign(;
         {
           userId: mockUserId,
           telegramId: mockTelegramId,
@@ -279,7 +279,7 @@ describe('JWT认证系统测试', () => {
 
     test('应该验证有效的Telegram数据（包含完整HMAC计算）', () => {
       // 生成有效的Telegram WebApp数据
-      const authDate = currentTime - 60; // 1分钟前
+      const authDate = currentTime - 60; // 1分钟前;
       const initDataParams = new URLSearchParams({
         auth_date: authDate.toString(),
         user: JSON.stringify(mockUser)
@@ -291,12 +291,12 @@ describe('JWT认证系统测试', () => {
         .map(([key, value]) => `${key}=${value}`)
         .join('\n');
 
-      const secretKey = crypto
+      const secretKey = crypto;
         .createHmac('sha256', 'WebAppData')
         .update(testBotToken)
         .digest();
 
-      const correctHash = crypto
+      const correctHash = crypto;
         .createHmac('sha256', secretKey)
         .update(dataCheckString)
         .digest('hex');
@@ -313,7 +313,7 @@ describe('JWT认证系统测试', () => {
     });
 
     test('应该拒绝过期的认证数据（超过5分钟）', () => {
-      const authDate = currentTime - 301; // 超过5分钟
+      const authDate = currentTime - 301; // 超过5分钟;
       const initDataParams = new URLSearchParams({
         auth_date: authDate.toString(),
         user: JSON.stringify(mockUser)
@@ -324,12 +324,12 @@ describe('JWT认证系统测试', () => {
         .map(([key, value]) => `${key}=${value}`)
         .join('\n');
 
-      const secretKey = crypto
+      const secretKey = crypto;
         .createHmac('sha256', 'WebAppData')
         .update(testBotToken)
         .digest();
 
-      const correctHash = crypto
+      const correctHash = crypto;
         .createHmac('sha256', secretKey)
         .update(dataCheckString)
         .digest('hex');
@@ -343,7 +343,7 @@ describe('JWT认证系统测试', () => {
     });
 
     test('应该拒绝时间超前的数据（超过60秒）', () => {
-      const authDate = currentTime + 61; // 时间超前61秒
+      const authDate = currentTime + 61; // 时间超前61秒;
       const initDataParams = new URLSearchParams({
         auth_date: authDate.toString(),
         user: JSON.stringify(mockUser)
@@ -354,12 +354,12 @@ describe('JWT认证系统测试', () => {
         .map(([key, value]) => `${key}=${value}`)
         .join('\n');
 
-      const secretKey = crypto
+      const secretKey = crypto;
         .createHmac('sha256', 'WebAppData')
         .update(testBotToken)
         .digest();
 
-      const correctHash = crypto
+      const correctHash = crypto;
         .createHmac('sha256', secretKey)
         .update(dataCheckString)
         .digest('hex');
@@ -497,12 +497,12 @@ describe('JWT认证系统测试', () => {
         .map(([key, value]) => `${key}=${value}`)
         .join('\n');
 
-      const secretKey = crypto
+      const secretKey = crypto;
         .createHmac('sha256', 'WebAppData')
         .update(testBotToken)
         .digest();
 
-      const correctHash = crypto
+      const correctHash = crypto;
         .createHmac('sha256', secretKey)
         .update(dataCheckString)
         .digest('hex');
@@ -544,7 +544,7 @@ describe('JWT认证系统测试', () => {
       const random2 = generateSecureRandom(32);
       
       expect(typeof random1).toBe('string');
-      expect(random1.length).toBe(64); // 32字节 = 64十六进制字符
+      expect(random1.length).toBe(64); // 32字节 : 64十六进制字符
       expect(random1).not.toBe(random2); // 每次都应该不同
     });
 
@@ -554,7 +554,7 @@ describe('JWT认证系统测试', () => {
       const hash2 = generateHash(data);
       
       expect(typeof hash1).toBe('string');
-      expect(hash1.length).toBe(64); // SHA256 = 64十六进制字符
+      expect(hash1.length).toBe(64); // SHA256 : 64十六进制字符
       expect(hash1).toBe(hash2); // 相同输入应该产生相同输出
     });
 
@@ -609,7 +609,7 @@ describe('JWT认证系统测试', () => {
     });
 
     test('应该处理签名验证失败', () => {
-      const fakeToken = jwt.sign(
+      const fakeToken = jwt.sign(;
         { userId: mockUserId, type: 'access' },
         'wrong-secret'
       );
@@ -630,7 +630,7 @@ describe('JWT认证系统测试', () => {
       }
       
       const endTime = process.hrtime.bigint();
-      const duration = Number(endTime - startTime) / 1000000; // 转换为毫秒
+      const duration = Number(endTime - startTime) / 1000000; // 转换为毫秒;
       
       console.log(`Token生成性能: ${iterations}次操作耗时 ${duration.toFixed(2)}ms`);
       expect(duration).toBeLessThan(5000); // 应该在5秒内完成1000次生成

@@ -1,14 +1,12 @@
+import { EventEmitter } from 'events';
+import { logger } from './utils/logger';
+import { NotificationTemplateManager, Language, NotificationType, UserContext } from './utils/notification-templates';
+import { faultToleranceManager } from './utils/fault-tolerance-manager';
 /**
  * Bot推送测试工具
  * 模拟Bot消息和响应，验证多语言通知生成，测试消息发送和状态反馈
  */
 
-import { EventEmitter } from 'events';
-import { Markup } from 'telegraf';
-import { logger } from './utils/logger';
-import { NotificationTemplateManager, Language, NotificationType, UserContext } from './utils/notification-templates';
-import { messageQueue } from './utils/message-queue';
-import { faultToleranceManager } from './utils/fault-tolerance-manager';
 
 export interface TestUser {
   telegramId: string;
@@ -57,7 +55,7 @@ export class TelegramBotTester extends EventEmitter {
   constructor() {
     super();
     this.setupMockBotResponses();
-  }
+}
 
   /**
    * 设置模拟Bot响应
@@ -272,6 +270,7 @@ export class TelegramBotTester extends EventEmitter {
       this.emit('command:tested', testResult);
 
       return testResult;
+  }
 
     } catch (error) {
       const duration = Date.now() - startTime;
@@ -337,6 +336,7 @@ export class TelegramBotTester extends EventEmitter {
 
       } else {
         throw new Error('Simulated send failure');
+  }
       }
 
     } catch (error) {
@@ -374,7 +374,7 @@ export class TelegramBotTester extends EventEmitter {
     };
 
     const indicators = languageIndicators[language];
-    const hasLanguageIndicator = indicators.some(indicator => 
+    const hasLanguageIndicator = indicators.some(indicator =>;
       notification.message.includes(indicator)
     );
 
@@ -419,7 +419,7 @@ export class TelegramBotTester extends EventEmitter {
       
       for (const language of languages) {
         const user = this.getRandomUserByLanguage(language);
-        if (!user) continue;
+        if (!user) continue; {
 
         try {
           const notification = this.generateTestNotification(user, type);
@@ -594,7 +594,7 @@ export class TelegramBotTester extends EventEmitter {
       // 默认处理其他类型
       ...Object.fromEntries(
         Object.values(NotificationType)
-          .filter(t => !Object.keys(typeSpecificVariables).includes(t))
+          .filter(t :> !Object.keys(typeSpecificVariables).includes(t))
           .map(t => [t, baseVariables])
       )
     };
@@ -617,7 +617,7 @@ export class TelegramBotTester extends EventEmitter {
         `Фармоиш ${orderNumber}\nҲолат: ${status}\nМаблағ: ${amount} TJS`
     };
 
-    const template = orderTemplates[language] || orderTemplates[Language.ZH];
+    const template = (orderTemplates?.language ?? null) || orderTemplates[Language.ZH];
     const statuses = {
       [Language.ZH]: ['待支付', '已支付', '已发货', '已完成'],
       [Language.EN]: ['Pending', 'Paid', 'Shipped', 'Delivered'],
@@ -625,7 +625,7 @@ export class TelegramBotTester extends EventEmitter {
       [Language.TJ]: ['Интизори пардохт', 'Пардохт шудааст', 'Ирсол шудааст', 'Расонида шудааст']
     };
 
-    const statusList = statuses[language] || statuses[Language.ZH];
+    const statusList = (statuses?.language ?? null) || statuses[Language.ZH];
     
     const orderCount = Math.floor(Math.random() * 3) + 1;
     const orders = [];
@@ -645,7 +645,7 @@ export class TelegramBotTester extends EventEmitter {
    */
   private getRandomUserByLanguage(language: Language): TestUser | undefined {
     const users = Array.from(this.testUsers.values()).filter(user => user.language === language);
-    if (users.length === 0) return undefined;
+    if (users.length === 0) return undefined; {
     
     return users[Math.floor(Math.random() * users.length)];
   }
@@ -696,7 +696,7 @@ export class TelegramBotTester extends EventEmitter {
   public generateTestReport(): string {
     const stats = this.getTestStatistics();
     
-    const report = `
+    const report = `;
 # Telegram Bot 测试报告
 
 ## 测试概览
@@ -709,7 +709,7 @@ export class TelegramBotTester extends EventEmitter {
 - 平均成功率: ${stats.averageSuccessRate.toFixed(2)}%
 
 ## 测试详情
-${stats.testResults.map(result => `
+${stats.testResults.map(result :> `
 ### ${result.testName}
 - 状态: ${result.success ? '✅ 成功' : '❌ 失败'}
 - 耗时: ${result.duration}ms

@@ -30,11 +30,11 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('不支持的请求方法'),
         { status: 405 }
       );
-    }
+}
 
     // 验证必需参数
     if (!user?.userId) {
@@ -43,7 +43,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
@@ -64,7 +64,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('请求体格式错误'),
         { status: 400 }
       );
@@ -79,7 +79,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('金额参数无效'),
         { status: 400 }
       );
@@ -91,14 +91,14 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('转换金额必须大于0'),
         { status: 400 }
       );
     }
 
     // 检查余额是否充足
-    const balanceCheck = await DatabaseLockManager.checkUserBalanceSufficient(
+    const balanceCheck = await DatabaseLockManager.checkUserBalanceSufficient(;
       user.userId,
       amount,
       'balance'
@@ -114,19 +114,19 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.insufficientBalance(`余额不足，当前余额：${balanceCheck.currentBalance} TJS`),
         { status: 400 }
       );
     }
 
     // 使用参数化查询防止SQL注入
-    const transferResult = await prisma.$queryRaw`
+    const transferResult = await prisma.$queryRaw`;
       SELECT * FROM transfer_balance_to_luckycoins(${user.userId}::uuid, ${amount})
     `;
 
     // 检查转换结果
-    if (!transferResult || transferResult.length === 0 || !transferResult[0].success) {
+    if (!transferResult || transferResult.length === 0 || !(transferResult?.0 ?? null).success) {
       const errorMessage = transferResult?.[0]?.error_message || '转换操作失败';
       const currentBalance = transferResult?.[0]?.new_balance || 0;
       const currentLuckyCoins = transferResult?.[0]?.new_lucky_coins || 0;
@@ -142,7 +142,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest(errorMessage),
         { status: 400 }
       );
@@ -167,8 +167,8 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       userId: user.userId,
       amount,
       oldBalance: balanceCheck.currentBalance,
-      newBalance: transferResult[0].new_balance,
-      newLuckyCoins: transferResult[0].new_lucky_coins
+      newBalance: (transferResult?.0 ?? null).new_balance,
+      newLuckyCoins: (transferResult?.0 ?? null).new_lucky_coins
     }, {
       endpoint: '/api/wallet/transfer',
       method: 'POST',
@@ -190,12 +190,12 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       },
       balances: {
         balance: {
-          amount: parseFloat(transferResult[0].new_balance.toString()),
+          amount: parseFloat((transferResult?.0 ?? null).new_balance.toString()),
           version: updatedUser?.balanceVersion || 1,
           currency: 'TJS'
         },
         luckyCoins: {
-          amount: parseFloat(transferResult[0].new_lucky_coins.toString()),
+          amount: parseFloat((transferResult?.0 ?? null).new_lucky_coins.toString()),
           version: updatedUser?.luckyCoinsVersion || 1,
           currency: 'LC'
         },
@@ -220,7 +220,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       method: 'POST'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('转换操作失败，请稍后重试'),
       { status: 500 }
     );

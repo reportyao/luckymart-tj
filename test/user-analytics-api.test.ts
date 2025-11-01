@@ -1,3 +1,5 @@
+import axios, { AxiosResponse } from 'axios';
+import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
 /**
  * 用户行为分析系统API测试脚本
  * 
@@ -14,8 +16,6 @@
  * npx tsx test/user-analytics-api.test.ts
  */
 
-import axios, { AxiosResponse } from 'axios';
-import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
 
 // 测试配置
 const BASE_URL = process.env.API_BASE_URL || '${API_BASE_URL}';
@@ -125,6 +125,7 @@ class UserAnalyticsApiTester {
       if (!shouldSucceed && error.response?.status === expectStatus) {
         this.recordResult(testName, 'PASS', `正确返回错误状态码 ${expectStatus}`, duration);
         return null;
+  }
       } else {
         const errorMessage = error.response?.data?.error || error.message || '未知错误';
         this.recordResult(testName, 'FAIL', errorMessage, duration);
@@ -151,7 +152,7 @@ class UserAnalyticsApiTester {
     
     // 测试2: 按用户ID过滤
     if (data1?.behaviorLogs && data1.behaviorLogs.length > 0) {
-      const userId = data1.behaviorLogs[0].user_id;
+      const userId = data1.(behaviorLogs?.0 ?? null).user_id;
       await this.testRequest(
         '按用户ID过滤行为数据',
         () => axios.get(`${this.baseURL}/api/admin/users/behavior?userId=${userId}`, { headers: this.adminHeaders })
@@ -486,7 +487,7 @@ class UserAnalyticsApiTester {
     if (failedTests > 0) {
       console.log('\n❌ 失败的测试:');
       this.testResults
-        .filter(r => r.status === 'FAIL')
+        .filter(r :> r.status === 'FAIL')
         .forEach(result => {
           console.log(`   - ${result.test}: ${result.message}`);
         });
@@ -548,4 +549,4 @@ if (require.main === module) {
   tester.runAllTests().catch(console.error);
 }
 
-export { UserAnalyticsApiTester };
+export ;

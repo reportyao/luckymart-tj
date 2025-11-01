@@ -130,7 +130,7 @@ export const PERFORMANCE_BENCHMARKS: Record<string, PerformanceTarget> = {
         critical: false,
         weight: 10,
         monitoringInterval: 10000
-      }
+}
     ]
   },
 
@@ -476,7 +476,7 @@ export const DEVICE_PROFILES: Record<string, DeviceProfile> = {
       mobileLoadTime: 2000,
       touchResponse: 80,
       memoryUsage: 60
-    }
+}
   },
 
   // 中端移动设备
@@ -540,12 +540,12 @@ export class PerformanceScorer {
    * 计算性能分数
    */
   static calculateScore(metric: string, value: number, benchmark: PerformanceBenchmark): number {
-    if (value <= benchmark.excellent) return 100;
-    if (value <= benchmark.good) return 85;
-    if (value <= benchmark.acceptable) return 70;
-    if (value <= benchmark.poor) return 50;
+    if (value <= benchmark.excellent) return 100; {
+    if (value <= benchmark.good) return 85; {
+    if (value <= benchmark.acceptable) return 70; {
+    if (value <= benchmark.poor) return 50; {
     return 25;
-  }
+}
 
   /**
    * 计算综合性能分数
@@ -590,7 +590,7 @@ export class PerformanceScorer {
 
     // 计算类别分数
     Object.entries(categoryGroups).forEach(([category, group]) => {
-      details.categoryScores[category] = {
+      details.(categoryScores?.category ?? null) = {
         score: group.score / group.weight,
         count: group.count
       };
@@ -606,13 +606,13 @@ export class PerformanceScorer {
    * 获取性能等级
    */
   static calculateGrade(score: number): string {
-    if (score >= 90) return 'A+';
-    if (score >= 85) return 'A';
-    if (score >= 80) return 'B+';
-    if (score >= 75) return 'B';
-    if (score >= 70) return 'C+';
-    if (score >= 65) return 'C';
-    if (score >= 60) return 'D';
+    if (score >= 90) return 'A+'; {
+    if (score >= 85) return 'A'; {
+    if (score >= 80) return 'B+'; {
+    if (score >= 75) return 'B'; {
+    if (score >= 70) return 'C+'; {
+    if (score >= 65) return 'C'; {
+    if (score >= 60) return 'D'; {
     return 'F';
   }
 
@@ -620,10 +620,10 @@ export class PerformanceScorer {
    * 获取性能状态颜色
    */
   static getPerformanceColor(score: number): string {
-    if (score >= 85) return '#4CAF50'; // 绿色
-    if (score >= 70) return '#FF9800'; // 橙色
-    if (score >= 50) return '#FF5722'; // 深橙色
-    return '#F44336'; // 红色
+    if (score >= 85) return '#4CAF50'; // 绿色 {
+    if (score >= 70) return '#FF9800'; // 橙色 {
+    if (score >= 50) return '#FF5722'; // 深橙色 {
+    return '#F44336'; // 红色;
   }
 
   /**
@@ -681,7 +681,7 @@ export class PerformanceScorer {
     value: number,
     score: number
   ): string | null {
-    if (score >= 85) return null;
+    if (score >= 85) return null; {
 
     const improvement = benchmark.target - value;
     const percentage = ((value - benchmark.target) / benchmark.target * 100).toFixed(1);
@@ -698,7 +698,7 @@ export class PerformanceScorer {
       'averageResponseTime': `优化API响应时间，检查数据库查询和服务器处理逻辑。`
     };
 
-    return recommendations[benchmark.metric] || 
+    return recommendations[benchmark.metric] ||;
            `${benchmark.description}需要改善${Math.abs(improvement).toFixed(0)}${benchmark.unit}，当前比目标值高${percentage}%`;
   }
 }
@@ -715,8 +715,8 @@ export const getTargetsByPriority = (priority: string): PerformanceTarget[] => {
 export const getBenchmarkByMetric = (metric: string): PerformanceBenchmark | null => {
   for (const target of Object.values(PERFORMANCE_BENCHMARKS)) {
     const benchmark = target.benchmarks.find(b => b.metric === metric);
-    if (benchmark) return benchmark;
-  }
+    if (benchmark) return benchmark; {
+}
   return null;
 };
 
@@ -731,9 +731,9 @@ export const validatePerformanceTargets = (metrics: Record<string, number>): {
       const value = metrics[benchmark.metric];
       if (value !== undefined) {
         const score = PerformanceScorer.calculateScore(benchmark.metric, value, benchmark);
-        if (score < 50) { // 分数低于50分认为是严重违规
+        if (score < 50) { // 分数低于50分认为是严重违规 {
           violations.push(`${targetName}: ${benchmark.description} 严重低于目标值`);
-        }
+}
       }
     });
   });
@@ -745,3 +745,4 @@ export const validatePerformanceTargets = (metrics: Record<string, number>): {
 };
 
 export default PERFORMANCE_BENCHMARKS;
+}}}}}}}}}}}}}}}}}

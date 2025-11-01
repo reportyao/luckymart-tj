@@ -11,6 +11,7 @@ async function main() {
     const { default: BotLauncher } = require('./enhanced-launcher');
     
     console.log('🚀 启动增强版Telegram Bot...');
+  }
     console.log('📊 环境:', process.env.NODE_ENV || 'development');
     console.log('💻 平台:', process.platform, process.arch);
     console.log('🔧 Node版本:', process.version);

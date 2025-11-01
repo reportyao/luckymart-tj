@@ -1,8 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-
-// 导入所有翻译文件
 import zhCN_common from '../locales/zh-CN/common.json';
 import zhCN_auth from '../locales/zh-CN/auth.json';
 import zhCN_lottery from '../locales/zh-CN/lottery.json';
@@ -11,7 +9,6 @@ import zhCN_referral from '../locales/zh-CN/referral.json';
 import zhCN_task from '../locales/zh-CN/task.json';
 import zhCN_error from '../locales/zh-CN/error.json';
 import zhCN_admin from '../locales/zh-CN/admin.json';
-
 import enUS_common from '../locales/en-US/common.json';
 import enUS_auth from '../locales/en-US/auth.json';
 import enUS_lottery from '../locales/en-US/lottery.json';
@@ -20,7 +17,6 @@ import enUS_referral from '../locales/en-US/referral.json';
 import enUS_task from '../locales/en-US/task.json';
 import enUS_error from '../locales/en-US/error.json';
 import enUS_admin from '../locales/en-US/admin.json';
-
 import ruRU_common from '../locales/ru-RU/common.json';
 import ruRU_auth from '../locales/ru-RU/auth.json';
 import ruRU_lottery from '../locales/ru-RU/lottery.json';
@@ -29,7 +25,6 @@ import ruRU_referral from '../locales/ru-RU/referral.json';
 import ruRU_task from '../locales/ru-RU/task.json';
 import ruRU_error from '../locales/ru-RU/error.json';
 import ruRU_admin from '../locales/ru-RU/admin.json';
-
 import tgTJ_common from '../locales/tg-TJ/common.json';
 import tgTJ_auth from '../locales/tg-TJ/auth.json';
 import tgTJ_lottery from '../locales/tg-TJ/lottery.json';
@@ -38,6 +33,11 @@ import tgTJ_referral from '../locales/tg-TJ/referral.json';
 import tgTJ_task from '../locales/tg-TJ/task.json';
 import tgTJ_error from '../locales/tg-TJ/error.json';
 import tgTJ_admin from '../locales/tg-TJ/admin.json';
+
+// 导入所有翻译文件
+
+
+
 
 // 支持的语言列表
 export const SUPPORTED_LANGUAGES = {
@@ -64,7 +64,7 @@ export const SUPPORTED_LANGUAGES = {
     nativeName: 'Тоҷикӣ', 
     flag: '🇹🇯',
     dir: 'ltr'
-  }
+}
 } as const;
 
 export type SupportedLanguage = keyof typeof SUPPORTED_LANGUAGES;

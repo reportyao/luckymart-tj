@@ -1,11 +1,11 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { validateOrder } from '@/lib/order-validator';
+import { ErrorFactory } from '@/lib/errors';
 /**
  * 订单验证中间件使用示例
  * 演示如何在不同的API路由中使用订单参数验证器
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { validateOrder } from '@/lib/order-validator';
-import { ErrorFactory } from '@/lib/errors';
 
 // 示例1: 创建订单API - 使用验证装饰器
 export async function POST_create_order(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function POST_create_order(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
       return NextResponse.json({ error: '需要认证' }, { status: 401 });
-    }
+}
 
     const body = await request.json();
     
@@ -29,7 +29,7 @@ export async function POST_create_order(request: NextRequest) {
     });
 
   } catch (error: any) {
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         success: false, 
         error: error.message,
@@ -55,6 +55,7 @@ class OrderController {
     // 在这里处理验证后的订单更新逻辑
     
     return NextResponse.json({
+  }
       success: true,
       data: validatedData
     });
@@ -109,12 +110,13 @@ export async function POST_admin_update_order(request: NextRequest) {
         postalCode: /^[A-Za-z0-9\- ]{1,20}$/,
         amount: /^\d+(\.\d{1,2})?$/,
         email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      }
+}
     })(body);
 
     if (!validationResult.isValid) {
       const errorMessages = validationResult.errors.map(e => e.message).join('; ');
-      return NextResponse.json(
+      return NextResponse.json(;
+  }
         {
           success: false,
           error: '订单参数验证失败',
@@ -140,7 +142,7 @@ export async function POST_admin_update_order(request: NextRequest) {
 
   } catch (error: any) {
     console.error('订单更新错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: error.message || '订单更新失败'
@@ -169,7 +171,7 @@ export async function POST_resale_order(request: NextRequest) {
         maxPaymentMethodLength: 50,
         allowNegativeAmounts: false,
         allowZeroAmounts: false
-      }
+}
     });
 
     // 转售订单特殊验证
@@ -203,7 +205,7 @@ export async function POST_resale_order(request: NextRequest) {
 
     if (!validationResult.isValid) {
       const errorMessages = validationResult.errors.map(e => e.message).join('; ');
-      return NextResponse.json(
+      return NextResponse.json(;
         { 
           success: false, 
           error: '转售订单参数验证失败',
@@ -223,7 +225,7 @@ export async function POST_resale_order(request: NextRequest) {
     });
 
   } catch (error: any) {
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         success: false, 
         error: error.message || '转售订单创建失败' 
@@ -240,14 +242,14 @@ export async function POST_batch_process_orders(request: NextRequest) {
     const { orders, action } = body;
 
     if (!Array.isArray(orders) || orders.length === 0) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '订单列表不能为空' },
         { status: 400 }
       );
-    }
+}
 
-    if (orders.length > 100) { // 限制批量操作数量
-      return NextResponse.json(
+    if (orders.length > 100) { // 限制批量操作数量 {
+      return NextResponse.json(;
         { success: false, error: '批量操作订单数量不能超过100个' },
         { status: 400 }
       );
@@ -288,7 +290,7 @@ export async function POST_batch_process_orders(request: NextRequest) {
         errors: r.errors.map(e => e.message)
       }));
 
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: '部分订单参数验证失败',
@@ -318,7 +320,7 @@ export async function POST_batch_process_orders(request: NextRequest) {
     });
 
   } catch (error: any) {
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         success: false, 
         error: error.message || '批量处理失败' 
@@ -356,12 +358,12 @@ export async function GET_order_statistics(request: NextRequest) {
         postalCode: /^[A-Za-z0-9\- ]{0,20}$/,
         amount: /^\d+(\.\d{1,2})?$/,
         email: /^[^\s@]*@[^\s@]*\.[^\s@]*$/
-      }
+}
     })(queryData);
 
     if (!validationResult.isValid) {
       const errorMessages = validationResult.errors.map(e => e.message).join('; ');
-      return NextResponse.json(
+      return NextResponse.json(;
         { 
           success: false, 
           error: '统计查询参数验证失败',
@@ -380,7 +382,7 @@ export async function GET_order_statistics(request: NextRequest) {
     });
 
   } catch (error: any) {
-    return NextResponse.json(
+    return NextResponse.json(;
       { 
         success: false, 
         error: error.message || '获取统计失败' 
@@ -431,7 +433,7 @@ export const ORDER_VALIDATION_CONFIGS = {
       maxNotesLength: 500,
       allowNegativeAmounts: false,
       allowZeroAmounts: false
-    }
+}
   },
 
   // 更新订单验证配置

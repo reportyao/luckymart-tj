@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '无效的订阅信息'
       }, { status: 400 });
-    }
+}
     
     // 初始化全局订阅存储
     if (!global.subscriptions) {
@@ -44,8 +44,10 @@ export async function POST(request: NextRequest) {
     global.subscriptions.set(subscription.endpoint, subscriptionData);
     
     console.log('订阅保存成功:', subscription.endpoint);
+  }
     
     return NextResponse.json({
+  }
       success: true,
       message: '订阅保存成功',
       endpoint: subscription.endpoint
@@ -56,6 +58,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: false,
       error: '保存订阅失败'
-    }, { status: 500 });
+    }, );
   }
 }

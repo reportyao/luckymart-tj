@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -10,7 +10,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // 创建权限中间件
-const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read
 ]);
 
@@ -46,10 +46,10 @@ export async function GET(request: NextRequest) {
       const start = new Date();
       start.setDate(start.getDate() - days);
       calculatedStartDate = start.toISOString().split('T')[0];
-    }
+}
 
     // 获取成本统计数据
-    let query = supabase
+    let query = supabase;
       .from('cost_statistics')
       .select('*')
       .gte('stat_date', calculatedStartDate)
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('查询成本趋势数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '查询成本趋势数据失败' },
         { status: 500 }
       );
@@ -75,10 +75,10 @@ export async function GET(request: NextRequest) {
       const lotteryCost = parseFloat(item.lottery_cost.toString());
 
       let selectedCost = totalCost;
-      if (costType === 'incentive') selectedCost = incentiveCost;
-      else if (costType === 'operation') selectedCost = operationCost;
-      else if (costType === 'referral') selectedCost = referralCost;
-      else if (costType === 'lottery') selectedCost = lotteryCost;
+      if (costType === 'incentive') selectedCost = incentiveCost; {
+      else if (costType === 'operation') selectedCost = operationCost; {
+      else if (costType === 'referral') selectedCost = referralCost; {
+      else if (costType === 'lottery') selectedCost = lotteryCost; {
 
       return {
         date: item.stat_date,
@@ -132,10 +132,11 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(response);
+  }
 
   } catch (error) {
     console.error('获取成本趋势API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
       { status: 500 }
     );
@@ -173,12 +174,12 @@ function groupDataByPeriod(data: any[], period: string) {
       };
     }
 
-    grouped[key].totalCost += item.totalCost;
-    grouped[key].incentiveCost += item.incentiveCost;
-    grouped[key].operationCost += item.operationCost;
-    grouped[key].referralCost += item.referralCost;
-    grouped[key].lotteryCost += item.lotteryCost;
-    grouped[key].count += 1;
+    (grouped?.key ?? null).totalCost += item.totalCost;
+    (grouped?.key ?? null).incentiveCost += item.incentiveCost;
+    (grouped?.key ?? null).operationCost += item.operationCost;
+    (grouped?.key ?? null).referralCost += item.referralCost;
+    (grouped?.key ?? null).lotteryCost += item.lotteryCost;
+    (grouped?.key ?? null).count += 1;
   });
 
   return Object.values(grouped).map((item: any) => ({
@@ -213,7 +214,7 @@ function calculateTrendStats(data: any[]) {
   const minDailyCost = Math.min(...data.map((item : any) => item.selectedCost));
 
   // 计算成本波动性（标准差）
-  const variance = data.reduce((sum: any,  item: any) => 
+  const variance = data.reduce((sum: any,  item: any) =>;
     sum + Math.pow(item.selectedCost - averageDailyCost, 2), 0) / data.length;
   const costVolatility = Math.sqrt(variance);
 
@@ -299,14 +300,14 @@ function calculateGrowthMetrics(data: any[]) {
   const lastWeekAvg = lastWeek.reduce((sum: any,  item: any) => sum + item.selectedCost, 0) / lastWeek.length;
   const previousWeekAvg = previousWeek.reduce((sum: any,  item: any) => sum + item.selectedCost, 0) / previousWeek.length;
 
-  const weekOverWeek = previousWeekAvg > 0 
+  const weekOverWeek = previousWeekAvg > 0;
     ? ((lastWeekAvg - previousWeekAvg) / previousWeekAvg) * 100 
     : 0;
 
-  const firstValue = data[0].selectedCost;
+  const firstValue = (data?.0 ?? null).selectedCost;
   const lastValue = data[data.length - 1].selectedCost;
 
-  const cumulativeGrowth = firstValue > 0 
+  const cumulativeGrowth = firstValue > 0;
     ? ((lastValue - firstValue) / firstValue) * 100 
     : 0;
 
@@ -316,3 +317,4 @@ function calculateGrowthMetrics(data: any[]) {
     cumulativeGrowth
   };
 }
+}}}

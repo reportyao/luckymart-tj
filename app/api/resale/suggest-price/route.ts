@@ -1,10 +1,9 @@
-// 智能定价建议API
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { validationEngine } from '@/lib/validation';
 import type { ApiResponse } from '@/types';
-import { getLogger } from '@/lib/logger';
+// 智能定价建议API
 
 export async function POST(request: Request) {
   try {
@@ -15,7 +14,7 @@ export async function POST(request: Request) {
         success: false,
         error: '未授权访问'
       }, { status: 401 });
-    }
+}
 
     const body = await request.json();
     const { orderId, customPrice } = body;
@@ -28,7 +27,7 @@ export async function POST(request: Request) {
     }
 
     // 获取订单和商品信息
-    const { data: order } = await supabaseAdmin
+    const { data: order } = await supabaseAdmin;
       .from('orders')
       .select(`
         *,
@@ -56,7 +55,7 @@ export async function POST(request: Request) {
     const marketPrice = product.market_price;
 
     // 基础定价策略
-    const priceRecommendations = [
+    const priceRecommendations = [;
       {
         type: '建议售价',
         price: Math.round(marketPrice * 0.8), // 80% 市场价
@@ -82,12 +81,12 @@ export async function POST(request: Request) {
 
     // 获取系统验证配置
     try {
-      const { data: settings } = await supabaseAdmin
+      const { data: settings } = await supabaseAdmin;
         .from('system_validation_settings')
         .select('*');
       
       if (settings) {
-        const config = settings.reduce((acc: any,  setting: any) => {
+        const config = settings.reduce((acc: any: any,   setting: any: any) => {
           acc[setting.setting_key] = setting.parsed_value;
           return acc;
         }, {} as any);
@@ -99,7 +98,7 @@ export async function POST(request: Request) {
     }
 
     // 如果用户输入了自定义价格，计算预期手续费和到账金额
-    let customAnalysis = null;
+    let customAnalysis: any = null;
     if (customPrice && customPrice > 0) {
       const customPriceNum = Number(customPrice);
       
@@ -107,13 +106,13 @@ export async function POST(request: Request) {
       const priceValidation = validationEngine.validateResalePrice(customPriceNum, marketPrice);
       const isReasonable = priceValidation.isValid;
       
-      const platformFeeRate = 0.02; // 2% 平台手续费
+      const platformFeeRate = 0.02; // 2% 平台手续费;
       const platformFee = Math.round(customPriceNum * platformFeeRate);
       const netAmount = customPriceNum - platformFee;
 
       // 获取建议价格范围
-      const suggestedMin = Math.round(marketPrice * (1 - 0.3)); // 70% 市场价
-      const suggestedMax = Math.round(marketPrice * (1 - 0.1)); // 90% 市场价
+      const suggestedMin = Math.round(marketPrice * (1 - 0.3)); // 70% 市场价;
+      const suggestedMax = Math.round(marketPrice * (1 - 0.1)); // 90% 市场价;
 
       customAnalysis = {
         price: customPriceNum,
@@ -146,8 +145,9 @@ export async function POST(request: Request) {
       endpoint: request.url
     });'获取定价建议失败:', error);
     return NextResponse.json<ApiResponse>({
+  }
       success: false,
       error: error.message || '获取定价建议失败'
-    }, { status: 500 });
+    }, );
   }
 }

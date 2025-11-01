@@ -1,11 +1,10 @@
+import { NextRequest } from 'next/server';
+import { PUT as updateRewardConfig } from '@/app/api/admin/reward-config/[config_key]/route';
 /**
  * 奖励配置更新API测试
  * 测试PUT /api/admin/reward-config/{config_key}
  */
 
-import { NextRequest } from 'next/server';
-import { POST as adminLogin } from '@/app/api/admin/login/route';
-import { PUT as updateRewardConfig } from '@/app/api/admin/reward-config/[config_key]/route';
 
 // Mock next/server
 jest.mock('next/server', () => ({
@@ -134,7 +133,7 @@ describe('奖励配置更新API', () => {
         updated_by: 'admin_test'
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -152,7 +151,7 @@ describe('奖励配置更新API', () => {
         updated_by: 'admin_test'
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -170,7 +169,7 @@ describe('奖励配置更新API', () => {
         updated_by: 'admin_test'
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -188,7 +187,7 @@ describe('奖励配置更新API', () => {
         updated_by: 'admin_test'
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -206,7 +205,7 @@ describe('奖励配置更新API', () => {
         updated_by: ''
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -223,7 +222,7 @@ describe('奖励配置更新API', () => {
         // 缺少is_active和updated_by
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -243,7 +242,7 @@ describe('奖励配置更新API', () => {
         updated_by: 'admin_test'
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: emptyParams }
       );
@@ -257,7 +256,7 @@ describe('奖励配置更新API', () => {
 
   describe('业务逻辑', () => {
     test('应该成功更新奖励配置金额', async () => {
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -275,7 +274,7 @@ describe('奖励配置更新API', () => {
 
       const notFoundParams = { config_key: 'nonexistent_key' };
       
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: notFoundParams }
       );
@@ -304,7 +303,7 @@ describe('奖励配置更新API', () => {
         updated_by: 'admin_test'
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -321,7 +320,7 @@ describe('奖励配置更新API', () => {
     test('应该记录到审计表', async () => {
       const { rewardConfigManager } = require('@/lib/reward-config-manager');
       
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -344,7 +343,7 @@ describe('奖励配置更新API', () => {
       const { cacheManager } = require('@/lib/cache-manager');
       const { rewardConfigManager } = require('@/lib/reward-config-manager');
       
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -367,7 +366,7 @@ describe('奖励配置更新API', () => {
         updated_by: 'admin_test'
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -384,7 +383,7 @@ describe('奖励配置更新API', () => {
         updated_by: 'admin_test'
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -401,7 +400,7 @@ describe('奖励配置更新API', () => {
         updated_by: 'admin_test'
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -419,7 +418,7 @@ describe('奖励配置更新API', () => {
         updated_by: longName
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -437,7 +436,7 @@ describe('奖励配置更新API', () => {
         updated_by: tooLongName
       });
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -456,7 +455,7 @@ describe('奖励配置更新API', () => {
         new Error('数据库连接失败')
       );
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );
@@ -468,11 +467,11 @@ describe('奖励配置更新API', () => {
     });
 
     test('应该处理JSON解析异常', async () => {
-      mockRequest.json = jest.fn().mockRejectedValue(
+      mockRequest.json : jest.fn().mockRejectedValue(
         new Error('JSON解析失败')
       );
 
-      const response = await updateRewardConfig(
+      const response = await updateRewardConfig(;
         mockRequest as NextRequest,
         { params: mockParams }
       );

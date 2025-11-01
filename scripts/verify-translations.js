@@ -15,7 +15,7 @@ function countKeys(obj, prefix = '') {
   let count = 0;
   for (const key in obj) {
     if (typeof obj[key] === 'object' && obj[key] !== null) {
-      count += countKeys(obj[key], `${prefix}${key}.`);
+      count += countKeys((obj?.key ?? null), `${prefix}${key}.`);
     } else {
       count++;
     }
@@ -39,7 +39,7 @@ function verifyTranslations() {
       
       if (!fs.existsSync(filePath)) {
         console.log(`  ${namespace}: 文件不存在`);
-        stats[lang].namespaces[namespace] = 0;
+        (stats?.lang ?? null).(namespaces?.namespace ?? null) = 0;
         return;
       }
       
@@ -49,22 +49,23 @@ function verifyTranslations() {
         const keyCount = countKeys(data);
         
         console.log(`  ${namespace}: ${keyCount} 个键`);
-        stats[lang].namespaces[namespace] = keyCount;
-        stats[lang].total += keyCount;
+  }
+        (stats?.lang ?? null).(namespaces?.namespace ?? null) = keyCount;
+        (stats?.lang ?? null).total += keyCount;
       } catch (error) {
         console.log(`  ${namespace}: 解析错误 - ${error.message}`);
-        stats[lang].namespaces[namespace] = 0;
+        (stats?.lang ?? null).(namespaces?.namespace ?? null) = 0;
       }
     });
-    console.log(`  总计: ${stats[lang].total} 个键`);
+    console.log(`  总计: ${(stats?.lang ?? null).total} 个键`);
     console.log('');
   });
 
   console.log('='.repeat(60));
   console.log('语言对比:');
   LANGUAGES.forEach(lang => {
-    const percentage = ((stats[lang].total / stats['zh-CN'].total) * 100).toFixed(1);
-    console.log(`  ${lang}: ${stats[lang].total} 个键 (${percentage}%)`);
+    const percentage = (((stats?.lang ?? null).total / stats['zh-CN'].total) * 100).toFixed(1);
+    console.log(`  ${lang}: ${(stats?.lang ?? null).total} 个键 (${percentage}%)`);
   });
   console.log('');
   console.log('验证完成');

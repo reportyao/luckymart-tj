@@ -1,11 +1,11 @@
+import DatabaseLockManager from '@/lib/database-lock-manager';
+import { prisma } from '@/lib/prisma';
 /**
  * 数据库锁机制测试文件
  * 用于验证乐观锁/悲观锁功能的正确性
  * 创建时间: 2025-10-31
  */
 
-import DatabaseLockManager from '@/lib/database-lock-manager';
-import { prisma } from '@/lib/prisma';
 
 // 测试配置
 const TEST_USER_ID = 'test-user-12345';
@@ -82,6 +82,7 @@ describe('数据库锁机制测试', () => {
       });
       
       console.log('测试数据清理完成');
+  }
     } catch (error) {
       console.error('清理测试数据时发生错误:', error);
     }
@@ -90,7 +91,7 @@ describe('数据库锁机制测试', () => {
   describe('乐观锁测试', () => {
     
     test('应该能够成功扣减用户余额', async () => {
-      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         100,
         'deduct',
@@ -103,7 +104,7 @@ describe('数据库锁机制测试', () => {
     });
     
     test('应该能够成功增加用户余额', async () => {
-      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         50,
         'add',
@@ -116,7 +117,7 @@ describe('数据库锁机制测试', () => {
     });
     
     test('应该在余额不足时拒绝扣减', async () => {
-      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         2000, // 超过当前余额
         'deduct',
@@ -129,7 +130,7 @@ describe('数据库锁机制测试', () => {
     
     test('应该能够处理版本冲突', async () => {
       // 第一次扣减
-      const result1 = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result1 = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         100,
         'deduct',
@@ -145,7 +146,7 @@ describe('数据库锁机制测试', () => {
       });
       
       // 第二次扣减应该失败
-      const result2 = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result2 = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         100,
         'deduct',
@@ -157,7 +158,7 @@ describe('数据库锁机制测试', () => {
     });
     
     test('应该能够处理平台余额操作', async () => {
-      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         50,
         'add',
@@ -172,7 +173,7 @@ describe('数据库锁机制测试', () => {
   describe('份额更新测试', () => {
     
     test('应该能够成功增加已售份额', async () => {
-      const result = await DatabaseLockManager.updateLotteryRoundSoldSharesWithLock(
+      const result = await DatabaseLockManager.updateLotteryRoundSoldSharesWithLock(;
         TEST_ROUND_ID,
         10
       );
@@ -183,7 +184,7 @@ describe('数据库锁机制测试', () => {
     });
     
     test('应该拒绝超额购买', async () => {
-      const result = await DatabaseLockManager.updateLotteryRoundSoldSharesWithLock(
+      const result = await DatabaseLockManager.updateLotteryRoundSoldSharesWithLock(;
         TEST_ROUND_ID,
         200 // 超过总份额
       );
@@ -199,7 +200,7 @@ describe('数据库锁机制测试', () => {
         data: { status: 'completed' }
       });
       
-      const result = await DatabaseLockManager.updateLotteryRoundSoldSharesWithLock(
+      const result = await DatabaseLockManager.updateLotteryRoundSoldSharesWithLock(;
         TEST_ROUND_ID,
         5
       );
@@ -220,7 +221,7 @@ describe('数据库锁机制测试', () => {
     test('应该能够成功参与夺宝', async () => {
       const numbers = [1, 2, 3, 4, 5];
       
-      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(
+      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(;
         TEST_USER_ID,
         TEST_ROUND_ID,
         TEST_PRODUCT_ID,
@@ -254,7 +255,7 @@ describe('数据库锁机制测试', () => {
       
       const numbers = [6, 7, 8, 9, 10];
       
-      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(
+      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(;
         TEST_USER_ID,
         TEST_ROUND_ID,
         TEST_PRODUCT_ID,
@@ -284,7 +285,7 @@ describe('数据库锁机制测试', () => {
       
       const numbers = [11, 12, 13, 14, 15];
       
-      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(
+      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(;
         TEST_USER_ID,
         TEST_ROUND_ID,
         TEST_PRODUCT_ID,
@@ -318,7 +319,7 @@ describe('数据库锁机制测试', () => {
     });
     
     test('应该能够成功更新订单状态', async () => {
-      const result = await DatabaseLockManager.updateOrderStatusWithLock(
+      const result = await DatabaseLockManager.updateOrderStatusWithLock(;
         testOrderId,
         'completed'
       );
@@ -340,7 +341,7 @@ describe('数据库锁机制测试', () => {
         data: { version: { decrement: 1 } }
       });
       
-      const result = await DatabaseLockManager.updateOrderStatusWithLock(
+      const result = await DatabaseLockManager.updateOrderStatusWithLock(;
         testOrderId,
         'cancelled'
       );
@@ -385,7 +386,7 @@ describe('数据库锁机制测试', () => {
   describe('批量操作测试', () => {
     
     test('应该能够批量操作用户余额', async () => {
-      const operations = [
+      const operations = [;
         { userId: TEST_USER_ID, amount: 100, operation: 'deduct' as const },
         { userId: TEST_USER_ID, amount: 50, operation: 'add' as const },
         { userId: TEST_USER_ID, amount: 200, operation: 'deduct' as const }
@@ -396,8 +397,8 @@ describe('数据库锁机制测试', () => {
       expect(results).toHaveLength(3);
       
       // 第一个操作应该成功
-      expect(results[0].result.success).toBe(true);
-      expect(results[0].result.newBalance).toBeGreaterThan(0);
+      expect((results?.0 ?? null).result.success).toBe(true);
+      expect((results?.0 ?? null).result.newBalance).toBeGreaterThan(0);
       
       // 所有操作都应该有结果
       results.forEach(result => {
@@ -410,7 +411,7 @@ describe('数据库锁机制测试', () => {
   describe('预检查测试', () => {
     
     test('应该能够预检查余额充足性', async () => {
-      const balanceInfo = await DatabaseLockManager.checkUserBalanceSufficient(
+      const balanceInfo = await DatabaseLockManager.checkUserBalanceSufficient(;
         TEST_USER_ID,
         100
       );
@@ -421,7 +422,7 @@ describe('数据库锁机制测试', () => {
     });
     
     test('应该能够预检查夺宝份额', async () => {
-      const shareInfo = await DatabaseLockManager.checkLotteryRoundRemainingShares(
+      const shareInfo = await DatabaseLockManager.checkLotteryRoundRemainingShares(;
         TEST_ROUND_ID
       );
       
@@ -440,8 +441,8 @@ describe('数据库锁机制测试', () => {
       expect(Array.isArray(lockInfo)).toBe(true);
       
       // 应该包含测试数据
-      const userLockInfo = lockInfo.find(info => 
-        info.table_name === 'users' && info.row_id === TEST_USER_ID
+      const userLockInfo = lockInfo.find(info =>;
+        info.table_name :== 'users' && info.row_id === TEST_USER_ID
       );
       
       expect(userLockInfo).toBeDefined();
@@ -452,7 +453,7 @@ describe('数据库锁机制测试', () => {
   describe('边界条件测试', () => {
     
     test('应该处理无效的用户ID', async () => {
-      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         'invalid-uuid',
         100,
         'deduct'
@@ -463,7 +464,7 @@ describe('数据库锁机制测试', () => {
     });
     
     test('应该处理负数金额', async () => {
-      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         -100,
         'deduct'
@@ -474,7 +475,7 @@ describe('数据库锁机制测试', () => {
     });
     
     test('应该处理无效的操作类型', async () => {
-      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         100,
         'invalid_operation' as any
@@ -507,7 +508,7 @@ describe('并发操作测试', () => {
   });
   
   test('应该只有一个并发余额扣减成功', async () => {
-    const concurrentOperations = Array(10).fill(0).map(() => 
+    const concurrentOperations = Array(10).fill(0).map(() =>;
       DatabaseLockManager.updateUserBalanceWithOptimisticLock(
         TEST_USER_ID,
         150, // 每次扣减150，10次总共1500，但用户只有1000
@@ -525,12 +526,12 @@ describe('并发操作测试', () => {
     const successfulResults = results.filter(result => result.success);
     if (successfulResults.length > 0) {
       console.log('并发余额扣减测试 - 成功操作数:', successCount);
-      console.log('最终余额:', successfulResults[0].newBalance);
+      console.log('最终余额:', (successfulResults?.0 ?? null).newBalance);
     }
   });
   
   test('应该只有一个并发份额购买成功', async () => {
-    const concurrentOperations = Array(15).fill(0).map(() => 
+    const concurrentOperations = Array(15).fill(0).map(() =>;
       DatabaseLockManager.updateLotteryRoundSoldSharesWithLock(
         TEST_ROUND_ID,
         1 // 每次买1个份额，总共15个，但只有10个可用
@@ -576,4 +577,4 @@ describe('性能测试', () => {
   });
 });
 
-export {}; // 确保这是一个模块文件
+export ; // 确保这是一个模块文件

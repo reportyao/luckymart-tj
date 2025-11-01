@@ -1,11 +1,12 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '../lib/prisma';
+import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
+import { POST } from '../app/api/referral/bind/route';
 /**
  * 推荐绑定API测试
  * 测试POST /api/referral/bind的所有功能
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '../lib/prisma';
-import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
 
 // Mock依赖
 jest.mock('../lib/prisma', () => ({
@@ -63,7 +64,7 @@ const mockReferrerUser = {
   referral_code: mockReferralCode
 };
 
-const mockRewardConfigs = [
+const mockRewardConfigs = [;
   {
     config_key: 'register_referee',
     config_name: '注册被推荐者奖励',
@@ -358,7 +359,6 @@ describe('推荐绑定API测试', () => {
 });
 
 // 手动导入并测试实际的API路由
-import { POST } from '../app/api/referral/bind/route';
 
 describe('推荐绑定API完整流程测试', () => {
   test('完整成功流程测试', async () => {

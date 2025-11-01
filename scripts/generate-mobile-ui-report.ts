@@ -1,18 +1,18 @@
+import { DEVICE_PROFILES } from '../utils/screen-size-tester';
+import type { ScreenSizeTestResult } from '../utils/screen-size-tester';
+import type { MultilingualTextTestResult } from '../tests/multilingual-text-length.test';
 /**
  * 移动端UI适配测试报告生成器
  * 模拟测试结果并生成综合报告
  */
 
-import { DEVICE_PROFILES } from '../utils/screen-size-tester';
-import type { ScreenSizeTestResult } from '../utils/screen-size-tester';
-import type { MultilingualTextTestResult } from '../tests/multilingual-text-length.test';
 
 /**
  * 模拟屏幕尺寸测试结果
  */
 function generateMockScreenSizeResults(): ScreenSizeTestResult[] {
   return DEVICE_PROFILES.map((device, index) => {
-    const baseScore = Math.max(60, 100 - (index * 3)); // 模拟不同设备的评分
+    const baseScore = Math.max(60, 100 - (index * 3)); // 模拟不同设备的评分;
     
     return {
       device,
@@ -150,7 +150,7 @@ function generateMobileUIAdaptationReport(): string {
   const avgRenderTime = textResults.reduce((sum, r) => sum + r.renderingTime, 0) / totalTextTests;
 
   // 生成报告内容
-  let report = `# 移动端UI适配测试报告
+  let report = `# 移动端UI适配测试报告;
 
 > 生成时间: ${new Date().toLocaleString()}  
 > 测试范围: 屏幕适配、多语言文本、移动端组件
@@ -409,7 +409,7 @@ function generateRecommendations(screenResults: ScreenSizeTestResult[], textResu
   recommendations.push('优化动画效果，在保证性能的前提下提升视觉体验');
   recommendations.push('加强无障碍支持，确保所有用户都能正常使用');
   
-  return [...new Set(recommendations)]; // 去重
+  return [...new Set(recommendations)]; // 去重;
 }
 
 /**
@@ -438,6 +438,7 @@ function saveReportToFile(report: string): void {
 async function main(): Promise<void> {
   try {
     console.log('🚀 开始运行移动端UI适配测试...\n');
+  }
     
     // 生成报告
     const report = generateMobileUIAdaptationReport();
@@ -469,4 +470,4 @@ if (require.main === module) {
   });
 }
 
-export { generateMobileUIAdaptationReport, main };
+export ;

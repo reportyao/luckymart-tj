@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -37,6 +35,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('withdrawals_route.ts request failed', error as Error, {
       requestId,
@@ -58,7 +57,7 @@ async function handleGET(request: NextRequest) {
         const endDate = searchParams.get('endDate');
         const limit = parseInt(searchParams.get('limit') || '100');
 
-        let query = supabase
+        let query = supabase;
           .from('withdrawal_records')
           .select('*')
           .eq('period_type', periodType)
@@ -66,7 +65,7 @@ async function handleGET(request: NextRequest) {
           .limit(limit);
 
         if (startDate && endDate) {
-          query = query
+          query : query
             .gte('period_start', startDate)
             .lte('period_end', endDate);
         } else if (startDate) {
@@ -78,7 +77,7 @@ async function handleGET(request: NextRequest) {
           const thirtyDaysAgo = new Date();
           thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
           query = query.gte('period_start', thirtyDaysAgo.toISOString().split('T')[0]);
-        }
+    }
 
         const { data: withdrawalData, error } = await query;
 
@@ -87,7 +86,7 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'查询提现统计数据失败:', error);
-          return NextResponse.json(
+          return NextResponse.json(;
             { error: '查询提现统计数据失败' },
             { status: 500 }
           );
@@ -111,11 +110,11 @@ async function handleGET(request: NextRequest) {
           platformFee: 0
         }) || {};
 
-        const overallSuccessRate = totalStats.totalCount > 0 
+        const overallSuccessRate = totalStats.totalCount > 0;
           ? (totalStats.successCount / totalStats.totalCount) * 100 
           : 0;
 
-        const averageAmount = totalStats.totalUsers > 0 
+        const averageAmount = totalStats.totalUsers > 0;
           ? totalStats.totalAmount / totalStats.totalUsers 
           : 0;
 
@@ -170,8 +169,8 @@ async function handleGET(request: NextRequest) {
           keyMetrics: {
             averageDailyAmount: trendData.length > 0 ? totalStats.totalAmount / trendData.length : 0,
             averageDailyUsers: trendData.length > 0 ? totalStats.totalUsers / trendData.length : 0,
-            successRateTrend: calculateTrend(trendData.map((t : any) => t.successRate)),
-            amountTrend: calculateTrend(trendData.map((t : any) => t.totalAmount)),
+            successRateTrend: calculateTrend(trendData.map(((t : any) : any) => t.successRate)),
+            amountTrend: calculateTrend(trendData.map(((t : any) : any) => t.totalAmount)),
             platformRevenue: totalStats.platformFee
           }
         };
@@ -183,7 +182,8 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取提现统计API错误:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
+  }
           { error: '服务器内部错误' },
           { status: 500 }
         );
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const {
       periodType = 'daily',
-      date = new Date().toISOString().split('T')[0]
+      date : new Date().toISOString().split('T')[0]
     } = body;
 
     let periodStart: Date;
@@ -236,11 +236,11 @@ export async function POST(request: NextRequest) {
       periodStart = new Date(day.getFullYear(), quarter * 3, 1);
       periodEnd = new Date(day.getFullYear(), (quarter + 1) * 3, 0);
     } else {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '不支持的期间类型' },
         { status: 400 }
       );
-    }
+}
 
     // 计算提现数据
     const startISO = periodStart.toISOString().split('T')[0];
@@ -249,49 +249,49 @@ export async function POST(request: NextRequest) {
     const endDateTime = `${endISO}T23:59:59`;
 
     // 从提现请求表获取数据
-    const { data: withdrawalRequests } = await supabase
+    const { data: withdrawalRequests } = await supabase;
       .from('withdraw_requests')
       .select('amount, fee, status, withdraw_method')
       .gte('created_at', startDateTime)
       .lte('created_at', endDateTime);
 
     if (!withdrawalRequests) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '获取提现请求数据失败' },
         { status: 500 }
       );
     }
 
-    const totalAmount = withdrawalRequests.reduce((sum: any,  req: any) => 
+    const totalAmount = withdrawalRequests.reduce((sum: any: any,   req: any: any) =>;
       sum + parseFloat(req.amount.toString()), 0);
 
-    const platformFee = withdrawalRequests.reduce((sum: any,  req: any) => 
+    const platformFee = withdrawalRequests.reduce((sum: any: any,   req: any: any) =>;
       sum + parseFloat(req.fee.toString()), 0);
 
     const withdrawalCount = withdrawalRequests.length;
-    const totalUsers = new Set(withdrawalRequests.map((req : any) => req.user_id)).size;
+    const totalUsers = new Set(withdrawalRequests.map(((req : any) : any) => req.user_id)).size;
 
-    const successCount = withdrawalRequests.filter((req : any) => req.status === 'completed').length;
-    const failureCount = withdrawalRequests.filter((req : any) => req.status === 'rejected').length;
-    const pendingCount = withdrawalRequests.filter((req : any) => req.status === 'pending').length;
+    const successCount = withdrawalRequests.filter(((req : any) : any) => req.status === 'completed').length;
+    const failureCount = withdrawalRequests.filter(((req : any) : any) => req.status === 'rejected').length;
+    const pendingCount = withdrawalRequests.filter(((req : any) : any) => req.status === 'pending').length;
 
     const successRate = withdrawalCount > 0 ? (successCount / withdrawalCount) * 100 : 0;
     const averageAmount = totalUsers > 0 ? totalAmount / totalUsers : 0;
 
     // 按提现方式分组
-    const methodBreakdown = withdrawalRequests.reduce((acc: any,  req: any) => {
+    const methodBreakdown = withdrawalRequests.reduce((acc: any: any,   req: any: any) => {
       const method = req.withdraw_method || 'unknown';
       if (!acc[method]) {
         acc[method] = { count: 0, amount: 0, users: new Set() };
       }
-      acc[method].count++;
-      acc[method].amount += parseFloat(req.amount.toString());
+      (acc?.method ?? null).count++;
+      (acc?.method ?? null).amount += parseFloat(req.amount.toString());
       // 注意：这里无法获取user_id，需要在查询时包含
       return acc;
     }, {} as Record<string, any>);
 
     // 插入或更新数据
-    const { data, error } = await supabase
+    const { data, error } = await supabase;
       .from('withdrawal_records')
       .upsert({
         period_type: periodType,
@@ -316,7 +316,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'保存提现统计数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '保存提现统计数据失败' },
         { status: 500 }
       );
@@ -346,7 +346,7 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'计算提现统计API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
       { status: 500 }
     );
@@ -363,7 +363,7 @@ function analyzeAmountDistribution(data: any[]) {
     huge: { count: 0, amount: 0, range: '1000+' }        // 巨额：1000+ TJS
   };
 
-  data.forEach((record : any) => {
+  data.forEach(((record : any) : any) => {
     const amount = parseFloat(record.total_amount.toString());
     const users = record.total_users;
 
@@ -387,11 +387,11 @@ function analyzeAmountDistribution(data: any[]) {
 
 // 辅助函数：计算趋势
 function calculateTrend(values: number[]): number {
-  if (values.length < 2) return 0;
+  if (values.length < 2) return 0; {
   const n = values.length;
   const sumX = n * (n - 1) / 2;
-  const sumY = values.reduce((sum: any,  val: any) => sum + val, 0);
-  const sumXY = values.reduce((sum: any,  val, index: any) => sum + val * index, 0);
+  const sumY = values.reduce((sum: any: any,   val: any: any) => sum + val, 0);
+  const sumXY = values.reduce((sum: any: any,   val, index: any: any) => sum + val * index, 0);
   const sumXX = n * (n - 1) * (2 * n - 1) / 6;
-  return n * sumXY - sumX * sumY > 0 ? 1 : -1; // 简化处理，只返回趋势方向
+  return n * sumXY - sumX * sumY > 0 ? 1 : -1; // 简化处理，只返回趋势方向;
 }

@@ -1,3 +1,6 @@
+import { describe, test, expect, beforeEach } from '@jest/globals';
+import { ApiClient, ApiError, InvitationApiClient } from '../examples/invitation-api-examples';
+import { API_BASE_URL } from '../config/api-config';
 /**
  * 邀请裂变系统 API 测试文件
  * 
@@ -5,11 +8,8 @@
  * 用于验证API功能的正确性和稳定性
  */
 
-import { describe, test, expect, beforeEach } from '@jest/globals';
-import { ApiClient, ApiError, InvitationApiClient } from '../examples/invitation-api-examples';
 
 // 测试配置
-import { API_BASE_URL } from '../config/api-config';
 
 const TEST_ACCESS_TOKEN = process.env.TEST_ACCESS_TOKEN || 'test-jwt-token';
 
@@ -484,7 +484,7 @@ describe('邀请裂变系统 API 测试', () => {
     });
 
     test('should handle validation errors', async () => {
-      const validationErrors = [
+      const validationErrors = [;
         { page: 0, limit: 101 },
         { startDate: 'invalid-date' },
         { startDate: '2025-10-31T00:00:00Z', endDate: '2025-10-01T00:00:00Z' }
@@ -496,7 +496,7 @@ describe('邀请裂变系统 API 测试', () => {
     });
 
     test('should handle concurrent requests', async () => {
-      const promises = [
+      const promises = [;
         invitationApi.getMyReferralInfo(),
         invitationApi.getInvitationRewards(),
         invitationApi.getCommissionRecords()
@@ -608,7 +608,7 @@ export class TestDataBuilder {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
-  }
+}
 
   static buildMockReferralStats() {
     return {

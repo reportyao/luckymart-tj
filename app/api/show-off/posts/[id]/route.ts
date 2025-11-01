@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { auth } from '@/lib/auth';
-import { getLogger } from '@/lib/logger';
 
 const prisma = new PrismaClient();
 
@@ -15,11 +14,11 @@ export async function GET(
     const session = await auth();
 
     if (!postId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '晒单ID不能为空' },
         { status: 400 }
       );
-    }
+}
 
     const post = await prisma.showOffPosts.findUnique({
       where: { id: postId },
@@ -62,7 +61,7 @@ export async function GET(
     });
 
     if (!post) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '晒单不存在' },
         { status: 404 }
       );
@@ -140,7 +139,7 @@ export async function GET(
       requestId,
       endpoint: request.url
     });'获取晒单详情失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '获取晒单详情失败' },
       { status: 500 }
     );
@@ -157,14 +156,14 @@ export async function POST(
     const session = await auth();
 
     if (!session?.user) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '请先登录' },
         { status: 401 }
       );
-    }
+}
 
     if (!postId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '晒单ID不能为空' },
         { status: 400 }
       );
@@ -176,7 +175,7 @@ export async function POST(
     });
 
     if (!post || post.status !== 'approved') {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '晒单不存在或未审核通过' },
         { status: 404 }
       );
@@ -260,7 +259,7 @@ export async function POST(
       requestId,
       endpoint: request.url
     });'点赞操作失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '点赞操作失败' },
       { status: 500 }
     );

@@ -4,8 +4,6 @@ import { calculateSecureWinningNumber, generateSecureDrawProof, findWinner } fro
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.lottery.write()
@@ -31,7 +29,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少轮次ID'
       }, { status: 400 });
-    }
+}
 
     // 1. 查询轮次信息
     const round = await prisma.lotteryRounds.findUnique({
@@ -87,15 +85,15 @@ export async function POST(request: NextRequest) {
     }
 
     // 5. 执行开奖算法
-    const participationIds = participations.map((p : any) => p.id);
-    const participationData = participations.map((p : any) => ({
+    const participationIds = participations.map(((p : any) : any) => p.id);
+    const participationData = participations.map(((p : any) : any) => ({
       userId: p.userId,
       numbers: p.numbers,
       amount: Number(p.cost),
       createdAt: p.createdAt
     }));
     
-    const drawResult = calculateSecureWinningNumber(
+    const drawResult = calculateSecureWinningNumber(;
       participationIds,
       participationData,
       round.productId,
@@ -103,7 +101,7 @@ export async function POST(request: NextRequest) {
     );
 
     // 6. 查找中奖用户
-    const participationsWithNumbers = participations.map((p : any) => ({
+    const participationsWithNumbers = participations.map(((p : any) : any) => ({
       userId: p.userId,
       numbers: p.numbers
     }));
@@ -117,7 +115,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 7. 执行开奖事务
-    await prisma.$transaction(async (tx: any) => {
+    await prisma.$transaction(async (tx: any: any) => {
       // 更新轮次状态
       await tx.lotteryRounds.update({
         where: { id: roundId },
@@ -203,6 +201,7 @@ export async function POST(request: NextRequest) {
       endpoint: request.url
     });'Manual draw error:', error);
       return NextResponse.json({
+  }
         success: false,
         error: error.message || '开奖失败'
       }, { status: 500 });
@@ -228,7 +227,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       error: (error as Error).message
     });
     throw error;
-  }
+}
 });
 
 async function handleGET(request: NextRequest) {
@@ -245,11 +244,11 @@ async function handleGET(request: NextRequest) {
         });
     
         // 筛选出已售罄的轮次
-        const readyRounds = allActiveRounds.filter((r : any) => r.soldShares >= r.totalShares);
+        const readyRounds = allActiveRounds.filter(((r : any) : any) => r.soldShares >= r.totalShares);
 
         // 手动查询产品信息和参与人数
-        const roundsWithDetails = await Promise.all(
-          readyRounds.map(async (r) : any => {
+        const roundsWithDetails = await Promise.all(;
+          readyRounds.map((async (r) : any : any) => {
             const product = await prisma.products.findUnique({
               where: { id: r.productId },
               select: {
@@ -258,7 +257,7 @@ async function handleGET(request: NextRequest) {
                 nameRu: true,
                 images: true,
                 marketPrice: true
-              }
+    }
             });
 
             const participantCount = await prisma.participations.count({
@@ -292,9 +291,10 @@ async function handleGET(request: NextRequest) {
           endpoint: request.url
         });'Get ready rounds error:', error);
           return NextResponse.json({
+  }
             success: false,
             error: error.message || '获取待开奖列表失败'
-          }, { status: 500 });
+          }, );
         }
       })(request);
 }

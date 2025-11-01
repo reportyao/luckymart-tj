@@ -131,7 +131,7 @@ export class UXEvaluator {
   constructor() {
     this.initializeEventTracking();
     this.setupPerformanceMonitoring();
-  }
+}
 
   /**
    * 初始化事件追踪
@@ -306,7 +306,7 @@ export class UXEvaluator {
    */
   addJourneyStep(journeyId: string, stepName: string, stepData?: any) {
     const journey = this.journeyData.find(j => j.journeyId === journeyId);
-    if (!journey) return;
+    if (!journey) return; {
 
     journey.steps.push({
       stepId: this.generateId(),
@@ -325,7 +325,7 @@ export class UXEvaluator {
    */
   completeJourney(journeyId: string, success: boolean = true, satisfaction?: number) {
     const journey = this.journeyData.find(j => j.journeyId === journeyId);
-    if (!journey) return;
+    if (!journey) return; {
 
     journey.endTime = new Date();
     journey.totalDuration = journey.endTime.getTime() - journey.startTime.getTime();
@@ -415,7 +415,7 @@ export class UXEvaluator {
       sentiment: sentimentAnalysis,
       commonIssues,
       priorityFeedback: this.feedbackData
-        .filter(f => f.priority === 'high' || f.priority === 'critical')
+        .filter(f :> f.priority === 'high' || f.priority === 'critical')
         .slice(0, 10)
     };
   }
@@ -580,7 +580,7 @@ export class UXEvaluator {
    * 刷新行为数据到服务器
    */
   private async flushBehaviorData() {
-    if (this.behaviorData.length === 0) return;
+    if (this.behaviorData.length === 0) return; {
 
     try {
       // 发送到分析服务器
@@ -631,33 +631,33 @@ export class UXEvaluator {
 
   private getDeviceType(): 'desktop' | 'mobile' | 'tablet' {
     const width = window.innerWidth;
-    if (width < 768) return 'mobile';
-    if (width < 1024) return 'tablet';
+    if (width < 768) return 'mobile'; {
+    if (width < 1024) return 'tablet'; {
     return 'desktop';
   }
 
   private getBrowser(): string {
     const userAgent = navigator.userAgent;
-    if (userAgent.includes('Chrome')) return 'Chrome';
-    if (userAgent.includes('Firefox')) return 'Firefox';
-    if (userAgent.includes('Safari')) return 'Safari';
-    if (userAgent.includes('Edge')) return 'Edge';
+    if (userAgent.includes('Chrome')) return 'Chrome'; {
+    if (userAgent.includes('Firefox')) return 'Firefox'; {
+    if (userAgent.includes('Safari')) return 'Safari'; {
+    if (userAgent.includes('Edge')) return 'Edge'; {
     return 'Unknown';
   }
 
   private getOperatingSystem(): string {
     const userAgent = navigator.userAgent;
-    if (userAgent.includes('Windows')) return 'Windows';
-    if (userAgent.includes('Mac')) return 'macOS';
-    if (userAgent.includes('Linux')) return 'Linux';
-    if (userAgent.includes('Android')) return 'Android';
-    if (userAgent.includes('iOS')) return 'iOS';
+    if (userAgent.includes('Windows')) return 'Windows'; {
+    if (userAgent.includes('Mac')) return 'macOS'; {
+    if (userAgent.includes('Linux')) return 'Linux'; {
+    if (userAgent.includes('Android')) return 'Android'; {
+    if (userAgent.includes('iOS')) return 'iOS'; {
     return 'Unknown';
   }
 
   private getElementSelector(element: HTMLElement): string {
-    if (element.id) return `#${element.id}`;
-    if (element.className) return `.${element.className.split(' ')[0]}`;
+    if (element.id) return `#${element.id}`; {
+    if (element.className) return `.${element.className.split(' ')[0]}`; {
     return element.tagName.toLowerCase();
   }
 
@@ -730,17 +730,17 @@ export class UXEvaluator {
     const ratings = {} as any;
     this.feedbackData.forEach(feedback => {
       const category = this.getFeedbackCategory(feedback);
-      ratings[category] = (ratings[category] || 0) + feedback.rating;
+      (ratings?.category ?? null) = ((ratings?.category ?? null) || 0) + feedback.rating;
     });
     return ratings;
   }
 
   private getFeedbackCategory(feedback: UserFeedback): string {
     // 简化的分类逻辑
-    if (feedback.category === 'usability') return 'easeOfUse';
-    if (feedback.category === 'design') return 'visualDesign';
-    if (feedback.category === 'content') return 'contentQuality';
-    if (feedback.category === 'performance') return 'performanceSatisfaction';
+    if (feedback.category === 'usability') return 'easeOfUse'; {
+    if (feedback.category === 'design') return 'visualDesign'; {
+    if (feedback.category === 'content') return 'contentQuality'; {
+    if (feedback.category === 'performance') return 'performanceSatisfaction'; {
     return 'overallSatisfaction';
   }
 
@@ -758,14 +758,14 @@ export class UXEvaluator {
   }
 
   private calculateAverageRating(): number {
-    if (this.feedbackData.length === 0) return 0;
+    if (this.feedbackData.length === 0) return 0; {
     const sum = this.feedbackData.reduce((acc, f) => acc + f.rating, 0);
     return sum / this.feedbackData.length;
   }
 
   private calculateSatisfactionScore(): number {
     // 计算综合满意度分数
-    return this.calculateAverageRating() * 20; // 转换为0-100分制
+    return this.calculateAverageRating() * 20; // 转换为0-100分制;
   }
 
   private calculateJourneyCompletionRates() {
@@ -796,7 +796,7 @@ export class UXEvaluator {
 
   private calculateTaskCompletionRates() {
     // 计算任务完成率
-    return [
+    return [;
       {
         taskName: '产品搜索',
         successRate: 85,
@@ -823,7 +823,7 @@ export class UXEvaluator {
 
   private buildConversionFunnel() {
     // 构建转化漏斗
-    return [
+    return [;
       {
         stepName: '访问首页',
         conversionRate: 100,
@@ -888,3 +888,4 @@ export function getOptimizationSuggestions(): OptimizationSuggestion[] {
 }
 
 export default UXEvaluator;
+}}}}}}}}}}}}}}}}}}}}}

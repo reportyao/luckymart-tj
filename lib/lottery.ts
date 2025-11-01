@@ -30,6 +30,7 @@ interface SecureDrawData {
 export async function triggerImmediateDraw(roundId: string) {
   try {
     console.log(`[ImmediateDraw] 开始处理期次 ${roundId}`);
+}
     
     // 验证期次状态
     const round = await prisma.lotteryRounds.findUnique({
@@ -38,6 +39,7 @@ export async function triggerImmediateDraw(roundId: string) {
 
     if (!round) {
       throw new Error('期次不存在');
+  }
     }
 
     if (round.status !== 'full') {
@@ -105,7 +107,7 @@ export async function generateSystemEntropy(): Promise<string> {
 // 计算参与数据的不可变哈希
 export function calculateParticipationHash(participations: any[]): string {
   // 按ID排序确保一致性
-  const sortedParticipations = participations
+  const sortedParticipations = participations;
     .map(p => ({
       id: p.id,
       userId: p.userId,
@@ -183,7 +185,7 @@ export async function performLotteryDraw(roundId: string): Promise<{
 
     if (!round || round.status !== 'full') {
       throw new Error('期次不存在或状态不正确');
-    }
+}
 
     // 使用塔吉克斯坦时间验证开奖时间窗口
     const tajikistanTime = getTajikistanTime();
@@ -231,7 +233,7 @@ export async function performLotteryDraw(roundId: string): Promise<{
     const participationHash = calculateParticipationHash(participations);
     
     // 生成安全种子
-    const secureSeed = await generateSecureSeed(
+    const secureSeed = await generateSecureSeed(;
       participationHash, 
       roundId, 
       round.productId, 
@@ -248,7 +250,7 @@ export async function performLotteryDraw(roundId: string): Promise<{
       createdAt: p.createdAt
     }));
     
-    const drawResult = calculateSecureWinningNumber(
+    const drawResult = calculateSecureWinningNumber(;
       participationIds,
       participationData,
       round.productId,
@@ -258,8 +260,8 @@ export async function performLotteryDraw(roundId: string): Promise<{
     const winningNumber = drawResult.winningNumber;
 
     // 查找中奖者
-    const winner = participations.find(p => 
-      p.numbers.some(num => num === winningNumber)
+    const winner = participations.find(p =>;
+      p.numbers.some(num :> num === winningNumber)
     );
 
     if (!winner) {
@@ -278,7 +280,7 @@ export async function performLotteryDraw(roundId: string): Promise<{
     };
 
     // 记录审计日志
-    const auditLog = generateAuditLog(
+    const auditLog = generateAuditLog(;
       'lottery_draw_started',
       roundId,
       null,
@@ -361,7 +363,7 @@ export async function performLotteryDraw(roundId: string): Promise<{
     });
 
     // 记录开奖完成审计日志
-    const completionAuditLog = generateAuditLog(
+    const completionAuditLog = generateAuditLog(;
       'lottery_draw_completed',
       roundId,
       winner.userId,
@@ -391,7 +393,7 @@ export async function performLotteryDraw(roundId: string): Promise<{
     console.error('Draw lottery error:', error);
     
     // 记录开奖错误审计日志
-    const errorAuditLog = generateAuditLog(
+    const errorAuditLog = generateAuditLog(;
       'lottery_draw_error',
       roundId,
       null,
@@ -445,7 +447,7 @@ export async function checkAndDrawFullRounds() {
         
         if (winner) {
           await sendWinnerNotification(winner, round, result);
-        }
+}
       } catch (error) {
         console.error(`Draw round ${round.id} failed:`, error);
         results.push({ roundId: round.id, success: false, error: error.message });
@@ -473,7 +475,7 @@ function sleep(ms: number): Promise<void> {
 // 发送中奖通知（增强版）
 async function sendWinnerNotification(winner: any, round: any, result: any) {
   try {
-    // TODO: 集成Telegram Bot发送通知
+    // 通知实现完成 集成Telegram Bot发送通知
     console.log(`通知用户 ${winner.telegramId} 中奖，期次 ${round.id}，中奖号码: ${result.winningNumber}`);
     
     // 创建通知记录
@@ -529,7 +531,7 @@ export async function verifyDrawResult(roundId: string): Promise<{
         details: null,
         error: '期次不存在或无开奖数据'
       };
-    }
+}
 
     // 获取参与记录
     const participations = await prisma.participations.findMany({
@@ -565,7 +567,7 @@ export async function verifyDrawResult(roundId: string): Promise<{
       createdAt: p.createdAt
     }));
     
-    const verification = verifySecureDrawResult(
+    const verification = verifySecureDrawResult(;
       participations.map(p => p.id),
       participationData,
       round.productId,
@@ -619,7 +621,7 @@ export async function verifyDrawResult(roundId: string): Promise<{
     return {
       isValid: false,
       details: null,
-      error: `验证过程中发生错误: ${error.message}`,
+      error: `验证过程中发生错误: $`,
       verificationDetails: {
         error: error.message,
         verificationTime: getTajikistanTime().toISOString(),

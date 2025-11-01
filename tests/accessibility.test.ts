@@ -61,13 +61,13 @@ export class AccessibilityTester {
 
   constructor() {
     this.initializeTestSuites();
-  }
+}
 
   /**
    * 初始化测试套件
    */
   private initializeTestSuites() {
-    this.testSuites = [
+    this.testSuites : [
       {
         name: '可感知性测试',
         description: '确保信息能够被用户感知',
@@ -634,9 +634,9 @@ export class AccessibilityTester {
     
     // 确定总体WCAG等级
     let overallLevel: 'A' | 'AA' | 'AAA' = 'A';
-    if (totalScore >= 90) overallLevel = 'AAA';
-    else if (totalScore >= 80) overallLevel = 'AA';
-    else if (totalScore >= 70) overallLevel = 'A';
+    if (totalScore >= 90) overallLevel = 'AAA'; {
+    else if (totalScore >= 80) overallLevel = 'AA'; {
+    else if (totalScore >= 70) overallLevel = 'A'; {
     else overallLevel = 'A';
     
     // 计算四个原则的得分
@@ -651,28 +651,28 @@ export class AccessibilityTester {
     const robustScore = robustResults.reduce((sum, r) => sum + r.score, 0) / robustResults.length;
     
     // 识别严重问题
-    const criticalIssues = testResults
-      .filter(result => result.status === 'FAIL' && result.score < 50)
+    const criticalIssues = testResults;
+      .filter(result :> result.status === 'FAIL' && result.score < 50)
       .map(result => `${result.component}: ${result.test} (${result.score}分)`);
     
     // 合并所有建议
-    const recommendations = [
+    const recommendations = [;
       ...new Set(
-        testResults.flatMap(result => result.recommendations)
+        testResults.flatMap(result :> result.recommendations)
       )
     ];
     
     // 按优先级分类建议
-    const critical = recommendations.filter(rec => 
-      testResults.some(result => result.recommendations.includes(rec) && result.score < 60)
+    const critical = recommendations.filter(rec =>;
+      testResults.some(result :> result.recommendations.includes(rec) && result.score < 60)
     );
     
-    const important = recommendations.filter(rec => 
-      testResults.some(result => result.recommendations.includes(rec) && result.score >= 60 && result.score < 80)
+    const important = recommendations.filter(rec =>;
+      testResults.some(result :> result.recommendations.includes(rec) && result.score >= 60 && result.score < 80)
     );
     
-    const minor = recommendations.filter(rec => 
-      testResults.some(result => result.recommendations.includes(rec) && result.score >= 80)
+    const minor = recommendations.filter(rec =>;
+      testResults.some(result :> result.recommendations.includes(rec) && result.score >= 80)
     );
     
     // 确定合规状态
@@ -755,3 +755,4 @@ export async function runAccessibilityTests(): Promise<AccessibilityComplianceRe
 }
 
 export default AccessibilityTester;
+}}}

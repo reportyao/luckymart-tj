@@ -49,7 +49,7 @@ const BOT_CONFIG: ApiConfig = {
 export const getApiConfig = (): ApiConfig => {
   if (process.env.NODE_ENV === 'production') {
     return PRODUCTION_CONFIG;
-  }
+}
   
   if (process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID) {
     return TEST_CONFIG;

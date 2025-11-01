@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
 #!/usr/bin/env tsx
 
 /**
@@ -14,15 +16,13 @@
  * npm run seed:user-analytics
  */
 
-import { PrismaClient } from '@prisma/client';
-import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
 
 // 配置参数
 const TEST_USER_COUNT = 100;
 const DAYS_TO_GENERATE = 30;
-const BEHAVIOR_TYPES = [
+const BEHAVIOR_TYPES = [;
   'login', 'logout', 'registration', 'recharge', 'lottery_participation', 
   'product_purchase', 'withdrawal', 'invitation', 'page_view', 'click'
 ];
@@ -103,9 +103,9 @@ async function generateBehaviorLogs(userIds: string[]): Promise<void> {
       select: { createdAt: true }
     });
     
-    if (!userCreatedAt) continue;
+    if (!userCreatedAt) continue; {
     
-    const daysSinceRegistration = Math.ceil(
+    const daysSinceRegistration = Math.ceil(;
       (Date.now() - userCreatedAt.createdAt.getTime()) / (1000 * 60 * 60 * 24)
     );
     const activeDays = Math.min(daysSinceRegistration, DAYS_TO_GENERATE);
@@ -171,7 +171,7 @@ async function generateEngagementStats(userIds: string[]): Promise<void> {
       date.setHours(0, 0, 0, 0);
       
       // 根据用户活跃度生成不同的统计数据
-      const isActive = Math.random() > 0.3; // 70%的概率活跃
+      const isActive = Math.random() > 0.3; // 70%的概率活跃;
       const baseEngagement = isActive ? getRandomInt(20, 95) : getRandomInt(0, 30);
       
       statsToCreate.push({
@@ -215,10 +215,10 @@ async function generateRetentionAnalysis(userIds: string[]): Promise<void> {
       select: { createdAt: true }
     });
     
-    if (!user) continue;
+    if (!user) continue; {
     
     const registrationDate = user.createdAt;
-    const daysSinceRegistration = Math.ceil(
+    const daysSinceRegistration = Math.ceil(;
       (Date.now() - registrationDate.getTime()) / (1000 * 60 * 60 * 24)
     );
     
@@ -263,11 +263,11 @@ async function generateSpendingAnalysis(userIds: string[]): Promise<void> {
       select: { createdAt: true, totalSpent: true }
     });
     
-    if (!user) continue;
+    if (!user) continue; {
     
     const registrationDate = user.createdAt;
     const totalSpent = user.totalSpent;
-    const daysSinceRegistration = Math.ceil(
+    const daysSinceRegistration = Math.ceil(;
       (Date.now() - registrationDate.getTime()) / (1000 * 60 * 60 * 24)
     );
     
@@ -339,7 +339,7 @@ async function generateUserSegments(userIds: string[]): Promise<void> {
   const segmentData: any[] = [];
   
   // 定义5个不同的用户分群
-  const segments = [
+  const segments = [;
     {
       segment_name: '高价值活跃用户',
       description: '高消费、高活跃度的核心用户群体',
@@ -391,7 +391,7 @@ async function generateUserSegments(userIds: string[]): Promise<void> {
   
   // 为每个分群分配用户
   for (const [index, segment] of segments.entries()) {
-    const userCount = getRandomInt(15, 25); // 每个分群15-25个用户
+    const userCount = getRandomInt(15, 25); // 每个分群15-25个用户;
     const segmentUsers = userIds.slice(0, userCount);
     
     for (const userId of segmentUsers) {
@@ -425,6 +425,7 @@ async function main() {
   try {
     // 清理现有数据（可选）
     console.log('清理现有测试数据...');
+  }
     await prisma.userSegments.deleteMany({});
     await prisma.spendingAnalysis.deleteMany({});
     await prisma.retentionAnalysis.deleteMany({});
@@ -496,3 +497,4 @@ if (require.main === module) {
 }
 
 export { generateTestUsers, generateBehaviorLogs, generateEngagementStats, generateRetentionAnalysis, generateSpendingAnalysis, generateUserSegments };
+}}

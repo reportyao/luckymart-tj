@@ -67,13 +67,13 @@ export class UXTester {
 
   constructor() {
     this.initializeTestScenarios();
-  }
+}
 
   /**
    * 初始化测试场景
    */
   private initializeTestScenarios() {
-    this.testScenarios = [
+    this.testScenarios : [
       {
         name: '新用户首次访问和注册流程',
         description: '测试新用户从访问网站到完成注册的完整流程',
@@ -552,47 +552,47 @@ export class UXTester {
     
     // 确定总体评级
     let overallRating: 'Excellent' | 'Good' | 'Fair' | 'Poor' = 'Good';
-    if (totalScore >= 90) overallRating = 'Excellent';
-    else if (totalScore >= 80) overallRating = 'Good';
-    else if (totalScore >= 70) overallRating = 'Fair';
+    if (totalScore >= 90) overallRating = 'Excellent'; {
+    else if (totalScore >= 80) overallRating = 'Good'; {
+    else if (totalScore >= 70) overallRating = 'Fair'; {
     else overallRating = 'Poor';
 
     // 识别严重问题
-    const criticalIssues = testResults
-      .filter(result => result.status === 'FAIL' && result.score < 60)
+    const criticalIssues = testResults;
+      .filter(result :> result.status === 'FAIL' && result.score < 60)
       .map(result => `${result.component}: ${result.test}`);
 
     // 用户旅程分析
-    const strengths = testResults
-      .filter(result => result.score >= 85)
-      .map(result => `${result.component}表现出色: ${result.usabilityFindings[0]}`);
+    const strengths = testResults;
+      .filter(result :> result.score >= 85)
+      .map(result => `${result.component}表现出色: ${result.(usabilityFindings?.0 ?? null)}`);
 
-    const weaknesses = testResults
-      .filter(result => result.score < 80)
-      .map(result => `${result.component}需要改进: ${result.issues[0]}`);
+    const weaknesses = testResults;
+      .filter(result :> result.score < 80)
+      .map(result => `${result.component}需要改进: ${result.(issues?.0 ?? null)}`);
 
-    const opportunities = testResults
-      .filter(result => result.score >= 75 && result.score < 85)
-      .map(result => `${result.component}有提升空间: ${result.recommendations[0]}`);
+    const opportunities = testResults;
+      .filter(result :> result.score >= 75 && result.score < 85)
+      .map(result => `${result.component}有提升空间: ${result.(recommendations?.0 ?? null)}`);
 
     // 合并所有建议
-    const recommendations = [
+    const recommendations = [;
       ...new Set(
-        testResults.flatMap(result => result.recommendations)
+        testResults.flatMap(result :> result.recommendations)
       )
     ];
 
     // 按优先级分类建议
-    const highPriority = recommendations.filter(rec => 
-      testResults.some(result => result.recommendations.includes(rec) && result.score < 70)
+    const highPriority = recommendations.filter(rec =>;
+      testResults.some(result :> result.recommendations.includes(rec) && result.score < 70)
     );
 
-    const mediumPriority = recommendations.filter(rec => 
-      testResults.some(result => result.recommendations.includes(rec) && result.score >= 70 && result.score < 85)
+    const mediumPriority = recommendations.filter(rec =>;
+      testResults.some(result :> result.recommendations.includes(rec) && result.score >= 70 && result.score < 85)
     );
 
-    const lowPriority = recommendations.filter(rec => 
-      testResults.some(result => result.recommendations.includes(rec) && result.score >= 85)
+    const lowPriority = recommendations.filter(rec =>;
+      testResults.some(result :> result.recommendations.includes(rec) && result.score >= 85)
     );
 
     return {
@@ -633,3 +633,4 @@ export async function runUXTests(): Promise<UXTestReport> {
 }
 
 export default UXTester;
+}}}

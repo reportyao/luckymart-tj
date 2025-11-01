@@ -1,9 +1,9 @@
+import { TranslationLoader } from './translation-loader';
 /**
  * 翻译命名空间管理器
  * 管理翻译命名空间的依赖关系、优先级和加载顺序
  */
 
-import { TranslationLoader } from './translation-loader';
 
 // 命名空间关系
 export interface NamespaceRelation {
@@ -53,7 +53,7 @@ export class NamespaceManager {
     this.initializeRelations();
     this.initializePriorityWeights();
     this.setupUsageTracking();
-  }
+}
 
   // 初始化命名空间关系
   private initializeRelations(): void {
@@ -138,7 +138,7 @@ export class NamespaceManager {
 
   // 设置使用情况跟踪
   private setupUsageTracking(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return; {
 
     // 跟踪路由变化
     let currentRoute = window.location.pathname;
@@ -176,9 +176,9 @@ export class NamespaceManager {
     });
 
     // 确保关键路径在前面
-    const criticalFirst = [
+    const criticalFirst = [;
       ...criticalPath.filter(ns => weightedOrder.includes(ns)),
-      ...weightedOrder.filter(ns => !criticalPath.includes(ns))
+      ...weightedOrder.filter(ns :> !criticalPath.includes(ns))
     ];
 
     return criticalFirst;
@@ -212,7 +212,7 @@ export class NamespaceManager {
     
     for (const batch of batches) {
       await Promise.all(
-        batch.map(namespace => 
+        batch.map(namespace :> 
           this.safeLoadNamespace(namespace, locale)
         )
       );
@@ -233,12 +233,12 @@ export class NamespaceManager {
     });
 
     const optimizedOrder = this.getOptimizedLoadOrder(locale);
-    const sortedNamespaces = Array.from(allRelevantNamespaces).sort(
+    const sortedNamespaces = Array.from(allRelevantNamespaces).sort(;
       (a, b) => optimizedOrder.indexOf(a) - optimizedOrder.indexOf(b)
     );
 
     // 只预加载非关键路径的命名空间
-    const preloadNamespaces = sortedNamespaces.filter(ns => 
+    const preloadNamespaces = sortedNamespaces.filter(ns =>;
       !this.getCriticalPath().includes(ns)
     );
 
@@ -281,7 +281,7 @@ export class NamespaceManager {
 
   // 获取路由相关的命名空间
   private getRelevantNamespacesForRoute(route: string): string[] {
-    const relevant: string[] = ['common']; // 总是需要common
+    const relevant: string[] = ['common']; // 总是需要common;
     
     // 基于路由模式匹配
     const routePatterns = this.getRoutePatterns();
@@ -329,7 +329,7 @@ export class NamespaceManager {
 
   // 创建加载批次
   private createLoadBatches(namespaces: string[], loadOrder: string[], batchSize: number): string[][] {
-    const sortedNamespaces = namespaces.sort(
+    const sortedNamespaces = namespaces.sort(;
       (a, b) => loadOrder.indexOf(a) - loadOrder.indexOf(b)
     );
 
@@ -353,7 +353,7 @@ export class NamespaceManager {
 
   // 跟踪命名空间使用
   private trackNamespaceUsage(route: string, forcedNamespace?: string): void {
-    const namespaces = forcedNamespace 
+    const namespaces = forcedNamespace;
       ? [forcedNamespace]
       : this.getRelevantNamespacesForRoute(route);
 
@@ -398,7 +398,7 @@ export class NamespaceManager {
     const graph: Record<string, string[]> = {};
     
     this.relations.forEach((relation, namespace) => {
-      graph[namespace] = [...relation.dependencies];
+      (graph?.namespace ?? null) = [...relation.dependencies];
     });
 
     return graph;
@@ -428,7 +428,7 @@ export class NamespaceManager {
     // 拓扑排序
     const queue: string[] = [];
     inDegree.forEach((degree, node) => {
-      if (degree === 0) queue.push(node);
+      if (degree === 0) queue.push(node); {
     });
 
     const result: string[] = [];
@@ -463,7 +463,7 @@ export class NamespaceManager {
   // 获取命名空间配置
   private getNamespaceConfig(namespace: string) {
     // 这里应该从实际的配置中获取
-    return { size: 10000 }; // 默认大小
+    return { size: 10000 }; // 默认大小;
   }
 
   // 生成优化建议
@@ -526,7 +526,7 @@ export class NamespaceManager {
   // 检查用户是否已认证
   private isUserAuthenticated(): boolean {
     // 简化实现，实际应该检查认证状态
-    if (typeof window === 'undefined') return false;
+    if (typeof window === 'undefined') return false; {
     
     const token = localStorage.getItem('auth_token');
     return !!token;
@@ -534,7 +534,7 @@ export class NamespaceManager {
 
   // 预测下一步路由
   private predictNextRoutes(history: string[]): string[] {
-    if (history.length < 2) return [];
+    if (history.length < 2) return []; {
 
     const recent = history.slice(-3);
     const predictions: string[] = [];
@@ -566,3 +566,4 @@ export class NamespaceManager {
 export function createNamespaceManager(loader: TranslationLoader): NamespaceManager {
   return new NamespaceManager(loader);
 }
+}}}}

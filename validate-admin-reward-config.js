@@ -72,7 +72,7 @@ class AdminRewardConfigValidator {
     }
 
     const content = fs.readFileSync(filePath, 'utf8');
-    const requiredImports = [
+    const requiredImports = [;
       'import { getAdminFromRequest } from \'@/lib/auth\'',
       'import { prisma } from \'@/lib/prisma\'',
       'import { getLogger } from \'@/lib/logger\'',
@@ -102,7 +102,7 @@ class AdminRewardConfigValidator {
     }
 
     const content = fs.readFileSync(filePath, 'utf8');
-    const requiredFunctions = [
+    const requiredFunctions = [;
       'export async function GET',
       'validateQueryParams',
       'getRewardConfigs',
@@ -133,7 +133,7 @@ class AdminRewardConfigValidator {
     }
 
     const content = fs.readFileSync(filePath, 'utf8');
-    const requiredFields = [
+    const requiredFields = [;
       'id',
       'config_key',
       'config_name',
@@ -170,7 +170,7 @@ class AdminRewardConfigValidator {
     }
 
     const content = fs.readFileSync(filePath, 'utf8');
-    const errorHandlingFeatures = [
+    const errorHandlingFeatures = [;
       'try.*catch',
       'catch.*error',
       'NextResponse.json.*error',

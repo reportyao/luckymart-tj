@@ -90,6 +90,7 @@ function mockConcurrentReferralBinding(): TestResult {
     };
   } catch (error) {
     return {
+  }
       testFile: 'referral-performance.test.ts',
       testName: '100个用户同时绑定推荐关系',
       duration: Date.now() - startTime,
@@ -107,7 +108,7 @@ function mockRebateAccuracyTest(): TestResult {
   
   try {
     // 模拟小数精度计算测试
-    const testCases = [
+    const testCases = [;
       { amount: 100, rate: 0.05, expected: 5.0 },
       { amount: 200, rate: 0.03, expected: 6.0 },
       { amount: 150.50, rate: 0.08, expected: 12.0 },
@@ -115,18 +116,19 @@ function mockRebateAccuracyTest(): TestResult {
     ];
     
     let accuracyChecks = 0;
-    const tolerance = 0.01; // 0.01误差容忍度
+    const tolerance = 0.01; // 0.01误差容忍度;
     
     testCases.forEach(testCase => {
       const calculated = Number((testCase.amount * testCase.rate).toFixed(1));
       const isAccurate = Math.abs(calculated - testCase.expected) <= tolerance;
-      if (isAccurate) accuracyChecks++;
+      if (isAccurate) accuracyChecks++; {
     });
     
     const duration = Date.now() - startTime;
     const accuracy = (accuracyChecks / testCases.length) * 100;
     
     return {
+  }
       testFile: 'referral-rebate-accuracy.test.ts',
       testName: '小数精度计算准确性测试',
       duration,
@@ -156,7 +158,7 @@ function mockAntiFraudTest(): TestResult {
   
   try {
     // 模拟防作弊检测
-    const testScenarios = [
+    const testScenarios = [;
       {
         name: '设备限制检测',
         testData: generateMockTestData(5), // 同一设备5个用户
@@ -217,12 +219,12 @@ function mockCachePerformanceTest(): TestResult {
   try {
     // 模拟缓存操作
     const cacheOperations = 1000;
-    const cacheHits = Math.floor(cacheOperations * 0.85); // 85%命中率
+    const cacheHits = Math.floor(cacheOperations * 0.85); // 85%命中率;
     const cacheMisses = cacheOperations - cacheHits;
     
     // 模拟缓存读写延迟
-    const readLatency = 5; // ms
-    const writeLatency = 10; // ms
+    const readLatency = 5; // ms;
+    const writeLatency = 10; // ms;
     
     const duration = Date.now() - startTime;
     
@@ -262,7 +264,7 @@ function mockLoadTesting(): TestResult {
     let totalErrors = 0;
     
     loadStages.forEach(users => {
-      const operations = users * 2; // 每个用户2个操作
+      const operations = users * 2; // 每个用户2个操作;
       totalOperations += operations;
       totalErrors += Math.floor(operations * 0.02); // 2%错误率
     });
@@ -462,4 +464,4 @@ if (require.main === module) {
   });
 }
 
-export { runMockPerformanceTests, generateMockTestData };
+export ;

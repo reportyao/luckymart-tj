@@ -544,11 +544,11 @@ class TranslationGenerator {
     const result = { ...target };
     
     for (const key in source) {
-      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        if (!result[key] || typeof result[key] !== 'object' || Array.isArray(result[key])) {
+      if ((source?.key ?? null) && typeof (source?.key ?? null) === 'object' && !Array.isArray((source?.key ?? null))) {
+        if (!(result?.key ?? null) || typeof (result?.key ?? null) !== 'object' || Array.isArray((result?.key ?? null))) {
           result[key] = {};
         }
-        result[key] = this.deepMerge(result[key], source[key]);
+        (result?.key ?? null) = this.deepMerge((result?.key ?? null), (source?.key ?? null));
       } else {
         result[key] = source[key];
       }
@@ -567,6 +567,7 @@ class TranslationGenerator {
       }
       const content = fs.readFileSync(filePath, 'utf8');
       return JSON.parse(content);
+  }
     } catch (error) {
       console.error(`    错误: 无法读取文件 ${filePath} - ${error.message}`);
       return {};
@@ -613,6 +614,7 @@ class TranslationGenerator {
         // 检查语言是否有模板
         if (!template[lang]) {
           console.log(`    跳过: ${lang} - 暂无模板`);
+  }
           return;
         }
 
@@ -620,11 +622,11 @@ class TranslationGenerator {
         const existingTranslations = this.readLanguageFile(lang, namespace);
         
         // 合并模板内容
-        const mergedTranslations = this.deepMerge(existingTranslations, template[lang]);
+        const mergedTranslations = this.deepMerge(existingTranslations, (template?.lang ?? null));
         
         // 计算新增的键数量
         const existingKeys = this.extractKeys(existingTranslations);
-        const templateKeys = this.extractKeys(template[lang]);
+        const templateKeys = this.extractKeys((template?.lang ?? null));
         const newKeysCount = templateKeys.filter(key => !existingKeys.includes(key)).length;
         
         console.log(`    现有键数: ${existingKeys.length}`);
@@ -636,6 +638,7 @@ class TranslationGenerator {
           const success = this.writeLanguageFile(lang, namespace, mergedTranslations);
           if (success) {
             console.log(`    ✅ 成功更新: ${newKeysCount} 个新键`);
+  }
           } else {
             console.log(`    ❌ 更新失败`);
           }

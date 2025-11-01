@@ -19,7 +19,7 @@ if (fs.existsSync(apiFilePath)) {
   const fileContent = fs.readFileSync(apiFilePath, 'utf8');
   
   // 验证关键功能
-  const checks = [
+  const checks = [;
     { name: '导入必要的模块', pattern: /import.*from ['"]@\/lib\/auth['"]/ },
     { name: 'Telegram认证中间件', pattern: /withAuth/ },
     { name: '生成邀请码函数', pattern: /generateUniqueReferralCode/ },
@@ -45,7 +45,7 @@ if (fs.existsSync(apiFilePath)) {
   console.log('\n📊 API功能分析:');
   
   // 检查具体功能
-  const features = [
+  const features = [;
     { 
       name: '邀请码生成逻辑', 
       found: fileContent.includes('generateUniqueReferralCode') && 
@@ -120,7 +120,7 @@ if (fs.existsSync(apiFilePath)) {
   console.log('})');
   console.log('.then(res => res.json())');
   console.log('.then(data => {');
-  console.log('  if (data.success) {');
+  console.log('  if (data.success) {'); {
   console.log('    console.log("邀请码:", data.data.referralCode);');
   console.log('    console.log("分享链接:", data.data.shareLinks);');
   console.log('    console.log("分享文案:", data.data.shareTexts);');
@@ -139,3 +139,4 @@ console.log('3. 进行实际API测试');
 console.log('4. 集成到前端应用中');
 
 console.log('\n✨ API创建完成!');
+}

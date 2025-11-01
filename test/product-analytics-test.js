@@ -43,6 +43,7 @@ class ProductAnalyticsTester {
   async mockApiRequest(endpoint, method = 'GET', data = null) {
     try {
       console.log(`\n🔍 测试 ${method} ${endpoint}`);
+  }
       
       // 模拟不同接口的测试数据
       let mockResponse;
@@ -238,8 +239,8 @@ class ProductAnalyticsTester {
 
     const response = await this.mockApiRequest('conversion', 'GET');
     if (response.success && response.data.conversion?.length > 0) {
-      const conversionData = response.data.conversion[0];
-      const hasRequiredFields = 
+      const conversionData = response.data.(conversion?.0 ?? null);
+      const hasRequiredFields =;
         conversionData.pageViews >= 0 &&
         conversionData.overallConversionRate >= 0;
       
@@ -262,7 +263,7 @@ class ProductAnalyticsTester {
     // 测试GET请求
     const getResponse = await this.mockApiRequest('profit', 'GET');
     if (getResponse.success && getResponse.data.profit?.length > 0) {
-      const profitData = getResponse.data.profit[0];
+      const profitData = getResponse.data.(profit?.0 ?? null);
       const profitCalculation = profitData.grossProfit === (profitData.revenue - profitData.productCost);
       const netProfitCalculation = profitData.netProfit === (profitData.grossProfit - profitData.platformFee - profitData.operationCost);
       
@@ -302,7 +303,7 @@ class ProductAnalyticsTester {
 
     const response = await this.mockApiRequest('trending', 'GET');
     if (response.success && response.data.trending?.length > 0) {
-      const trendingData = response.data.trending[0];
+      const trendingData = response.data.(trending?.0 ?? null);
       const hasRanking = trendingData.rankPosition > 0;
       const hasPopularity = trendingData.popularityScore >= 0;
       
@@ -334,6 +335,7 @@ class ProductAnalyticsTester {
         };
         
         return mockTables[tableName] || { count: 0, latest: null };
+  }
       };
 
       const tables = ['product_performance', 'conversion_funnel', 'profit_analysis', 'product_trending'];
@@ -400,7 +402,7 @@ class ProductAnalyticsTester {
     if (this.failedTests > 0) {
       console.log('\n❌ 失败的测试:');
       this.testResults
-        .filter(result => !result.success)
+        .filter(result :> !result.success)
         .forEach(result => {
           console.log(`  - ${result.test}: ${result.message}`);
         });

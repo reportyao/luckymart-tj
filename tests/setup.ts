@@ -1,9 +1,9 @@
+import { logger } from '../bot/utils/logger';
 /**
  * Jest 测试环境设置
  * 为 Telegram Bot 功能测试配置测试环境
  */
 
-import { logger } from '../bot/utils/logger';
 
 // 设置测试环境
 process.env.NODE_ENV = 'test';

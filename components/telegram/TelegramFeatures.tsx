@@ -1,3 +1,6 @@
+import React, { useCallback, useState } from 'react';
+import { useTelegram } from '@/contexts/TelegramContext';
+import { TelegramMainButtonParams } from '@/types/telegram';
 /**
  * Telegram特色功能组件
  * 包括分享、保存、支付、通知等Telegram特有功能
@@ -5,20 +8,17 @@
 
 'use client';
 
-import React, { useCallback, useState } from 'react';
-import { useTelegram } from '@/contexts/TelegramContext';
-import { TelegramMainButtonParams } from '@/types/telegram';
 
 // Telegram分享组件
-interface TelegramShareProps {
+interface TelegramShareProps {}
   url?: string;
   text?: string;
   title?: string;
   children: React.ReactNode;
   className?: string;
-}
 
-export const TelegramShare: React.FC<TelegramShareProps> = ({
+
+export const TelegramShare: React.FC<TelegramShareProps> = ({}
   url,
   text,
   title,
@@ -27,22 +27,22 @@ export const TelegramShare: React.FC<TelegramShareProps> = ({
 }) => {
   const { shareContent, hapticFeedback } = useTelegram();
 
-  const handleShare = useCallback(async () => {
+  const handleShare = useCallback(async () => {}
     hapticFeedback('medium');
-    try {
-      await shareContent({
+    try {}
+      await shareContent({}
         url: url || window.location.href,
         text: text || '来看看这个很棒的内容！',
         title: title || 'LuckyMart TJ',
       });
     } catch (error) {
       console.error('分享失败:', error);
-    }
+
   }, [shareContent, hapticFeedback, url, text, title]);
 
-  return (
+  return (;
     <button
-      className={`telegram-share ${className}`}
+      className="{`telegram-share" ${className}`}
       onClick={handleShare}
     >
       {children}
@@ -51,14 +51,14 @@ export const TelegramShare: React.FC<TelegramShareProps> = ({
 };
 
 // Telegram保存组件
-interface TelegramSaveProps {
+interface TelegramSaveProps {}
   data: any;
   children: React.ReactNode;
   className?: string;
   showConfirm?: boolean;
-}
 
-export const TelegramSave: React.FC<TelegramSaveProps> = ({
+
+export const TelegramSave: React.FC<TelegramSaveProps> = ({}
   data,
   children,
   className = '',
@@ -67,29 +67,29 @@ export const TelegramSave: React.FC<TelegramSaveProps> = ({
   const { saveToTelegram, showNotification, hapticFeedback } = useTelegram();
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = useCallback(async () => {
-    if (isSaving) return;
+  const handleSave = useCallback(async () => {}
+    if (isSaving) return; {}
     
     hapticFeedback('light');
     setIsSaving(true);
 
-    try {
-      await saveToTelegram(data, () => {
-        if (showConfirm) {
+    try {}
+      await saveToTelegram(data, () => {}
+        if (showConfirm) {}
           showNotification('success', '已保存到Telegram');
-        }
+
       });
     } catch (error) {
       console.error('保存失败:', error);
       showNotification('error', '保存失败');
     } finally {
       setIsSaving(false);
-    }
+    
   }, [data, saveToTelegram, showNotification, hapticFeedback, showConfirm, isSaving]);
 
-  return (
+  return (;
     <button
-      className={`telegram-save ${isSaving ? 'saving' : ''} ${className}`}
+      className="{`telegram-save" ${isSaving ? 'saving' : ''} ${className}`}
       onClick={handleSave}
       disabled={isSaving}
     >
@@ -99,7 +99,7 @@ export const TelegramSave: React.FC<TelegramSaveProps> = ({
 };
 
 // Telegram主按钮组件
-interface TelegramMainButtonComponentProps {
+interface TelegramMainButtonComponentProps {}
   text: string;
   onClick: () => void;
   disabled?: boolean;
@@ -107,9 +107,9 @@ interface TelegramMainButtonComponentProps {
   className?: string;
   color?: string;
   textColor?: string;
-}
 
-export const TelegramMainButtonComponent: React.FC<TelegramMainButtonComponentProps> = ({
+
+export const TelegramMainButtonComponent: React.FC<TelegramMainButtonComponentProps> = ({}
   text,
   onClick,
   disabled = false,
@@ -121,8 +121,8 @@ export const TelegramMainButtonComponent: React.FC<TelegramMainButtonComponentPr
   const { showMainButton, hideMainButton, hapticFeedback } = useTelegram();
 
   // 更新按钮参数
-  React.useEffect(() => {
-    const params: TelegramMainButtonParams = {
+  React.useEffect(() => {}
+    const params: TelegramMainButtonParams = {}
       text,
       color: color || '#007bff',
       text_color: textColor || '#ffffff',
@@ -132,13 +132,13 @@ export const TelegramMainButtonComponent: React.FC<TelegramMainButtonComponentPr
 
     showMainButton(params);
 
-    return () => {
+    return () => {}
       hideMainButton();
     };
   }, [text, color, textColor, disabled, loading, showMainButton, hideMainButton]);
 
-  const handleClick = useCallback(() => {
-    if (disabled || loading) return;
+  const handleClick = useCallback(() => {}
+    if (disabled || loading) return; {}
     
     hapticFeedback('medium');
     onClick();
@@ -146,18 +146,18 @@ export const TelegramMainButtonComponent: React.FC<TelegramMainButtonComponentPr
 
   // 如果是Telegram环境，使用Telegram主按钮
   // 否则渲染普通的按钮组件
-  return null; // Telegram环境不需要渲染实际的按钮
+  return null; // Telegram环境不需要渲染实际的按钮;
 };
 
 // Telegram通知组件
-interface TelegramNotificationProps {
+interface TelegramNotificationProps {}
   type: 'success' | 'error' | 'warning' | 'info';
   message: string;
   duration?: number;
   className?: string;
-}
 
-export const TelegramNotification: React.FC<TelegramNotificationProps> = ({
+
+export const TelegramNotification: React.FC<TelegramNotificationProps> = ({}
   type,
   message,
   duration = 3000,
@@ -166,16 +166,16 @@ export const TelegramNotification: React.FC<TelegramNotificationProps> = ({
   const { showNotification, hapticFeedback } = useTelegram();
   const [isVisible, setIsVisible] = useState(true);
 
-  React.useEffect(() => {
+  React.useEffect(() => {}
     hapticFeedback(type === 'error' ? 'heavy' : 'light');
     
     // 如果是错误，显示弹窗
-    if (type === 'error') {
+    if (type === 'error') {}
       showNotification('error', message);
-    }
+
 
     // 自动隐藏
-    const timer = setTimeout(() => {
+    const timer = setTimeout(() => {}
       setIsVisible(false);
     }, duration);
 
@@ -183,16 +183,16 @@ export const TelegramNotification: React.FC<TelegramNotificationProps> = ({
   }, [message, type, duration, showNotification, hapticFeedback]);
 
   // 错误类型在Telegram环境中通过弹窗显示，不需要渲染UI
-  if (type === 'error') {
+  if (type === 'error') {}
     return null;
-  }
+  
 
-  if (!isVisible) return null;
+  if (!isVisible) return null; {}
 
-  return (
-    <div className={`telegram-notification ${type} ${className}`}>
-      <div className="notification-content">
-        <span className="notification-icon">
+  return (;
+    <div className="{`telegram-notification" ${type} ${className}`}>
+      <div className:"notification-content">
+        <span className:"notification-icon">
           {type === 'success' ? '✓' : type === 'warning' ? '⚠' : 'ℹ'}
         </span>
         <span className="notification-message">{message}</span>
@@ -202,16 +202,16 @@ export const TelegramNotification: React.FC<TelegramNotificationProps> = ({
 };
 
 // Telegram支付组件
-interface TelegramPaymentProps {
+interface TelegramPaymentProps {}
   price: number;
   description: string;
   onSuccess?: () => void;
   onError?: (error: string) => void;
   children: React.ReactNode;
   className?: string;
-}
 
-export const TelegramPayment: React.FC<TelegramPaymentProps> = ({
+
+export const TelegramPayment: React.FC<TelegramPaymentProps> = ({}
   price,
   description,
   onSuccess,
@@ -222,16 +222,16 @@ export const TelegramPayment: React.FC<TelegramPaymentProps> = ({
   const { webApp, hapticFeedback, showNotification } = useTelegram();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handlePayment = useCallback(async () => {
-    if (!webApp) {
+  const handlePayment = useCallback(async () => {}
+    if (!webApp) {}
       showNotification('error', 'Telegram环境不可用');
       return;
-    }
+
 
     hapticFeedback('medium');
     setIsProcessing(true);
 
-    try {
+    try {}
       // 模拟支付流程
       // 实际应用中需要对接Telegram Stars支付API
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -245,12 +245,12 @@ export const TelegramPayment: React.FC<TelegramPaymentProps> = ({
       onError?.(errorMessage);
     } finally {
       setIsProcessing(false);
-    }
+    
   }, [webApp, hapticFeedback, showNotification, onSuccess, onError]);
 
-  return (
+  return (;
     <button
-      className={`telegram-payment ${isProcessing ? 'processing' : ''} ${className}`}
+      className="{`telegram-payment" ${isProcessing ? 'processing' : ''} ${className}`}
       onClick={handlePayment}
       disabled={isProcessing}
     >
@@ -260,14 +260,14 @@ export const TelegramPayment: React.FC<TelegramPaymentProps> = ({
 };
 
 // Telegram机器人通知组件
-interface TelegramBotNotificationProps {
+interface TelegramBotNotificationProps {}
   message: string;
   type?: 'info' | 'success' | 'warning' | 'error';
   userId?: number;
   className?: string;
-}
 
-export const TelegramBotNotification: React.FC<TelegramBotNotificationProps> = ({
+
+export const TelegramBotNotification: React.FC<TelegramBotNotificationProps> = ({}
   message,
   type = 'info',
   userId,
@@ -276,10 +276,10 @@ export const TelegramBotNotification: React.FC<TelegramBotNotificationProps> = (
   const { user, showNotification, hapticFeedback } = useTelegram();
   const [isSent, setIsSent] = useState(false);
 
-  const sendToBot = useCallback(async () => {
+  const sendToBot = useCallback(async () => {}
     hapticFeedback('light');
     
-    try {
+    try {}
       // 实际应用中需要调用Bot API
       console.log('发送到机器人:', { message, userId: userId || user?.id, type });
       
@@ -288,12 +288,12 @@ export const TelegramBotNotification: React.FC<TelegramBotNotificationProps> = (
     } catch (error) {
       console.error('发送失败:', error);
       showNotification('error', '发送失败');
-    }
+
   }, [message, userId, user?.id, hapticFeedback, showNotification]);
 
-  return (
+  return (;
     <button
-      className={`telegram-bot-notification ${isSent ? 'sent' : ''} ${className}`}
+      className="{`telegram-bot-notification" ${isSent ? 'sent' : ''} ${className}`}
       onClick={sendToBot}
       disabled={isSent}
     >
@@ -303,15 +303,15 @@ export const TelegramBotNotification: React.FC<TelegramBotNotificationProps> = (
 };
 
 // Telegram主题按钮组件
-interface TelegramThemeButtonProps {
+interface TelegramThemeButtonProps {}
   children: React.ReactNode;
   onClick?: () => void;
   variant?: 'primary' | 'secondary' | 'outline';
   className?: string;
   fullWidth?: boolean;
-}
 
-export const TelegramThemeButton: React.FC<TelegramThemeButtonProps> = ({
+
+export const TelegramThemeButton: React.FC<TelegramThemeButtonProps> = ({}
   children,
   onClick,
   variant = 'primary',
@@ -320,27 +320,27 @@ export const TelegramThemeButton: React.FC<TelegramThemeButtonProps> = ({
 }) => {
   const { hapticFeedback, theme } = useTelegram();
 
-  const handleClick = useCallback(() => {
+  const handleClick = useCallback(() => {}
     hapticFeedback('light');
     onClick?.();
   }, [hapticFeedback, onClick]);
 
-  const buttonClasses = [
+  const buttonClasses = [;
     'telegram-theme-button',
     `variant-${variant}`,
     fullWidth && 'full-width',
     className,
   ].filter(Boolean).join(' ');
 
-  return (
+  return (;
     <button
-      className={buttonClasses}
+      className="{buttonClasses}"
       onClick={handleClick}
-      style={{
+      style={{}}
         backgroundColor: variant === 'primary' ? theme.colors.primary : 'transparent',
         color: variant === 'primary' ? theme.colors.background : theme.colors.foreground,
         borderColor: theme.colors.border,
-      }}
+
     >
       {children}
     </button>

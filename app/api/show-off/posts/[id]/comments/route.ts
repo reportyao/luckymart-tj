@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { auth } from '@/lib/auth';
-import { getLogger } from '@/lib/logger';
 
 const prisma = new PrismaClient();
 
@@ -17,15 +16,15 @@ export async function GET(
     const limit = parseInt(searchParams.get('limit') || '20');
 
     if (!postId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '晒单ID不能为空' },
         { status: 400 }
       );
-    }
+}
 
     const skip = (page - 1) * limit;
 
-    const [comments, total] = await Promise.all([
+    const [comments, total] = await Promise.all([;
       prisma.showOffComments.findMany({
         where: {
           postId,
@@ -70,7 +69,7 @@ export async function GET(
     ]);
 
     // 格式化返回数据
-    const formattedComments = comments.map((comment : any) => ({
+    const formattedComments = comments.map(((comment : any) : any) => ({
       id: comment.id,
       user: {
         id: comment.user.id,
@@ -81,7 +80,7 @@ export async function GET(
       content: comment.content,
       likeCount: comment.likeCount,
       createdAt: comment.createdAt,
-      replies: comment.showOffComments.map((reply : any) => ({
+      replies: comment.showOffComments.map(((reply : any) : any) => ({
         id: reply.id,
         user: {
           id: reply.user.id,
@@ -117,7 +116,7 @@ export async function GET(
       requestId,
       endpoint: request.url
     });'获取评论列表失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '获取评论列表失败' },
       { status: 500 }
     );
@@ -134,14 +133,14 @@ export async function POST(
     const session = await auth();
 
     if (!session?.user) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '请先登录' },
         { status: 401 }
       );
-    }
+}
 
     if (!postId) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '晒单ID不能为空' },
         { status: 400 }
       );
@@ -152,14 +151,14 @@ export async function POST(
 
     // 验证必需字段
     if (!content || content.trim().length === 0) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '评论内容不能为空' },
         { status: 400 }
       );
     }
 
     if (content.length > 500) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '评论内容不能超过500字符' },
         { status: 400 }
       );
@@ -171,7 +170,7 @@ export async function POST(
     });
 
     if (!post || post.status !== 'approved') {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '晒单不存在或未审核通过' },
         { status: 404 }
       );
@@ -184,7 +183,7 @@ export async function POST(
       });
 
       if (!parentComment || parentComment.postId !== postId) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { success: false, error: '父评论不存在' },
           { status: 400 }
         );
@@ -253,7 +252,7 @@ export async function POST(
       requestId,
       endpoint: request.url
     });'发表评论失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '发表评论失败' },
       { status: 500 }
     );

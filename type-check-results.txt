@@ -1,0 +1,869 @@
+
+> luckymart-tj@0.1.0 type-check
+> tsc --noEmit --strict
+
+app/api/admin/analytics/business/route.ts(9,14): error TS1005: ':' expected.
+app/api/admin/analytics/business/route.ts(28,3): error TS1005: ',' expected.
+app/api/admin/analytics/business/route.ts(30,16): error TS1005: ':' expected.
+app/api/admin/analytics/business/route.ts(30,33): error TS1005: ',' expected.
+app/api/admin/analytics/business/route.ts(30,48): error TS1005: ',' expected.
+app/api/admin/analytics/business/route.ts(77,1): error TS1005: ',' expected.
+app/api/admin/analytics/financial/route.ts(9,14): error TS1005: ':' expected.
+app/api/admin/analytics/financial/route.ts(28,3): error TS1005: ',' expected.
+app/api/admin/analytics/financial/route.ts(30,16): error TS1005: ':' expected.
+app/api/admin/analytics/financial/route.ts(30,33): error TS1005: ',' expected.
+app/api/admin/analytics/financial/route.ts(30,48): error TS1005: ',' expected.
+app/api/admin/analytics/financial/route.ts(84,1): error TS1005: ',' expected.
+app/api/admin/analytics/realtime/route.ts(9,14): error TS1005: ':' expected.
+app/api/admin/analytics/realtime/route.ts(28,3): error TS1005: ',' expected.
+app/api/admin/analytics/realtime/route.ts(30,16): error TS1005: ':' expected.
+app/api/admin/analytics/realtime/route.ts(30,33): error TS1005: ',' expected.
+app/api/admin/analytics/realtime/route.ts(30,48): error TS1005: ',' expected.
+app/api/admin/analytics/realtime/route.ts(58,1): error TS1005: ',' expected.
+app/api/admin/analytics/users/route.ts(9,14): error TS1005: ':' expected.
+app/api/admin/analytics/users/route.ts(28,3): error TS1005: ',' expected.
+app/api/admin/analytics/users/route.ts(30,16): error TS1005: ':' expected.
+app/api/admin/analytics/users/route.ts(30,33): error TS1005: ',' expected.
+app/api/admin/analytics/users/route.ts(30,48): error TS1005: ',' expected.
+app/api/admin/analytics/users/route.ts(76,1): error TS1005: ',' expected.
+app/api/admin/costs/daily/route.ts(93,32): error TS1005: ';' expected.
+app/api/admin/costs/daily/route.ts(139,7): error TS1128: Declaration or statement expected.
+app/api/admin/costs/daily/route.ts(139,9): error TS1005: 'try' expected.
+app/api/admin/costs/daily/route.ts(143,35): error TS1005: ';' expected.
+app/api/admin/costs/daily/route.ts(149,7): error TS1128: Declaration or statement expected.
+app/api/admin/costs/daily/route.ts(149,8): error TS1128: Declaration or statement expected.
+app/api/admin/costs/daily/route.ts(150,1): error TS1128: Declaration or statement expected.
+app/api/admin/costs/daily/route.ts(195,28): error TS1005: ';' expected.
+app/api/admin/costs/daily/route.ts(216,3): error TS1128: Declaration or statement expected.
+app/api/admin/costs/daily/route.ts(216,5): error TS1005: 'try' expected.
+app/api/admin/costs/daily/route.ts(220,31): error TS1005: ';' expected.
+app/api/admin/costs/daily/route.ts(226,3): error TS1128: Declaration or statement expected.
+app/api/admin/costs/daily/route.ts(226,4): error TS1128: Declaration or statement expected.
+app/api/admin/costs/daily/route.ts(227,1): error TS1128: Declaration or statement expected.
+app/api/admin/costs/roi/route.ts(107,33): error TS1005: ';' expected.
+app/api/admin/costs/roi/route.ts(179,7): error TS1128: Declaration or statement expected.
+app/api/admin/costs/roi/route.ts(179,9): error TS1005: 'try' expected.
+app/api/admin/costs/roi/route.ts(183,34): error TS1005: ';' expected.
+app/api/admin/costs/roi/route.ts(189,7): error TS1128: Declaration or statement expected.
+app/api/admin/costs/roi/route.ts(189,8): error TS1128: Declaration or statement expected.
+app/api/admin/costs/roi/route.ts(190,1): error TS1128: Declaration or statement expected.
+app/api/admin/costs/roi/route.ts(235,29): error TS1005: ';' expected.
+app/api/admin/costs/roi/route.ts(259,3): error TS1128: Declaration or statement expected.
+app/api/admin/costs/roi/route.ts(259,5): error TS1005: 'try' expected.
+app/api/admin/costs/roi/route.ts(263,30): error TS1005: ';' expected.
+app/api/admin/costs/roi/route.ts(269,3): error TS1128: Declaration or statement expected.
+app/api/admin/costs/roi/route.ts(269,4): error TS1128: Declaration or statement expected.
+app/api/admin/costs/roi/route.ts(270,1): error TS1128: Declaration or statement expected.
+app/api/admin/costs/trends/route.ts(90,32): error TS1005: ';' expected.
+app/api/admin/costs/trends/route.ts(164,7): error TS1128: Declaration or statement expected.
+app/api/admin/costs/trends/route.ts(164,9): error TS1005: 'try' expected.
+app/api/admin/costs/trends/route.ts(168,33): error TS1005: ';' expected.
+app/api/admin/costs/trends/route.ts(174,7): error TS1128: Declaration or statement expected.
+app/api/admin/costs/trends/route.ts(174,8): error TS1128: Declaration or statement expected.
+app/api/admin/costs/trends/route.ts(175,1): error TS1128: Declaration or statement expected.
+app/api/admin/financial/costs/route.ts(119,32): error TS1005: ';' expected.
+app/api/admin/financial/costs/route.ts(242,7): error TS1128: Declaration or statement expected.
+app/api/admin/financial/costs/route.ts(242,9): error TS1005: 'try' expected.
+app/api/admin/financial/costs/route.ts(246,33): error TS1005: ';' expected.
+app/api/admin/financial/costs/route.ts(252,7): error TS1128: Declaration or statement expected.
+app/api/admin/financial/costs/route.ts(252,8): error TS1128: Declaration or statement expected.
+app/api/admin/financial/costs/route.ts(253,1): error TS1128: Declaration or statement expected.
+app/api/admin/financial/costs/route.ts(306,29): error TS1005: ';' expected.
+app/api/admin/financial/costs/route.ts(312,3): error TS1128: Declaration or statement expected.
+app/api/admin/financial/costs/route.ts(312,4): error TS1128: Declaration or statement expected.
+app/api/admin/financial/costs/route.ts(313,1): error TS1128: Declaration or statement expected.
+app/api/admin/financial/profits/route.ts(85,32): error TS1005: ';' expected.
+app/api/admin/financial/profits/route.ts(176,7): error TS1128: Declaration or statement expected.
+app/api/admin/financial/profits/route.ts(176,9): error TS1005: 'try' expected.
+app/api/admin/financial/profits/route.ts(180,33): error TS1005: ';' expected.
+app/api/admin/financial/profits/route.ts(186,7): error TS1128: Declaration or statement expected.
+app/api/admin/financial/profits/route.ts(186,8): error TS1128: Declaration or statement expected.
+app/api/admin/financial/profits/route.ts(187,1): error TS1128: Declaration or statement expected.
+app/api/admin/financial/profits/route.ts(293,28): error TS1005: ';' expected.
+app/api/admin/financial/profits/route.ts(317,3): error TS1128: Declaration or statement expected.
+app/api/admin/financial/profits/route.ts(317,5): error TS1005: 'try' expected.
+app/api/admin/financial/profits/route.ts(321,29): error TS1005: ';' expected.
+app/api/admin/financial/profits/route.ts(327,3): error TS1128: Declaration or statement expected.
+app/api/admin/financial/profits/route.ts(327,4): error TS1128: Declaration or statement expected.
+app/api/admin/financial/profits/route.ts(328,1): error TS1128: Declaration or statement expected.
+app/api/admin/financial/reports/route.ts(79,32): error TS1005: ';' expected.
+app/api/admin/financial/reports/route.ts(126,7): error TS1128: Declaration or statement expected.
+app/api/admin/financial/reports/route.ts(126,9): error TS1005: 'try' expected.
+app/api/admin/financial/reports/route.ts(130,33): error TS1005: ';' expected.
+app/api/admin/financial/reports/route.ts(136,7): error TS1128: Declaration or statement expected.
+app/api/admin/financial/reports/route.ts(136,8): error TS1128: Declaration or statement expected.
+app/api/admin/financial/reports/route.ts(137,1): error TS1128: Declaration or statement expected.
+app/api/admin/financial/reports/route.ts(268,26): error TS1005: ';' expected.
+app/api/admin/financial/reports/route.ts(290,3): error TS1128: Declaration or statement expected.
+app/api/admin/financial/reports/route.ts(290,5): error TS1005: 'try' expected.
+app/api/admin/financial/reports/route.ts(294,29): error TS1005: ';' expected.
+app/api/admin/financial/reports/route.ts(300,3): error TS1128: Declaration or statement expected.
+app/api/admin/financial/reports/route.ts(300,4): error TS1128: Declaration or statement expected.
+app/api/admin/financial/reports/route.ts(301,1): error TS1128: Declaration or statement expected.
+app/api/admin/financial/revenue/route.ts(113,32): error TS1005: ';' expected.
+app/api/admin/financial/revenue/route.ts(202,7): error TS1128: Declaration or statement expected.
+app/api/admin/financial/revenue/route.ts(202,9): error TS1005: 'try' expected.
+app/api/admin/financial/revenue/route.ts(206,33): error TS1005: ';' expected.
+app/api/admin/financial/revenue/route.ts(212,7): error TS1128: Declaration or statement expected.
+app/api/admin/financial/revenue/route.ts(212,8): error TS1128: Declaration or statement expected.
+app/api/admin/financial/revenue/route.ts(213,1): error TS1128: Declaration or statement expected.
+app/api/admin/financial/revenue/route.ts(323,28): error TS1005: ';' expected.
+app/api/admin/financial/revenue/route.ts(345,3): error TS1128: Declaration or statement expected.
+app/api/admin/financial/revenue/route.ts(345,5): error TS1005: 'try' expected.
+app/api/admin/financial/revenue/route.ts(349,29): error TS1005: ';' expected.
+app/api/admin/financial/revenue/route.ts(355,3): error TS1128: Declaration or statement expected.
+app/api/admin/financial/revenue/route.ts(355,4): error TS1128: Declaration or statement expected.
+app/api/admin/financial/revenue/route.ts(356,1): error TS1128: Declaration or statement expected.
+app/api/admin/financial/withdrawals/route.ts(89,32): error TS1005: ';' expected.
+app/api/admin/financial/withdrawals/route.ts(181,7): error TS1128: Declaration or statement expected.
+app/api/admin/financial/withdrawals/route.ts(181,9): error TS1005: 'try' expected.
+app/api/admin/financial/withdrawals/route.ts(185,33): error TS1005: ';' expected.
+app/api/admin/financial/withdrawals/route.ts(191,7): error TS1128: Declaration or statement expected.
+app/api/admin/financial/withdrawals/route.ts(191,8): error TS1128: Declaration or statement expected.
+app/api/admin/financial/withdrawals/route.ts(192,1): error TS1128: Declaration or statement expected.
+app/api/admin/financial/withdrawals/route.ts(318,28): error TS1005: ';' expected.
+app/api/admin/financial/withdrawals/route.ts(344,3): error TS1128: Declaration or statement expected.
+app/api/admin/financial/withdrawals/route.ts(344,5): error TS1005: 'try' expected.
+app/api/admin/financial/withdrawals/route.ts(348,29): error TS1005: ';' expected.
+app/api/admin/financial/withdrawals/route.ts(354,3): error TS1128: Declaration or statement expected.
+app/api/admin/financial/withdrawals/route.ts(354,4): error TS1128: Declaration or statement expected.
+app/api/admin/financial/withdrawals/route.ts(355,1): error TS1128: Declaration or statement expected.
+app/api/admin/growth/metrics/route.ts(98,1): error TS1005: '}' expected.
+app/api/admin/growth/segments/route.ts(94,1): error TS1005: '}' expected.
+app/api/admin/init/route.ts(65,25): error TS1005: ';' expected.
+app/api/admin/login/route.ts(92,25): error TS1005: ';' expected.
+app/api/admin/lottery/data-fix/route.ts(22,185): error TS1005: ';' expected.
+app/api/admin/lottery/data-fix/route.ts(59,7): error TS1005: 'try' expected.
+app/api/admin/lottery/data-fix/route.ts(63,31): error TS1005: ';' expected.
+app/api/admin/lottery/data-fix/route.ts(69,3): error TS1128: Declaration or statement expected.
+app/api/admin/lottery/data-fix/route.ts(69,4): error TS1128: Declaration or statement expected.
+app/api/admin/lottery/data-fix/route.ts(70,1): error TS1128: Declaration or statement expected.
+app/api/admin/lottery/draw/route.ts(204,35): error TS1005: ';' expected.
+app/api/admin/lottery/draw/route.ts(210,3): error TS1128: Declaration or statement expected.
+app/api/admin/lottery/draw/route.ts(210,4): error TS1128: Declaration or statement expected.
+app/api/admin/lottery/draw/route.ts(211,1): error TS1128: Declaration or statement expected.
+app/api/admin/lottery/draw/route.ts(235,6): error TS1109: Expression expected.
+app/api/admin/lottery/draw/route.ts(236,7): error TS1161: Unterminated regular expression literal.
+app/api/admin/lottery/draw/route.ts(293,44): error TS1005: ';' expected.
+app/api/admin/lottery/draw/route.ts(299,8): error TS1128: Declaration or statement expected.
+app/api/admin/lottery/draw/route.ts(300,1): error TS1128: Declaration or statement expected.
+app/api/admin/lottery/rounds/route.ts(18,1): error TS1005: ',' expected.
+app/api/admin/lottery/rounds/route.ts(18,14): error TS1005: ':' expected.
+app/api/admin/lottery/rounds/route.ts(37,3): error TS1005: ',' expected.
+app/api/admin/lottery/rounds/route.ts(39,16): error TS1005: ':' expected.
+app/api/admin/lottery/rounds/route.ts(39,33): error TS1005: ',' expected.
+app/api/admin/lottery/rounds/route.ts(39,48): error TS1005: ',' expected.
+app/api/admin/lottery/rounds/route.ts(42,27): error TS1005: ':' expected.
+app/api/admin/lottery/rounds/route.ts(42,38): error TS1005: ',' expected.
+app/api/admin/lottery/rounds/route.ts(42,53): error TS1005: ',' expected.
+app/api/admin/lottery/rounds/route.ts(43,14): error TS1005: ':' expected.
+app/api/admin/lottery/rounds/route.ts(120,38): error TS1005: ';' expected.
+app/api/admin/lottery/rounds/route.ts(120,39): error TS1005: ',' expected.
+app/api/admin/lottery/rounds/route.ts(121,18): error TS1005: ':' expected.
+app/api/admin/lottery/rounds/route.ts(124,30): error TS1005: ',' expected.
+app/api/admin/lottery/rounds/route.ts(126,1): error TS1005: ',' expected.
+app/api/admin/lottery/rounds/route.ts(127,1): error TS1128: Declaration or statement expected.
+app/api/admin/orders/route.ts(31,1): error TS1005: ',' expected.
+app/api/admin/orders/route.ts(31,14): error TS1005: ':' expected.
+app/api/admin/orders/route.ts(50,3): error TS1005: ',' expected.
+app/api/admin/orders/route.ts(52,16): error TS1005: ':' expected.
+app/api/admin/orders/route.ts(52,33): error TS1005: ',' expected.
+app/api/admin/orders/route.ts(52,48): error TS1005: ',' expected.
+app/api/admin/orders/route.ts(55,27): error TS1005: ':' expected.
+app/api/admin/orders/route.ts(55,38): error TS1005: ',' expected.
+app/api/admin/orders/route.ts(55,53): error TS1005: ',' expected.
+app/api/admin/orders/route.ts(56,14): error TS1005: ':' expected.
+app/api/admin/orders/route.ts(118,1): error TS1005: ',' expected.
+app/api/admin/orders/route.ts(121,1): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(16,1): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(16,14): error TS1005: ':' expected.
+app/api/admin/organization/admins/route.ts(35,3): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(37,16): error TS1005: ':' expected.
+app/api/admin/organization/admins/route.ts(37,33): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(37,48): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(40,27): error TS1005: ':' expected.
+app/api/admin/organization/admins/route.ts(40,38): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(40,53): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(41,14): error TS1005: ':' expected.
+app/api/admin/organization/admins/route.ts(70,31): error TS1005: ';' expected.
+app/api/admin/organization/admins/route.ts(70,32): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(72,17): error TS1005: ':' expected.
+app/api/admin/organization/admins/route.ts(72,71): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(73,18): error TS1005: ':' expected.
+app/api/admin/organization/admins/route.ts(76,12): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(78,1): error TS1005: ',' expected.
+app/api/admin/organization/admins/route.ts(79,1): error TS1128: Declaration or statement expected.
+app/api/admin/organization/departments/[id]/route.ts(41,24): error TS1005: ';' expected.
+app/api/admin/organization/departments/[id]/route.ts(48,3): error TS1128: Declaration or statement expected.
+app/api/admin/organization/departments/[id]/route.ts(48,4): error TS1128: Declaration or statement expected.
+app/api/admin/organization/departments/[id]/route.ts(49,1): error TS1128: Declaration or statement expected.
+app/api/admin/organization/departments/[id]/route.ts(85,24): error TS1005: ';' expected.
+app/api/admin/organization/departments/[id]/route.ts(92,3): error TS1128: Declaration or statement expected.
+app/api/admin/organization/departments/[id]/route.ts(92,4): error TS1128: Declaration or statement expected.
+app/api/admin/organization/departments/[id]/route.ts(93,1): error TS1128: Declaration or statement expected.
+app/api/admin/organization/departments/route.ts(16,1): error TS1005: ',' expected.
+app/api/admin/organization/departments/route.ts(16,14): error TS1005: ':' expected.
+app/api/admin/organization/departments/route.ts(35,3): error TS1005: ',' expected.
+app/api/admin/organization/departments/route.ts(37,16): error TS1005: ':' expected.
+app/api/admin/organization/departments/route.ts(37,33): error TS1005: ',' expected.
+app/api/admin/organization/departments/route.ts(37,48): error TS1005: ',' expected.
+app/api/admin/organization/departments/route.ts(40,27): error TS1005: ':' expected.
+app/api/admin/organization/departments/route.ts(40,38): error TS1005: ',' expected.
+app/api/admin/organization/departments/route.ts(40,53): error TS1005: ',' expected.
+app/api/admin/organization/departments/route.ts(41,14): error TS1005: ':' expected.
+app/api/admin/organization/departments/route.ts(58,30): error TS1005: ';' expected.
+app/api/admin/organization/departments/route.ts(58,31): error TS1005: ',' expected.
+app/api/admin/organization/departments/route.ts(59,17): error TS1005: ':' expected.
+app/api/admin/organization/departments/route.ts(59,71): error TS1005: ',' expected.
+app/api/admin/organization/departments/route.ts(60,18): error TS1005: ':' expected.
+app/api/admin/organization/departments/route.ts(63,12): error TS1005: ',' expected.
+app/api/admin/organization/departments/route.ts(65,1): error TS1005: ',' expected.
+app/api/admin/organization/departments/route.ts(66,1): error TS1128: Declaration or statement expected.
+app/api/admin/organization/departments/route.ts(114,24): error TS1005: ';' expected.
+app/api/admin/organization/departments/route.ts(121,3): error TS1128: Declaration or statement expected.
+app/api/admin/organization/departments/route.ts(121,4): error TS1128: Declaration or statement expected.
+app/api/admin/organization/departments/route.ts(122,1): error TS1128: Declaration or statement expected.
+app/api/admin/organization/roles/route.ts(16,1): error TS1005: ',' expected.
+app/api/admin/organization/roles/route.ts(16,14): error TS1005: ':' expected.
+app/api/admin/organization/roles/route.ts(35,3): error TS1005: ',' expected.
+app/api/admin/organization/roles/route.ts(37,16): error TS1005: ':' expected.
+app/api/admin/organization/roles/route.ts(37,33): error TS1005: ',' expected.
+app/api/admin/organization/roles/route.ts(37,48): error TS1005: ',' expected.
+app/api/admin/organization/roles/route.ts(40,27): error TS1005: ':' expected.
+app/api/admin/organization/roles/route.ts(40,38): error TS1005: ',' expected.
+app/api/admin/organization/roles/route.ts(40,53): error TS1005: ',' expected.
+app/api/admin/organization/roles/route.ts(41,14): error TS1005: ':' expected.
+app/api/admin/organization/roles/route.ts(58,30): error TS1005: ';' expected.
+app/api/admin/organization/roles/route.ts(58,31): error TS1005: ',' expected.
+app/api/admin/organization/roles/route.ts(59,17): error TS1005: ':' expected.
+app/api/admin/organization/roles/route.ts(59,71): error TS1005: ',' expected.
+app/api/admin/organization/roles/route.ts(60,18): error TS1005: ':' expected.
+app/api/admin/organization/roles/route.ts(63,12): error TS1005: ',' expected.
+app/api/admin/organization/roles/route.ts(65,1): error TS1005: ',' expected.
+app/api/admin/organization/roles/route.ts(66,1): error TS1128: Declaration or statement expected.
+app/api/admin/organization/roles/route.ts(113,24): error TS1005: ';' expected.
+app/api/admin/organization/roles/route.ts(120,3): error TS1128: Declaration or statement expected.
+app/api/admin/organization/roles/route.ts(120,4): error TS1128: Declaration or statement expected.
+app/api/admin/organization/roles/route.ts(121,1): error TS1128: Declaration or statement expected.
+app/api/admin/permissions/my-permissions/route.ts(54,24): error TS1005: ';' expected.
+app/api/admin/permissions/my-permissions/route.ts(60,3): error TS1128: Declaration or statement expected.
+app/api/admin/permissions/my-permissions/route.ts(60,4): error TS1128: Declaration or statement expected.
+app/api/admin/permissions/my-permissions/route.ts(61,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/[id]/route.ts(60,26): error TS1005: ';' expected.
+app/api/admin/products/[id]/route.ts(66,3): error TS1128: Declaration or statement expected.
+app/api/admin/products/[id]/route.ts(66,4): error TS1128: Declaration or statement expected.
+app/api/admin/products/[id]/route.ts(67,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/conversion/route.ts(19,1): error TS1005: ',' expected.
+app/api/admin/products/conversion/route.ts(19,14): error TS1005: ':' expected.
+app/api/admin/products/conversion/route.ts(38,3): error TS1005: ',' expected.
+app/api/admin/products/conversion/route.ts(40,16): error TS1005: ':' expected.
+app/api/admin/products/conversion/route.ts(40,33): error TS1005: ',' expected.
+app/api/admin/products/conversion/route.ts(40,48): error TS1005: ',' expected.
+app/api/admin/products/conversion/route.ts(43,27): error TS1005: ':' expected.
+app/api/admin/products/conversion/route.ts(43,38): error TS1005: ',' expected.
+app/api/admin/products/conversion/route.ts(43,53): error TS1005: ',' expected.
+app/api/admin/products/conversion/route.ts(44,14): error TS1005: ':' expected.
+app/api/admin/products/conversion/route.ts(217,32): error TS1005: ';' expected.
+app/api/admin/products/conversion/route.ts(217,33): error TS1005: ',' expected.
+app/api/admin/products/conversion/route.ts(218,18): error TS1005: ':' expected.
+app/api/admin/products/conversion/route.ts(221,30): error TS1005: ',' expected.
+app/api/admin/products/conversion/route.ts(223,1): error TS1005: ',' expected.
+app/api/admin/products/conversion/route.ts(224,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/conversion/route.ts(341,28): error TS1005: ';' expected.
+app/api/admin/products/conversion/route.ts(347,3): error TS1128: Declaration or statement expected.
+app/api/admin/products/conversion/route.ts(347,4): error TS1128: Declaration or statement expected.
+app/api/admin/products/conversion/route.ts(348,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/performance/route.ts(19,1): error TS1005: ',' expected.
+app/api/admin/products/performance/route.ts(19,14): error TS1005: ':' expected.
+app/api/admin/products/performance/route.ts(38,3): error TS1005: ',' expected.
+app/api/admin/products/performance/route.ts(40,16): error TS1005: ':' expected.
+app/api/admin/products/performance/route.ts(40,33): error TS1005: ',' expected.
+app/api/admin/products/performance/route.ts(40,48): error TS1005: ',' expected.
+app/api/admin/products/performance/route.ts(43,27): error TS1005: ':' expected.
+app/api/admin/products/performance/route.ts(43,38): error TS1005: ',' expected.
+app/api/admin/products/performance/route.ts(43,53): error TS1005: ',' expected.
+app/api/admin/products/performance/route.ts(44,14): error TS1005: ':' expected.
+app/api/admin/products/performance/route.ts(180,32): error TS1005: ';' expected.
+app/api/admin/products/performance/route.ts(180,33): error TS1005: ',' expected.
+app/api/admin/products/performance/route.ts(181,18): error TS1005: ':' expected.
+app/api/admin/products/performance/route.ts(184,30): error TS1005: ',' expected.
+app/api/admin/products/performance/route.ts(186,1): error TS1005: ',' expected.
+app/api/admin/products/performance/route.ts(187,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/performance/route.ts(278,28): error TS1005: ';' expected.
+app/api/admin/products/performance/route.ts(284,3): error TS1128: Declaration or statement expected.
+app/api/admin/products/performance/route.ts(284,4): error TS1128: Declaration or statement expected.
+app/api/admin/products/performance/route.ts(285,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/profit/route.ts(19,1): error TS1005: ',' expected.
+app/api/admin/products/profit/route.ts(19,14): error TS1005: ':' expected.
+app/api/admin/products/profit/route.ts(38,3): error TS1005: ',' expected.
+app/api/admin/products/profit/route.ts(40,16): error TS1005: ':' expected.
+app/api/admin/products/profit/route.ts(40,33): error TS1005: ',' expected.
+app/api/admin/products/profit/route.ts(40,48): error TS1005: ',' expected.
+app/api/admin/products/profit/route.ts(43,27): error TS1005: ':' expected.
+app/api/admin/products/profit/route.ts(43,38): error TS1005: ',' expected.
+app/api/admin/products/profit/route.ts(43,53): error TS1005: ',' expected.
+app/api/admin/products/profit/route.ts(44,14): error TS1005: ':' expected.
+app/api/admin/products/profit/route.ts(221,32): error TS1005: ';' expected.
+app/api/admin/products/profit/route.ts(221,33): error TS1005: ',' expected.
+app/api/admin/products/profit/route.ts(222,18): error TS1005: ':' expected.
+app/api/admin/products/profit/route.ts(225,30): error TS1005: ',' expected.
+app/api/admin/products/profit/route.ts(227,1): error TS1005: ',' expected.
+app/api/admin/products/profit/route.ts(228,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/profit/route.ts(336,28): error TS1005: ';' expected.
+app/api/admin/products/profit/route.ts(342,3): error TS1128: Declaration or statement expected.
+app/api/admin/products/profit/route.ts(342,4): error TS1128: Declaration or statement expected.
+app/api/admin/products/profit/route.ts(343,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/profit/route.ts(476,28): error TS1005: ';' expected.
+app/api/admin/products/profit/route.ts(482,3): error TS1128: Declaration or statement expected.
+app/api/admin/products/profit/route.ts(482,4): error TS1128: Declaration or statement expected.
+app/api/admin/products/profit/route.ts(483,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/route.ts(70,6): error TS1472: 'catch' or 'finally' expected.
+app/api/admin/products/route.ts(71,8): error TS1005: ')' expected.
+app/api/admin/products/route.ts(85,5): error TS1128: Declaration or statement expected.
+app/api/admin/products/route.ts(85,7): error TS1005: 'try' expected.
+app/api/admin/products/route.ts(99,3): error TS1128: Declaration or statement expected.
+app/api/admin/products/route.ts(99,4): error TS1128: Declaration or statement expected.
+app/api/admin/products/route.ts(100,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/route.ts(225,1): error TS1005: ',' expected.
+app/api/admin/products/route.ts(303,1): error TS1005: ',' expected.
+app/api/admin/products/route.ts(371,1): error TS1005: ')' expected.
+app/api/admin/products/trending/route.ts(19,1): error TS1005: ',' expected.
+app/api/admin/products/trending/route.ts(19,14): error TS1005: ':' expected.
+app/api/admin/products/trending/route.ts(38,3): error TS1005: ',' expected.
+app/api/admin/products/trending/route.ts(40,16): error TS1005: ':' expected.
+app/api/admin/products/trending/route.ts(40,33): error TS1005: ',' expected.
+app/api/admin/products/trending/route.ts(40,48): error TS1005: ',' expected.
+app/api/admin/products/trending/route.ts(43,27): error TS1005: ':' expected.
+app/api/admin/products/trending/route.ts(43,38): error TS1005: ',' expected.
+app/api/admin/products/trending/route.ts(43,53): error TS1005: ',' expected.
+app/api/admin/products/trending/route.ts(44,14): error TS1005: ':' expected.
+app/api/admin/products/trending/route.ts(258,32): error TS1005: ';' expected.
+app/api/admin/products/trending/route.ts(258,33): error TS1005: ',' expected.
+app/api/admin/products/trending/route.ts(259,18): error TS1005: ':' expected.
+app/api/admin/products/trending/route.ts(262,30): error TS1005: ',' expected.
+app/api/admin/products/trending/route.ts(264,1): error TS1005: ',' expected.
+app/api/admin/products/trending/route.ts(265,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/trending/route.ts(358,28): error TS1005: ';' expected.
+app/api/admin/products/trending/route.ts(364,3): error TS1128: Declaration or statement expected.
+app/api/admin/products/trending/route.ts(364,4): error TS1128: Declaration or statement expected.
+app/api/admin/products/trending/route.ts(365,1): error TS1128: Declaration or statement expected.
+app/api/admin/products/trending/route.ts(478,29): error TS1005: ';' expected.
+app/api/admin/products/trending/route.ts(484,3): error TS1128: Declaration or statement expected.
+app/api/admin/products/trending/route.ts(484,4): error TS1128: Declaration or statement expected.
+app/api/admin/products/trending/route.ts(485,1): error TS1128: Declaration or statement expected.
+app/api/admin/rate-limit/route.ts(397,2): error TS1005: '}' expected.
+app/api/admin/risk-events/route.ts(47,1): error TS1005: ',' expected.
+app/api/admin/risk-events/route.ts(47,14): error TS1005: ':' expected.
+app/api/admin/risk-events/route.ts(66,3): error TS1005: ',' expected.
+app/api/admin/risk-events/route.ts(68,16): error TS1005: ':' expected.
+app/api/admin/risk-events/route.ts(68,33): error TS1005: ',' expected.
+app/api/admin/risk-events/route.ts(68,48): error TS1005: ',' expected.
+app/api/admin/risk-events/route.ts(69,5): error TS1136: Property assignment expected.
+app/api/admin/risk-events/route.ts(123,30): error TS1005: ';' expected.
+app/api/admin/risk-events/route.ts(129,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-events/route.ts(130,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-events/route.ts(168,26): error TS1005: ';' expected.
+app/api/admin/risk-events/route.ts(174,3): error TS1128: Declaration or statement expected.
+app/api/admin/risk-events/route.ts(174,4): error TS1128: Declaration or statement expected.
+app/api/admin/risk-events/route.ts(175,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(59,1): error TS1005: ',' expected.
+app/api/admin/risk-rules/route.ts(59,14): error TS1005: ':' expected.
+app/api/admin/risk-rules/route.ts(78,3): error TS1005: ',' expected.
+app/api/admin/risk-rules/route.ts(80,16): error TS1005: ':' expected.
+app/api/admin/risk-rules/route.ts(80,33): error TS1005: ',' expected.
+app/api/admin/risk-rules/route.ts(80,48): error TS1005: ',' expected.
+app/api/admin/risk-rules/route.ts(81,5): error TS1136: Property assignment expected.
+app/api/admin/risk-rules/route.ts(131,30): error TS1005: ';' expected.
+app/api/admin/risk-rules/route.ts(137,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(138,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(181,26): error TS1005: ';' expected.
+app/api/admin/risk-rules/route.ts(187,3): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(187,4): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(188,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(228,26): error TS1005: ';' expected.
+app/api/admin/risk-rules/route.ts(234,3): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(234,4): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(235,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(268,26): error TS1005: ';' expected.
+app/api/admin/risk-rules/route.ts(274,3): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(274,4): error TS1128: Declaration or statement expected.
+app/api/admin/risk-rules/route.ts(275,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-stats/route.ts(74,1): error TS1005: ',' expected.
+app/api/admin/risk-stats/route.ts(74,14): error TS1005: ':' expected.
+app/api/admin/risk-stats/route.ts(93,3): error TS1005: ',' expected.
+app/api/admin/risk-stats/route.ts(95,16): error TS1005: ':' expected.
+app/api/admin/risk-stats/route.ts(95,33): error TS1005: ',' expected.
+app/api/admin/risk-stats/route.ts(95,48): error TS1005: ',' expected.
+app/api/admin/risk-stats/route.ts(132,32): error TS1005: ';' expected.
+app/api/admin/risk-stats/route.ts(138,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-stats/route.ts(139,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-stats/route.ts(182,26): error TS1005: ';' expected.
+app/api/admin/risk-stats/route.ts(188,3): error TS1128: Declaration or statement expected.
+app/api/admin/risk-stats/route.ts(188,4): error TS1128: Declaration or statement expected.
+app/api/admin/risk-stats/route.ts(189,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-users/route.ts(64,1): error TS1005: ',' expected.
+app/api/admin/risk-users/route.ts(64,14): error TS1005: ':' expected.
+app/api/admin/risk-users/route.ts(83,3): error TS1005: ',' expected.
+app/api/admin/risk-users/route.ts(85,16): error TS1005: ':' expected.
+app/api/admin/risk-users/route.ts(85,33): error TS1005: ',' expected.
+app/api/admin/risk-users/route.ts(85,48): error TS1005: ',' expected.
+app/api/admin/risk-users/route.ts(86,5): error TS1136: Property assignment expected.
+app/api/admin/risk-users/route.ts(136,30): error TS1005: ';' expected.
+app/api/admin/risk-users/route.ts(142,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-users/route.ts(143,1): error TS1128: Declaration or statement expected.
+app/api/admin/risk-users/route.ts(198,26): error TS1005: ';' expected.
+app/api/admin/risk-users/route.ts(204,3): error TS1128: Declaration or statement expected.
+app/api/admin/risk-users/route.ts(204,4): error TS1128: Declaration or statement expected.
+app/api/admin/risk-users/route.ts(205,1): error TS1128: Declaration or statement expected.
+app/api/admin/settings/features/route.ts(54,26): error TS1005: ';' expected.
+app/api/admin/settings/features/route.ts(91,26): error TS1005: ';' expected.
+app/api/admin/settings/features/route.ts(140,26): error TS1005: ';' expected.
+app/api/admin/settings/features/route.ts(164,26): error TS1005: ';' expected.
+app/api/admin/settings/features/route.ts(188,26): error TS1005: ';' expected.
+app/api/admin/settings/features/route.ts(389,2): error TS1005: '}' expected.
+app/api/admin/settings/operation/route.ts(54,26): error TS1005: ';' expected.
+app/api/admin/settings/operation/route.ts(93,26): error TS1005: ';' expected.
+app/api/admin/settings/operation/route.ts(145,26): error TS1005: ';' expected.
+app/api/admin/settings/operation/route.ts(169,26): error TS1005: ';' expected.
+app/api/admin/settings/operation/route.ts(191,26): error TS1005: ';' expected.
+app/api/admin/settings/operation/route.ts(458,2): error TS1005: '}' expected.
+app/api/admin/settings/rewards/route.ts(54,26): error TS1005: ';' expected.
+app/api/admin/settings/rewards/route.ts(89,26): error TS1005: ';' expected.
+app/api/admin/settings/rewards/route.ts(133,26): error TS1005: ';' expected.
+app/api/admin/settings/rewards/route.ts(157,26): error TS1005: ';' expected.
+app/api/admin/settings/rewards/route.ts(312,2): error TS1005: '}' expected.
+app/api/admin/settings/risk/route.ts(54,26): error TS1005: ';' expected.
+app/api/admin/settings/risk/route.ts(85,26): error TS1005: ';' expected.
+app/api/admin/settings/risk/route.ts(125,26): error TS1005: ';' expected.
+app/api/admin/settings/risk/route.ts(149,26): error TS1005: ';' expected.
+app/api/admin/settings/risk/route.ts(351,2): error TS1005: '}' expected.
+app/api/admin/settings/route.ts(214,1): error TS1005: ',' expected.
+app/api/admin/settings/route.ts(327,1): error TS1005: '}' expected.
+app/api/admin/settings/system/route.ts(59,26): error TS1005: ';' expected.
+app/api/admin/settings/system/route.ts(93,45): error TS1005: ';' expected.
+app/api/admin/settings/system/route.ts(95,11): error TS1472: 'catch' or 'finally' expected.
+app/api/admin/settings/system/route.ts(110,5): error TS1128: Declaration or statement expected.
+app/api/admin/settings/system/route.ts(110,6): error TS1128: Declaration or statement expected.
+app/api/admin/settings/system/route.ts(114,3): error TS1128: Declaration or statement expected.
+app/api/admin/settings/system/route.ts(114,5): error TS1005: 'try' expected.
+app/api/admin/settings/system/route.ts(118,26): error TS1005: ';' expected.
+app/api/admin/settings/system/route.ts(121,1): error TS1128: Declaration or statement expected.
+app/api/admin/settings/system/route.ts(196,26): error TS1005: ';' expected.
+app/api/admin/settings/system/route.ts(398,2): error TS1005: '}' expected.
+app/api/admin/show-off/analytics/route.ts(134,30): error TS1005: ';' expected.
+app/api/admin/show-off/analytics/route.ts(140,8): error TS1128: Declaration or statement expected.
+app/api/admin/show-off/analytics/route.ts(141,1): error TS1128: Declaration or statement expected.
+app/api/admin/show-off/audit/batch/route.ts(69,24): error TS1005: ';' expected.
+app/api/admin/show-off/audit/batch/route.ts(75,3): error TS1128: Declaration or statement expected.
+app/api/admin/show-off/audit/batch/route.ts(75,4): error TS1128: Declaration or statement expected.
+app/api/admin/show-off/audit/batch/route.ts(76,1): error TS1128: Declaration or statement expected.
+app/api/admin/show-off/posts/route.ts(316,1): error TS1005: '}' expected.
+app/api/admin/stats/route.ts(15,1): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(15,14): error TS1005: ':' expected.
+app/api/admin/stats/route.ts(34,3): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(36,16): error TS1005: ':' expected.
+app/api/admin/stats/route.ts(36,33): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(36,48): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(39,27): error TS1005: ':' expected.
+app/api/admin/stats/route.ts(39,38): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(39,53): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(40,11): error TS1005: ':' expected.
+app/api/admin/stats/route.ts(42,15): error TS1005: ':' expected.
+app/api/admin/stats/route.ts(42,51): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(43,13): error TS1003: Identifier expected.
+app/api/admin/stats/route.ts(51,9): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(51,15): error TS1005: ':' expected.
+app/api/admin/stats/route.ts(51,103): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(52,13): error TS1003: Identifier expected.
+app/api/admin/stats/route.ts(60,9): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(60,15): error TS1005: ':' expected.
+app/api/admin/stats/route.ts(60,63): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(62,16): error TS1005: ':' expected.
+app/api/admin/stats/route.ts(76,11): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(78,5): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(78,11): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(81,7): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(81,26): error TS1005: ':' expected.
+app/api/admin/stats/route.ts(81,33): error TS1005: ',' expected.
+app/api/admin/stats/route.ts(86,3): error TS1128: Declaration or statement expected.
+app/api/admin/stats/route.ts(87,1): error TS1128: Declaration or statement expected.
+app/api/admin/telegram/history/route.ts(14,14): error TS1005: ':' expected.
+app/api/admin/telegram/history/route.ts(33,3): error TS1005: ',' expected.
+app/api/admin/telegram/history/route.ts(35,16): error TS1005: ':' expected.
+app/api/admin/telegram/history/route.ts(35,33): error TS1005: ',' expected.
+app/api/admin/telegram/history/route.ts(35,48): error TS1005: ',' expected.
+app/api/admin/telegram/history/route.ts(60,30): error TS1005: ';' expected.
+app/api/admin/telegram/history/route.ts(66,1): error TS1128: Declaration or statement expected.
+app/api/admin/telegram/history/route.ts(67,1): error TS1128: Declaration or statement expected.
+app/api/admin/telegram/status/route.ts(14,14): error TS1005: ':' expected.
+app/api/admin/telegram/status/route.ts(33,3): error TS1005: ',' expected.
+app/api/admin/telegram/status/route.ts(35,16): error TS1005: ':' expected.
+app/api/admin/telegram/status/route.ts(35,33): error TS1005: ',' expected.
+app/api/admin/telegram/status/route.ts(35,48): error TS1005: ',' expected.
+app/api/admin/telegram/status/route.ts(75,31): error TS1005: ';' expected.
+app/api/admin/telegram/status/route.ts(81,1): error TS1128: Declaration or statement expected.
+app/api/admin/telegram/status/route.ts(82,1): error TS1128: Declaration or statement expected.
+app/api/admin/telegram/templates/route.ts(14,14): error TS1005: ':' expected.
+app/api/admin/telegram/templates/route.ts(33,3): error TS1005: ',' expected.
+app/api/admin/telegram/templates/route.ts(35,16): error TS1005: ':' expected.
+app/api/admin/telegram/templates/route.ts(35,33): error TS1005: ',' expected.
+app/api/admin/telegram/templates/route.ts(35,48): error TS1005: ',' expected.
+app/api/admin/telegram/templates/route.ts(56,30): error TS1005: ';' expected.
+app/api/admin/telegram/templates/route.ts(62,1): error TS1128: Declaration or statement expected.
+app/api/admin/telegram/templates/route.ts(63,1): error TS1128: Declaration or statement expected.
+app/api/admin/users/[id]/route.ts(152,32): error TS1005: ';' expected.
+app/api/admin/users/[id]/route.ts(158,3): error TS1128: Declaration or statement expected.
+app/api/admin/users/[id]/route.ts(158,4): error TS1128: Declaration or statement expected.
+app/api/admin/users/[id]/route.ts(159,1): error TS1128: Declaration or statement expected.
+app/api/admin/users/[id]/route.ts(212,37): error TS1005: ';' expected.
+app/api/admin/users/[id]/route.ts(218,3): error TS1128: Declaration or statement expected.
+app/api/admin/users/[id]/route.ts(218,4): error TS1128: Declaration or statement expected.
+app/api/admin/users/[id]/route.ts(219,1): error TS1128: Declaration or statement expected.
+app/api/admin/users/behavior/route.ts(19,1): error TS1005: ',' expected.
+app/api/admin/users/behavior/route.ts(19,14): error TS1005: ':' expected.
+app/api/admin/users/behavior/route.ts(38,3): error TS1005: ',' expected.
+app/api/admin/users/behavior/route.ts(40,16): error TS1005: ':' expected.
+app/api/admin/users/behavior/route.ts(40,33): error TS1005: ',' expected.
+app/api/admin/users/behavior/route.ts(40,48): error TS1005: ',' expected.
+app/api/admin/users/behavior/route.ts(43,27): error TS1005: ':' expected.
+app/api/admin/users/behavior/route.ts(43,38): error TS1005: ',' expected.
+app/api/admin/users/behavior/route.ts(43,53): error TS1005: ',' expected.
+app/api/admin/users/behavior/route.ts(44,14): error TS1005: ':' expected.
+app/api/admin/users/behavior/route.ts(139,1): error TS1005: ',' expected.
+app/api/admin/users/behavior/route.ts(142,1): error TS1005: ',' expected.
+app/api/admin/users/engagement/route.ts(19,1): error TS1005: ',' expected.
+app/api/admin/users/engagement/route.ts(19,14): error TS1005: ':' expected.
+app/api/admin/users/engagement/route.ts(38,3): error TS1005: ',' expected.
+app/api/admin/users/engagement/route.ts(40,16): error TS1005: ':' expected.
+app/api/admin/users/engagement/route.ts(40,33): error TS1005: ',' expected.
+app/api/admin/users/engagement/route.ts(40,48): error TS1005: ',' expected.
+app/api/admin/users/engagement/route.ts(43,27): error TS1005: ':' expected.
+app/api/admin/users/engagement/route.ts(43,38): error TS1005: ',' expected.
+app/api/admin/users/engagement/route.ts(43,53): error TS1005: ',' expected.
+app/api/admin/users/engagement/route.ts(44,14): error TS1005: ':' expected.
+app/api/admin/users/engagement/route.ts(142,1): error TS1005: ',' expected.
+app/api/admin/users/engagement/route.ts(145,1): error TS1005: ',' expected.
+app/api/admin/users/retention/route.ts(19,1): error TS1005: ',' expected.
+app/api/admin/users/retention/route.ts(19,14): error TS1005: ':' expected.
+app/api/admin/users/retention/route.ts(38,3): error TS1005: ',' expected.
+app/api/admin/users/retention/route.ts(40,16): error TS1005: ':' expected.
+app/api/admin/users/retention/route.ts(40,33): error TS1005: ',' expected.
+app/api/admin/users/retention/route.ts(40,48): error TS1005: ',' expected.
+app/api/admin/users/retention/route.ts(43,27): error TS1005: ':' expected.
+app/api/admin/users/retention/route.ts(43,38): error TS1005: ',' expected.
+app/api/admin/users/retention/route.ts(43,53): error TS1005: ',' expected.
+app/api/admin/users/retention/route.ts(44,14): error TS1005: ':' expected.
+app/api/admin/users/retention/route.ts(74,1): error TS1005: ',' expected.
+app/api/admin/users/retention/route.ts(77,1): error TS1005: ',' expected.
+app/api/admin/users/route.ts(22,1): error TS1005: ',' expected.
+app/api/admin/users/route.ts(22,14): error TS1005: ':' expected.
+app/api/admin/users/route.ts(41,3): error TS1005: ',' expected.
+app/api/admin/users/route.ts(43,16): error TS1005: ':' expected.
+app/api/admin/users/route.ts(43,33): error TS1005: ',' expected.
+app/api/admin/users/route.ts(43,48): error TS1005: ',' expected.
+app/api/admin/users/route.ts(46,27): error TS1005: ':' expected.
+app/api/admin/users/route.ts(46,38): error TS1005: ',' expected.
+app/api/admin/users/route.ts(46,53): error TS1005: ',' expected.
+app/api/admin/users/route.ts(47,14): error TS1005: ':' expected.
+app/api/admin/users/route.ts(70,37): error TS1005: ';' expected.
+app/api/admin/users/route.ts(70,38): error TS1005: ',' expected.
+app/api/admin/users/route.ts(71,18): error TS1005: ':' expected.
+app/api/admin/users/route.ts(74,30): error TS1005: ',' expected.
+app/api/admin/users/route.ts(76,1): error TS1005: ',' expected.
+app/api/admin/users/route.ts(77,1): error TS1128: Declaration or statement expected.
+app/api/admin/users/segments/route.ts(19,1): error TS1005: ',' expected.
+app/api/admin/users/segments/route.ts(19,14): error TS1005: ':' expected.
+app/api/admin/users/segments/route.ts(38,3): error TS1005: ',' expected.
+app/api/admin/users/segments/route.ts(40,16): error TS1005: ':' expected.
+app/api/admin/users/segments/route.ts(40,33): error TS1005: ',' expected.
+app/api/admin/users/segments/route.ts(40,48): error TS1005: ',' expected.
+app/api/admin/users/segments/route.ts(43,27): error TS1005: ':' expected.
+app/api/admin/users/segments/route.ts(43,38): error TS1005: ',' expected.
+app/api/admin/users/segments/route.ts(43,53): error TS1005: ',' expected.
+app/api/admin/users/segments/route.ts(44,14): error TS1005: ':' expected.
+app/api/admin/users/segments/route.ts(144,1): error TS1005: ',' expected.
+app/api/admin/users/segments/route.ts(147,1): error TS1005: ',' expected.
+app/api/admin/users/segments/route.ts(410,38): error TS1005: ';' expected.
+app/api/admin/users/spending/route.ts(19,1): error TS1005: ',' expected.
+app/api/admin/users/spending/route.ts(19,14): error TS1005: ':' expected.
+app/api/admin/users/spending/route.ts(38,3): error TS1005: ',' expected.
+app/api/admin/users/spending/route.ts(40,16): error TS1005: ':' expected.
+app/api/admin/users/spending/route.ts(40,33): error TS1005: ',' expected.
+app/api/admin/users/spending/route.ts(40,48): error TS1005: ',' expected.
+app/api/admin/users/spending/route.ts(43,27): error TS1005: ':' expected.
+app/api/admin/users/spending/route.ts(43,38): error TS1005: ',' expected.
+app/api/admin/users/spending/route.ts(43,53): error TS1005: ',' expected.
+app/api/admin/users/spending/route.ts(44,14): error TS1005: ':' expected.
+app/api/admin/users/spending/route.ts(78,1): error TS1005: ',' expected.
+app/api/admin/users/spending/route.ts(81,1): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(21,1): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(21,14): error TS1005: ':' expected.
+app/api/admin/withdrawals/route.ts(40,3): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(42,16): error TS1005: ':' expected.
+app/api/admin/withdrawals/route.ts(42,33): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(42,48): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(45,27): error TS1005: ':' expected.
+app/api/admin/withdrawals/route.ts(45,38): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(45,53): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(46,14): error TS1005: ':' expected.
+app/api/admin/withdrawals/route.ts(97,30): error TS1005: ';' expected.
+app/api/admin/withdrawals/route.ts(97,31): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(98,18): error TS1005: ':' expected.
+app/api/admin/withdrawals/route.ts(101,30): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(103,1): error TS1005: ',' expected.
+app/api/admin/withdrawals/route.ts(104,1): error TS1128: Declaration or statement expected.
+app/api/admin/withdrawals/route.ts(307,24): error TS1005: ';' expected.
+app/api/admin/withdrawals/route.ts(317,3): error TS1128: Declaration or statement expected.
+app/api/admin/withdrawals/route.ts(317,4): error TS1128: Declaration or statement expected.
+app/api/admin/withdrawals/route.ts(318,1): error TS1128: Declaration or statement expected.
+app/api/image/route.ts(20,14): error TS1005: ':' expected.
+app/api/image/route.ts(39,3): error TS1005: ',' expected.
+app/api/image/route.ts(41,16): error TS1005: ':' expected.
+app/api/image/route.ts(41,33): error TS1005: ',' expected.
+app/api/image/route.ts(41,48): error TS1005: ',' expected.
+app/api/image/route.ts(44,27): error TS1005: ':' expected.
+app/api/image/route.ts(44,38): error TS1005: ',' expected.
+app/api/image/route.ts(44,53): error TS1005: ',' expected.
+app/api/image/route.ts(45,11): error TS1005: ':' expected.
+app/api/image/route.ts(46,15): error TS1005: ':' expected.
+app/api/image/route.ts(46,54): error TS1005: ',' expected.
+app/api/image/route.ts(49,15): error TS1005: ':' expected.
+app/api/image/route.ts(59,11): error TS1005: ',' expected.
+app/api/image/route.ts(62,15): error TS1005: ':' expected.
+app/api/image/route.ts(62,68): error TS1005: ',' expected.
+app/api/image/route.ts(65,16): error TS1005: ':' expected.
+app/api/image/route.ts(65,51): error TS1005: ',' expected.
+app/api/image/route.ts(68,5): error TS1005: ',' expected.
+app/api/image/route.ts(68,11): error TS1005: ',' expected.
+app/api/image/route.ts(71,7): error TS1005: ',' expected.
+app/api/image/route.ts(71,35): error TS1005: ':' expected.
+app/api/image/route.ts(71,42): error TS1005: ',' expected.
+app/api/image/route.ts(78,3): error TS1128: Declaration or statement expected.
+app/api/image/route.ts(79,1): error TS1128: Declaration or statement expected.
+app/api/image/route.ts(131,38): error TS1005: ';' expected.
+app/api/lottery/draw/route.ts(35,33): error TS1005: ';' expected.
+app/api/lottery/draw/route.ts(109,5): error TS1472: 'catch' or 'finally' expected.
+app/api/lottery/draw/route.ts(112,41): error TS1005: ';' expected.
+app/api/lottery/draw/route.ts(119,1): error TS1005: '}' expected.
+app/api/lottery/monitoring/route.ts(80,38): error TS1005: ';' expected.
+app/api/lottery/monitoring/route.ts(510,1): error TS1005: '}' expected.
+app/api/lottery/participate-fixed/route.ts(195,28): error TS1005: ';' expected.
+app/api/lottery/participate-fixed/route.ts(220,35): error TS1005: ';' expected.
+app/api/lottery/participate/route.ts(260,5): error TS1005: ',' expected.
+app/api/lottery/participate/route.ts(314,1): error TS1128: Declaration or statement expected.
+app/api/lottery/participate/route.ts(314,2): error TS1128: Declaration or statement expected.
+app/api/lottery/records/route.ts(176,30): error TS1005: ';' expected.
+app/api/lottery/records/route.ts(209,24): error TS1005: ';' expected.
+app/api/lottery/records/route.ts(250,2): error TS1005: '}' expected.
+app/api/lottery/statistics/route.ts(23,1): error TS1131: Property or signature expected.
+app/api/lottery/statistics/route.ts(159,5): error TS1472: 'catch' or 'finally' expected.
+app/api/lottery/statistics/route.ts(162,26): error TS1005: ';' expected.
+app/api/lottery/wins/route.ts(174,30): error TS1005: ';' expected.
+app/api/lottery/wins/route.ts(280,24): error TS1005: ';' expected.
+app/api/lottery/wins/route.ts(422,2): error TS1005: '}' expected.
+app/api/notifications/subscribe/route.ts(47,70): error TS1005: ',' expected.
+app/api/notifications/subscribe/route.ts(47,115): error TS1005: ';' expected.
+app/api/notifications/subscribe/route.ts(59,24): error TS1005: ';' expected.
+app/api/notifications/test/route.ts(21,6): error TS1472: 'catch' or 'finally' expected.
+app/api/notifications/test/route.ts(30,5): error TS1005: 'try' expected.
+app/api/notifications/test/route.ts(34,26): error TS1005: ';' expected.
+app/api/notifications/test/route.ts(41,1): error TS1128: Declaration or statement expected.
+app/api/notifications/unsubscribe/route.ts(25,91): error TS1005: ';' expected.
+app/api/notifications/unsubscribe/route.ts(42,24): error TS1005: ';' expected.
+app/api/notifications/vapid-public-key/route.ts(45,33): error TS1005: ';' expected.
+app/api/notifications/vapid-public-key/route.ts(76,70): error TS1005: ',' expected.
+app/api/notifications/vapid-public-key/route.ts(76,115): error TS1005: ';' expected.
+app/api/notifications/vapid-public-key/route.ts(88,24): error TS1005: ';' expected.
+app/api/notifications/vapid-public-key/route.ts(94,2): error TS1005: '}' expected.
+app/api/notifications/win/route.ts(103,32): error TS1005: ';' expected.
+app/api/notifications/win/route.ts(144,26): error TS1005: ';' expected.
+app/api/notifications/win/route.ts(254,5): error TS1472: 'catch' or 'finally' expected.
+app/api/notifications/win/route.ts(257,26): error TS1005: ';' expected.
+app/api/notifications/win/route.ts(299,107): error TS1005: ';' expected.
+app/api/notifications/win/route.ts(306,34): error TS1005: ';' expected.
+app/api/notifications/win/route.ts(314,32): error TS1005: ';' expected.
+app/api/notifications/win/route.ts(446,91): error TS1005: ';' expected.
+app/api/notifications/win/route.ts(451,26): error TS1005: ';' expected.
+app/api/notifications/win/route.ts(484,2): error TS1005: '}' expected.
+app/api/orders/list/route.ts(135,34): error TS1005: ';' expected.
+app/api/payment/packages/route.ts(64,36): error TS1005: ';' expected.
+app/api/payment/recharge/route.ts(315,5): error TS1005: ',' expected.
+app/api/payment/recharge/route.ts(345,1): error TS1128: Declaration or statement expected.
+app/api/performance/route.ts(149,45): error TS1005: ';' expected.
+app/api/performance/route.ts(419,46): error TS1005: ';' expected.
+app/api/performance/route.ts(467,67): error TS1005: ';' expected.
+app/api/performance/route.ts(467,110): error TS1005: ';' expected.
+app/api/performance/route.ts(467,111): error TS1128: Declaration or statement expected.
+app/api/performance/route.ts(469,10): error TS1128: Declaration or statement expected.
+app/api/performance/route.ts(478,7): error TS1472: 'catch' or 'finally' expected.
+app/api/performance/route.ts(504,5): error TS1005: 'try' expected.
+app/api/performance/route.ts(508,37): error TS1005: ';' expected.
+app/api/products/[id]/route.ts(7,1): error TS1003: Identifier expected.
+app/api/products/[id]/route.ts(7,8): error TS1005: ',' expected.
+app/api/products/[id]/route.ts(7,22): error TS1005: ';' expected.
+app/api/products/[id]/route.ts(9,8): error TS1005: ';' expected.
+app/api/products/[id]/route.ts(10,1): error TS1109: Expression expected.
+app/api/products/[id]/route.ts(10,3): error TS1434: Unexpected keyword or identifier.
+app/api/products/[id]/route.ts(47,123): error TS1005: ';' expected.
+app/api/products/[id]/route.ts(161,35): error TS1005: ';' expected.
+app/api/products/route.ts(9,1): error TS1003: Identifier expected.
+app/api/products/route.ts(9,8): error TS1005: ',' expected.
+app/api/products/route.ts(9,22): error TS1005: ';' expected.
+app/api/products/route.ts(14,8): error TS1005: ';' expected.
+app/api/products/route.ts(15,1): error TS1109: Expression expected.
+app/api/products/route.ts(15,3): error TS1434: Unexpected keyword or identifier.
+app/api/products/route.ts(103,28): error TS1005: ';' expected.
+app/api/recharge/first-time/route.ts(54,26): error TS1005: ';' expected.
+app/api/recharge/first-time/route.ts(100,26): error TS1005: ';' expected.
+app/api/recharge/packages/route.ts(53,26): error TS1005: ';' expected.
+app/api/resale/list/route.ts(99,26): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(20,105): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(25,97): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(33,125): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(37,105): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(46,127): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(58,143): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(65,53): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(108,105): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(123,46): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(132,92): error TS1005: ',' expected.
+app/api/resale/purchase/[id]/route.ts(132,151): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(140,195): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(155,62): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(162,43): error TS1005: ';' expected.
+app/api/resale/purchase/[id]/route.ts(251,28): error TS1005: ';' expected.
+app/api/resale/status/[id]/route.ts(91,26): error TS1005: ';' expected.
+app/api/resale/suggest-price/route.ts(147,26): error TS1005: ';' expected.
+app/api/rewards/first-recharge/claim/route.ts(72,24): error TS1005: ';' expected.
+app/api/rewards/first-recharge/status/route.ts(80,28): error TS1005: ';' expected.
+app/api/rewards/first-recharge/status/route.ts(146,26): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(141,28): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(169,28): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(249,5): error TS1472: 'catch' or 'finally' expected.
+app/api/risk/alert/route.ts(252,26): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(293,24): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(309,63): error TS1005: ',' expected.
+app/api/risk/alert/route.ts(309,105): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(315,26): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(325,63): error TS1005: ',' expected.
+app/api/risk/alert/route.ts(325,105): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(331,26): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(362,31): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(381,26): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(416,24): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(439,24): error TS1005: ';' expected.
+app/api/risk/alert/route.ts(486,2): error TS1005: '}' expected.
+app/api/risk/evaluate-async/route.ts(82,35): error TS1005: ';' expected.
+app/api/risk/evaluate-async/route.ts(84,9): error TS1472: 'catch' or 'finally' expected.
+app/api/risk/evaluate-async/route.ts(106,7): error TS1128: Declaration or statement expected.
+app/api/risk/evaluate-async/route.ts(106,9): error TS1005: 'try' expected.
+app/api/risk/evaluate-async/route.ts(110,27): error TS1005: ';' expected.
+app/api/risk/evaluate-async/route.ts(112,5): error TS1128: Declaration or statement expected.
+app/api/risk/evaluate-async/route.ts(112,6): error TS1128: Declaration or statement expected.
+app/api/risk/evaluate-async/route.ts(116,3): error TS1128: Declaration or statement expected.
+app/api/risk/evaluate-async/route.ts(116,5): error TS1005: 'try' expected.
+app/api/risk/evaluate-async/route.ts(120,27): error TS1005: ';' expected.
+app/api/risk/evaluate-async/route.ts(186,5): error TS1472: 'catch' or 'finally' expected.
+app/api/risk/evaluate-async/route.ts(189,26): error TS1005: ';' expected.
+app/api/risk/events/route.ts(152,30): error TS1005: ';' expected.
+app/api/risk/events/route.ts(228,26): error TS1005: ';' expected.
+app/api/risk/events/route.ts(281,26): error TS1005: ';' expected.
+app/api/risk/events/route.ts(302,28): error TS1005: ';' expected.
+app/api/risk/events/route.ts(317,26): error TS1005: ';' expected.
+app/api/risk/events/route.ts(387,26): error TS1005: ';' expected.
+app/api/risk/events/route.ts(439,26): error TS1005: ';' expected.
+app/api/risk/events/route.ts(442,2): error TS1005: '}' expected.
+app/api/risk/monitor/route.ts(83,28): error TS1005: ';' expected.
+app/api/risk/monitor/route.ts(94,27): error TS1005: ';' expected.
+app/api/risk/monitor/route.ts(168,26): error TS1005: ';' expected.
+app/api/risk/monitor/route.ts(223,26): error TS1005: ';' expected.
+app/api/risk/monitor/route.ts(280,26): error TS1005: ';' expected.
+app/api/risk/monitor/route.ts(346,24): error TS1005: ';' expected.
+app/api/risk/monitor/route.ts(394,27): error TS1005: ';' expected.
+app/api/show-off/posts/[id]/comments/route.ts(119,26): error TS1005: ';' expected.
+app/api/show-off/posts/[id]/comments/route.ts(255,24): error TS1005: ';' expected.
+app/api/show-off/posts/[id]/comments/route.ts(318,26): error TS1005: ';' expected.
+app/api/show-off/posts/[id]/route.ts(142,26): error TS1005: ';' expected.
+app/api/show-off/posts/[id]/route.ts(262,24): error TS1005: ';' expected.
+app/api/show-off/posts/[id]/route.ts(330,26): error TS1005: ';' expected.
+app/api/show-off/posts/route.ts(154,30): error TS1005: ';' expected.
+app/api/show-off/posts/route.ts(267,24): error TS1005: ';' expected.
+app/api/show-off/posts/route.ts(343,26): error TS1005: ';' expected.
+app/api/show-off/posts/route.ts(346,1): error TS1005: '}' expected.
+app/api/user/addresses-consistent/route.ts(149,2): error TS1005: '}' expected.
+app/api/user/addresses-fixed/[id]/route.ts(200,34): error TS1005: ';' expected.
+app/api/user/addresses-fixed/[id]/route.ts(228,24): error TS1005: ';' expected.
+app/api/user/addresses-fixed/[id]/route.ts(284,24): error TS1005: ';' expected.
+app/api/user/addresses-fixed/[id]/route.ts(402,34): error TS1005: ';' expected.
+app/api/user/addresses-fixed/[id]/route.ts(418,24): error TS1005: ';' expected.
+app/api/user/addresses-fixed/[id]/route.ts(476,24): error TS1005: ';' expected.
+app/api/user/addresses-fixed/[id]/route.ts(530,26): error TS1005: ';' expected.
+app/api/user/addresses-fixed/[id]/route.ts(559,26): error TS1005: ';' expected.
+app/api/user/addresses-fixed/route.ts(29,14): error TS1005: ':' expected.
+app/api/user/addresses-fixed/route.ts(48,3): error TS1005: ',' expected.
+app/api/user/addresses-fixed/route.ts(50,16): error TS1005: ':' expected.
+app/api/user/addresses-fixed/route.ts(50,33): error TS1005: ',' expected.
+app/api/user/addresses-fixed/route.ts(50,48): error TS1005: ',' expected.
+app/api/user/addresses-fixed/route.ts(141,30): error TS1005: ';' expected.
+app/api/user/addresses-fixed/route.ts(184,5): error TS1472: 'catch' or 'finally' expected.
+app/api/user/addresses-fixed/route.ts(187,26): error TS1005: ';' expected.
+app/api/user/addresses-fixed/route.ts(201,1): error TS1128: Declaration or statement expected.
+app/api/user/addresses-fixed/route.ts(336,34): error TS1005: ';' expected.
+app/api/user/addresses-fixed/route.ts(371,24): error TS1005: ';' expected.
+app/api/user/addresses-fixed/route.ts(415,24): error TS1005: ';' expected.
+app/api/user/addresses-fixed/route.ts(469,26): error TS1005: ';' expected.
+app/api/user/addresses-fixed/route.ts(498,26): error TS1005: ';' expected.
+app/api/user/language/route.ts(66,44): error TS1005: ';' expected.
+app/api/user/language/route.ts(146,41): error TS1005: ';' expected.
+app/api/user/profile-fixed/route.ts(145,33): error TS1005: ';' expected.
+app/api/user/profile-fixed/route.ts(218,29): error TS1005: ';' expected.
+app/api/user/profile-fixed/route.ts(250,29): error TS1005: ';' expected.
+app/api/user/profile-fixed/route.ts(258,2): error TS1005: '}' expected.
+app/api/user/profile-optimized/route.ts(303,1): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
+app/api/user/profile-optimized/route.ts(404,4): error TS1005: '}' expected.
+app/api/user/profile/route.ts(80,35): error TS1005: ';' expected.
+app/api/user/profile/route.ts(128,38): error TS1005: ';' expected.
+app/api/user/show-off/posts/route.ts(146,32): error TS1005: ';' expected.
+app/api/user/show-off/posts/route.ts(153,1): error TS1005: '}' expected.
+app/api/user/transactions/route.ts(74,40): error TS1005: ';' expected.
+app/api/user/wallet/balance/route.ts(90,5): error TS1472: 'catch' or 'finally' expected.
+app/api/user/wallet/balance/route.ts(93,26): error TS1005: ';' expected.
+app/api/user/wallet/balance/route.ts(99,2): error TS1005: '}' expected.
+app/api/user/wallet/transactions/route.ts(100,5): error TS1472: 'catch' or 'finally' expected.
+app/api/user/wallet/transactions/route.ts(103,26): error TS1005: ';' expected.
+app/api/user/wallet/transactions/route.ts(122,2): error TS1005: '}' expected.
+app/api/user/wallet/transfer/route.ts(145,26): error TS1005: ';' expected.
+app/api/withdraw/create-fixed/route.ts(277,32): error TS1005: ';' expected.
+app/api/withdraw/create-fixed/route.ts(299,30): error TS1005: ';' expected.
+app/api/withdraw/create-fixed/route.ts(343,32): error TS1005: ';' expected.
+app/api/withdraw/create-fixed/route.ts(428,26): error TS1005: ';' expected.
+app/api/withdraw/create-fixed/route.ts(479,25): error TS1005: ';' expected.
+app/api/withdraw/create-fixed/route.ts(603,24): error TS1005: ';' expected.
+app/api/withdraw/create-fixed/route.ts(644,26): error TS1005: ';' expected.
+app/api/withdraw/create-fixed/route.ts(673,26): error TS1005: ';' expected.
+app/api/withdraw/create/route.ts(153,26): error TS1005: ';' expected.
+app/api/withdraw/list/route.ts(85,26): error TS1005: ';' expected.
+components/lazy/EnhancedVirtualScroll.tsx(534,31): error TS1003: Identifier expected.
+components/lazy/EnhancedVirtualScroll.tsx(539,14): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+utils/route-optimization.ts(398,10): error TS1005: '>' expected.
+utils/route-optimization.ts(398,19): error TS1005: ')' expected.
+utils/route-optimization.ts(399,12): error TS1005: '>' expected.
+utils/route-optimization.ts(399,21): error TS1005: ';' expected.
+utils/route-optimization.ts(400,14): error TS1005: '>' expected.
+utils/route-optimization.ts(400,23): error TS1005: ';' expected.
+utils/route-optimization.ts(400,85): error TS1110: Type expected.
+utils/route-optimization.ts(401,25): error TS1161: Unterminated regular expression literal.
+utils/route-optimization.ts(402,8): error TS1161: Unterminated regular expression literal.
+utils/route-optimization.ts(404,14): error TS1005: '>' expected.
+utils/route-optimization.ts(404,23): error TS1005: ')' expected.
+utils/route-optimization.ts(406,13): error TS1005: '>' expected.
+utils/route-optimization.ts(406,22): error TS1005: ';' expected.
+utils/route-optimization.ts(407,20): error TS1136: Property assignment expected.
+utils/route-optimization.ts(408,11): error TS1109: Expression expected.
+utils/route-optimization.ts(408,13): error TS1110: Type expected.
+utils/route-optimization.ts(409,10): error TS1161: Unterminated regular expression literal.
+utils/route-optimization.ts(410,7): error TS1128: Declaration or statement expected.
+utils/route-optimization.ts(410,8): error TS1128: Declaration or statement expected.
+utils/route-optimization.ts(411,6): error TS1110: Type expected.
+utils/route-optimization.ts(412,3): error TS1128: Declaration or statement expected.
+utils/route-optimization.ts(413,1): error TS1128: Declaration or statement expected.

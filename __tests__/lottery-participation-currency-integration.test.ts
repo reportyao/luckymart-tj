@@ -1,10 +1,9 @@
+import { getTestApiConfig } from '../config/api-config';
 /**
  * 抽奖系统双货币集成测试用例
  * 测试API: POST /api/lottery/participate
  */
 
-import { NextRequest } from 'next/server';
-import { getTestApiConfig } from '../config/api-config';
 
 // 获取测试环境API配置
 const testConfig = getTestApiConfig();
@@ -73,9 +72,11 @@ class LotteryParticipationTester {
       const result = await response.json();
 
       console.log(`📊 响应状态: ${response.status}`);
+  }
       console.log(`📄 响应内容:`, JSON.stringify(result, null, 2));
 
       return {
+  }
         status: response.status,
         data: result,
         success: response.ok
@@ -235,7 +236,7 @@ class DataValidationTests {
     console.log('\n=== 数据映射验证 ===');
     
     // 验证数据库字段映射
-    const fieldMappings = [
+    const fieldMappings = [;
       { old: 'maxShares', new: 'totalShares', table: 'lottery_rounds' },
       { old: 'endTime', new: 'drawTime', table: 'lottery_rounds' },
       { old: 'balance', new: 'luckyCoins', table: 'users' },
@@ -254,7 +255,7 @@ class DataValidationTests {
   static testTransactionSafety(): void {
     console.log('\n=== 事务安全性检查 ===');
     
-    const transactionSteps = [
+    const transactionSteps = [;
       '1. 验证lotteryRounds.totalShares和soldShares',
       '2. 验证users.luckyCoins余额',
       '3. 创建participations记录',
@@ -276,7 +277,7 @@ class DataValidationTests {
   static testConcurrencyControl(): void {
     console.log('\n=== 并发控制验证 ===');
     
-    const concurrencyFeatures = [
+    const concurrencyFeatures = [;
       'luckyCoinsVersion - 防止余额并发扣款',
       'soldSharesVersion - 防止超售',
       '数据库事务 - 确保原子性',
@@ -335,7 +336,7 @@ class PerformanceTests {
     const batchSizes = [1, 5, 10, 20, 50, 100];
     
     batchSizes.forEach(size => {
-      const totalCost = size * 1.00; // 假设每份1幸运币
+      const totalCost = size * 1.00; // 假设每份1幸运币;
       console.log(`批量${size}份: 总费用${totalCost}幸运币`);
     });
     

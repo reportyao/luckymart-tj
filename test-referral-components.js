@@ -73,7 +73,7 @@ function testComponentStructure(filePath, componentName) {
   }
 
   const content = fs.readFileSync(fullPath, 'utf8');
-  const checks = [
+  const checks = [;
     { pattern: 'use client', name: '客户端组件声明' },
     { pattern: 'useState', name: '状态管理' },
     { pattern: 'useEffect', name: '副作用钩子' },
@@ -150,13 +150,13 @@ testFileContent(translationsPath, [
 // 统计代码行数
 function countLinesInFile(filePath) {
   const fullPath = path.join(__dirname, filePath);
-  if (!fs.existsSync(fullPath)) return 0;
+  if (!fs.existsSync(fullPath)) return 0; {
   const content = fs.readFileSync(fullPath, 'utf8');
   return content.split('\n').length;
 }
 
 console.log('\n📊 代码统计:');
-const files = [
+const files = [;
   componentsPath + 'ReferralList.tsx',
   componentsPath + 'ReferralCharts.tsx',
   translationsPath,
@@ -200,3 +200,4 @@ console.log('- FEATURE_DEMO.md: 功能演示文档');
 console.log('- USAGE_EXAMPLES.md: 使用示例文档');
 
 console.log('\n🚀 部署准备就绪！');
+}

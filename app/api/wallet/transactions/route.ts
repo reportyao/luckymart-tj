@@ -40,11 +40,11 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         method: 'GET'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
-    }
+}
 
     requestLogger.info('开始查询用户交易记录', { userId: user.userId }, {
       endpoint: '/api/wallet/transactions',
@@ -104,7 +104,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 使用优化后的分页查询函数
-    const transactionQueryResult = await prisma.$queryRaw`
+    const transactionQueryResult = await prisma.$queryRaw`;
       SELECT * FROM get_user_transactions_paginated(
         ${user.userId}::uuid,
         ${page}::integer,
@@ -123,7 +123,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         method: 'GET'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.internal('查询交易记录失败，请稍后重试'),
         { status: 500 }
       );
@@ -149,7 +149,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     });
 
     // 格式化交易记录数据
-    const formattedTransactions = transactions.map((tx: any) => ({
+    const formattedTransactions = transactions.map(((tx: any) : any) => ({
       id: tx.id,
       type: tx.type,
       amount: parseFloat(tx.amount.toString()),
@@ -185,7 +185,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       },
       statistics: {
         totalTransactions: totalCount,
-        balanceTypeStats: statistics.map((stat: any) => ({
+        balanceTypeStats: statistics.map(((stat: any) : any) => ({
           balanceType: stat.balanceType,
           balanceTypeName: {
             balance: '普通余额',
@@ -211,7 +211,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       method: 'GET'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('查询交易记录失败，请稍后重试'),
       { status: 500 }
     );
@@ -232,11 +232,11 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('不支持的请求方法'),
         { status: 405 }
       );
-    }
+}
 
     // 验证必需参数
     if (!user?.userId) {
@@ -245,7 +245,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
@@ -266,7 +266,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('请求体格式错误'),
         { status: 400 }
       );
@@ -281,7 +281,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('交易类型不能为空'),
         { status: 400 }
       );
@@ -293,7 +293,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('金额必须为非零数字'),
         { status: 400 }
       );
@@ -305,7 +305,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('余额类型无效，必须是 balance、lucky_coins 或 platform_balance'),
         { status: 400 }
       );
@@ -317,7 +317,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
         method: 'POST'
       });
 
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('订单ID格式无效'),
         { status: 400 }
       );
@@ -389,7 +389,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       method: 'POST'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('创建交易记录失败，请稍后重试'),
       { status: 500 }
     );

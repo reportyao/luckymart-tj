@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -10,7 +10,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // 创建权限中间件
-const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read
 ]);
 
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get('endDate');
     const limit = parseInt(searchParams.get('limit') || '100');
 
-    let query = supabase
+    let query = supabase;
       .from('profit_analysis')
       .select('*')
       .eq('product_id', null) // 只获取总体利润分析
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       .limit(limit);
 
     if (startDate && endDate) {
-      query = query
+      query : query
         .gte('date', startDate)
         .lte('date', endDate);
     } else {
@@ -49,13 +49,13 @@ export async function GET(request: NextRequest) {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       query = query.gte('date', thirtyDaysAgo.toISOString().split('T')[0]);
-    }
+}
 
     const { data: profitData, error } = await query;
 
     if (error) {
       console.error('查询利润分析数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '查询利润分析数据失败' },
         { status: 500 }
       );
@@ -144,10 +144,11 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(response);
+  }
 
   } catch (error) {
     console.error('获取利润分析API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
       { status: 500 }
     );
@@ -169,7 +170,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const {
-      date = new Date().toISOString().split('T')[0]
+      date : new Date().toISOString().split('T')[0]
     } = body;
 
     // 计算收入数据
@@ -177,52 +178,52 @@ export async function POST(request: NextRequest) {
     const endDate = `${date}T23:59:59`;
 
     // 从订单表计算总收入
-    const { data: ordersData } = await supabase
+    const { data: ordersData } = await supabase;
       .from('orders')
       .select('total_amount')
       .eq('payment_status', 'completed')
       .gte('created_at', startDate)
       .lte('created_at', endDate);
 
-    const revenue = ordersData?.reduce((sum: number, order: any) => 
+    const revenue = ordersData?.reduce((sum: number, order: any) =>;
       sum + parseFloat(order.total_amount.toString()), 0) || 0;
 
     // 计算产品成本（基于抽奖参与）
-    const { data: participationsData } = await supabase
+    const { data: participationsData } = await supabase;
       .from('participations')
       .select('cost')
       .gte('created_at', startDate)
       .lte('created_at', endDate);
 
-    const productCost = participationsData?.reduce((sum: number, participation: any) => 
+    const productCost = participationsData?.reduce((sum: number, participation: any) =>;
       sum + parseFloat(participation.cost.toString()), 0) || 0;
 
     // 计算平台费用（假设为收入的5%）
     const platformFee = revenue * 0.05;
 
     // 计算运营成本（新手任务、签到奖励等）
-    const { data: taskData } = await supabase
+    const { data: taskData } = await supabase;
       .from('user_task_progress')
       .select('reward_amount')
       .eq('status', 'claimed')
       .gte('created_at', startDate)
       .lte('created_at', endDate);
 
-    const { data: checkinData } = await supabase
+    const { data: checkinData } = await supabase;
       .from('check_in_records')
       .select('reward_amount')
       .eq('status', 'claimed')
       .gte('created_at', startDate)
       .lte('created_at', endDate);
 
-    const { data: firstRechargeData } = await supabase
+    const { data: firstRechargeData } = await supabase;
       .from('first_recharge_rewards')
       .select('reward_amount')
       .eq('status', 'claimed')
       .gte('created_at', startDate)
       .lte('created_at', endDate);
 
-    const operationCost = [
+    const operationCost = [;
       ...(taskData?.map((t: any) => parseFloat(t.reward_amount.toString())) || []),
       ...(checkinData?.map((c: any) => parseFloat(c.reward_amount.toString())) || []),
       ...(firstRechargeData?.map((f: any) => parseFloat(f.reward_amount.toString())) || [])
@@ -238,7 +239,7 @@ export async function POST(request: NextRequest) {
     const costRatio = revenue > 0 ? ((productCost + platformFee + operationCost) / revenue) * 100 : 0;
 
     // 插入数据
-    const { data, error } = await supabase
+    const { data, error } = await supabase;
       .from('profit_analysis')
       .insert({
         date,
@@ -257,7 +258,8 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('保存利润分析数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         { error: '保存利润分析数据失败' },
         { status: 500 }
       );
@@ -282,7 +284,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('计算利润分析API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
       { status: 500 }
     );
@@ -292,7 +294,7 @@ export async function POST(request: NextRequest) {
 
 // 辅助函数：计算波动性
 function calculateVolatility(values: number[]): number {
-  if (values.length < 2) return 0;
+  if (values.length < 2) return 0; {
   const mean = values.reduce((sum: number, val: number) => sum + val, 0) / values.length;
   const variance = values.reduce((sum: number, val: number) => sum + Math.pow(val - mean, 2), 0) / values.length;
   return Math.sqrt(variance);
@@ -300,19 +302,20 @@ function calculateVolatility(values: number[]): number {
 
 // 辅助函数：计算趋势
 function calculateTrend(values: number[]): number {
-  if (values.length < 2) return 0;
+  if (values.length < 2) return 0; {
   const n = values.length;
   const sumX = n * (n - 1) / 2;
   const sumY = values.reduce((sum: number, val: number) => sum + val, 0);
   const sumXY = values.reduce((sum: number, val: number, index: number) => sum + val * index, 0);
   const sumXX = n * (n - 1) * (2 * n - 1) / 6;
-  return n * sumXY - sumX * sumY > 0 ? 1 : -1; // 简化处理，只返回趋势方向
+  return n * sumXY - sumX * sumY > 0 ? 1 : -1; // 简化处理，只返回趋势方向;
 }
 
 // 辅助函数：计算增长率
 function calculateGrowth(values: number[]): number {
-  if (values.length < 2) return 0;
+  if (values.length < 2) return 0; {
   const first = values[0];
   const last = values[values.length - 1];
   return first > 0 ? ((last - first) / first) * 100 : 0;
+}
 }

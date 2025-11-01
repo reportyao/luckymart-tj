@@ -1,9 +1,9 @@
+import { useState, useEffect, useCallback, useRef } from 'react';
 /**
  * 移动端性能监控Hook
  * 提供实时性能指标监控、内存使用监控、网络请求优化分析等功能
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface PerformanceMetrics {
   // 加载性能
@@ -81,7 +81,7 @@ export const useMobilePerformance = (config: Partial<PerformanceMonitorConfig> =
       memoryUsage: 50 * 1024 * 1024, // 50MB
       frameRate: 30, // 30fps
       interactionLatency: 100 // 100ms
-    }
+}
   };
   
   const finalConfig = { ...defaultConfig, ...config };
@@ -90,7 +90,7 @@ export const useMobilePerformance = (config: Partial<PerformanceMonitorConfig> =
 
   // 收集性能指标
   const collectMetrics = useCallback(async () => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return; {
 
     try {
       // 获取导航计时
@@ -114,7 +114,7 @@ export const useMobilePerformance = (config: Partial<PerformanceMonitorConfig> =
 
       // 检测连接速度
       const connection = (navigator as any).connection;
-      const connectionSpeed: 'slow' | 'medium' | 'fast' = connection 
+      const connectionSpeed: 'slow' | 'medium' | 'fast' = connection;
         ? connection.effectiveType >= 3 ? 'fast' : connection.effectiveType >= 2 ? 'medium' : 'slow'
         : 'medium';
 
@@ -153,7 +153,7 @@ export const useMobilePerformance = (config: Partial<PerformanceMonitorConfig> =
 
   // 监控网络请求
   const monitorNetworkRequests = useCallback(() => {
-    if (!finalConfig.enableNetworkMonitoring) return;
+    if (!finalConfig.enableNetworkMonitoring) return; {
 
     const originalFetch = window.fetch;
     window.fetch = async (...args) => {
@@ -188,6 +188,7 @@ export const useMobilePerformance = (config: Partial<PerformanceMonitorConfig> =
       } catch (error) {
         console.error('网络请求失败:', error);
         throw error;
+  }
       }
     };
 
@@ -229,7 +230,7 @@ export const useMobilePerformance = (config: Partial<PerformanceMonitorConfig> =
       // 这里应该计算实际帧率，简化处理
     });
     observer.observe({ entryTypes: ['frame'] });
-    return 60; // 模拟60fps
+    return 60; // 模拟60fps;
   };
 
   // 计算重绘次数
@@ -252,17 +253,17 @@ export const useMobilePerformance = (config: Partial<PerformanceMonitorConfig> =
   const measureInteractionLatency = (): number => {
     const startTime = performance.now();
     // 模拟交互测量
-    return Math.random() * 50; // 0-50ms随机延迟
+    return Math.random() * 50; // 0-50ms随机延迟;
   };
 
   // 测量输入延迟
   const measureInputDelay = (): number => {
-    return Math.random() * 20; // 0-20ms随机延迟
+    return Math.random() * 20; // 0-20ms随机延迟;
   };
 
   // 测量滚动性能
   const measureScrollPerformance = (): number => {
-    return Math.random() * 100; // 0-100性能评分
+    return Math.random() * 100; // 0-100性能评分;
   };
 
   // 检查性能告警
@@ -360,7 +361,7 @@ export const useMobilePerformance = (config: Partial<PerformanceMonitorConfig> =
 
   // 获取性能报告
   const getPerformanceReport = useCallback(() => {
-    if (!metrics) return null;
+    if (!metrics) return null; {
 
     return {
       summary: {
@@ -451,7 +452,7 @@ export const useHaptics = () => {
   const light = useCallback(() => {
     if (isSupported) {
       navigator.vibrate(10);
-    }
+}
   }, [isSupported]);
 
   const medium = useCallback(() => {
@@ -509,10 +510,10 @@ export const useDeviceDetection = () => {
       const isLandscape = width > height;
 
       let screenSize = 'md';
-      if (width < 640) screenSize = 'sm';
-      else if (width < 768) screenSize = 'md';
-      else if (width < 1024) screenSize = 'lg';
-      else if (width < 1280) screenSize = 'xl';
+      if (width < 640) screenSize = 'sm'; {
+      else if (width < 768) screenSize = 'md'; {
+      else if (width < 1024) screenSize = 'lg'; {
+      else if (width < 1280) screenSize = 'xl'; {
       else screenSize = '2xl';
 
       setDevice({
@@ -587,7 +588,7 @@ export const useVirtualKeyboard = () => {
     initialViewportHeight.current = window.visualViewport?.height || window.innerHeight;
 
     const handleViewportChange = () => {
-      if (!window.visualViewport) return;
+      if (!window.visualViewport) return; {
 
       const currentHeight = window.visualViewport.height;
       const heightDiff = initialViewportHeight.current - currentHeight;
@@ -598,7 +599,7 @@ export const useVirtualKeyboard = () => {
       } else {
         setIsKeyboardVisible(false);
         setKeyboardHeight(0);
-      }
+}
     };
 
     if (window.visualViewport) {
@@ -621,7 +622,7 @@ export const useTouchGuard = (duration = 300) => {
   const timeoutRef = useRef<NodeJS.Timeout>();
 
   const guard = useCallback(() => {
-    if (isGuarded) return false;
+    if (isGuarded) return false; {
 
     setIsGuarded(true);
     timeoutRef.current = setTimeout(() => {
@@ -634,7 +635,7 @@ export const useTouchGuard = (duration = 300) => {
   const reset = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
-    }
+}
     setIsGuarded(false);
   }, []);
 
@@ -661,7 +662,7 @@ export const useTouchAreaOptimization = (minTouchSize = 44) => {
     
     if (!meetsRequirement) {
       console.warn(`触摸区域 ${id} 太小: ${rect.width}x${rect.height}px，建议至少 ${minTouchSize}x${minTouchSize}px`);
-    }
+}
 
     setTouchAreas(prev => new Map(prev).set(id, rect));
     
@@ -708,7 +709,7 @@ export const useGestureRecognition = () => {
     const startTime = gestureStartTime.current.get(gestureType);
     const startPos = gestureStartPos.current.get(gestureType);
     
-    if (!startTime || !startPos) return null;
+    if (!startTime || !startPos) return null; {
 
     const duration = Date.now() - startTime;
     const deltaX = endX - startPos.x;
@@ -738,3 +739,4 @@ export const useGestureRecognition = () => {
     setGestureState,
   };
 };
+}}}}}}}}}

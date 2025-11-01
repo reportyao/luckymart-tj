@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 
-const withReadPermission = AdminPermissionManager.createPermissionMiddleware([
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read
 ]);
 
-const withWritePermission = AdminPermissionManager.createPermissionMiddleware([
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read
 ]);
 
 // 模拟风险事件数据
-const mockRiskEvents = [
+const mockRiskEvents = [;
   {
     id: 'RE001',
     userId: 'U1001',
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
 
     if (riskLevel && riskLevel !== 'all') {
       filteredEvents = filteredEvents.filter((event : any) => event.riskLevel === riskLevel);
-    }
+}
 
     if (status && status !== 'all') {
       filteredEvents = filteredEvents.filter((event : any) => event.status === status);
@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('获取风险事件失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '获取数据失败' },
       { status: 500 }
     );
@@ -112,11 +112,11 @@ export async function POST(request: NextRequest) {
     const { userId, eventType, riskLevel, description, riskScore } = body;
 
     if (!userId || !eventType || !description || riskScore === undefined) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '缺少必需参数' },
         { status: 400 }
       );
-    }
+}
 
     const newEvent = {
       id: `RE${String(mockRiskEvents.length + 1).padStart(3, '0')}`,
@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('创建风险事件失败:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { success: false, error: '创建失败' },
       { status: 500 }
     );

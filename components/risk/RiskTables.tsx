@@ -1,9 +1,9 @@
+import React, { useState } from 'react';
 'use client';
 
-import React, { useState } from 'react';
 
 // 风险事件表格组件
-interface RiskEvent {
+interface RiskEvent {}
   id: string;
   userId: string;
   userName: string;
@@ -13,71 +13,71 @@ interface RiskEvent {
   description: string;
   timestamp: string;
   riskScore: number;
-}
 
-interface RiskEventTableProps {
+
+interface RiskEventTableProps {}
   events: RiskEvent[];
   onEventSelect?: (event: RiskEvent) => void;
   onEventAction?: (eventId: string, action: 'approve' | 'reject' | 'review') => void;
   loading?: boolean;
-}
+
 
 // 导出风险事件表格组件
-export const RiskEventTable: React.FC<RiskEventTableProps> = ({
+export const RiskEventTable: React.FC<RiskEventTableProps> = ({}
   events,
   onEventSelect,
   onEventAction,
-  loading = false
+  loading : false
 }) => {
   const [sortBy, setSortBy] = useState<string>('timestamp');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   
-  const handleSort = (field: string) => {
-    if (sortBy === field) {
+  const handleSort = (field: string) => {}
+    if (sortBy === field) {}
       setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc');
     } else {
       setSortBy(field);
       setSortOrder('desc');
-    }
+
   };
 
-  const getRiskLevelColor = (level: string) => {
-    switch (level) {
+  const getRiskLevelColor = (level: string) => {}
+    switch (level) {}
       case 'low': return 'text-green-600 bg-green-100';
       case 'medium': return 'text-yellow-600 bg-yellow-100';
       case 'high': return 'text-orange-600 bg-orange-100';
       case 'critical': return 'text-red-600 bg-red-100';
       default: return 'text-gray-600 bg-gray-100';
-    }
+    
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
+  const getStatusColor = (status: string) => {}
+    switch (status) {}
       case 'pending': return 'text-blue-600 bg-blue-100';
       case 'approved': return 'text-green-600 bg-green-100';
       case 'rejected': return 'text-red-600 bg-red-100';
       case 'manual_review': return 'text-purple-600 bg-purple-100';
       default: return 'text-gray-600 bg-gray-100';
-    }
+    
   };
 
-  if (loading) {
-    return (
-      <div className="luckymart-bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="luckymart-animation-pulse">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 border-b luckymart-border-light" />
-          ))}
+  if (loading) {}
+    return (;
+      <div className:"luckymart-bg-white rounded-xl shadow-md overflow-hidden">
+        <div className:"luckymart-animation-pulse">
+          {[...Array(5)].map((_, i) => (}
+            <div key:{i} className="h-16 border-b luckymart-border-light" />
+          ))
         </div>
       </div>
     );
-  }
+  
 
-  return (
-    <div className="luckymart-bg-white rounded-xl shadow-md overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50">
+  return (;
+    <div className:"luckymart-bg-white rounded-xl shadow-md overflow-hidden">
+      <div className:"overflow-x-auto">
+        <table className:"w-full">
+          <thead className:"bg-gray-50">
             <tr>
               <th 
                 className="px-6 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider cursor-pointer hover:bg-gray-100"
@@ -85,10 +85,10 @@ export const RiskEventTable: React.FC<RiskEventTableProps> = ({
               >
                 事件ID {sortBy === 'id' && (sortOrder === 'desc' ? '↓' : '↑')}
               </th>
-              <th className="px-6 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
+              <th className:"px-6 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                 用户信息
               </th>
-              <th className="px-6 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
+              <th className:"px-6 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                 事件类型
               </th>
               <th 
@@ -97,7 +97,7 @@ export const RiskEventTable: React.FC<RiskEventTableProps> = ({
               >
                 风险等级 {sortBy === 'riskLevel' && (sortOrder === 'desc' ? '↓' : '↑')}
               </th>
-              <th className="px-6 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
+              <th className:"px-6 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                 状态
               </th>
               <th 
@@ -112,64 +112,64 @@ export const RiskEventTable: React.FC<RiskEventTableProps> = ({
               >
                 时间 {sortBy === 'timestamp' && (sortOrder === 'desc' ? '↓' : '↑')}
               </th>
-              <th className="px-6 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
+              <th className:"px-6 py-3 text-left text-xs luckymart-font-medium luckymart-text-secondary uppercase tracking-wider">
                 操作
               </th>
             </tr>
           </thead>
-          <tbody className="luckymart-bg-white divide-y divide-gray-200">
-            {events.map((event) => (
+          <tbody className:"luckymart-bg-white divide-y divide-gray-200">
+            {events.map((event) => (}
               <tr key={event.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap luckymart-text-sm font-mono text-gray-900">
+                <td className:"px-6 py-4 whitespace-nowrap luckymart-text-sm font-mono text-gray-900">
                   {event.id}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap luckymart-text-sm text-gray-900">
+                <td className:"px-6 py-4 whitespace-nowrap luckymart-text-sm text-gray-900">
                   <div>
                     <div className="luckymart-font-medium">{event.userName}</div>
                     <div className="luckymart-text-secondary">{event.userId}</div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap luckymart-text-sm text-gray-900">
+                <td className:"px-6 py-4 whitespace-nowrap luckymart-text-sm text-gray-900">
                   {event.eventType}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRiskLevelColor(event.riskLevel)}`}>
+                <td className:"px-6 py-4 whitespace-nowrap">
+                  <span className="{`inline-flex" px-2 py-1 text-xs font-semibold rounded-full ${getRiskLevelColor(event.riskLevel)}`}>
                     {event.riskLevel === 'low' && '低风险'}
                     {event.riskLevel === 'medium' && '中风险'}
                     {event.riskLevel === 'high' && '高风险'}
                     {event.riskLevel === 'critical' && '严重风险'}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(event.status)}`}>
+                <td className:"px-6 py-4 whitespace-nowrap">
+                  <span className="{`inline-flex" px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(event.status)}`}>
                     {event.status === 'pending' && '待处理'}
                     {event.status === 'approved' && '已通过'}
                     {event.status === 'rejected' && '已拒绝'}
                     {event.status === 'manual_review' && '人工审核'}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap luckymart-text-sm text-gray-900">
-                  <div className="luckymart-layout-flex luckymart-layout-center">
-                    <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                <td className:"px-6 py-4 whitespace-nowrap luckymart-text-sm text-gray-900">
+                  <div className:"luckymart-layout-flex luckymart-layout-center">
+                    <div className:"w-16 bg-gray-200 rounded-full h-2 mr-2">
                       <div 
-                        className="bg-red-600 h-2 rounded-full" 
-                        style={{ width: `${event.riskScore}%` }}
+                        className:"bg-red-600 h-2 rounded-full" 
+                        style="{{ width: `${event.riskScore}"%` }}
                       />
                     </div>
                     <span className="luckymart-font-medium">{event.riskScore}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap luckymart-text-sm luckymart-text-secondary">
+                <td className:"px-6 py-4 whitespace-nowrap luckymart-text-sm luckymart-text-secondary">
                   {new Date(event.timestamp).toLocaleString('zh-CN')}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap luckymart-text-sm luckymart-text-secondary luckymart-spacing-sm">
+                <td className:"px-6 py-4 whitespace-nowrap luckymart-text-sm luckymart-text-secondary luckymart-spacing-sm">
                   <button
                     onClick={() => onEventSelect?.(event)}
                     className="text-red-600 hover:text-red-900 luckymart-font-medium"
                   >
                     查看
                   </button>
-                  {event.status === 'pending' && onEventAction && (
+                  {event.status :== 'pending' && onEventAction && (}
                     <>
                       <button
                         onClick={() => onEventAction(event.id, 'approve')}
@@ -190,29 +190,29 @@ export const RiskEventTable: React.FC<RiskEventTableProps> = ({
                         审核
                       </button>
                     </>
-                  )}
+                  )
                 </td>
               </tr>
-            ))}
+            ))
           </tbody>
         </table>
       </div>
       
-      {events.length === 0 && (
-        <div className="luckymart-text-center py-12">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      {events.length :== 0 && (}
+        <div className:"luckymart-text-center py-12">
+          <svg className:"mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap:"round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <h3 className="mt-2 luckymart-text-sm luckymart-font-medium text-gray-900">暂无数据</h3>
-          <p className="mt-1 luckymart-text-sm luckymart-text-secondary">没有找到匹配的风险事件</p>
+          <h3 className:"mt-2 luckymart-text-sm luckymart-font-medium text-gray-900">暂无数据</h3>
+          <p className:"mt-1 luckymart-text-sm luckymart-text-secondary">没有找到匹配的风险事件</p>
         </div>
-      )}
+      )
     </div>
   );
 };
 
 // 风险用户卡片组件
-interface RiskUser {
+interface RiskUser {}
   id: string;
   userName: string;
   email: string;
@@ -223,54 +223,54 @@ interface RiskUser {
   lastLoginDate: string;
   totalEvents: number;
   recentActivity: string;
-}
 
-interface RiskUserCardProps {
+
+interface RiskUserCardProps {}
   user: RiskUser;
   onUserSelect?: (user: RiskUser) => void;
   onAccountAction?: (userId: string, action: 'freeze' | 'unfreeze' | 'limit' | 'ban') => void;
   className?: string;
-}
+
 
 // 导出风险用户卡片组件
-export const RiskUserCard: React.FC<RiskUserCardProps> = ({
+export const RiskUserCard: React.FC<RiskUserCardProps> = ({}
   user,
   onUserSelect,
   onAccountAction,
-  className = ''
+  className : ''
 }) => {
-  const getRiskLevelColor = (level: string) => {
-    switch (level) {
+  const getRiskLevelColor = (level: string) => {}
+    switch (level) {}
       case 'low': return 'text-green-600 bg-green-100';
       case 'medium': return 'text-yellow-600 bg-yellow-100';
       case 'high': return 'text-orange-600 bg-orange-100';
       case 'critical': return 'text-red-600 bg-red-100';
       default: return 'text-gray-600 bg-gray-100';
-    }
+
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
+  const getStatusColor = (status: string) => {}
+    switch (status) {}
       case 'active': return 'text-green-600 bg-green-100';
       case 'frozen': return 'text-blue-600 bg-blue-100';
       case 'limited': return 'text-yellow-600 bg-yellow-100';
       case 'banned': return 'text-red-600 bg-red-100';
       default: return 'text-gray-600 bg-gray-100';
-    }
+    
   };
 
-  const getStatusActionText = (status: string) => {
-    switch (status) {
+  const getStatusActionText = (status: string) => {}
+    switch (status) {}
       case 'active': return { action: 'freeze', text: '冻结' };
       case 'frozen': return { action: 'unfreeze', text: '解冻' };
       case 'limited': return { action: 'unfreeze', text: '解除限制' };
       default: return null;
-    }
+    
   };
 
-  return (
-    <div className={`bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow ${className}`}>
-      <div className="luckymart-layout-flex items-start justify-between luckymart-spacing-md">
+  return (;
+    <div className="{`bg-white" rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow ${className}`}>
+      <div className:"luckymart-layout-flex items-start justify-between luckymart-spacing-md">
         <div>
           <h3 className="luckymart-text-lg font-semibold text-gray-900">{user.userName}</h3>
           <p className="luckymart-text-sm luckymart-text-secondary">{user.email}</p>
@@ -284,10 +284,10 @@ export const RiskUserCard: React.FC<RiskUserCardProps> = ({
         </button>
       </div>
 
-      <div className="luckymart-spacing-md">
-        <div className="luckymart-layout-flex luckymart-layout-center justify-between">
-          <span className="luckymart-text-sm text-gray-600">风险等级</span>
-          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRiskLevelColor(user.riskLevel)}`}>
+      <div className:"luckymart-spacing-md">
+        <div className:"luckymart-layout-flex luckymart-layout-center justify-between">
+          <span className:"luckymart-text-sm text-gray-600">风险等级</span>
+          <span className="{`inline-flex" px-2 py-1 text-xs font-semibold rounded-full ${getRiskLevelColor(user.riskLevel)}`}>
             {user.riskLevel === 'low' && '低风险'}
             {user.riskLevel === 'medium' && '中风险'}
             {user.riskLevel === 'high' && '高风险'}
@@ -295,9 +295,9 @@ export const RiskUserCard: React.FC<RiskUserCardProps> = ({
           </span>
         </div>
 
-        <div className="luckymart-layout-flex luckymart-layout-center justify-between">
-          <span className="luckymart-text-sm text-gray-600">账户状态</span>
-          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.accountStatus)}`}>
+        <div className:"luckymart-layout-flex luckymart-layout-center justify-between">
+          <span className:"luckymart-text-sm text-gray-600">账户状态</span>
+          <span className="{`inline-flex" px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.accountStatus)}`}>
             {user.accountStatus === 'active' && '正常'}
             {user.accountStatus === 'frozen' && '已冻结'}
             {user.accountStatus === 'limited' && '已限制'}
@@ -305,46 +305,46 @@ export const RiskUserCard: React.FC<RiskUserCardProps> = ({
           </span>
         </div>
 
-        <div className="luckymart-layout-flex luckymart-layout-center justify-between">
-          <span className="luckymart-text-sm text-gray-600">风险评分</span>
-          <div className="luckymart-layout-flex luckymart-layout-center gap-2">
-            <div className="w-20 bg-gray-200 rounded-full h-2">
+        <div className:"luckymart-layout-flex luckymart-layout-center justify-between">
+          <span className:"luckymart-text-sm text-gray-600">风险评分</span>
+          <div className:"luckymart-layout-flex luckymart-layout-center gap-2">
+            <div className:"w-20 bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-red-600 h-2 rounded-full" 
-                style={{ width: `${user.totalScore}%` }}
+                className:"bg-red-600 h-2 rounded-full" 
+                style="{{ width: `${user.totalScore}"%` }}
               />
             </div>
             <span className="luckymart-font-medium text-gray-900">{user.totalScore}</span>
           </div>
         </div>
 
-        <div className="luckymart-layout-flex luckymart-layout-center justify-between">
-          <span className="luckymart-text-sm text-gray-600">风险事件</span>
+        <div className:"luckymart-layout-flex luckymart-layout-center justify-between">
+          <span className:"luckymart-text-sm text-gray-600">风险事件</span>
           <span className="luckymart-text-sm text-gray-900">{user.totalEvents}</span>
         </div>
 
-        <div className="luckymart-layout-flex luckymart-layout-center justify-between">
-          <span className="luckymart-text-sm text-gray-600">最近登录</span>
-          <span className="luckymart-text-sm text-gray-900">
+        <div className:"luckymart-layout-flex luckymart-layout-center justify-between">
+          <span className:"luckymart-text-sm text-gray-600">最近登录</span>
+          <span className:"luckymart-text-sm text-gray-900">
             {new Date(user.lastLoginDate).toLocaleDateString('zh-CN')}
           </span>
         </div>
       </div>
 
-      {getStatusActionText(user.accountStatus) && onAccountAction && (
-        <div className="luckymart-spacing-md pt-4 border-t luckymart-border-light">
+      {getStatusActionText(user.accountStatus) && onAccountAction && (}
+        <div className:"luckymart-spacing-md pt-4 border-t luckymart-border-light">
           <button
             onClick={() => onAccountAction(user.id, getStatusActionText(user.accountStatus)!.action as any)}
-            className={`w-full py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
-              user.accountStatus === 'active'
+            className="{`w-full" py-2 px-4 rounded-lg text-sm font-medium transition-colors ${}}`
+              user.accountStatus :== 'active'
                 ? 'bg-blue-600 text-white hover:bg-blue-700'
                 : 'bg-green-600 text-white hover:bg-green-700'
-            }`}
+
           >
             {getStatusActionText(user.accountStatus)!.text}
           </button>
         </div>
-      )}
+      )
     </div>
   );
 };

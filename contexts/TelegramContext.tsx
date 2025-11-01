@@ -1,3 +1,5 @@
+import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+import {}
 /**
  * Telegram Mini App Context Provider
  * 为LuckyMart TJ平台提供完整的Telegram集成管理
@@ -5,8 +7,6 @@
 
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
-import {
   TelegramContextType,
   TelegramUser,
   TelegramTheme,
@@ -21,9 +21,9 @@ import {
 const TelegramContext = createContext<TelegramContextType | null>(null);
 
 // 设备检测函数
-const detectDeviceInfo = (): DeviceInfo => {
-  if (typeof window === 'undefined') {
-    return {
+const detectDeviceInfo = (): DeviceInfo => {}
+  if (typeof window === 'undefined') {}
+    return {}
       isTelegram: false,
       isMobile: false,
       isTablet: false,
@@ -39,7 +39,7 @@ const detectDeviceInfo = (): DeviceInfo => {
       isWeChat: false,
       isTelegramWebView: false,
     };
-  }
+  
 
   const userAgent = navigator.userAgent.toLowerCase();
   const platform = navigator.platform.toLowerCase();
@@ -65,7 +65,7 @@ const detectDeviceInfo = (): DeviceInfo => {
   // 检测屏幕方向
   const orientation = width > height ? ScreenOrientation.LANDSCAPE : ScreenOrientation.PORTRAIT;
   
-  return {
+  return {}
     isTelegram,
     isMobile,
     isTablet,
@@ -84,12 +84,12 @@ const detectDeviceInfo = (): DeviceInfo => {
 };
 
 // Telegram主题转换函数
-const convertTelegramTheme = (webApp: any, mode: ThemeMode): TelegramTheme => {
-  if (!webApp || !webApp.themeParams) {
+const convertTelegramTheme = (webApp: any, mode: ThemeMode): TelegramTheme => {}
+  if (!webApp || !webApp.themeParams) {}
     // 默认主题
-    return {
+    return {}
       mode,
-      colors: {
+      colors: {}
         background: mode === ThemeMode.DARK ? '#1a1a1a' : '#ffffff',
         foreground: mode === ThemeMode.DARK ? '#ffffff' : '#171717',
         primary: '#007bff',
@@ -104,13 +104,13 @@ const convertTelegramTheme = (webApp: any, mode: ThemeMode): TelegramTheme => {
       },
       isTelegramTheme: false,
     };
-  }
+  
 
   const params = webApp.themeParams;
   
-  return {
+  return {}
     mode,
-    colors: {
+    colors: {}
       background: params.bg_color || (mode === ThemeMode.DARK ? '#1a1a1a' : '#ffffff'),
       foreground: params.text_color || (mode === ThemeMode.DARK ? '#ffffff' : '#171717'),
       primary: params.button_color || '#007bff',
@@ -128,22 +128,22 @@ const convertTelegramTheme = (webApp: any, mode: ThemeMode): TelegramTheme => {
 };
 
 // 键盘状态管理Hook
-const useKeyboardState = () => {
-  const [keyboardState, setKeyboardState] = useState<KeyboardState>({
+const useKeyboardState = () => {}
+  const [keyboardState, setKeyboardState] = useState<KeyboardState>({}
     isVisible: false,
     height: 0,
     type: 'none' as any,
   });
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+  useEffect(() => {}
+    if (typeof window === 'undefined') return; {}
 
-    const updateKeyboardState = () => {
+    const updateKeyboardState = () => {}
       const viewportHeight = window.visualViewport?.height || window.innerHeight;
       const windowHeight = window.innerHeight;
       const heightDiff = windowHeight - viewportHeight;
       
-      setKeyboardState({
+      setKeyboardState({}
         isVisible: heightDiff > 0,
         height: Math.abs(heightDiff),
         type: 'text' as any, // 默认类型，实际应用中可以根据输入框焦点动态设置
@@ -154,24 +154,24 @@ const useKeyboardState = () => {
     updateKeyboardState();
 
     // 监听视口变化
-    if (window.visualViewport) {
+    if (window.visualViewport) {}
       window.visualViewport.addEventListener('resize', updateKeyboardState);
       return () => window.visualViewport.removeEventListener('resize', updateKeyboardState);
     } else {
       window.addEventListener('resize', updateKeyboardState);
       return () => window.removeEventListener('resize', updateKeyboardState);
-    }
+    
   }, []);
 
   return keyboardState;
 };
 
 // Provider组件
-interface TelegramProviderProps {
+interface TelegramProviderProps {}
   children: ReactNode;
-}
 
-export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) => {
+
+export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) => {}
   const [webApp, setWebApp] = useState<any>(null);
   const [user, setUser] = useState<TelegramUser | null>(null);
   const [themeMode, setThemeMode] = useState<ThemeMode>(ThemeMode.SYSTEM);
@@ -180,48 +180,48 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
   
   const [deviceInfo] = useState<DeviceInfo>(() => detectDeviceInfo());
   const [keyboardState] = useState<KeyboardState>(() => useKeyboardState());
-  const [theme, setTheme] = useState<TelegramTheme>(() => 
+  const [theme, setTheme] = useState<TelegramTheme>(() =>;
     convertTelegramTheme(null, ThemeMode.SYSTEM)
   );
 
   // 主题模式变更处理
-  const handleThemeModeChange = useCallback((mode: ThemeMode) => {
+  const handleThemeModeChange = useCallback((mode: ThemeMode) => {}
     setThemeMode(mode);
     
     // 保存用户偏好
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {}
       localStorage.setItem('luckymart-tj-theme-mode', mode);
-    }
+
     
     // 更新主题
     setTheme(convertTelegramTheme(webApp, mode));
   }, [webApp]);
 
   // Telegram Web App 初始化
-  useEffect(() => {
-    const initTelegramWebApp = async () => {
-      try {
+  useEffect(() => {}
+    const initTelegramWebApp = async () => {}
+      try {}
         setIsLoading(true);
         
-        if (typeof window === 'undefined') {
+        if (typeof window === 'undefined') {}
           setIsLoading(false);
           return;
-        }
+        
 
         // 等待 Telegram Web App 加载
         const telegram = (window as any).Telegram?.WebApp;
         
-        if (!telegram) {
+        if (!telegram) {}
           // 非Telegram环境，使用系统设置
           const savedTheme = localStorage.getItem('luckymart-tj-theme-mode');
           const initialMode = savedTheme as ThemeMode || ThemeMode.SYSTEM;
           handleThemeModeChange(initialMode);
           setIsLoading(false);
           return;
-        }
+        
 
         // 初始化 Telegram Web App
-        await new Promise<void>((resolve) => {
+        await new Promise<void>((resolve) => {}
           telegram.ready();
           resolve();
         });
@@ -233,17 +233,17 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
         let initialMode: ThemeMode;
         const savedTheme = localStorage.getItem('luckymart-tj-theme-mode');
         
-        if (savedTheme) {
+        if (savedTheme) {}
           initialMode = savedTheme as ThemeMode;
         } else {
           // 跟随系统或Telegram主题
           initialMode = ThemeMode.SYSTEM;
-        }
+        
 
         handleThemeModeChange(initialMode);
 
         // 监听主题变化
-        const handleThemeChange = () => {
+        const handleThemeChange = () => {}
           setTheme(convertTelegramTheme(telegram, themeMode));
         };
 
@@ -254,96 +254,96 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
         console.error('Telegram Web App 初始化失败:', err);
         setError('初始化失败');
         setIsLoading(false);
-      }
+      
     };
 
     initTelegramWebApp();
 
-    return () => {
-      if (webApp) {
+    return () => {}
+      if (webApp) {}
         webApp.offEvent('themeChanged');
-      }
+      
     };
   }, [handleThemeModeChange]);
 
   // 触觉反馈
-  const hapticFeedback = useCallback((type: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft') => {
-    if (webApp?.HapticFeedback) {
+  const hapticFeedback = useCallback((type: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft') => {}
+    if (webApp?.HapticFeedback) {}
       webApp.HapticFeedback.impactOccurred(type);
-    }
+    
   }, [webApp]);
 
   // 显示通知
-  const showNotification = useCallback((type: 'error' | 'success' | 'warning', message: string) => {
-    if (webApp?.HapticFeedback) {
+  const showNotification = useCallback((type: 'error' | 'success' | 'warning', message: string) => {}
+    if (webApp?.HapticFeedback) {}
       webApp.HapticFeedback.notificationOccurred(type);
-    }
     
-    if (type === 'error') {
+    
+    if (type === 'error') {}
       webApp?.showAlert?.(message);
     } else {
       // 轻量级通知，可以改为更优雅的toast
       console.log(`[${type}] ${message}`);
-    }
+    
   }, [webApp]);
 
   // 主按钮控制
-  const showMainButton = useCallback((params: TelegramMainButtonParams) => {
-    if (webApp?.MainButton) {
+  const showMainButton = useCallback((params: TelegramMainButtonParams) => {}
+    if (webApp?.MainButton) {}
       webApp.MainButton.setParams(params);
       webApp.MainButton.show();
-    }
+    
   }, [webApp]);
 
-  const hideMainButton = useCallback(() => {
-    if (webApp?.MainButton) {
+  const hideMainButton = useCallback(() => {}
+    if (webApp?.MainButton) {}
       webApp.MainButton.hide();
-    }
+    
   }, [webApp]);
 
   // 分享功能
-  const shareContent = useCallback(async (data: { url?: string; text?: string; title?: string }) => {
-    if (webApp) {
-      if (data.url && webApp.openTelegramLink) {
+  const shareContent = useCallback(async (data: { url?: string; text?: string; title?: string }) => {}
+    if (webApp) {}
+      if (data.url && webApp.openTelegramLink) {}
         webApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(data.url)}&text=${encodeURIComponent(data.text || '')}`);
-      }
+      
     } else if (navigator.share) {
-      try {
-        await navigator.share({
+      try {}
+        await navigator.share({}
           title: data.title || 'LuckyMart TJ',
           text: data.text || '',
           url: data.url || window.location.href,
         });
       } catch (err) {
         console.error('分享失败:', err);
-      }
-    }
+      
+    
   }, [webApp]);
 
   // 保存到Telegram
-  const saveToTelegram = useCallback(async (data: any, callback?: () => void) => {
-    if (webApp?.CloudStorage) {
+  const saveToTelegram = useCallback(async (data: any, callback?: () => void) => {}
+    if (webApp?.CloudStorage) {}
       const timestamp = Date.now();
       const key = `luckymart-save-${timestamp}`;
       
-      webApp.CloudStorage.setItem(key, JSON.stringify(data), (error?: string) => {
-        if (error) {
+      webApp.CloudStorage.setItem(key, JSON.stringify(data), (error?: string) => {}
+        if (error) {}
           console.error('保存到Telegram云存储失败:', error);
           showNotification('error', '保存失败');
         } else {
           showNotification('success', '已保存到Telegram');
           callback?.();
-        }
+        
       });
-    }
+    
   }, [webApp, showNotification]);
 
   // 初始化系统主题检测
-  useEffect(() => {
-    if (themeMode === ThemeMode.SYSTEM && typeof window !== 'undefined') {
+  useEffect(() => {}
+    if (themeMode === ThemeMode.SYSTEM && typeof window !== 'undefined') {}
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
       
-      const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      const handleSystemThemeChange = (e: MediaQueryListEvent) => {}
         const newMode = e.matches ? ThemeMode.DARK : ThemeMode.LIGHT;
         setTheme(convertTelegramTheme(webApp, newMode));
       };
@@ -354,13 +354,13 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
       const initialMode = mediaQuery.matches ? ThemeMode.DARK : ThemeMode.LIGHT;
       setTheme(convertTelegramTheme(webApp, initialMode));
       
-      return () => {
+      return () => {}
         mediaQuery.removeEventListener('change', handleSystemThemeChange);
       };
-    }
+    
   }, [themeMode, webApp]);
 
-  const contextValue: TelegramContextType = {
+  const contextValue: TelegramContextType = {}
     webApp,
     user,
     theme,
@@ -377,7 +377,7 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
     saveToTelegram,
   };
 
-  return (
+  return (;
     <TelegramContext.Provider value={contextValue}>
       {children}
     </TelegramContext.Provider>
@@ -385,11 +385,11 @@ export const TelegramProvider: React.FC<TelegramProviderProps> = ({ children }) 
 };
 
 // Hook for using Telegram context
-export const useTelegram = (): TelegramContextType => {
+export const useTelegram = (): TelegramContextType => {}
   const context = useContext(TelegramContext);
-  if (!context) {
+  if (!context) {}
     throw new Error('useTelegram must be used within a TelegramProvider');
-  }
+
   return context;
 };
 

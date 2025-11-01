@@ -55,7 +55,7 @@ export const MOBILE_CONSTANTS = {
     MAX_INTERACTION_DELAY: 100,
     MEMORY_THRESHOLD: 50 * 1024 * 1024, // 50MB
     CACHE_SIZE: 10
-  }
+}
 };
 
 // 振动模式配置

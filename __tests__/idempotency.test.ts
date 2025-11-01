@@ -1,13 +1,12 @@
+import { describe, test, expect, beforeAll, afterEach, beforeEach, jest } from '@jest/globals';
+import { prisma } from '../lib/prisma';
+import { checkIdempotency, completeIdempotency, cleanupExpiredLogs } from '../lib/idempotency-manager';
+import { getTestApiConfig } from '../config/api-config';
 /**
  * 人工核销幂等性测试
  * 测试防重复提交机制
  */
 
-import { describe, test, expect, beforeAll, afterEach, beforeEach, jest } from '@jest/globals';
-import { prisma } from '../lib/prisma';
-import { checkIdempotency, completeIdempotency, cleanupExpiredLogs } from '../lib/idempotency-manager';
-import { withIdempotency } from '../lib/idempotency-middleware';
-import { getTestApiConfig } from '../config/api-config';
 
 // Mock NextRequest/NextResponse for testing
 const mockNextRequest = (method: string = 'POST', body: any = {}) => ({
@@ -220,7 +219,7 @@ describe('人工核销幂等性测试', () => {
     });
 
     test('并发提现审核应该只有一个成功', async () => {
-      const operations = Array(3).fill(0).map(() => 
+      const operations = Array(3).fill(0).map(() =>;
         checkIdempotency({
           entityId: TEST_WITHDRAW_ID,
           operationType: 'withdraw_approve',
@@ -361,7 +360,7 @@ describe('人工核销幂等性测试', () => {
       });
 
       expect(remainingLogs.length).toBe(1);
-      expect(remainingLogs[0].entityId).toBe('recent');
+      expect((remainingLogs?.0 ?? null).entityId).toBe('recent');
     });
   });
 

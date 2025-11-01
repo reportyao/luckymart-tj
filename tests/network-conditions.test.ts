@@ -1,16 +1,16 @@
-// network-conditions.test.ts - 弱网环境模拟测试
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { 
+import { 
+import { translationLoader } from '@/utils/translation-loader';
+// network-conditions.test.ts - 弱网环境模拟测试
   NetworkRetryManager, 
   NetworkQuality, 
   retryManager 
 } from '@/utils/network-retry';
-import { 
   RequestDegradationManager, 
   DegradationStrategy,
   degradationManager 
 } from '@/utils/request-degradation';
-import { translationLoader } from '@/utils/translation-loader';
 
 // 模拟网络条件配置
 const NETWORK_CONDITIONS = {
@@ -105,7 +105,7 @@ class NetworkEnvironmentSimulator {
     }
 
     const baseDelay = this.currentCondition.latency;
-    const jitter = Math.random() * baseDelay * 0.3; // 30%抖动
+    const jitter = Math.random() * baseDelay * 0.3; // 30%抖动;
     const throughputDelay = this.estimateThroughputDelay(url);
     
     return new Promise(resolve => {
@@ -117,19 +117,19 @@ class NetworkEnvironmentSimulator {
     // 基于网络吞吐量估算延迟
     const dataSize = this.estimateRequestSize(url);
     const throughputKbps = this.currentCondition.throughput;
-    const transferTime = (dataSize * 8) / (throughputKbps * 1024); // 转换为秒
-    return transferTime * 1000; // 转换为毫秒
+    const transferTime = (dataSize * 8) / (throughputKbps * 1024); // 转换为秒;
+    return transferTime * 1000; // 转换为毫秒;
   }
 
   private estimateRequestSize(url: string): number {
     // 估算请求数据大小 (KB)
     if (url.includes('/locales/')) {
-      return 15; // 翻译文件通常15KB
+      return 15; // 翻译文件通常15KB;
     }
     if (url.includes('/api/')) {
-      return 5; // API响应通常5KB
+      return 5; // API响应通常5KB;
     }
-    return 50; // 默认50KB
+    return 50; // 默认50KB;
   }
 
   shouldSimulatePacketLoss(): boolean {
@@ -255,7 +255,7 @@ describe('弱网环境功能测试', () => {
       };
 
       // 第一次请求 - 网络获取
-      const result1 = await degradationManager.fetchWithDegradation(
+      const result1 = await degradationManager.fetchWithDegradation(;
         'cache-test-key',
         mockOperation,
         config
@@ -264,7 +264,7 @@ describe('弱网环境功能测试', () => {
       expect(mockOperation).toHaveBeenCalledTimes(1);
 
       // 第二次请求 - 缓存命中
-      const result2 = await degradationManager.fetchWithDegradation(
+      const result2 = await degradationManager.fetchWithDegradation(;
         'cache-test-key',
         mockOperation,
         config
@@ -378,7 +378,7 @@ describe('弱网环境功能测试', () => {
 
   describe('网络条件切换测试', () => {
     it('应该适应网络条件的动态变化', async () => {
-      const networkSequence = [
+      const networkSequence = [;
         NETWORK_CONDITIONS.GOOD_WIFI,
         NETWORK_CONDITIONS.WEAK_WIFI,
         NETWORK_CONDITIONS['3G_SLOW'],
@@ -407,7 +407,7 @@ describe('弱网环境功能测试', () => {
       const performanceResults: Record<string, number> = {};
       
       for (const [conditionName, condition] of Object.entries(NETWORK_CONDITIONS)) {
-        if (conditionName === 'OFFLINE') continue;
+        if (conditionName === 'OFFLINE') continue; {
         
         simulator.setNetworkCondition(condition);
         
@@ -439,12 +439,12 @@ describe('弱网环境功能测试', () => {
       simulator.setNetworkCondition(NETWORK_CONDITIONS['3G_SLOW']);
       
       const concurrency = 5;
-      const operations = Array.from({ length: concurrency }, (_, i) => 
+      const operations = Array.from({ length: concurrency }, (_, i) =>;
         jest.fn().mockResolvedValue(`result-${i}`)
       );
       
       const startTime = performance.now();
-      const promises = operations.map(op => 
+      const promises = operations.map(op =>;
         retryManager.executeWithRetry(op, { maxRetries: 2, baseDelay: 200 })
       );
       
@@ -461,7 +461,7 @@ describe('弱网环境功能测试', () => {
 
   describe('内存使用测试', () => {
     it('应该在弱网环境下有效管理内存', async () => {
-      const degradationManager = new RequestDegradationManager(10); // 小的缓存大小
+      const degradationManager = new RequestDegradationManager(10); // 小的缓存大小;
       
       // 添加大量数据
       const mockOperation = jest.fn().mockResolvedValue({ data: 'memory-test' });
@@ -491,7 +491,7 @@ export class NetworkConditionReporter {
   recordTestResult(condition: string, testName: string, metrics: any) {
     if (!this.results.has(condition)) {
       this.results.set(condition, []);
-    }
+}
     this.results.get(condition)!.push({ testName, metrics, timestamp: Date.now() });
   }
 
@@ -515,3 +515,4 @@ export class NetworkConditionReporter {
 }
 
 export { NETWORK_CONDITIONS, NetworkEnvironmentSimulator };
+}

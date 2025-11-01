@@ -27,16 +27,16 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     });
 
     if (!userRecord) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.notFound('用户不存在'),
         { status: 404 }
       );
-    }
+}
 
     const userLanguage = userRecord.preferredLanguage || 'tg-TJ';
 
     // 获取用户新手任务状态
-    const taskStatus = await prisma.$queryRawUnsafe(`
+    const taskStatus = await prisma.$queryRawUnsafe(`;
       SELECT 
         task_id,
         task_type,
@@ -66,11 +66,11 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       const nameMultilingual = task.name_multilingual || {};
       const descriptionMultilingual = task.description_multilingual || {};
       
-      const taskName = nameMultilingual[userLanguage] || 
+      const taskName = nameMultilingual[userLanguage] ||;
                       nameMultilingual['en-US'] || 
                       task.task_type;
                       
-      const taskDescription = descriptionMultilingual[userLanguage] || 
+      const taskDescription = descriptionMultilingual[userLanguage] ||;
                              descriptionMultilingual['en-US'] || 
                              task.task_type;
 
@@ -135,7 +135,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       method: 'GET'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('查询任务状态失败，请稍后重试'),
       { status: 500 }
     );

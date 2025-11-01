@@ -111,13 +111,13 @@ describe('POST /api/admin/reward-config/batch-update', () => {
     expect(data.success).toBe(true);
     expect(data.data.summary.successful).toBe(1);
     expect(data.data.summary.failed).toBe(0);
-    expect(data.data.updates[0].success).toBe(true);
-    expect(data.data.updates[0].config_key).toBe('test_key');
-    expect(data.data.updates[0].new_value).toBe(15.0);
+    expect(data.data.(updates?.0 ?? null).success).toBe(true);
+    expect(data.data.(updates?.0 ?? null).config_key).toBe('test_key');
+    expect(data.data.(updates?.0 ?? null).new_value).toBe(15.0);
   });
 
   it('应该处理部分失败的批量更新', async () => {
-    const mockConfigs = [
+    const mockConfigs = [;
       { id: 1, config_key: 'valid_key', reward_amount: 10.0, is_active: true },
       { id: 2, config_key: 'another_key', reward_amount: 20.0, is_active: true }
     ];
@@ -126,7 +126,7 @@ describe('POST /api/admin/reward-config/batch-update', () => {
       rewardConfig: {
         findMany: jest.fn().mockResolvedValue(mockConfigs),
         update: jest.fn()
-          .mockResolvedValueOnce({ ...mockConfigs[0], reward_amount: 15.0 })
+          .mockResolvedValueOnce({ ...(mockConfigs?.0 ?? null), reward_amount: 15.0 })
           .mockRejectedValueOnce(new Error('更新失败'))
       },
       rewardConfigHistory: {
@@ -160,9 +160,9 @@ describe('POST /api/admin/reward-config/batch-update', () => {
     expect(data.success).toBe(true);
     expect(data.data.summary.successful).toBe(1);
     expect(data.data.summary.failed).toBe(1);
-    expect(data.data.updates[0].success).toBe(true);
-    expect(data.data.updates[1].success).toBe(false);
-    expect(data.data.updates[1].error).toBe('更新失败');
+    expect(data.data.(updates?.0 ?? null).success).toBe(true);
+    expect(data.data.(updates?.1 ?? null).success).toBe(false);
+    expect(data.data.(updates?.1 ?? null).error).toBe('更新失败');
   });
 
   it('应该验证请求参数错误', async () => {
@@ -330,7 +330,7 @@ describe('POST /api/admin/reward-config/batch-update', () => {
     expect(data.data.summary.successful).toBe(1);
     // 验证没有调用update方法（值未变更）
     expect(mockTx.rewardConfig.update).not.toHaveBeenCalled();
-    expect(data.data.updates[0].error).toBe('值未变更');
+    expect(data.data.(updates?.0 ?? null).error).toBe('值未变更');
   });
 
   it('应该处理小数位数验证', async () => {

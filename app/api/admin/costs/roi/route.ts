@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -40,6 +38,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('roi_route.ts request failed', error as Error, {
       requestId,
@@ -65,14 +64,14 @@ async function handleGET(request: NextRequest) {
         const limit = parseInt(searchParams.get('limit') || '20');
         const offset = (page - 1) * limit;
 
-        let query = supabase
+        let query = supabase;
           .from('roi_analysis')
           .select('*')
           .order('analysis_date', { ascending: false });
 
         if (analysisType) {
           query = query.eq('analysis_type', analysisType);
-        }
+    }
 
         if (referenceId) {
           query = query.eq('reference_id', referenceId);
@@ -83,7 +82,7 @@ async function handleGET(request: NextRequest) {
         }
 
         if (startDate && endDate) {
-          query = query
+          query : query
             .gte('analysis_date', startDate)
             .lte('analysis_date', endDate);
         } else {
@@ -97,7 +96,7 @@ async function handleGET(request: NextRequest) {
         const { count } = await query.select('*', { count: 'exact' });
     
         // 获取分页数据
-        const { data: roiData, error } = await query
+        const { data: roiData, error } = await query;
           .range(offset, offset + limit - 1);
 
         if (error) {
@@ -105,7 +104,7 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'查询ROI分析数据失败:', error);
-          return NextResponse.json(
+          return NextResponse.json(;
             { error: '查询ROI分析数据失败' },
             { status: 500 }
           );
@@ -125,11 +124,11 @@ async function handleGET(request: NextRequest) {
           totalTransactionCount: 0
         }) || {};
 
-        const roiPercentage = totalStats.totalCost > 0 
+        const roiPercentage = totalStats.totalCost > 0;
           ? ((totalStats.totalRevenue - totalStats.totalCost) / totalStats.totalCost) * 100 
           : 0;
     
-        const profitMargin = totalStats.totalRevenue > 0 
+        const profitMargin = totalStats.totalRevenue > 0;
           ? ((totalStats.totalRevenue - totalStats.totalCost) / totalStats.totalRevenue) * 100 
           : 0;
 
@@ -167,9 +166,9 @@ async function handleGET(request: NextRequest) {
                 avgRoi: 0
               };
             }
-            acc[type].count++;
-            acc[type].totalRevenue += parseFloat(curr.total_revenue.toString());
-            acc[type].totalCost += parseFloat(curr.total_cost.toString());
+            (acc?.type ?? null).count++;
+            (acc?.type ?? null).totalRevenue += parseFloat(curr.total_revenue.toString());
+            (acc?.type ?? null).totalCost += parseFloat(curr.total_cost.toString());
             return acc;
           }, {} as Record<string, any>) || {}
         };
@@ -181,7 +180,8 @@ async function handleGET(request: NextRequest) {
           requestId,
           endpoint: request.url
         });'获取ROI分析API错误:', error);
-        return NextResponse.json(
+        return NextResponse.json(;
+  }
           { error: '服务器内部错误' },
           { status: 500 }
         );
@@ -209,18 +209,18 @@ export async function POST(request: NextRequest) {
       analysisType,
       referenceId = null,
       analysisPeriod,
-      date = new Date().toISOString().split('T')[0]
+      date : new Date().toISOString().split('T')[0]
     } = body;
 
     if (!analysisType || !analysisPeriod) {
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: 'analysisType 和 analysisPeriod 为必填参数' },
         { status: 400 }
       );
-    }
+}
 
     // 调用ROI计算函数
-    const { data, error } = await supabase
+    const { data, error } = await supabase;
       .rpc('calculate_roi_for_period', {
         p_analysis_type: analysisType,
         p_reference_id: referenceId,
@@ -233,14 +233,14 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'计算ROI分析数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '计算ROI分析数据失败', details: error.message },
         { status: 500 }
       );
     }
 
     // 获取计算结果
-    const { data: resultData } = await supabase
+    const { data: resultData } = await supabase;
       .from('roi_analysis')
       .select('*')
       .eq('analysis_type', analysisType)
@@ -261,9 +261,9 @@ export async function POST(request: NextRequest) {
       requestId,
       endpoint: request.url
     });'计算ROI分析API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
-      { status: 500 }
+      
     );
   }
   })(request);

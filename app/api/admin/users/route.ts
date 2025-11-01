@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import QueryOptimizer from '@/lib/query-optimizer';
 import { validateReferralCodeFormat } from '@/lib/auth';
 import { rewardTrigger } from '@/lib/reward-trigger-manager';
@@ -9,8 +8,6 @@ import { getMonitor } from '@/lib/monitoring';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 // 创建权限中间件
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -31,6 +28,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('users_route.ts request failed', error as Error, {
       requestId,
@@ -44,7 +42,7 @@ async function handleGET(request: NextRequest) {
 
     // GET - 获取用户列表
     export async function GET(request: NextRequest) {
-      return withReadPermission(async (request: any, admin: any) => {
+      return withReadPermission(async (request: any: any, admin: any: any) => {
         try {
 
         const { searchParams } = new URL(request.url);
@@ -72,13 +70,13 @@ async function handleGET(request: NextRequest) {
             success: false,
             error: error.message || '获取用户列表失败'
           }, { status: 500 });
-        }
+    }
 }
 }
 
 // POST - 创建用户（支持邀请奖励触发）
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return withWritePermission(async (request: any: any, admin: any: any) => {
     const logger = getLogger();
     const monitor = getMonitor();
     const operationSpan = monitor.startSpan('user_create');
@@ -103,10 +101,10 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必需参数：telegramId 和 firstName'
       }, { status: 400 });
-    }
+}
 
     // 验证邀请码（如果提供）
-    let referrerUserId = null;
+    let referrerUserId: string | number = null;
     if (referralCode) {
       const validation = validateReferralCodeFormat(referralCode);
       if (!validation.isValid) {
@@ -140,7 +138,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 在事务中创建用户和触发奖励
-    const result = await prisma.$transaction(async (tx: any) => {
+    const result = await prisma.$transaction(async (tx: any: any) => {
       // 1. 检查用户是否已存在
       const existingUser = await tx.users.findUnique({
         where: { telegramId: telegramId.toString() },
@@ -315,4 +313,6 @@ async function createReferralRelationships(
       skipDuplicates: true
     });
   }
+}
+
 }

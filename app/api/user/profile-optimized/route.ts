@@ -1,8 +1,3 @@
-/**
- * 优化后的用户资料API
- * 展示如何使用新的API基础组件和优化措施
- */
-
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
@@ -12,8 +7,11 @@ import { createDatabaseOptimizer } from '@/lib/database-optimizer';
 import { getMonitor } from '@/lib/monitoring';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
+/**
+ * 优化后的用户资料API
+ * 展示如何使用新的API基础组件和优化措施
+ */
+
 
 // 数据库客户端
 const prisma = new PrismaClient();
@@ -91,7 +89,7 @@ class UserProfileApiHandler extends BaseApiHandler {
       if (isViewingOtherUser) {
         if (this.options.requireAdmin && ctx.admin) {
           // 管理员权限验证
-          const adminPermission = await this.permissionValidator.validateAdminPermissions(
+          const adminPermission = await this.permissionValidator.validateAdminPermissions(;
             ctx.admin.id,
             'users',
             'read'
@@ -111,7 +109,7 @@ class UserProfileApiHandler extends BaseApiHandler {
       }
 
       // 使用数据库优化器构建查询
-      const optimizedQuery = this.databaseOptimizer.queryOptimizer.optimizeJoinQuery(
+      const optimizedQuery = this.databaseOptimizer.queryOptimizer.optimizeJoinQuery(;
         prisma,
         'users',
         {
@@ -168,6 +166,7 @@ class UserProfileApiHandler extends BaseApiHandler {
       });
 
       return maskedUser;
+  }
 
     } catch (error) {
       this.logger.error('User profile fetch failed', error as Error, {
@@ -215,10 +214,11 @@ class UpdateUserProfileHandler extends BaseApiHandler {
       
       if (!rateLimitResult.allowed) {
         throw this.createError('RATE_LIMIT_EXCEEDED', '更新频率超限，请稍后再试');
+  }
       }
 
       // 安全验证和输入清理
-      const sanitizedInput = await this.inputValidator.validateAndSanitize(
+      const sanitizedInput = await this.inputValidator.validateAndSanitize(;
         validatedInput,
         UpdateProfileSchema,
         {
@@ -228,10 +228,11 @@ class UpdateUserProfileHandler extends BaseApiHandler {
       );
 
       // 执行优化的事务更新
-      const updatedUser = await this.databaseOptimizer.transactionOptimizer.executeOptimizedTransaction(
+      const updatedUser = await this.databaseOptimizer.transactionOptimizer.executeOptimizedTransaction(;
         prisma,
         async (tx) => {
           return tx.users.update({
+  }
             where: { id: ctx.user.id },
             data: {
               ...sanitizedInput,
@@ -297,7 +298,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
       error: (error as Error).message
     });
     throw error;
-  }
+}
 });
 
 async function handleGET(request: NextRequest) {

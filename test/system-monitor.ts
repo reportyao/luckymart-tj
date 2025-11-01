@@ -1,11 +1,10 @@
+import { spawn } from 'child_process';
 #!/usr/bin/env node
 /**
  * 系统资源监控脚本
  * 监控CPU、内存、网络、磁盘等系统资源
  */
 
-import { spawn } from 'child_process';
-import { performance } from 'perf_hooks';
 
 interface SystemMetrics {
   timestamp: number;
@@ -74,7 +73,7 @@ class SystemMonitor {
     const timestamp = Date.now();
     
     try {
-      const [cpu, memory, disk, network, process] = await Promise.all([
+      const [cpu, memory, disk, network, process] = await Promise.all([;
         this.getCpuMetrics(),
         this.getMemoryMetrics(),
         this.getDiskMetrics(),
@@ -129,6 +128,7 @@ class SystemMonitor {
       };
     } catch (error) {
       return {
+  }
         usage: 0,
         loadAverage: [0, 0, 0],
         processes: 0
@@ -140,7 +140,7 @@ class SystemMonitor {
     try {
       const result = await this.runCommand('free', ['-m']);
       const lines = result.stdout.split('\n');
-      const memLine = lines[1]; // 跳过头部
+      const memLine = lines[1]; // 跳过头部;
       
       const parts = memLine.split(/\s+/);
       const total = parseInt(parts[1]);
@@ -149,6 +149,7 @@ class SystemMonitor {
       const usage = (used / total) * 100;
 
       return {
+  }
         total,
         used,
         free,
@@ -171,9 +172,9 @@ class SystemMonitor {
       const diskLine = lines[1];
       
       const parts = diskLine.split(/\s+/);
-      const total = this.parseSize(parts[1]);
-      const used = this.parseSize(parts[2]);
-      const free = this.parseSize(parts[3]);
+      const total = this.parseSize((parts?.1 ?? null));
+      const used = this.parseSize((parts?.2 ?? null));
+      const free = this.parseSize((parts?.3 ?? null));
       const usage = (used / total) * 100;
 
       return {
@@ -302,7 +303,7 @@ class SystemMonitor {
     };
 
     const match = sizeStr.match(/(\d+\.?\d*)([KMGT]?)/);
-    if (!match) return 0;
+    if (!match) return 0; {
 
     const value = parseFloat(match[1]);
     const unit = match[2] || 'B';
@@ -346,9 +347,9 @@ class SystemMonitor {
     const max = (arr: number[]) => Math.max(...arr);
     const min = (arr: number[]) => Math.min(...arr);
 
-    const duration = this.metrics[this.metrics.length - 1].timestamp - this.metrics[0].timestamp;
+    const duration = this.metrics[this.metrics.length - 1].timestamp - this.(metrics?.0 ?? null).timestamp;
 
-    let report = `
+    let report = `;
 # 系统资源监控报告
 
 ## 📊 监控概览
@@ -488,4 +489,4 @@ if (require.main === module) {
   main().catch(console.error);
 }
 
-export { SystemMonitor, SystemMetrics };
+export ;

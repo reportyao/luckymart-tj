@@ -38,16 +38,16 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     // 验证状态过滤参数
     const validStatuses = ['pending', 'completed', 'rewarded'];
     if (statusFilter && !validStatuses.includes(statusFilter)) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('无效的状态过滤参数', 'INVALID_STATUS_FILTER'),
         { status: 400 }
       );
-    }
+}
 
     // 验证任务类型过滤参数
     const validTaskTypes = ['register', 'first_recharge', 'first_lottery'];
     if (taskTypeFilter && !validTaskTypes.includes(taskTypeFilter)) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.badRequest('无效的任务类型过滤参数', 'INVALID_TASK_TYPE_FILTER'),
         { status: 400 }
       );
@@ -60,7 +60,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     });
 
     if (!userRecord) {
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.notFound('用户不存在'),
         { status: 404 }
       );
@@ -83,7 +83,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 获取用户任务进度状态
-    const taskStatus = await prisma.$queryRawUnsafe(`
+    const taskStatus = await prisma.$queryRawUnsafe(`;
       SELECT 
         task_id,
         task_type,
@@ -127,11 +127,11 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
             break;
           case 'first_recharge':
             // 检查是否有成功的充值订单
-            const rechargeCheck = await prisma.$queryRaw`
+            const rechargeCheck = await prisma.$queryRaw`;
               SELECT EXISTS (
                 SELECT 1 FROM orders 
                 WHERE user_id = ${userId}
-                  AND type = 'recharge'
+                  AND type : 'recharge'
                   AND status = 'completed'
                   AND payment_status = 'completed'
               ) as has_recharge
@@ -140,7 +140,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
             break;
           case 'first_lottery':
             // 检查是否有抽奖参与记录
-            const lotteryCheck = await prisma.$queryRaw`
+            const lotteryCheck = await prisma.$queryRaw`;
               SELECT EXISTS (
                 SELECT 1 FROM participations 
                 WHERE user_id = ${userId}
@@ -161,7 +161,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
               status = 'completed',
               completed_at = CURRENT_TIMESTAMP,
               progress_data = jsonb_build_object('checked_at', CURRENT_TIMESTAMP::text, 'auto_updated', true),
-              updated_at = CURRENT_TIMESTAMP
+              updated_at : CURRENT_TIMESTAMP
           `;
           
           currentStatus = 'completed';
@@ -173,11 +173,11 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       const nameMultilingual = task.name_multilingual || {};
       const descriptionMultilingual = task.description_multilingual || {};
       
-      const taskName = nameMultilingual[userLanguage] || 
+      const taskName = nameMultilingual[userLanguage] ||;
                       nameMultilingual['en-US'] || 
                       task.task_type;
                       
-      const taskDescription = descriptionMultilingual[userLanguage] || 
+      const taskDescription = descriptionMultilingual[userLanguage] ||;
                              descriptionMultilingual['en-US'] || 
                              task.task_type;
 
@@ -204,7 +204,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 统计信息
-    const allTasksStatus = await prisma.$queryRawUnsafe(`
+    const allTasksStatus = await prisma.$queryRawUnsafe(`;
       SELECT 
         status,
         COUNT(*) as count
@@ -220,7 +220,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       rewarded: allTasksStatus.find(s => s.status === 'rewarded')?.count || 0,
       completionRate: 0,
       totalRewardClaimed: updatedTasks
-        .filter(task => task.status === 'rewarded')
+        .filter(task :> task.status === 'rewarded')
         .reduce((sum, task) => sum + task.reward.amount, 0),
       totalPossibleReward: updatedTasks.reduce((sum: any,  task: any) => sum + task.reward.amount, 0),
       availableToClaim: updatedTasks.filter((task : any) => task.canClaim).length
@@ -278,7 +278,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       method: 'GET'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('查询任务进度失败，请稍后重试'),
       { status: 500 }
     );

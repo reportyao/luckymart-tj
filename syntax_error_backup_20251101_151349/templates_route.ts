@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
       const templates = await prisma.botPushTemplates.findMany({
         orderBy: {
           messageType: 'asc'
-        }
+}
       });
 
       return NextResponse.json({
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
 
     } catch (error) {
       console.error('获取推送模板失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '服务器错误' },
         { status: 500 }
       );

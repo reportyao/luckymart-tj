@@ -1,3 +1,7 @@
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import path from 'path';
 #!/usr/bin/env node
 
 /**
@@ -5,10 +9,6 @@
  * 运行完整的性能和稳定性测试套件，生成详细报告
  */
 
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
-import path from 'path';
 
 const execAsync = promisify(exec);
 
@@ -135,6 +135,7 @@ class PerformanceTestRunner {
       this.endTime = Date.now();
       
       console.log('\n✅ 所有测试完成！');
+  }
       
       return this.generateComprehensiveReport();
       
@@ -269,7 +270,7 @@ class PerformanceTestRunner {
     
     try {
       // 运行压力测试脚本
-      const { stdout } = await execAsync(`
+      const { stdout } = await execAsync(`;
         node -e "
         const { StressTester } = require('./utils/stress-tester.ts');
         
@@ -281,6 +282,7 @@ class PerformanceTestRunner {
         
         tester.runLoadTest().then(results => {
           console.log(JSON.stringify(results, null, 2));
+  }
         }).catch(error => {
           console.error('压力测试失败:', error);
           process.exit(1);
@@ -327,7 +329,7 @@ class PerformanceTestRunner {
     
     try {
       // 运行长期稳定性测试
-      const { stdout } = await execAsync(`
+      const { stdout } = await execAsync(`;
         node -e "
         const { StressTester } = require('./utils/stress-tester.ts');
         
@@ -644,7 +646,7 @@ class PerformanceTestRunner {
   }
 
   private generateNextSteps(): string[] {
-    const steps: string[] = [
+    const steps: string[] = [;
       '分析失败测试的根本原因',
       '制定详细的性能优化计划',
       '实施关键性能改进措施',
@@ -787,4 +789,4 @@ if (require.main === module) {
   main();
 }
 
-export { PerformanceTestRunner, ComprehensiveTestReport };
+export ;

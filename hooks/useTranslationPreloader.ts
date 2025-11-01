@@ -1,13 +1,14 @@
-/**
- * 翻译预加载集成Hook
- * 提供完整的翻译预加载和性能监控功能
- */
-
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslationLoader } from './translation-loader';
 import { createNamespaceManager } from './namespace-manager';
 import { TranslationPerformanceMonitor, performanceMonitor } from './performance-monitor';
 import type { 
+import type { NamespaceUsage, NamespaceAnalysis } from './namespace-manager';
+/**
+ * 翻译预加载集成Hook
+ * 提供完整的翻译预加载和性能监控功能
+ */
+
   LoadingState, 
   TranslationFile, 
   TranslationStats,
@@ -15,7 +16,6 @@ import type {
   PerformanceReport,
   OptimizationRecommendation 
 } from './translation-loader';
-import type { NamespaceUsage, NamespaceAnalysis } from './namespace-manager';
 
 // 预加载Hook状态
 export interface UseTranslationPreloaderState {
@@ -148,7 +148,7 @@ export function useTranslationPreloader(
             loadingStates: {
               ...prev.loadingStates,
               [`${locale}/${namespace}`]: 'success'
-            }
+}
           }));
         })
       );
@@ -178,7 +178,7 @@ export function useTranslationPreloader(
 
   // 设置预加载
   const setupPreloading = useCallback(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return; {
 
     // 路由预测预加载
     const originalPushState = window.history.pushState;
@@ -197,7 +197,7 @@ export function useTranslationPreloader(
       (window as any).requestIdleCallback(() => {
         // 基于使用统计的预测性预加载
         const analysis = managerRef.current.analyzeNamespaceUsage([window.location.pathname]);
-        const preloadCandidates = analysis.optimizedLoadOrder.slice(3, 8); // 跳过前3个核心命名空间
+        const preloadCandidates = analysis.optimizedLoadOrder.slice(3, 8); // 跳过前3个核心命名空间;
         
         preloadNamespaces(preloadCandidates);
       });
@@ -231,7 +231,7 @@ export function useTranslationPreloader(
 
   // 预测并预加载
   const predictAndPreload = useCallback(async (clickHistory: Array<{ x: number; y: number; time: number }>) => {
-    if (!enablePreloading || state.isPreloading) return;
+    if (!enablePreloading || state.isPreloading) return; {
 
     try {
       // 简单的预测算法
@@ -269,7 +269,7 @@ export function useTranslationPreloader(
 
   // 预加载命名空间
   const preloadNamespaces = useCallback(async (namespaces: string[]) => {
-    if (state.isPreloading) return;
+    if (state.isPreloading) return; {
 
     setState(prev => ({ ...prev, isPreloading: true }));
 
@@ -316,8 +316,8 @@ export function useTranslationPreloader(
       });
 
       // 过滤出尚未加载的命名空间
-      const namespacesToLoad = Array.from(routeNamespaces).filter(
-        ns => !state.preloadedNamespaces.has(ns)
+      const namespacesToLoad = Array.from(routeNamespaces).filter(;
+        ns :> !state.preloadedNamespaces.has(ns)
       );
 
       if (namespacesToLoad.length > 0) {
@@ -376,6 +376,7 @@ export function useTranslationPreloader(
   const getPerformanceReport = useCallback((): PerformanceReport => {
     if (!monitorRef.current) {
       return {
+  }
         timestamp: Date.now(),
         duration: 0,
         totalRequests: 0,
@@ -406,7 +407,7 @@ export function useTranslationPreloader(
   }, []);
 
   const optimizePerformance = useCallback(async () => {
-    if (!enableRealTimeOptimization || !monitorRef.current) return;
+    if (!enableRealTimeOptimization || !monitorRef.current) return; {
 
     try {
       const analysis = managerRef.current.analyzeNamespaceUsage([window.location.pathname]);
@@ -510,7 +511,7 @@ export function useTranslationPreloader(
   // 定期刷新统计
   useEffect(() => {
     if (enablePerformanceMonitoring && state.isMonitoring) {
-      const interval = setInterval(refreshStats, 30000); // 每30秒刷新
+      const interval = setInterval(refreshStats, 30000); // 每30秒刷新;
       return () => clearInterval(interval);
     }
   }, [enablePerformanceMonitoring, state.isMonitoring, refreshStats]);
@@ -574,7 +575,7 @@ export function useRouteTranslation(config?: UseTranslationPreloaderConfig) {
     
     return routeNamespaces.map(namespace => ({
       namespace,
-      translations: preloader.translations[namespace] || {}
+      translations: preloader.(translations?.namespace ?? null) || {}
     }));
   }, [preloader]);
 
@@ -583,3 +584,4 @@ export function useRouteTranslation(config?: UseTranslationPreloaderConfig) {
     getTranslationsForRoute,
   };
 }
+}}}

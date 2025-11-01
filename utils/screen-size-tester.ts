@@ -74,7 +74,7 @@ export interface AccessibilityTestResult {
 /**
  * 设备配置文件
  */
-export const DEVICE_PROFILES: DeviceProfile[] = [
+export const DEVICE_PROFILES: DeviceProfile[] = [;
   {
     name: 'iPhone SE (2nd Gen)',
     width: 375,
@@ -166,7 +166,7 @@ export class ScreenSizeTester {
 
   constructor() {
     this.initializeTestingEnvironment();
-  }
+}
 
   /**
    * 初始化测试环境
@@ -440,7 +440,7 @@ export class ScreenSizeTester {
       frameRate: this.estimateFrameRate(),
     };
 
-    const details = [
+    const details = [;
       `渲染时间: ${renderTime.toFixed(2)}ms`,
       `内存使用: ${metrics.memoryUsage}MB`,
       `预估帧率: ${metrics.frameRate} FPS`,
@@ -566,7 +566,7 @@ export class ScreenSizeTester {
     if (device.isMobile || device.isTablet) {
       return device.width > 0 && device.height > 0;
     }
-    return true; // 桌面设备固定方向
+    return true; // 桌面设备固定方向;
   }
 
   /**
@@ -618,7 +618,7 @@ export class ScreenSizeTester {
     if (typeof performance !== 'undefined' && (performance as any).memory) {
       return Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024);
     }
-    return Math.random() * 50 + 10; // 模拟内存使用量
+    return Math.random() * 50 + 10; // 模拟内存使用量;
   }
 
   /**
@@ -650,7 +650,7 @@ export class ScreenSizeTester {
    */
   private testColorContrast(): boolean {
     // 简单的颜色对比度检查
-    return true; // 实际实现中需要检查 WCAG 对比度标准
+    return true; // 实际实现中需要检查 WCAG 对比度标准;
   }
 
   /**
@@ -698,8 +698,8 @@ export class ScreenSizeTester {
     } else {
       // 根据性能指标计算部分分数
       const { renderTime, frameRate } = performanceTest.metrics;
-      if (renderTime < 200) totalScore += 12.5;
-      if (frameRate > 20) totalScore += 12.5;
+      if (renderTime < 200) totalScore += 12.5; {
+      if (frameRate > 20) totalScore += 12.5; {
     }
     testCount += 25;
 
@@ -802,7 +802,7 @@ export class ScreenSizeTester {
       recommendations.push('改善无障碍支持，确保所有用户都能正常使用');
     }
 
-    return [...new Set(recommendations)]; // 去重
+    return [...new Set(recommendations)]; // 去重;
   }
 
   /**
@@ -932,10 +932,10 @@ export const runScreenSizeTests = async (): Promise<ScreenSizeTestResult[]> => {
   const results: ScreenSizeTestResult[] = [];
 
   for (let i = 0; i < DEVICE_PROFILES.length; i++) {
-    console.log(`测试设备 ${i + 1}/${DEVICE_PROFILES.length}: ${DEVICE_PROFILES[i].name}`);
+    console.log(`测试设备 ${i + 1}/${DEVICE_PROFILES.length}: ${(DEVICE_PROFILES?.i ?? null).name}`);
     const result = await tester.testDeviceAdaptation(i);
     results.push(result);
-  }
+}
 
   return results;
 };
@@ -945,7 +945,8 @@ export const generateAdaptationReport = async (): Promise<string> => {
   
   for (let i = 0; i < DEVICE_PROFILES.length; i++) {
     await tester.testDeviceAdaptation(i);
-  }
+}
 
   return tester.generateReport();
 };
+}}

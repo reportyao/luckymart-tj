@@ -1,3 +1,6 @@
+import { runUXTests } from './tests/user-experience.test';
+import { runAccessibilityTests } from './tests/accessibility.test';
+import { 
 #!/usr/bin/env node
 
 /**
@@ -5,9 +8,6 @@
  * 展示创建的测试工具的实际使用效果
  */
 
-import { runUXTests } from './tests/user-experience.test';
-import { runAccessibilityTests } from './tests/accessibility.test';
-import { 
   trackUserEvent, 
   submitFeedback, 
   startUserJourney, 
@@ -22,6 +22,7 @@ async function demonstrateUXTools() {
   try {
     // 1. 演示用户行为追踪
     console.log('\n📊 1. 用户行为追踪演示:');
+  }
     trackUserEvent('page_view', {
       page: 'homepage',
       section: 'hero'
@@ -94,9 +95,10 @@ async function demonstrateUXTools() {
     console.log(`   🎯 生成了 ${suggestions.length} 条优化建议`);
     
     if (suggestions.length > 0) {
-      console.log(`   📋 首要建议: ${suggestions[0].title}`);
-      console.log(`   📊 影响分数: ${suggestions[0].impact}/100`);
-      console.log(`   ⏱️  实施难度: ${suggestions[0].effort}/100`);
+      console.log(`   📋 首要建议: ${(suggestions?.0 ?? null).title}`);
+  }
+      console.log(`   📊 影响分数: ${(suggestions?.0 ?? null).impact}/100`);
+      console.log(`   ⏱️  实施难度: ${(suggestions?.0 ?? null).effort}/100`);
     }
 
     // 6. 演示完整测试套件运行（简化版）
@@ -132,7 +134,8 @@ async function demonstrateUXTools() {
     console.log('1️⃣  立即执行高优先级改进:');
     if (uxTests.priorityImprovements.high.length > 0) {
       uxTests.priorityImprovements.high.slice(0, 3).forEach((item, index) => {
-        console.log(`   ${index + 1}. ${item}`);
+        console.log(`   $. $`);
+  }
       });
     }
 

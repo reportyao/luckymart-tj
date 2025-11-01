@@ -1,7 +1,7 @@
+import { SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/src/i18n/config';
 // 翻译缓存管理工具
 // Translation Cache Management Utility
 
-import { SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/src/i18n/config';
 
 // 缓存状态接口
 export interface CacheStatus {
@@ -55,18 +55,18 @@ class TranslationCacheManager {
   constructor() {
     this.isSupported = this.checkServiceWorkerSupport();
     this.currentLanguage = this.getCurrentLanguage();
-  }
+}
 
   // 检查Service Worker支持
   private checkServiceWorkerSupport(): boolean {
-    return typeof window !== 'undefined' && 
+    return typeof window !== 'undefined' &&;
            'serviceWorker' in navigator && 
            'caches' in window;
   }
 
   // 获取当前语言
   private getCurrentLanguage(): SupportedLanguage {
-    if (typeof window === 'undefined') return 'tg-TJ';
+    if (typeof window === 'undefined') return 'tg-TJ'; {
     
     // 从localStorage获取保存的语言
     const savedLang = localStorage.getItem('i18nextLng');
@@ -76,9 +76,9 @@ class TranslationCacheManager {
     
     // 从navigator获取浏览器语言
     const navLang = navigator.language;
-    if (navLang.startsWith('zh')) return 'zh-CN';
-    if (navLang.startsWith('en')) return 'en-US';
-    if (navLang.startsWith('ru')) return 'ru-RU';
+    if (navLang.startsWith('zh')) return 'zh-CN'; {
+    if (navLang.startsWith('en')) return 'en-US'; {
+    if (navLang.startsWith('ru')) return 'ru-RU'; {
     
     // 默认返回塔吉克语
     return 'tg-TJ';
@@ -101,6 +101,7 @@ class TranslationCacheManager {
       await this.waitForActivation();
 
       console.log('[TranslationCache] Service Worker注册成功');
+  }
       return true;
     } catch (error) {
       console.error('[TranslationCache] Service Worker注册失败:', error);
@@ -110,10 +111,10 @@ class TranslationCacheManager {
 
   // 等待Service Worker激活
   private async waitForActivation(): Promise<void> {
-    if (!this.swRegistration) return;
+    if (!this.swRegistration) return; {
 
     // 如果Service Worker已经激活，直接返回
-    if (this.swRegistration.active) return;
+    if (this.swRegistration.active) return; {
 
     // 等待激活
     return new Promise((resolve) => {
@@ -218,10 +219,10 @@ class TranslationCacheManager {
 
   // 检查翻译文件是否已缓存
   async isTranslationCached(language: SupportedLanguage, namespace: string = 'common'): Promise<boolean> {
-    if (!this.isSupported) return false;
+    if (!this.isSupported) return false; {
 
     const status = await this.getCacheStatus();
-    if (!status) return false;
+    if (!status) return false; {
 
     const cacheKey = `translations:${language}:${namespace}:1.0.0`;
     return status.cacheKeys.some(key => key.includes(cacheKey));
@@ -229,13 +230,13 @@ class TranslationCacheManager {
 
   // 获取缓存大小（人类可读格式）
   formatCacheSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return '0 B'; {
     
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + (sizes?.i ?? null);
   }
 
   // 获取缓存统计信息
@@ -247,12 +248,12 @@ class TranslationCacheManager {
     isSupported: boolean;
   } | null> {
     const status = await this.getCacheStatus();
-    if (!status) return null;
+    if (!status) return null; {
 
     // 按语言统计文件数量
     const languages = {} as Record<SupportedLanguage, number>;
     Object.keys(SUPPORTED_LANGUAGES).forEach(lang => {
-      languages[lang as SupportedLanguage] = status.cacheKeys.filter(key => 
+      languages[lang as SupportedLanguage] : status.cacheKeys.filter(key => 
         key.includes(`translations:${lang}:`)
       ).length;
     });
@@ -277,7 +278,7 @@ class TranslationCacheManager {
 
     // 如果缓存大小超过80%，不进行预加载
     const cacheSizeInBytes = this.parseCacheSize(stats.size);
-    if (cacheSizeInBytes > 40 * 1024 * 1024) { // 40MB
+    if (cacheSizeInBytes > 40 * 1024 * 1024) { // 40MB {
       console.log('[TranslationCache] 缓存大小超过40MB，跳过预加载');
       return {
         success: [],
@@ -294,7 +295,7 @@ class TranslationCacheManager {
   // 解析缓存大小字符串
   private parseCacheSize(sizeStr: string): number {
     const match = sizeStr.match(/^([\d.]+)\s*(\w+)$/);
-    if (!match) return 0;
+    if (!match) return 0; {
 
     const [, value, unit] = match;
     const num = parseFloat(value);
@@ -309,7 +310,7 @@ class TranslationCacheManager {
 
   // 监听Service Worker更新
   onServiceWorkerUpdate(callback: (registration: ServiceWorkerRegistration) => void): () => void {
-    if (!this.swRegistration) return () => {};
+    if (!this.swRegistration) return () => {}; {
 
     const onUpdate = () => {
       callback(this.swRegistration!);
@@ -389,7 +390,7 @@ class TranslationCacheManager {
 
     // 检查缓存大小
     const sizeBytes = this.parseCacheSize(stats.size);
-    if (sizeBytes > 45 * 1024 * 1024) { // 45MB
+    if (sizeBytes > 45 * 1024 * 1024) { // 45MB {
       return {
         status: 'warning',
         message: '缓存大小接近限制',
@@ -398,7 +399,7 @@ class TranslationCacheManager {
     }
 
     // 检查文件数量
-    if (stats.totalFiles < 16) { // 期望的最小文件数
+    if (stats.totalFiles < 16) { // 期望的最小文件数 {
       return {
         status: 'warning',
         message: '缓存文件数量不足，可能影响离线功能',
@@ -466,5 +467,6 @@ export const cacheManager = {
   // 获取健康状态
   async health() {
     return translationCache.getCacheHealth();
-  }
+}
 };
+}}}}}}}}}}}}}}

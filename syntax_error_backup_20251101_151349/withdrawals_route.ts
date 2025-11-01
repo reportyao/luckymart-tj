@@ -1,11 +1,10 @@
-// 管理员 - 提现审核
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
-
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+// 管理员 - 提现审核
+
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -31,10 +30,10 @@ export async function GET(request: NextRequest) {
     const where: any = {};
     if (status && ['pending', 'processing', 'completed', 'rejected'].includes(status)) {
       where.status = status;
-    }
+}
 
     // 获取提现列表和总数
-    const [withdrawals, total] = await Promise.all([
+    const [withdrawals, total] = await Promise.all([;
       prisma.withdrawRequests.findMany({
         where,
         include: {
@@ -68,6 +67,7 @@ export async function GET(request: NextRequest) {
     } catch (error: any) {
       console.error('获取提现列表失败:', error);
       return NextResponse.json<ApiResponse>({
+  }
         success: false,
         error: error.message || '获取提现列表失败'
       }, { status: 500 });
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '无效的参数'
       }, { status: 400 });
-    }
+}
 
     // 生成幂等性请求ID
     const idempotencyKey = `withdraw_review_${withdrawId}_${action}_${Date.now()}`;
@@ -236,7 +236,7 @@ export async function POST(request: NextRequest) {
       // 创建通知
       const notificationType = action === 'approve' ? 'withdraw_approved' : 'withdraw_rejected';
       const notificationTitle = action === 'approve' ? '提现申请已通过' : '提现申请被拒绝';
-      const notificationContent = action === 'approve' 
+      const notificationContent = action === 'approve';
         ? `您的提现申请已通过审核，金额: ${withdraw.amount} TJS`
         : `您的提现申请已被拒绝，金额: ${withdraw.amount} TJS${adminNote ? `，原因: ${adminNote}` : ''}`;
 
@@ -267,6 +267,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json<ApiResponse>({
+  }
       success: true,
       message: result.message,
       data: result.data || null
@@ -281,7 +282,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json<ApiResponse>({
         success: false,
         error: errorMessage
-      }, { status: 500 });
+      }, );
     }
   })(request);
 }

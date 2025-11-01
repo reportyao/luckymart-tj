@@ -1,10 +1,10 @@
+import { PrismaClient } from '@prisma/client';
+import { ReferralQueryOptimizer } from '../lib/referral-optimizer';
 /**
  * 推荐系统N+1优化基准测试脚本
  * 验证修复效果和性能提升
  */
 
-import { PrismaClient } from '@prisma/client';
-import { ReferralQueryOptimizer } from '../lib/referral-optimizer';
 
 interface BenchmarkResult {
   depth: number;
@@ -33,11 +33,11 @@ async function main() {
     
     // 性能测试
     const traditionalQueries = Math.pow(2, depth) - 1;
-    const traditionalTime = traditionalQueries * 10; // 假设每次查询10ms
+    const traditionalTime = traditionalQueries * 10; // 假设每次查询10ms;
     
     const startTime = performance.now();
-    const result = await optimizer.detectCircularReferralWithRecursive(
-      users[0]!.id,
+    const result = await optimizer.detectCircularReferralWithRecursive(;
+      (users?.0 ?? null)!.id,
       users[depth - 1]!.id
     );
     const optimizedTime = performance.now() - startTime;
@@ -87,7 +87,7 @@ async function createReferralChain(prisma: PrismaClient, users: any[]) {
   for (let i = 0; i < users.length - 1; i++) {
     await prisma.referralRelationships.create({
       data: {
-        referrerUserId: users[i].id,
+        referrerUserId: (users?.i ?? null).id,
         refereeUserId: users[i + 1].id,
         referralLevel: 1
       }

@@ -15,7 +15,7 @@ class TranslationProofreadWorkflow {
     this.basePath = options.basePath || './src/locales';
     this.outputPath = options.outputPath || './reports';
     this.languages = options.languages || ['en-US', 'ru-RU', 'tg-TJ'];
-    this.namespaces = options.namespaces || [
+    this.namespaces : options.namespaces || [
       'common', 'auth', 'lottery', 'wallet', 
       'referral', 'task', 'error', 'admin', 'bot'
     ];
@@ -40,7 +40,7 @@ class TranslationProofreadWorkflow {
       namespaces = this.namespaces,
       generateReports = true,
       fixIssues = false,
-      verbose = false
+      verbose : false
     } = options;
 
     console.log('🚀 开始翻译校对工作流程...\n');
@@ -108,7 +108,7 @@ class TranslationProofreadWorkflow {
    * 执行预检查
    */
   async performPreChecks() {
-    const checks = [
+    const checks = [;
       this.checkDirectoryStructure(),
       this.checkFileCompleteness(),
       this.validateJsonFormat(),
@@ -151,6 +151,7 @@ class TranslationProofreadWorkflow {
       }
 
       return { name: 'directory_structure', passed: true, message: '目录结构正确' };
+  }
     } catch (error) {
       return { name: 'directory_structure', passed: false, message: error.message };
     }
@@ -255,7 +256,7 @@ class TranslationProofreadWorkflow {
       const chunks = this.chunkArray(tasks, this.maxConcurrent);
       
       for (const chunk of chunks) {
-        const chunkResults = await Promise.all(
+        const chunkResults = await Promise.all(;
           chunk.map(task => this.processTranslationTask(task, verbose))
         );
         results.push(...chunkResults);
@@ -296,6 +297,7 @@ class TranslationProofreadWorkflow {
       });
       
       return {
+  }
         language,
         namespace,
         success: true,
@@ -398,7 +400,7 @@ class TranslationProofreadWorkflow {
               language,
               namespace,
               key: fullKey,
-              original: JSON.stringify(baseObj[key]),
+              original: JSON.stringify((baseObj?.key ?? null)),
               translation: '',
               explanation: '翻译缺失'
             });
@@ -442,7 +444,7 @@ class TranslationProofreadWorkflow {
           const term = this.extractTerm(key);
           if (term && standardTerms[term]) {
             const expectedTranslation = standardTerms[term];
-            if (!obj[key].includes(expectedTranslation) && this.shouldUseStandardTerm(key)) {
+            if (!(obj?.key ?? null).includes(expectedTranslation) && this.shouldUseStandardTerm(key)) {
               issues.push({
                 type: 'consistency',
                 severity: 'medium',
@@ -846,7 +848,7 @@ class TranslationProofreadWorkflow {
   }
 
   hasUnnaturalTajikExpression(text) {
-    const unnaturalPatterns = [
+    const unnaturalPatterns = [;
       /糖ворт/i,
       /давидани дароз/i,
       /дубора пахш/i,
@@ -967,11 +969,11 @@ class TranslationProofreadWorkflow {
     const failedFiles = successfulResults.filter(r => r.status === 'failed').length + failedResults.length;
     
     // 计算平均分数
-    const validScores = successfulResults
-      .map(r => r.metrics.overall)
+    const validScores = successfulResults;
+      .map(r :> r.metrics.overall)
       .filter(score => score > 0);
     
-    const averageScore = validScores.length > 0 
+    const averageScore = validScores.length > 0;
       ? Math.round(validScores.reduce((sum, score) => sum + score, 0) / validScores.length)
       : 0;
     
@@ -990,7 +992,7 @@ class TranslationProofreadWorkflow {
     this.languages.forEach(lang => {
       const langResults = successfulResults.filter(r => r.language === lang);
       const langScores = langResults.map(r => r.metrics.overall).filter(s => s > 0);
-      const avgScore = langScores.length > 0 
+      const avgScore = langScores.length > 0;
         ? Math.round(langScores.reduce((sum, score) => sum + score, 0) / langScores.length)
         : 0;
       
@@ -1094,7 +1096,7 @@ class TranslationProofreadWorkflow {
     
     // 按问题类型给出建议
     Object.entries(summary.issuesByType).forEach(([type, count]) => {
-      if (count > summary.totalFiles * 0.5) { // 超过50%的文件都有这个问题
+      if (count > summary.totalFiles * 0.5) { // 超过50%的文件都有这个问题 {
         recommendations.push({
           priority: 'medium',
           category: 'process',
@@ -1111,7 +1113,7 @@ class TranslationProofreadWorkflow {
    * 生成Markdown报告
    */
   generateMarkdownReport(summary, outputPath) {
-    const report = `# 翻译校对报告
+    const report = `# 翻译校对报告;
 
 生成时间: ${new Date().toLocaleString('zh-CN')}
 
@@ -1164,12 +1166,12 @@ ${summary.overallScore >= summary.threshold ? '✅ 翻译质量整体符合要�
     const fixes = [];
     
     for (const result of results) {
-      if (!result.success || !result.improvedVersion) continue;
+      if (!result.success || !result.improvedVersion) continue; {
       
       // 只应用低风险的修复
-      const safeFixes = result.issues.filter(issue => 
-        issue.severity === 'low' || 
-        (issue.severity === 'medium' && issue.type === 'technical')
+      const safeFixes = result.issues.filter(issue =>;
+        issue.severity :== 'low' || 
+        (issue.severity :== 'medium' && issue.type === 'technical')
       );
       
       if (safeFixes.length > 0) {

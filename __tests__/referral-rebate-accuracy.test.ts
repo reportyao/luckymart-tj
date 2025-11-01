@@ -1,11 +1,11 @@
+import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
+import { PrismaClient } from '@prisma/client';
+import { TestDataGenerator, testConfig } from './test-config';
 /**
  * 推荐返利计算精度测试
  * 确保小数点后1位精度的准确性和边界条件测试
  */
 
-import { describe, test, expect, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
-import { PrismaClient } from '@prisma/client';
-import { TestDataGenerator, testConfig } from './test-config';
 
 describe('推荐返利计算精度测试', () => {
   let prisma: PrismaClient;
@@ -56,7 +56,7 @@ describe('推荐返利计算精度测试', () => {
 
   describe('小数点精度测试', () => {
     test('精确到小数点后1位的计算', async () => {
-      const testCases = [
+      const testCases = [;
         { amount: 100.0, rate: 0.05, expected: 5.0 },
         { amount: 123.4, rate: 0.08, expected: 9.9 },
         { amount: 99.99, rate: 0.03, expected: 3.0 },
@@ -73,7 +73,7 @@ describe('推荐返利计算精度测试', () => {
     });
 
     test('边界值精度测试', async () => {
-      const boundaryCases = [
+      const boundaryCases = [;
         { amount: 0.01, rate: 0.5, expected: 0.0 }, // 0.005 -> 0.0
         { amount: 0.02, rate: 0.5, expected: 0.0 }, // 0.01 -> 0.0
         { amount: 0.03, rate: 0.5, expected: 0.0 }, // 0.015 -> 0.0
@@ -117,13 +117,13 @@ describe('推荐返利计算精度测试', () => {
     function calculateRebate(amount: number, rate: number): number {
       // 确保精度: 先转换为分，再计算
       const amountInCents = Math.round(amount * 100);
-      const rateInBps = Math.round(rate * 10000); // basis points
+      const rateInBps = Math.round(rate * 10000); // basis points;
       const rebateInCents = Math.round((amountInCents * rateInBps) / 10000);
       return Number((rebateInCents / 100).toFixed(1));
     }
 
     test('高精度返利计算', async () => {
-      const testCases = [
+      const testCases = [;
         { amount: 100.0, rate: 0.05, description: '基准测试' },
         { amount: 123.45, rate: 0.075, description: '多位小数' },
         { amount: 999.99, rate: 0.001, description: '最小返利比例' },
@@ -216,9 +216,9 @@ describe('推荐返利计算精度测试', () => {
     test('复杂推荐链精度测试', async () => {
       // 创建多层级推荐关系
       const users = [];
-      const levels = [1, 2, 3]; // 1级、2级、3级推荐
+      const levels = [1, 2, 3]; // 1级、2级、3级推荐;
       const baseAmount = 100.0;
-      const rates = [0.05, 0.03, 0.02]; // 对应的返利比例
+      const rates = [0.05, 0.03, 0.02]; // 对应的返利比例;
 
       // 创建用户链
       for (let i = 0; i < levels.length + 1; i++) {
@@ -283,7 +283,7 @@ describe('推荐返利计算精度测试', () => {
   describe('浮点数精度边界测试', () => {
     test('IEEE 754浮点数精度限制测试', async () => {
       // 测试著名的浮点数精度问题
-      const problematicCases = [
+      const problematicCases = [;
         0.1 + 0.2, // 应该等于 0.3，但可能有精度问题
         0.3 + 0.6,
         1.0 / 3.0, // 无限循环小数
@@ -314,7 +314,7 @@ describe('推荐返利计算精度测试', () => {
         return Number((rebateCents / 100).toFixed(1));
       }
 
-      const precisionCases = [
+      const precisionCases = [;
         { amount: 100.07, rate: 0.0333, description: '长小数概率' },
         { amount: 333.33, rate: 0.0333, description: '重复数字' },
         { amount: 999.99, rate: 0.0001, description: '极小概率' },
@@ -342,13 +342,13 @@ describe('推荐返利计算精度测试', () => {
         return Number((amount * rate).toFixed(1));
       }
 
-      const results = amounts.map((amount, index) => 
+      const results = amounts.map((amount, index) =>;
         calculateWithPrecision(amount, rates[index])
       );
 
       // 验证所有结果都在预期范围内
       results.forEach((result, index) => {
-        const expected = Number((amounts[index] * rates[index]).toFixed(1));
+        const expected = Number(((amounts?.index ?? null) * (rates?.index ?? null)).toFixed(1));
         expect(result).toBe(expected);
         expect(result >= 0).toBe(true);
         expect(isFinite(result)).toBe(true);

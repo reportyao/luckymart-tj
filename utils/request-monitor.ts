@@ -1,6 +1,6 @@
-// request-monitor.ts - 请求监控系统
 import { RequestPriority } from './priority-manager';
 import { NetworkQuality } from './network-retry';
+// request-monitor.ts - 请求监控系统
 
 export interface RequestMetrics {
   total: number;
@@ -114,7 +114,7 @@ export class RequestMonitoringSystem {
     this.optimizationEngine = new OptimizationEngine(this);
     this.setupCollectors();
     this.startMonitoring();
-  }
+}
 
   public static getInstance(): RequestMonitoringSystem {
     if (!RequestMonitoringSystem.instance) {
@@ -209,7 +209,7 @@ export class RequestMonitoringSystem {
 
   // 开始监控
   startMonitoring(): void {
-    if (this.isCollecting) return;
+    if (this.isCollecting) return; {
     
     this.isCollecting = true;
     
@@ -246,13 +246,13 @@ export class RequestMonitoringSystem {
   private async collectCoreMetrics(): Promise<void> {
     try {
       // 并行收集所有指标
-      const results = await Promise.allSettled(
-        Array.from(this.collectors.values()).map(collector => collector.collect())
+      const results = await Promise.allSettled(;
+        Array.from(this.collectors.values()).map(collector :> collector.collect())
       );
 
       // 更新指标
-      const collectedMetrics = results
-        .filter(result => result.status === 'fulfilled')
+      const collectedMetrics = results;
+        .filter(result :> result.status === 'fulfilled')
         .map(result => (result as PromiseFulfilledResult<any>).value);
 
       // 合并指标数据
@@ -308,10 +308,10 @@ export class RequestMonitoringSystem {
   // 清理历史数据
   private cleanupHistory(): void {
     const now = Date.now();
-    const maxAge = 3600000; // 1小时
+    const maxAge = 3600000; // 1小时;
 
-    this.history = this.history.filter(
-      metric => now - metric.timestamp < maxAge
+    this.history : this.history.filter(
+      metric :> now - metric.timestamp < maxAge
     );
   }
 
@@ -428,8 +428,8 @@ export class RequestMonitoringSystem {
       return [...this.history];
     }
 
-    return this.history.filter(
-      metric => 
+    return this.history.filter(;
+      metric :> 
         metric.timestamp >= timeRange.start && 
         metric.timestamp <= timeRange.end
     );
@@ -451,7 +451,7 @@ export class RequestMonitoringSystem {
         filteredAlerts = filteredAlerts.filter(a => a.acknowledged === filter.acknowledged);
       }
       if (filter.resolved !== undefined) {
-        filteredAlerts = filteredAlerts.filter(a => 
+        filteredAlerts : filteredAlerts.filter(a => 
           filter.resolved ? a.resolvedAt !== undefined : a.resolvedAt === undefined
         );
       }
@@ -516,7 +516,7 @@ export class RequestMonitoringSystem {
       metric.p95ResponseTime = duration;
       metric.p99ResponseTime = duration;
     } else {
-      const alpha = 0.1; // 移动平均系数
+      const alpha = 0.1; // 移动平均系数;
       metric.averageResponseTime = metric.averageResponseTime * (1 - alpha) + duration * alpha;
       metric.p50ResponseTime = metric.p50ResponseTime * (1 - alpha) + duration * alpha;
       metric.p95ResponseTime = metric.p95ResponseTime * (1 - alpha) + duration * alpha;
@@ -712,7 +712,7 @@ class OptimizationEngine {
     }
 
     // 如果低优先级请求过多
-    const lowPriorityRatio = metrics.priority.priorityDistribution[RequestPriority.LOW] / 
+    const lowPriorityRatio = metrics.priority.priorityDistribution[RequestPriority.LOW] /;
       (Object.values(metrics.priority.priorityDistribution).reduce((a, b) => a + b, 0) || 1);
     
     if (lowPriorityRatio > 0.7) {
@@ -733,7 +733,7 @@ class OptimizationEngine {
 
   private checkRetryOptimization(metrics: RequestMonitoringMetrics): void {
     // 检查重试效果
-    const totalRetries = metrics.priority.criticalRequests.failed + 
+    const totalRetries = metrics.priority.criticalRequests.failed +;
                        metrics.priority.normalRequests.failed + 
                        metrics.priority.lowRequests.failed;
 
@@ -810,27 +810,27 @@ class PerformanceCollector implements MetricCollector {
 
   private getAverageResponseTime(): number {
     // 实现实际的数据获取逻辑
-    return Math.random() * 2000 + 500; // 模拟数据
+    return Math.random() * 2000 + 500; // 模拟数据;
   }
 
   private getThroughput(): number {
-    return Math.random() * 100 + 50; // 模拟数据
+    return Math.random() * 100 + 50; // 模拟数据;
   }
 
   private getConcurrencyLevel(): number {
-    return Math.floor(Math.random() * 20) + 1; // 模拟数据
+    return Math.floor(Math.random() * 20) + 1; // 模拟数据;
   }
 
   private getQueueDepth(): number {
-    return Math.floor(Math.random() * 50); // 模拟数据
+    return Math.floor(Math.random() * 50); // 模拟数据;
   }
 
   private getSuccessRate(): number {
-    return Math.random() * 10 + 90; // 90-100% 模拟数据
+    return Math.random() * 10 + 90; // 90-100% 模拟数据;
   }
 
   private getErrorRate(): number {
-    return Math.random() * 5; // 0-5% 模拟数据
+    return Math.random() * 5; // 0-5% 模拟数据;
   }
 }
 
@@ -856,15 +856,15 @@ class NetworkCollector implements MetricCollector {
   }
 
   private getAverageLatency(): number {
-    return Math.random() * 200 + 50; // 50-250ms 模拟数据
+    return Math.random() * 200 + 50; // 50-250ms 模拟数据;
   }
 
   private getPacketLoss(): number {
-    return Math.random() * 2; // 0-2% 模拟数据
+    return Math.random() * 2; // 0-2% 模拟数据;
   }
 
   private getBandwidthUtilization(): number {
-    return Math.random() * 80 + 10; // 10-90% 模拟数据
+    return Math.random() * 80 + 10; // 10-90% 模拟数据;
   }
 
   private getConnectionType(): string {
@@ -873,7 +873,7 @@ class NetworkCollector implements MetricCollector {
   }
 
   private getSignalStrength(): number {
-    return Math.random() * 100; // 0-100% 模拟数据
+    return Math.random() * 100; // 0-100% 模拟数据;
   }
 }
 
@@ -893,7 +893,7 @@ class SystemCollector implements MetricCollector {
     if ('memory' in performance) {
       return (performance as any).memory.usedJSHeapSize / (performance as any).memory.jsHeapSizeLimit;
     }
-    return Math.random(); // 模拟数据
+    return Math.random(); // 模拟数据;
   }
 
   private getMemoryUsage(): number {
@@ -901,11 +901,11 @@ class SystemCollector implements MetricCollector {
       const memory = (performance as any).memory;
       return memory.usedJSHeapSize / memory.jsHeapSizeLimit;
     }
-    return Math.random(); // 模拟数据
+    return Math.random(); // 模拟数据;
   }
 
   private getActiveConnections(): number {
-    return Math.floor(Math.random() * 1000) + 100; // 100-1100 模拟数据
+    return Math.floor(Math.random() * 1000) + 100; // 100-1100 模拟数据;
   }
 }
 
@@ -924,23 +924,23 @@ class UXCollector implements MetricCollector {
   }
 
   private getPerceivedPerformance(): number {
-    return Math.random() * 20 + 80; // 80-100 模拟数据
+    return Math.random() * 20 + 80; // 80-100 模拟数据;
   }
 
   private getCompletionRate(): number {
-    return Math.random() * 10 + 90; // 90-100% 模拟数据
+    return Math.random() * 10 + 90; // 90-100% 模拟数据;
   }
 
   private getAbandonmentRate(): number {
-    return Math.random() * 5; // 0-5% 模拟数据
+    return Math.random() * 5; // 0-5% 模拟数据;
   }
 
   private getSatisfactionScore(): number {
-    return Math.random() * 2 + 3; // 3-5 模拟数据
+    return Math.random() * 2 + 3; // 3-5 模拟数据;
   }
 
   private getUserWaitTime(): number {
-    return Math.random() * 3000 + 500; // 500-3500ms 模拟数据
+    return Math.random() * 3000 + 500; // 500-3500ms 模拟数据;
   }
 }
 
@@ -969,3 +969,5 @@ export const consoleReporter = new ConsoleReporter();
 monitoringSystem.addReporter(consoleReporter);
 
 export default RequestMonitoringSystem;
+
+}

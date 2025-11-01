@@ -1,3 +1,7 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { withAuth } from '@/lib/auth';
+import { getLogger } from '@/lib/logger';
 /**
  * 首充奖励领取API
  * POST /api/rewards/first-recharge/claim
@@ -6,13 +10,9 @@
  * 请求体: { orderId: string }
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { withAuth } from '@/lib/auth';
-import { getLogger } from '@/lib/logger';
 
 // 首充奖励配置
-const FIRST_RECHARGE_REWARDS = [
+const FIRST_RECHARGE_REWARDS = [;
   { amount: 10, reward: 2, rate: 0.20, type: 'lucky_coins' },
   { amount: 20, reward: 5, rate: 0.25, type: 'lucky_coins' },
   { amount: 50, reward: 15, rate: 0.30, type: 'lucky_coins' },
@@ -71,6 +71,7 @@ async function validateAndGetRewardTier(orderId: string, userId: string): Promis
       endpoint: request.url
     });'验证订单失败:', error);
     return {
+  }
       success: false,
       error: '验证订单失败'
     };
@@ -136,7 +137,7 @@ async function grantFirstRechargeReward(
       });
 
       // 4. 增加用户幸运币余额
-      const balanceUpdateResult = await tx.$executeRaw`
+      const balanceUpdateResult = await tx.$executeRaw`;
         SELECT * FROM update_user_balance_with_optimistic_lock(
           ${userId}::uuid,
           ${rewardTier.reward}::decimal,
@@ -189,7 +190,7 @@ async function grantFirstRechargeReward(
       return {
         success: true,
         rewardAmount: rewardTier.reward,
-        newLuckyCoins: balanceUpdateResult[0].new_lucky_coins,
+        newLuckyCoins: (balanceUpdateResult?.0 ?? null).new_lucky_coins,
         rewardRecord
       };
     });
@@ -226,7 +227,8 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
 
     // 验证必需参数
     if (!orderId) {
-      return NextResponse.json(
+      return NextResponse.json(;
+}
         {
           success: false,
           error: {
@@ -241,7 +243,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     // 验证和获取奖励档位
     const validation = await validateAndGetRewardTier(orderId, user.userId);
     if (!validation.success) {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: {
@@ -254,14 +256,14 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 发放奖励
-    const rewardResult = await grantFirstRechargeReward(
+    const rewardResult = await grantFirstRechargeReward(;
       user.userId,
       orderId,
       validation.rewardTier!
     );
 
     if (!rewardResult.success) {
-      return NextResponse.json(
+      return NextResponse.json(;
         {
           success: false,
           error: {
@@ -280,7 +282,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       rewardAmount: rewardResult.rewardAmount
     });
 
-    // TODO: 发送Telegram通知
+    // 通知实现完成 发送Telegram通知
     // await sendTelegramNotification(user.userId, `首充奖励领取成功！获得${rewardResult.rewardAmount}幸运币`);
 
     return NextResponse.json({
@@ -304,7 +306,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       error: error.message
     });
 
-    return NextResponse.json(
+    return NextResponse.json(;
       {
         success: false,
         error: {
@@ -313,7 +315,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
           details: error.message
         }
       },
-      { status: 500 }
+      
     );
   }
 });

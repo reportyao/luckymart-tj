@@ -1,3 +1,7 @@
+import { TranslationVersionManager } from '../utils/translation-version-manager';
+import { TranslationWorkflowManager } from '../workflows/translation-update-workflow';
+import { TranslationSyncTool } from '../utils/translation-sync-tool';
+import { TranslationUpdateNotifier } from '../utils/translation-update-notifier';
 /**
  * 翻译更新和维护系统配置文件
  * Translation Update and Maintenance System Configuration
@@ -5,10 +9,6 @@
  * 此文件展示了如何配置和使用翻译更新和维护流程系统
  */
 
-import { TranslationVersionManager } from '../utils/translation-version-manager';
-import { TranslationWorkflowManager } from '../workflows/translation-update-workflow';
-import { TranslationSyncTool } from '../utils/translation-sync-tool';
-import { TranslationUpdateNotifier } from '../utils/translation-update-notifier';
 
 // 配置示例：完整的翻译管理系统设置
 export class TranslationMaintenanceSystem {
@@ -24,7 +24,7 @@ export class TranslationMaintenanceSystem {
     this.workflowManager = new TranslationWorkflowManager(this.versionManager, './src/locales');
     
     this.initializeSystem();
-  }
+}
 
   /**
    * 初始化翻译管理系统
@@ -430,12 +430,12 @@ export class TranslationMaintenanceSystem {
       priority: options.priority,
       source: {
         locale: 'zh-CN',
-        namespace: options.namespaces[0] || 'common',
+        namespace: options.(namespaces?.0 ?? null) || 'common',
         file: options.sourceFile
       },
       targets: options.targetLocales.map(locale => ({
         locale,
-        namespace: options.namespaces[0] || 'common',
+        namespace: options.(namespaces?.0 ?? null) || 'common',
         assignee: options.assignee,
         dueDate: options.dueDate
       })),
@@ -452,7 +452,7 @@ export class TranslationMaintenanceSystem {
     await this.workflowManager.startWorkflow(workflowId, options.assignee || 'system');
     
     // 3. 创建版本
-    const version = await this.versionManager.createVersion(
+    const version = await this.versionManager.createVersion(;
       options.sourceFile,
       options.assignee || 'system',
       options.description
@@ -641,13 +641,13 @@ export class TranslationMaintenanceSystem {
       for (const ns of namespaces) {
         try {
           const filePath = `./src/locales/${lang}/${ns}.json`;
-          const content = await import('fs').then(fs => 
+          const content = await import('fs').then(fs =>;
             JSON.parse(fs.readFileSync(filePath, 'utf-8'))
           );
           
           const keyCount = JSON.stringify(content).split('"').length / 4;
           
-          if (keyCount < 50) { // 假设每个命名空间至少有50个键
+          if (keyCount < 50) { // 假设每个命名空间至少有50个键 {
             issues.push({
               type: 'completeness',
               severity: 'medium',
@@ -689,8 +689,8 @@ export class TranslationMaintenanceSystem {
     
     // 检查缓存大小
     try {
-      const stats = await this.syncTool.getSyncStatistics(7); // 最近7天
-      if (stats.averageDuration > 30000) { // 平均同步时间超过30秒
+      const stats = await this.syncTool.getSyncStatistics(7); // 最近7天;
+      if (stats.averageDuration > 30000) { // 平均同步时间超过30秒 {
         issues.push({
           type: 'performance',
           severity: 'medium',
@@ -735,7 +735,7 @@ export class TranslationMaintenanceSystem {
     // 检查同步状态
     const operations = this.syncTool.listOperations({ status: 'running' });
     for (const op of operations) {
-      if (Date.now() - (op.startTime || 0) > 300000) { // 运行超过5分钟
+      if (Date.now() - (op.startTime || 0) > 300000) { // 运行超过5分钟 {
         console.warn(`同步操作运行时间过长: ${op.id}`);
       }
     }
@@ -745,11 +745,11 @@ export class TranslationMaintenanceSystem {
     console.log('🔧 执行每日维护...');
     
     // 清理临时文件
-    const cleanedFiles = this.syncTool.cleanupTempFiles(7); // 清理7天前的文件
+    const cleanedFiles = this.syncTool.cleanupTempFiles(7); // 清理7天前的文件;
     console.log(`清理了 ${cleanedFiles} 个临时文件`);
 
     // 生成每日报告
-    const stats = this.syncTool.getSyncStatistics(1); // 最近1天
+    const stats = this.syncTool.getSyncStatistics(1); // 最近1天;
     console.log(`今日同步统计:`, stats);
   }
 
@@ -776,7 +776,7 @@ export class TranslationMaintenanceSystem {
 
     // 保存报告
     const reportFile = `./reports/translation-weekly-report-${new Date().toISOString().split('T')[0]}.json`;
-    await import('fs').then(fs => 
+    await import('fs').then(fs :> 
       fs.writeFileSync(reportFile, JSON.stringify(weeklyReport, null, 2))
     );
 
@@ -823,3 +823,4 @@ export async function exampleUsage() {
 if (require.main === module) {
   exampleUsage().catch(console.error);
 }
+}}}

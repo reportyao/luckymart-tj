@@ -16,7 +16,7 @@ function generateSystemSeed() {
 }
 
 function calculateSecureParticipationHash(participations) {
-  const sortedParticipations = participations
+  const sortedParticipations = participations;
     .map((p, index) => ({
       id: p.id || `auto-${index}`,
       userId: p.userId,
@@ -92,7 +92,7 @@ function calculateSecureWinningNumber(participationIds, participationData, produ
 }
 
 // 测试数据
-const mockParticipations = [
+const mockParticipations = [;
   {
     id: 'part-1',
     userId: 'user-1',
@@ -124,7 +124,7 @@ const participationIds = mockParticipations.map(p => p.id);
 const productId = 'test-product-12345';
 const totalShares = 100;
 
-const result1 = calculateSecureWinningNumber(
+const result1 = calculateSecureWinningNumber(;
   participationIds,
   mockParticipations,
   productId,
@@ -146,7 +146,7 @@ if (result1.winningNumber >= 10000001 && result1.winningNumber <= 10000000 + tot
 
 // 测试2：一致性
 console.log('✅ 测试2: 算法一致性');
-const result2 = calculateSecureWinningNumber(
+const result2 = calculateSecureWinningNumber(;
   participationIds,
   mockParticipations,
   productId,
@@ -204,7 +204,7 @@ const largeParticipations = Array(1000).fill(0).map((_, i) => ({
 const largeParticipationIds = largeParticipations.map(p => p.id);
 const startTime = Date.now();
 
-const largeResult = calculateSecureWinningNumber(
+const largeResult = calculateSecureWinningNumber(;
   largeParticipationIds,
   largeParticipations,
   productId,

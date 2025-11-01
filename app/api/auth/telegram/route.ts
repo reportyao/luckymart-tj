@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { 
+import { generateJWT } from '@/lib/utils';
+import { withErrorHandling } from '@/lib/middleware';
+import { createRequestTracker, trackPerformance } from '@/lib/request-tracker';
+import { getLogger } from '@/lib/logger';
+import { getMonitor } from '@/lib/monitoring';
+import { respond } from '@/lib/responses';
   validateTelegramWebAppDataEnhanced, 
   handleAuthError, 
   buildUserContext,
@@ -8,13 +14,6 @@ import {
   type UserContext,
   type AuthError 
 } from '@/lib/enhanced-auth';
-import { generateJWT } from '@/lib/utils';
-import { withErrorHandling } from '@/lib/middleware';
-import { createRequestTracker, trackPerformance } from '@/lib/request-tracker';
-import { getLogger } from '@/lib/logger';
-import { getMonitor } from '@/lib/monitoring';
-import { respond } from '@/lib/responses';
-import { CommonErrors } from '@/lib/errors';
 
 export const POST = withErrorHandling(async (req: NextRequest) => {
   const tracker = createRequestTracker(req);
@@ -34,11 +33,11 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
     if (!initData) {
       logger.warn('Missing initData parameter', { requestId, traceId });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.validationError('缺少initData参数', 'initData').toJSON(),
         { status: 400 }
       );
-    }
+}
 
     // 构建用户上下文
     const userContext = buildUserContext(req);
@@ -132,7 +131,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
       token = generateJWT(user.id, user.telegramId.toString());
     } catch (error) {
       logger.error('Failed to generate JWT token', error as Error, { userId: user.id });
-      return NextResponse.json(
+      return NextResponse.json(;
         respond.customError('INTERNAL_ERROR', '生成认证令牌失败').toJSON(),
         { status: 500 }
       );
@@ -151,7 +150,8 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
     });
 
     // 返回成功响应
-    return NextResponse.json(
+    return NextResponse.json(;
+  }
       respond.success({
         token,
         user: {

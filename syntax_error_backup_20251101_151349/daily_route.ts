@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -10,7 +10,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // 创建权限中间件
-const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([;
   AdminPermissions.stats.read
 ]);
 
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '30');
     const offset = (page - 1) * limit;
 
-    let query = supabase
+    let query = supabase;
       .from('cost_statistics')
       .select('*')
       .order('stat_date', { ascending: false });
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     if (date) {
       query = query.eq('stat_date', date);
     } else if (startDate && endDate) {
-      query = query
+      query : query
         .gte('stat_date', startDate)
         .lte('stat_date', endDate);
     } else {
@@ -52,18 +52,18 @@ export async function GET(request: NextRequest) {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       query = query.gte('stat_date', thirtyDaysAgo.toISOString().split('T')[0]);
-    }
+}
 
     // 获取总数
     const { count } = await query.select('*', { count: 'exact', head: true });
     
     // 获取分页数据
-    const { data: costData, error } = await query
+    const { data: costData, error } = await query;
       .range(offset, offset + limit - 1);
 
     if (error) {
       console.error('查询成本统计数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { error: '查询成本统计数据失败' },
         { status: 500 }
       );
@@ -107,10 +107,11 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(response);
+  }
 
   } catch (error) {
     console.error('获取每日成本统计API错误:', error);
-    return NextResponse.json(
+    return NextResponse.json(;
       { error: '服务器内部错误' },
       { status: 500 }
     );
@@ -137,36 +138,37 @@ export async function POST(request: NextRequest) {
 
     // 检查是否已存在该日期的数据
     if (!forceRecalculate) {
-      const { data: existing } = await supabase
+      const { data: existing } = await supabase;
         .from('cost_statistics')
         .select('id')
         .eq('stat_date', targetDate)
         .single();
 
       if (existing) {
-        return NextResponse.json(
+        return NextResponse.json(;
           { error: '该日期的成本数据已存在，如需重新计算请设置 forceRecalculate=true' },
           { status: 400 }
         );
-      }
+}
     }
 
     // 调用成本聚合函数
-    const { data, error } = await supabase
+    const { data, error } = await supabase;
       .rpc('aggregate_daily_cost_statistics', {
         target_date: targetDate
       });
 
     if (error) {
       console.error('计算成本统计数据失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
+  }
         { error: '计算成本统计数据失败', details: error.message },
         { status: 500 }
       );
     }
 
     // 获取计算结果
-    const { data: resultData } = await supabase
+    const { data: resultData } = await supabase;
       .from('cost_statistics')
       .select('*')
       .eq('stat_date', targetDate)
@@ -181,9 +183,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('计算每日成本统计API错误:', error);
-    return NextResponse.json(
-      { error: '服务器内部错误' },
-      { status: 500 }
+    return NextResponse.json(;
+      ,
+      
     );
   }
   })(request);

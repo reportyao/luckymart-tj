@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager, AdminPermissions, AdminUser } from '../../../../../lib/admin-permission-manager';
 import { getLogger } from '@/lib/logger';
 import { withErrorHandling } from '@/lib/middleware';
-import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 const withPermission = AdminPermissionManager.createPermissionMiddleware({
 export const GET = withErrorHandling(async (request: NextRequest) => {
@@ -18,6 +16,7 @@ export const GET = withErrorHandling(async (request: NextRequest) => {
 
   try {
     return await handleGET(request);
+}
   } catch (error) {
     logger.error('business_route.ts request failed', error as Error, {
       requestId,

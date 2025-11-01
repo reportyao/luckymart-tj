@@ -1,8 +1,3 @@
-/**
- * 性能优化和缓存系统集成测试
- * 测试N+1查询优化、缓存机制、性能基准等
- */
-
 import { describe, test, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
 import { prisma } from '../lib/prisma';
 import QueryOptimizer from '../lib/query-optimizer';
@@ -10,6 +5,11 @@ import { NPlusOneDetector, PerformanceTester } from '../lib/n-plus-one-detector'
 import { cacheManager } from '../lib/cache-manager';
 import { redisClient } from '../lib/redis-cache';
 import { memoryCache, MultiLevelCache } from '../lib/memory-cache';
+/**
+ * 性能优化和缓存系统集成测试
+ * 测试N+1查询优化、缓存机制、性能基准等
+ */
+
 
 describe('性能优化和缓存系统测试', () => {
   const TEST_USER_ID = 'test-perf-user';
@@ -457,7 +457,7 @@ describe('性能优化和缓存系统测试', () => {
   describe('并发性能测试', () => {
     test('应该处理并发读取请求', async () => {
       const concurrentReads = 100;
-      const readPromises = Array(concurrentReads).fill(0).map(() =>
+      const readPromises = Array(concurrentReads).fill(0).map(() =>;
         prisma.users.findMany({
           take: 10,
           orderBy: { createdAt: 'desc' }
@@ -481,7 +481,7 @@ describe('性能优化和缓存系统测试', () => {
 
     test('应该处理混合读写操作', async () => {
       const operations = 50;
-      const writeRatio = 0.2; // 20%写操作，80%读操作
+      const writeRatio = 0.2; // 20%写操作，80%读操作;
 
       const operations_array = Array(operations).fill(0).map((_, i) => {
         const isWrite = i < operations * writeRatio;

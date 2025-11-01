@@ -1,11 +1,11 @@
+import { describe, test, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
+import { prisma } from '../lib/prisma';
+import DatabaseLockManager from '../lib/database-lock-manager';
 /**
  * 数据库事务和并发控制集成测试
  * 测试事务处理、锁定机制和并发操作的安全性
  */
 
-import { describe, test, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
-import { prisma } from '../lib/prisma';
-import DatabaseLockManager from '../lib/database-lock-manager';
 
 describe('数据库事务和并发控制测试', () => {
   const TEST_USER_ID = 'test-transaction-user';
@@ -101,10 +101,10 @@ describe('数据库事务和并发控制测试', () => {
     test('成功的夺宝参与事务应该原子性执行', async () => {
       const initialBalance = 10000;
       const initialSoldShares = 0;
-      const participationCost = 5; // 购买5份
+      const participationCost = 5; // 购买5份;
 
       const numbers = [1, 2, 3, 4, 5];
-      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(
+      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(;
         TEST_USER_ID,
         TEST_ROUND_ID,
         TEST_PRODUCT_ID,
@@ -140,8 +140,8 @@ describe('数据库事务和并发控制测试', () => {
       const initialSoldShares = 0;
 
       // 尝试超额购买（余额不足）
-      const numbers = Array(50).fill(0).map((_, i) => i + 1); // 购买50份
-      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(
+      const numbers = Array(50).fill(0).map((_, i) => i + 1); // 购买50份;
+      const result = await DatabaseLockManager.participateInLotteryWithBalanceDeduction(;
         TEST_USER_ID,
         TEST_ROUND_ID,
         TEST_PRODUCT_ID,
@@ -162,7 +162,7 @@ describe('数据库事务和并发控制测试', () => {
 
     test('事务中的版本检查应该防止并发修改', async () => {
       // 第一次正常操作
-      const result1 = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result1 = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         100,
         'deduct',
@@ -178,7 +178,7 @@ describe('数据库事务和并发控制测试', () => {
       });
 
       // 第二次操作应该失败
-      const result2 = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const result2 = await DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         100,
         'deduct',
@@ -194,10 +194,10 @@ describe('数据库事务和并发控制测试', () => {
     test('多个并发余额扣减应该串行化', async () => {
       const initialBalance = 10000;
       const concurrentOperations = 20;
-      const amountPerOperation = 600; // 总共12000，超过了初始余额
+      const amountPerOperation = 600; // 总共12000，超过了初始余额;
 
       // 创建并发操作
-      const operations = Array(concurrentOperations).fill(0).map(() =>
+      const operations = Array(concurrentOperations).fill(0).map(() =>;
         DatabaseLockManager.updateUserBalanceWithOptimisticLock(
           TEST_USER_ID,
           amountPerOperation,
@@ -226,9 +226,9 @@ describe('数据库事务和并发控制测试', () => {
       const initialSoldShares = 0;
       const totalShares = 100;
       const concurrentOperations = 50;
-      const sharesPerOperation = 5; // 总共250份，但只有100份可用
+      const sharesPerOperation = 5; // 总共250份，但只有100份可用;
 
-      const operations = Array(concurrentOperations).fill(0).map(() =>
+      const operations = Array(concurrentOperations).fill(0).map(() =>;
         DatabaseLockManager.updateLotteryRoundSoldSharesWithLock(
           TEST_ROUND_ID,
           sharesPerOperation
@@ -265,7 +265,7 @@ describe('数据库事务和并发控制测试', () => {
       });
 
       // 并发更新订单状态
-      const operations = [
+      const operations = [;
         DatabaseLockManager.updateOrderStatusWithLock(order.id, 'completed'),
         DatabaseLockManager.updateOrderStatusWithLock(order.id, 'cancelled'),
         DatabaseLockManager.updateOrderStatusWithLock(order.id, 'processing')
@@ -295,14 +295,14 @@ describe('数据库事务和并发控制测试', () => {
       });
 
       // 创建版本冲突场景
-      const operation1 = DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const operation1 = DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         100,
         'deduct',
         'balance'
       );
 
-      const operation2 = DatabaseLockManager.updateUserBalanceWithOptimisticLock(
+      const operation2 = DatabaseLockManager.updateUserBalanceWithOptimisticLock(;
         TEST_USER_ID,
         200,
         'deduct',
@@ -330,8 +330,8 @@ describe('数据库事务和并发控制测试', () => {
       expect(Array.isArray(lockInfo)).toBe(true);
       
       // 查找用户表的锁信息
-      const userLock = lockInfo.find(info => 
-        info.table_name === 'users' && info.row_id === TEST_USER_ID
+      const userLock = lockInfo.find(info =>;
+        info.table_name :== 'users' && info.row_id === TEST_USER_ID
       );
 
       expect(userLock).toBeDefined();
@@ -470,7 +470,7 @@ describe('数据库事务和并发控制测试', () => {
 
       const startTime = process.hrtime.bigint();
 
-      const allOperations = Array(concurrentUsers).fill(0).flatMap((_, userIndex) =>
+      const allOperations = Array(concurrentUsers).fill(0).flatMap((_, userIndex) =>;
         Array(operationsPerUser).fill(0).map((_, opIndex) =>
           DatabaseLockManager.updateUserBalanceWithOptimisticLock(
             `${TEST_USER_ID}_${userIndex}`,

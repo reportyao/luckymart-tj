@@ -1,6 +1,6 @@
+import type { Order } from '@/types';
 // OrderHistory组件相关类型定义
 
-import type { Order } from '@/types';
 
 // 扩展的订单类型，包含商品信息
 export interface OrderWithProduct extends Order {

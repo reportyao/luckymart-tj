@@ -1,6 +1,6 @@
+import { useEffect, useState, useCallback } from 'react';
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -41,7 +41,7 @@ export function usePWA() {
     const checkInstallStatus = () => {
       if (window.matchMedia('(display-mode: standalone)').matches) {
         setIsInstalled(true);
-      }
+}
     };
 
     // 监听安装提示事件
@@ -99,7 +99,7 @@ export function usePWA() {
 
   // 触发安装提示
   const triggerInstall = useCallback(async () => {
-    if (!deferredPrompt) return false;
+    if (!deferredPrompt) return false; {
 
     try {
       await deferredPrompt.prompt();
@@ -112,6 +112,7 @@ export function usePWA() {
       
       setDeferredPrompt(null);
       return choiceResult.outcome === 'accepted';
+  }
     } catch (error) {
       console.error('安装失败:', error);
       return false;
@@ -120,11 +121,11 @@ export function usePWA() {
 
   // 检查更新
   const checkForUpdates = useCallback(async () => {
-    if (!('serviceWorker' in navigator)) return;
+    if (!('serviceWorker' in navigator)) return; {
 
     try {
       const registration = await navigator.serviceWorker.getRegistration();
-      if (!registration) return;
+      if (!registration) return; {
 
       // 手动检查更新
       await registration.update();
@@ -170,7 +171,7 @@ export function usePWA() {
 
   // 触发更新
   const triggerUpdate = useCallback(async () => {
-    if (!('serviceWorker' in navigator)) return false;
+    if (!('serviceWorker' in navigator)) return false; {
 
     try {
       const registration = await navigator.serviceWorker.getRegistration();
@@ -178,6 +179,7 @@ export function usePWA() {
         // 发送SKIP_WAITING消息
         registration.waiting.postMessage({ type: 'SKIP_WAITING' });
         return true;
+  }
       }
       
       return false;
@@ -189,11 +191,11 @@ export function usePWA() {
 
   // 获取缓存状态
   const getCacheStatus = useCallback(async () => {
-    if (!('serviceWorker' in navigator)) return null;
+    if (!('serviceWorker' in navigator)) return null; {
 
     try {
       const registration = await navigator.serviceWorker.getRegistration();
-      if (!registration) return null;
+      if (!registration) return null; {
 
       const messageChannel = new MessageChannel();
       
@@ -219,11 +221,11 @@ export function usePWA() {
 
   // 清除缓存
   const clearCache = useCallback(async (cacheNames?: string[]) => {
-    if (!('serviceWorker' in navigator)) return false;
+    if (!('serviceWorker' in navigator)) return false; {
 
     try {
       const registration = await navigator.serviceWorker.getRegistration();
-      if (!registration) return false;
+      if (!registration) return false; {
 
       registration.active?.postMessage({
         type: 'CLEAR_CACHE',
@@ -317,7 +319,7 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
   const bytes = new Uint8Array(buffer);
   let binary = '';
   for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
+    binary += String.fromCharCode((bytes?.i ?? null));
   }
   return window.btoa(binary);
 };
@@ -332,7 +334,8 @@ const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
   const outputArray = new Uint8Array(rawData.length);
   
   for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
+    (outputArray?.i ?? null) = rawData.charCodeAt(i);
   }
   return outputArray;
 };
+}}}}}}

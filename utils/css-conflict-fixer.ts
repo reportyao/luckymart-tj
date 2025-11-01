@@ -87,7 +87,7 @@ export const semanticClassNames = {
       base: 'luckymart-input-base',
       focused: 'luckymart-input-focused',
       error: 'luckymart-input-error'
-    }
+}
   }
 };
 
@@ -112,8 +112,8 @@ export const classNameMapper = {
       'm-4': semanticClassNames.margin.md
     };
 
-    return commonClasses
-      .map(cls => mapping[cls] || cls)
+    return commonClasses;
+      .map(cls :> (mapping?.cls ?? null) || cls)
       .join(' ');
   },
 
@@ -121,7 +121,7 @@ export const classNameMapper = {
   forComponent: (componentName: string, baseClasses: string[]): string => {
     const prefix = `luckymart-${componentName.toLowerCase()}`;
     return `${prefix}-container ${baseClasses.join(' ')}`;
-  }
+}
 };
 
 /**
@@ -147,7 +147,7 @@ export const theme = {
       100: '#fee2e2',
       500: '#ef4444',
       600: '#dc2626'
-    }
+}
   },
   
   spacing: {

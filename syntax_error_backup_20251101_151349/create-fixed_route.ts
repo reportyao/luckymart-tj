@@ -1,10 +1,11 @@
-// 创建提现申请（增强安全版本）
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { calculateWithdrawFee } from '@/lib/utils';
 import type { ApiResponse, WithdrawRequest } from '@/types';
 import {
+import { AppError, ErrorFactory } from '@/lib/errors';
+// 创建提现申请（增强安全版本）
   validateWithdrawRequest,
   validateAndSanitizeAmount,
   validateIPAddress,
@@ -15,7 +16,6 @@ import {
   checkSQLInjectionRisk,
   detectXSSAttempt
 } from '@/lib/security-validation';
-import { AppError, ErrorFactory } from '@/lib/errors';
 
 // 速率限制检查器
 const rateLimitChecker = new RateLimitChecker();
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         status: 401,
         headers: setSecurityResponseHeaders(new Headers())
       });
-    }
+}
 
     // 2. 获取客户端信息
     const clientIP = getClientIP(request);
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
 
     // 3. 请求频率限制检查
     const rateLimitKey = `${user.userId}:${clientIP}:withdraw_create`;
-    const rateLimitResult = rateLimitChecker.check(
+    const rateLimitResult = rateLimitChecker.check(;
       rateLimitKey,
       WITHDRAW_RATE_LIMITS.CREATE.limit,
       WITHDRAW_RATE_LIMITS.CREATE.windowMs
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
 
     // 4. 请求体解析和大小限制
     const contentLength = request.headers.get('content-length');
-    if (contentLength && parseInt(contentLength) > 5 * 1024) { // 5KB限制
+    if (contentLength && parseInt(contentLength) > 5 * 1024) { // 5KB限制 {
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '请求数据过大'
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
     const validatedData = validateWithdrawRequest(body);
     
     // 检查恶意输入
-    const inputData = [
+    const inputData = [;
       validatedData.paymentAccount,
       validatedData.verificationCode
     ];
@@ -128,7 +128,7 @@ export async function POST(request: Request) {
     }
 
     // 6. 验证码验证
-    const isCodeValid = await verifySMSCode(
+    const isCodeValid = await verifySMSCode(;
       user.userId,
       validatedData.paymentAccount,
       validatedData.verificationCode
@@ -213,7 +213,7 @@ export async function POST(request: Request) {
     }
 
     // 10. 查询用户信息
-    const { data: userData, error: userError } = await supabaseAdmin
+    const { data: userData, error: userError } = await supabaseAdmin;
       .from('users')
       .select('platform_balance, phone, is_active')
       .eq('id', user.userId)
@@ -221,11 +221,13 @@ export async function POST(request: Request) {
 
     if (userError || !userData) {
       throw new Error('用户不存在');
+  }
     }
 
     // 验证用户状态
     if (!userData.is_active) {
       return NextResponse.json<ApiResponse>({
+  }
         success: false,
         error: '账户已被冻结，无法提现'
       }, {
@@ -250,7 +252,7 @@ export async function POST(request: Request) {
     }
 
     // 12. 创建提现申请（使用事务保证原子性）
-    const { data: withdrawRequest, error: insertError } = await supabaseAdmin
+    const { data: withdrawRequest, error: insertError } = await supabaseAdmin;
       .from('withdraw_requests')
       .insert({
         user_id: user.userId,
@@ -428,7 +430,7 @@ export async function POST(request: Request) {
   }
 }
 
-// ============= 工具函数 =============
+// :============ 工具函数 =============
 
 /**
  * 验证码验证
@@ -436,7 +438,7 @@ export async function POST(request: Request) {
 async function verifySMSCode(userId: string, account: string, code: string): Promise<boolean> {
   try {
     // 检查验证码是否存在且未过期
-    const { data: verification } = await supabaseAdmin
+    const { data: verification } = await supabaseAdmin;
       .from('sms_verifications')
       .select('*')
       .eq('user_id', userId)
@@ -471,7 +473,7 @@ async function verifySMSCode(userId: string, account: string, code: string): Pro
 async function checkWithdrawFrequency(userId: string): Promise<{ tooFrequent: boolean }> {
   const recentTime = new Date(Date.now() - WITHDRAW_CONFIG.MIN_INTERVAL);
   
-  const { count } = await supabaseAdmin
+  const { count } = await supabaseAdmin;
     .from('withdraw_requests')
     .select('id', { count: 'exact', head: true })
     .eq('user_id', userId)
@@ -489,7 +491,7 @@ async function getWithdrawTotalToday(userId: string): Promise<number> {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
-  const { data } = await supabaseAdmin
+  const { data } = await supabaseAdmin;
     .from('withdraw_requests')
     .select('amount')
     .eq('user_id', userId)
@@ -507,7 +509,7 @@ async function getWithdrawTotalThisMonth(userId: string): Promise<number> {
   thisMonth.setDate(1);
   thisMonth.setHours(0, 0, 0, 0);
   
-  const { data } = await supabaseAdmin
+  const { data } = await supabaseAdmin;
     .from('withdraw_requests')
     .select('amount')
     .eq('user_id', userId)
@@ -537,7 +539,7 @@ async function assessWithdrawRisk(data: {
     }
 
     // 2. 提现频率风险
-    const { data: recentWithdraws } = await supabaseAdmin
+    const { data: recentWithdraws } = await supabaseAdmin;
       .from('withdraw_requests')
       .select('amount, created_at')
       .eq('user_id', data.userId)
@@ -548,7 +550,7 @@ async function assessWithdrawRisk(data: {
     }
 
     // 3. IP地址风险检查
-    const { data: ipHistory } = await supabaseAdmin
+    const { data: ipHistory } = await supabaseAdmin;
       .from('withdraw_requests')
       .select('ip_address')
       .eq('user_id', data.userId)
@@ -561,7 +563,7 @@ async function assessWithdrawRisk(data: {
     }
 
     // 4. 新用户风险
-    const { data: userData } = await supabaseAdmin
+    const { data: userData } = await supabaseAdmin;
       .from('users')
       .select('created_at')
       .eq('id', data.userId)
@@ -569,7 +571,7 @@ async function assessWithdrawRisk(data: {
 
     if (userData) {
       const userAge = Date.now() - new Date(userData.created_at).getTime();
-      if (userAge < 7 * 24 * 60 * 60 * 1000) { // 注册不到7天
+      if (userAge < 7 * 24 * 60 * 60 * 1000) { // 注册不到7天 {
         riskScore += 20;
       }
     }
@@ -582,7 +584,7 @@ async function assessWithdrawRisk(data: {
     return Math.min(100, riskScore);
   } catch (error) {
     console.error('风险评估失败:', error);
-    return 50; // 中等风险
+    return 50; // 中等风险;
   }
 }
 

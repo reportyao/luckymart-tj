@@ -14,7 +14,7 @@ import {
  * 手势国际化 Hook
  * 提供多语言手势提示和手势操作支持
  */
-export const useGestureI18n = (
+export const useGestureI18n = (;
   customConfig?: Partial<GestureConfig>,
   customListeners?: Partial<GestureListener>
 ) => {
@@ -32,6 +32,7 @@ export const useGestureI18n = (
   const getGestureText = useCallback((key: string): string => {
     try {
       return t(key) || key;
+}
     } catch (error) {
       console.warn(`Gesture translation key not found: ${key}`);
       return key;
@@ -39,17 +40,17 @@ export const useGestureI18n = (
   }, [t]);
 
   // 获取滑动手势提示
-  const getSwipeText = useCallback((
+  const getSwipeText = useCallback((;
     direction: SwipeDirection,
     type: 'start' | 'end' | 'success'
   ): string => {
-    const key = GESTURE_KEYS.swipe[direction][type];
+    const key = GESTURE_KEYS.(swipe?.direction ?? null)[type];
     return getGestureText(key);
   }, [getGestureText]);
 
   // 获取操作提示
   const getActionText = useCallback((action: keyof typeof GESTURE_KEYS.actions): string => {
-    const key = GESTURE_KEYS.actions[action];
+    const key = GESTURE_KEYS.(actions?.action ?? null);
     return getGestureText(key);
   }, [getGestureText]);
 
@@ -75,7 +76,7 @@ export const useGestureI18n = (
 
   // 获取引导提示
   const getGuidanceText = useCallback((guidanceType: keyof typeof GESTURE_KEYS.guidance): string => {
-    const key = GESTURE_KEYS.guidance[guidanceType];
+    const key = GESTURE_KEYS.(guidance?.guidanceType ?? null);
     return getGestureText(key);
   }, [getGestureText]);
 
@@ -126,7 +127,7 @@ export const useGestureI18n = (
 
   // 触觉反馈
   const triggerHaptic = useCallback((type: 'light' | 'medium' | 'heavy' = 'light') => {
-    if (!config.enableHaptic) return;
+    if (!config.enableHaptic) return; {
     
     if ('vibrate' in navigator) {
       const patterns = {
@@ -134,13 +135,13 @@ export const useGestureI18n = (
         medium: [20],
         heavy: [30, 10, 30]
       };
-      navigator.vibrate(patterns[type]);
+      navigator.vibrate((patterns?.type ?? null));
     }
   }, [config.enableHaptic]);
 
   // 声音反馈
   const triggerSound = useCallback((type: 'success' | 'error' | 'tap' = 'tap') => {
-    if (!config.enableSound) return;
+    if (!config.enableSound) return; {
     
     // 这里可以添加音频播放逻辑
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -156,7 +157,7 @@ export const useGestureI18n = (
       tap: [800] // 单音调
     };
     
-    oscillator.frequency.setValueAtTime(frequencies[type][0], audioContext.currentTime);
+    oscillator.frequency.setValueAtTime((frequencies?.type ?? null)[0], audioContext.currentTime);
     gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
     
     oscillator.start(audioContext.currentTime);
@@ -165,7 +166,7 @@ export const useGestureI18n = (
 
   // 视觉反馈
   const triggerVisual = useCallback((type: 'success' | 'error' | 'active' = 'active') => {
-    if (!config.enableVisual) return;
+    if (!config.enableVisual) return; {
     
     // 触发 CSS 动画或视觉反馈
     const event = new CustomEvent('gestureFeedback', {
@@ -175,7 +176,7 @@ export const useGestureI18n = (
   }, [config.enableVisual, gestureState]);
 
   // 统一的手势反馈
-  const triggerFeedback = useCallback((
+  const triggerFeedback = useCallback((;
     type: 'success' | 'error' | 'tap' = 'tap',
     hapticType: 'light' | 'medium' | 'heavy' = 'light'
   ) => {
@@ -186,7 +187,7 @@ export const useGestureI18n = (
 
   // 手势配置检查
   const validateGesture = useCallback((event: GestureEvent): boolean => {
-    if (!isGestureEnabled) return false;
+    if (!isGestureEnabled) return false; {
     
     switch (event.type) {
       case 'swipe':
@@ -248,3 +249,4 @@ export const useGestureI18n = (
     metrics: gestureMetrics,
   };
 };
+}}}

@@ -1,15 +1,12 @@
-// 管理员 - 订单管理
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromRequest } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
 import { rewardTrigger } from '@/lib/reward-trigger-manager';
 import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';
-import { createOrderValidationMiddleware, ORDER_VALIDATION_MIDDLEWARES } from '@/lib/order-validation-middleware';
-import { ErrorFactory } from '@/lib/errors';
-
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
+// 管理员 - 订单管理
+
 
 // 订单状态更新请求体
 interface OrderUpdateRequest {
@@ -44,10 +41,10 @@ export async function GET(request: NextRequest) {
     const where: any = {};
     if (status) {
       where.status = status;
-    }
+}
 
     // 获取订单列表和总数
-    const [orders, total] = await Promise.all([
+    const [orders, total] = await Promise.all([;
       prisma.orders.findMany({
         where,
         include: {
@@ -86,6 +83,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       logger.error('获取订单列表失败', error as Error);
       return NextResponse.json<ApiResponse>({
+  }
         success: false,
         error: '获取订单列表失败'
       }, { status: 500 });
@@ -112,7 +110,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: '缺少必填参数：orderId'
       }, { status: 400 });
-    }
+}
 
     // 生成幂等性请求ID
     const idempotencyKey = `order_update_${orderId}_${updateType}_${Date.now()}`;
@@ -330,6 +328,7 @@ export async function POST(request: NextRequest) {
 
     const successMessage = updateType === 'ship' ? '发货成功' : '订单完成';
     return NextResponse.json<ApiResponse>({
+  }
       success: true,
       message: successMessage,
       data: {
@@ -351,7 +350,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json<ApiResponse>({
         success: false,
         error: error.message || '订单状态更新失败'
-      }, { status: 500 });
+      }, );
     }
   })(request);
 }

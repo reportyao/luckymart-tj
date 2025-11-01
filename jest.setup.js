@@ -1,11 +1,10 @@
+import { jest } from '@jest/globals';
+import dotenv from 'dotenv';
 /**
  * Jest测试环境设置
  * 在每个测试文件运行前执行全局配置
  */
 
-import { jest } from '@jest/globals';
-import dotenv from 'dotenv';
-import { execSync } from 'child_process';
 
 // 加载环境变量
 dotenv.config({ path: '.env.local' });
@@ -20,6 +19,7 @@ beforeAll(async () => {
   // 确保测试数据库连接
   try {
     console.log('✅ 环境变量检查完成');
+  }
   } catch (error) {
     console.error('❌ 环境变量配置错误:', error);
   }
@@ -154,7 +154,7 @@ global.testUtils = {
   
   // 生成随机测试夺宝轮次
   generateTestRound: (overrides = {}) => ({
-    id: `test-round-${Date.now()}`,
+    id: `test-round-$`,
     productId: 'test-product',
     roundNumber: 1,
     totalShares: 100,

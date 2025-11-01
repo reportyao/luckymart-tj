@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       
       default:
         return NextResponse.json({ error: '未知操作' }, { status: 400 });
-    }
+}
   })(request);
 }
 
@@ -188,7 +188,7 @@ async function handleHealthCheck() {
     const totalComponents = Object.keys(componentAvailability).length;
     const healthScore = (healthyComponents / totalComponents) * 100;
     
-    const isHealthy = healthScore >= 75; // 至少75%的组件正常
+    const isHealthy = healthScore >= 75; // 至少75%的组件正常;
     
     return NextResponse.json({
       success: true,
@@ -204,6 +204,7 @@ async function handleHealthCheck() {
   } catch (error) {
     logger.error('健康检查失败', error as Error);
     return NextResponse.json({ 
+  }
       status: 'error',
       error: '健康检查失败'
     }, { status: 500 });
@@ -244,7 +245,7 @@ export async function POST(request: NextRequest) {
       
       default:
         return NextResponse.json({ error: '未知操作' }, { status: 400 });
-    }
+}
   })(request);
 }
 

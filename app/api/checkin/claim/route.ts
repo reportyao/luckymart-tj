@@ -3,14 +3,13 @@ import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { ApiResponse } from '@/lib/api-response';
 import { getLogger } from '@/lib/logger';
-import { respond } from '@/lib/responses';
 
 
 const logger = getLogger();
 
 // 7天签到奖励配置
 const CHECK_IN_REWARDS = [0.1, 0.2, 0.3, 0.4, 0.5, 0.25, 0.25];
-const TOTAL_REWARD_AMOUNT = CHECK_IN_REWARDS.reduce((sum: any,  reward: any) => sum + reward, 0);
+const TOTAL_REWARD_AMOUNT = CHECK_IN_REWARDS.reduce((sum: any: any,   reward: any: any) => sum + reward, 0);
 
 /**
  * 执行签到并获取奖励API
@@ -29,11 +28,11 @@ export async function POST(request: NextRequest) {
         method: 'POST'
       });
       
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
-    }
+}
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
@@ -44,7 +43,7 @@ export async function POST(request: NextRequest) {
         method: 'POST'
       });
       
-      return NextResponse.json<ApiResponse>(
+      return NextResponse.json<ApiResponse>(;
         ApiResponse.unauthorized('用户身份验证失败'),
         { status: 401 }
       );
@@ -187,7 +186,7 @@ export async function POST(request: NextRequest) {
         method: 'POST'
       });
 
-      const errorResponse = result.code === 'ALREADY_CHECKED_IN' 
+      const errorResponse = result.code === 'ALREADY_CHECKED_IN';
         ? ApiResponse.badRequest(result.error, result.code)
         : result.code === 'CYCLE_COMPLETED'
         ? ApiResponse.badRequest(result.error, result.code)
@@ -233,7 +232,7 @@ export async function POST(request: NextRequest) {
       method: 'POST'
     });
 
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse>(;
       ApiResponse.internal('签到失败，请稍后重试'),
       { status: 500 }
     );
@@ -275,8 +274,9 @@ async function getConsecutiveDays(tx: any, userId: string): Promise<number> {
     }
 
     return consecutive;
+  }
   } catch (error) {
-    logger.error('计算连续签到天数失败', error as Error, { userId });
+    logger.error('计算连续签到天数失败', error as Error, );
     return 0;
   }
 }

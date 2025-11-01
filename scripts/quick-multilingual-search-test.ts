@@ -1,3 +1,6 @@
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { join } from 'path';
+import {
 #!/usr/bin/env node
 
 /**
@@ -6,9 +9,6 @@
  * 快速执行多语言搜索功能测试并生成报告
  */
 
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
-import {
   ProductMultilingualService,
   MultilingualHelper,
   type SupportedLanguage,
@@ -19,7 +19,7 @@ import {
 const LANGUAGES: SupportedLanguage[] = ['zh-CN', 'en-US', 'ru-RU', 'tg-TJ'];
 
 // 模拟搜索测试数据
-const SEARCH_TEST_DATA = [
+const SEARCH_TEST_DATA = [;
   {
     id: '1',
     name: {
@@ -131,7 +131,7 @@ async function runSearchTests(): Promise<{
     
     // 模拟搜索逻辑
     const matchedProducts = SEARCH_TEST_DATA.filter(product => {
-      const searchableText = `${product.name[language]} ${product.description[language]} ${product.category[language]}`.toLowerCase();
+      const searchableText = `${product.(name?.language ?? null)} ${product.(description?.language ?? null)} ${product.(category?.language ?? null)}`.toLowerCase();
       return searchableText.includes(term.toLowerCase());
     });
     
@@ -161,7 +161,7 @@ async function runSearchTests(): Promise<{
         const accuracy = searchResult.count > 0 ? 
           Math.min(searchResult.count / SEARCH_TEST_DATA.length * 100, 100) : 0;
         
-        const status: 'PASS' | 'FAIL' | 'WARNING' = 
+        const status: 'PASS' | 'FAIL' | 'WARNING' =;
           responseTime < 300 && accuracy > 50 ? 'PASS' :
           responseTime < 500 && accuracy > 30 ? 'WARNING' : 'FAIL';
         
@@ -175,6 +175,7 @@ async function runSearchTests(): Promise<{
         });
         
         console.log(`  ✓ "${term}": ${searchResult.count}结果, ${responseTime}ms, 准确率${accuracy.toFixed(1)}%`);
+  }
         
       } catch (error) {
         languageResults.push({
@@ -200,14 +201,14 @@ async function runSearchTests(): Promise<{
     const avgAccuracy = languageResults.reduce((sum, r) => sum + r.accuracy, 0) / totalTests;
     
     let supportLevel: 'EXCELLENT' | 'GOOD' | 'FAIR' | 'POOR' = 'POOR';
-    if (avgAccuracy >= 90 && avgResponseTime < 200) supportLevel = 'EXCELLENT';
-    else if (avgAccuracy >= 80 && avgResponseTime < 300) supportLevel = 'GOOD';
-    else if (avgAccuracy >= 70 && avgResponseTime < 400) supportLevel = 'FAIR';
+    if (avgAccuracy >= 90 && avgResponseTime < 200) supportLevel = 'EXCELLENT'; {
+    else if (avgAccuracy >= 80 && avgResponseTime < 300) supportLevel = 'GOOD'; {
+    else if (avgAccuracy >= 70 && avgResponseTime < 400) supportLevel = 'FAIR'; {
     
     const issues: string[] = [];
-    if (avgResponseTime > 300) issues.push('搜索响应时间过长');
-    if (avgAccuracy < 80) issues.push('搜索准确率较低');
-    if (passedTests < totalTests * 0.8) issues.push('部分测试用例失败');
+    if (avgResponseTime > 300) issues.push('搜索响应时间过长'); {
+    if (avgAccuracy < 80) issues.push('搜索准确率较低'); {
+    if (passedTests < totalTests * 0.8) issues.push('部分测试用例失败'); {
     
     analysis.push({
       language,
@@ -222,7 +223,7 @@ async function runSearchTests(): Promise<{
 
   // 测试跨语言搜索
   console.log('🔄 测试跨语言搜索功能:');
-  const crossLanguageTests = [
+  const crossLanguageTests = [;
     { searchLang: 'zh-CN', searchTerm: '智能手机', targetLang: 'en-US' },
     { searchLang: 'en-US', searchTerm: 'wireless headphones', targetLang: 'ru-RU' },
   ];
@@ -230,7 +231,7 @@ async function runSearchTests(): Promise<{
   for (const test of crossLanguageTests) {
     try {
       const searchResult = await mockSearch(test.searchLang, test.searchTerm);
-      const hasMultilingualContent = searchResult.products.some(p => 
+      const hasMultilingualContent = searchResult.products.some(p =>;
         p.name[test.targetLang] && p.name[test.targetLang].length > 0
       );
       
@@ -320,7 +321,7 @@ function generateReport(
   const avgResponseTime = results.reduce((sum, r) => sum + r.responseTime, 0) / results.length;
   const avgAccuracy = results.reduce((sum, r) => sum + r.accuracy, 0) / results.length;
   
-  const report = [
+  const report = [;
     `# 多语言搜索和推荐功能测试报告`,
     ``,
     `**生成时间:** ${timestamp}`,
@@ -441,8 +442,9 @@ async function main() {
 }
 
 // 运行测试
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file://${process.(argv?.1 ?? null)}`) {
   main();
 }
 
 export { runSearchTests, generateReport, saveReport };
+}}}}}

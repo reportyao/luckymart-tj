@@ -1,11 +1,11 @@
+import { config } from 'dotenv';
+import { getAppConfig, validateEnvironment } from '../config/env-config';
 #!/usr/bin/env tsx
 /**
  * 环境变量配置验证脚本
  * 用于验证所有必需的环境变量是否正确配置
  */
 
-import { config } from 'dotenv';
-import { getAppConfig, validateEnvironment } from '../config/env-config';
 
 // 加载.env文件
 config();
@@ -420,9 +420,10 @@ function printReport(report: ValidationReport): void {
 async function main(): Promise<void> {
   try {
     console.log('🚀 开始环境配置验证...\n');
+  }
     
     // 执行所有验证
-    const allResults: ValidationResult[] = [
+    const allResults: ValidationResult[] = [;
       ...validateSupabaseConfig(),
       ...validateSecurityConfig(),
       ...validateTelegramConfig(),

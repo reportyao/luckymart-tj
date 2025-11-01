@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
           lastLogin: true,
           createdAt: true
           // 不返回密码哈希
-        }
+}
       });
 
       return NextResponse.json({
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
     } catch (error) {
       console.error('获取管理员列表失败:', error);
-      return NextResponse.json(
+      return NextResponse.json(;
         { success: false, error: '服务器错误' },
         { status: 500 }
       );

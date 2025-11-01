@@ -1,15 +1,15 @@
+import fetch from 'node-fetch';
 /**
  * calculate-rebate API 测试脚本
  */
 
-import fetch from 'node-fetch';
 
 // 配置
 const API_BASE_URL = '${API_BASE_URL}';
 const API_ENDPOINT = '/api/referral/calculate-rebate';
 
 // 测试数据
-const testCases = [
+const testCases = [;
   {
     name: '正常返利计算测试',
     request: {
@@ -73,6 +73,7 @@ async function testApiCall(testCase: any): Promise<{
   
   try {
     console.log(`\n🧪 测试: ${testCase.name}`);
+  }
     console.log('请求参数:', JSON.stringify(testCase.request, null, 2));
     
     const response = await fetch(`${API_BASE_URL}${API_ENDPOINT}`, {
@@ -96,6 +97,7 @@ async function testApiCall(testCase: any): Promise<{
     
     if (success) {
       console.log('✅ 测试通过');
+  }
     } else {
       console.log(`❌ 测试失败: 期望状态码 ${testCase.expectedStatus}，实际 ${response.status}`);
     }
@@ -239,4 +241,4 @@ if (require.main === module) {
   });
 }
 
-export { runTests, healthCheck, testCases };
+export ;

@@ -17,7 +17,7 @@ function generateSystemEntropy(): string {
 // 计算参与数据的不可变哈希
 function calculateParticipationHash(participations: any[]): string {
   // 按ID排序确保一致性
-  const sortedParticipations = participations
+  const sortedParticipations = participations;
     .map(p => ({
       id: p.id,
       userId: p.userId,
@@ -96,7 +96,7 @@ async function secureLotteryDraw(
   const participationHash = calculateParticipationHash(participations);
   
   // 生成安全种子
-  const secureSeed = await generateSecureSeed(
+  const secureSeed = await generateSecureSeed(;
     participationHash, 
     roundId, 
     productId, 
@@ -104,7 +104,7 @@ async function secureLotteryDraw(
   );
 
   // 生成不可预测的随机数
-  const winningNumber = generateSecureRandomNumber(
+  const winningNumber = generateSecureRandomNumber(;
     secureSeed, 
     roundId, 
     totalShares
@@ -134,7 +134,7 @@ export async function testSecurityFixes() {
 
   // 测试2: 参与数据哈希
   console.log('📊 测试2: 参与数据哈希一致性');
-  const mockParticipations = [
+  const mockParticipations = [;
     {
       id: 'part-1',
       userId: 'user1',
@@ -148,7 +148,7 @@ export async function testSecurityFixes() {
       numbers: [10000003, 10000004],
       amount: 200,
       createdAt: new Date('2025-10-31T10:05:00Z')
-    }
+}
   ];
 
   const hash1 = calculateParticipationHash(mockParticipations);
@@ -175,7 +175,7 @@ export async function testSecurityFixes() {
       createdAt: new Date(Date.now() + i * 1000) // 模拟不同时间
     }));
     
-    const result = await secureLotteryDraw(
+    const result = await secureLotteryDraw(;
       `${roundId}-${i}`, // 不同的roundId确保不同的结果
       productId,
       mockData,
@@ -214,7 +214,7 @@ export async function testSecurityFixes() {
   const normalResult = await secureLotteryDraw(roundId, productId, mockParticipations, totalShares);
   
   // 被修改的参与数据
-  const tamperedParticipations = [
+  const tamperedParticipations = [;
     ...mockParticipations.slice(0, -1), // 移除最后一个参与者
     {
       ...mockParticipations[mockParticipations.length - 1],

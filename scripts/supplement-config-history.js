@@ -145,8 +145,8 @@ function deepMerge(target, source) {
   const result = { ...target };
   
   for (const key in source) {
-    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-      if (!result[key] || typeof result[key] !== 'object' || Array.isArray(result[key])) {
+    if ((source?.key ?? null) && typeof (source?.key ?? null) === 'object' && !Array.isArray((source?.key ?? null))) {
+      if (!(result?.key ?? null) || typeof (result?.key ?? null) !== 'object' || Array.isArray((result?.key ?? null))) {
         result[key] = {};
       }
       result[key] = deepMerge(result[key], source[key]);
@@ -167,6 +167,7 @@ function readLanguageFile(lang, namespace) {
     }
     const content = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(content);
+  }
   } catch (error) {
     console.error(`无法读取文件 ${filePath}: ${error.message}`);
     return {};
@@ -232,6 +233,7 @@ function generateConfigHistoryTranslations() {
       const success = writeLanguageFile(lang, 'admin', mergedTranslations);
       if (success) {
         console.log(`  ✅ 成功更新: ${newKeys.length} 个新键`);
+  }
         totalUpdated += newKeys.length;
       } else {
         console.log(`  ❌ 更新失败`);
@@ -244,7 +246,7 @@ function generateConfigHistoryTranslations() {
   });
 
   console.log('=== config_history翻译补充完成! ===');
-  console.log(`总共更新: ${totalUpdated} 个翻译键`);
+  console.log(`总共更新: $ 个翻译键`);
 }
 
 // 运行生成器

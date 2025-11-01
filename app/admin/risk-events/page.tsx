@@ -554,4 +554,4 @@ function WrappedRiskEventsPage() {
     </PagePermission>
   );
 }
-export default ProtectedRiskEventsPage;
+export default WrappedRiskEventsPage;

@@ -573,4 +573,12 @@ function CreateProductPage() {
     </div>
   );
 }
-export default ProtectedCreateProductPage;
+function WrappedCreateProductPage() {
+  return (
+    <div>
+      <CreateProductPage />
+    </div>
+  );
+}
+
+export default WrappedCreateProductPage;

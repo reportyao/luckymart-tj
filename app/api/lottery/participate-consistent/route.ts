@@ -9,6 +9,7 @@ import { cacheManager } from '@/lib/cache-manager';
 import { triggerImmediateDraw } from '@/lib/lottery';
 import { getLogger } from '@/lib/logger';
 import { API_BASE_URL } from '@/config/api-config';
+import { createTranslation } from '@/lib/createTranslation';
 
 const logger = getLogger();
 
@@ -35,7 +36,8 @@ export async function POST(request: NextRequest) {
     const { roundId, sharesCount, useType = 'paid' } = body;
 
     if (!roundId || !sharesCount || sharesCount < 1) {
-      return NextResponse.json({ error: '参数错误' }, { status: 400 });
+      const { t } = await createTranslation(request, 'api-errors');
+      return NextResponse.json({ error: t('errors.invalidParameters') }, { status: 400 });
     }
 
     // 使用缓存一致性管理器处理夺宝参与

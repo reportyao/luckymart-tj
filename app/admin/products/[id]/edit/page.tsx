@@ -403,4 +403,12 @@ function EditProductPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-export default ProtectedEditProductPage;
+function WrappedEditProductPage({ params }: { params: { id: string } }) {
+  return (
+    <div>
+      <EditProductPage params={params} />
+    </div>
+  );
+}
+
+export default WrappedEditProductPage;

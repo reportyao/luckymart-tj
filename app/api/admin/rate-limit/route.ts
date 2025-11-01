@@ -6,6 +6,7 @@ import { rateLimitMonitor, DEFAULT_ALERT_RULES } from '@/lib/rate-limit-monitor'
 import { getRateLimitStats, resetRateLimitStats, cleanupRateLimits } from '@/lib/rate-limit-middleware';
 import { getSystemConfiguration, getRateLimitSystemStatus, restartRateLimitSystem } from '@/lib/rate-limit-system';
 import { getLogger } from '@/lib/logger';
+import { createTranslation } from '@/lib/createTranslation';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.SETTINGS_READ);
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.SETTINGS_WRITE);
@@ -284,6 +285,7 @@ async function handleToggleConfig(data: any) {
       message: `配置已${isActive ? '启用' : '禁用'}`
     });
   } else {
+    // 使用国际化错误消息
     return NextResponse.json({ error: '操作失败' }, { status: 500 });
   }
 }

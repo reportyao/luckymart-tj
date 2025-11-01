@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { PagePermission } from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 
 interface UserAnalyticsData {
   behavior: {
@@ -578,4 +580,14 @@ function UserAnalytics() {
       </div>
     </div>
   );
-}export default ProtectedUserAnalyticsPage;
+}
+
+function ProtectedUserAnalyticsPage() {
+  return (
+    <PagePermission permissions={AdminPermissions.stats.read()}>
+      <UserAnalytics />
+    </PagePermission>
+  );
+}
+
+export default ProtectedUserAnalyticsPage;

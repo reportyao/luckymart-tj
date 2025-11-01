@@ -580,4 +580,12 @@ function ProductAnalyticsPage() {
       </div>
     </div>
   );
-}export default ProtectedProductAnalyticsPage;
+}function WrappedProductAnalyticsPage() {
+  return (
+    <div>
+      <ProductAnalyticsPage />
+    </div>
+  );
+}
+
+export default WrappedProductAnalyticsPage;

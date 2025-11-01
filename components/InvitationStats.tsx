@@ -15,8 +15,6 @@ export interface InvitationStatsProps {
   /** 错误回调函数 */
   onError?: (error: Error) => void;
 }
-
-import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/src/i18n/useLanguageCompat';
 import { Card } from '@/components/ui/card';

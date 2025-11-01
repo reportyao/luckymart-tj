@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { createTranslation } from '@/lib/createTranslation';
 
 const prisma = new PrismaClient();
 
@@ -32,8 +33,9 @@ export async function PATCH(
 
     } catch (error) {
       console.error('更新部门失败:', error);
+      const { t } = await createTranslation(request, 'api-errors');
       return NextResponse.json(
-        { success: false, error: '服务器错误' },
+        { success: false, error: t('errors.serverError') },
         { status: 500 }
       );
     }
@@ -72,8 +74,9 @@ export async function DELETE(
 
     } catch (error) {
       console.error('删除部门失败:', error);
+      const { t } = await createTranslation(request, 'api-errors');
       return NextResponse.json(
-        { success: false, error: '服务器错误' },
+        { success: false, error: t('errors.serverError') },
         { status: 500 }
       );
     }

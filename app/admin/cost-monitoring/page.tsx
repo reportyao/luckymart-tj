@@ -577,4 +577,4 @@ function WrappedCostMonitoringPage() {
     </PagePermission>
   );
 }
-export default ProtectedCostMonitoringPage;
+export default WrappedCostMonitoringPage;

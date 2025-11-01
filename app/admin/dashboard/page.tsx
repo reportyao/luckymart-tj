@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import PagePermission from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 
 function AdminDashboard() {
   const router = useRouter();
@@ -286,6 +288,14 @@ function AdminDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+function WrappedAdminDashboard() {
+  return (
+    <PagePermission permissions={AdminPermissions.dashboard.read()}>
+      <AdminDashboard />
+    </PagePermission>
   );
 }
 export default WrappedAdminDashboard;

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { TajikistanTimeUtils } from '@/lib/timezone-utils';
+import { createTranslation } from '@/lib/createTranslation';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +19,8 @@ export async function POST(request: NextRequest) {
     const { roundId, sharesCount, useType = 'paid' } = body;
 
     if (!roundId || !sharesCount || sharesCount < 1) {
-      return NextResponse.json({ error: '参数错误' }, { status: 400 });
+      const { t } = await createTranslation(request, 'api-errors');
+      return NextResponse.json({ error: t('errors.invalidParameters') }, { status: 400 });
     }
 
     // 使用数据库事务确保原子性

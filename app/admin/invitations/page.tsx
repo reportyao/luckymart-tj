@@ -375,7 +375,7 @@ function AdminInvitationsPage() {
   );
 }
 
-function WrappedAdminInvitationsPage() {
+function ProtectedAdminInvitationsPage() {
   return (
     <PagePermission permissions={AdminPermissions.users.read()}>
       <AdminInvitationsPage />

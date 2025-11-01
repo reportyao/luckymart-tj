@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiActivity, FiSend, FiMessageSquare, FiSettings, FiAlertCircle } from 'react-icons/fi';
+import { PagePermission } from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin-permission-manager';
 
 interface BotStatus {
   id: string;
@@ -332,4 +334,13 @@ function TelegramBotPage() {
     </div>
   );
 }
+
+function ProtectedTelegramBotPage() {
+  return (
+    <PagePermission permissions={AdminPermissions.settings.read()}>
+      <TelegramBotPage />
+    </PagePermission>
+  );
+}
+
 export default ProtectedTelegramBotPage;

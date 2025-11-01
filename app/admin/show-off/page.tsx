@@ -819,4 +819,4 @@ function AdminShowOffPage() {
     </div>
   );
 }
-export default ProtectedShowOffPage;
+export default AdminShowOffPage;

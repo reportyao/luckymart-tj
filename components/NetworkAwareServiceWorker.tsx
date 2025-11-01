@@ -515,10 +515,3 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
 };
 
 export default NetworkAwareServiceWorker;
-
-// 导出工具函数
-export {
-  registerNetworkAwareSW,
-  sendSWMessage,
-  triggerBackgroundSync
-};

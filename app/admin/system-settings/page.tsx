@@ -593,4 +593,4 @@ function WrappedSystemSettingsPage() {
     </PagePermission>
   );
 }
-export default ProtectedSystemSettingsPage;
+export default WrappedSystemSettingsPage;

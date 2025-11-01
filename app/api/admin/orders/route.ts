@@ -29,7 +29,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // 获取订单列表
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
+  return await withReadPermission(async (request: any, admin: any) => {
     const logger = getLogger();
     
     try {
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
 
 // 更新订单状态
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return await withWritePermission(async (request: any, admin: any) => {
     const logger = getLogger();
     const monitor = getMonitor();
     const operationSpan = monitor.startSpan('order_ship');

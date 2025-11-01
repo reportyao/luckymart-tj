@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     customPermissions: AdminPermissions.stats.read()
   });
 
-  return withPermission(async (request, admin) => {
+  return await withPermission(async (request, admin) => {
 
     // 获取用户总数
     const totalUsers = await prisma.users.count();

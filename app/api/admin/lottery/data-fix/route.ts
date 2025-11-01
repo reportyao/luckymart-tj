@@ -10,7 +10,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // 数据一致性修复工具 - 边界情况处理和数据一致性检查
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return await withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();

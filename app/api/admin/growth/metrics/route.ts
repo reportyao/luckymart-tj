@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     customPermissions: AdminPermissions.stats.read()
   });
 
-  return withPermission(async (request, admin) => {
+  return await withPermission(async (request, admin) => {
 
     const { searchParams } = new URL(request.url);
     const range = searchParams.get('range') || '7d';

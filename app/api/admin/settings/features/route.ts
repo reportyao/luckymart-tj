@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AdminPermissionManager } from '@/lib/admin-permission-manager';
-import { AdminPermissions } from '@/lib/admin-permission-manager';
+import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { prisma } from '@/lib/prisma';
 
-const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.FEATURES_READ);
-const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.FEATURES_WRITE);
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.features.read() });
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.features.write() });
 
 // 缓存功能开关以提高性能
 let featuresCache: { data: any; timestamp: number } | null = null;

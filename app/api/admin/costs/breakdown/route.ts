@@ -44,9 +44,9 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const logger = getLogger();
 
 // 创建权限中间件
-const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
-  AdminPermissions.stats.read
-]);
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.stats.read()
+});
 
 /**
  * GET /api/admin/costs/breakdown
@@ -61,7 +61,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - endDate: 结束日期
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request: any, admin: any) => {
+  return await withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const breakdownType = searchParams.get('breakdownType');
@@ -214,7 +214,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request: any, admin: any) => {
+  return await withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const {

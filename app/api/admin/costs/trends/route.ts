@@ -10,9 +10,9 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // 创建权限中间件
-const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
-  AdminPermissions.stats.read
-]);
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.stats.read()
+});
 
 /**
  * GET /api/admin/costs/trends
@@ -26,7 +26,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - endDate: 自定义结束日期
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request: any, admin: any) => {
+  return await withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const period = searchParams.get('period') || '30d';

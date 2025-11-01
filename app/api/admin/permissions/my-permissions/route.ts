@@ -4,7 +4,7 @@ import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 export async function GET(request: NextRequest) {
   const withPermission = AdminPermissionManager.createPermissionMiddleware();
 
-  return withPermission(async (request, admin) => {
+  return await withPermission(async (request, admin) => {
     try {
       // 获取管理员最新权限
       const permissions = await AdminPermissionManager.getAdminPermissions(admin.adminId);

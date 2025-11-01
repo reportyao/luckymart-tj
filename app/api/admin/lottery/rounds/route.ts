@@ -15,7 +15,7 @@ const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
 
 // GET - 获取开奖轮次列表
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
+  return await withReadPermission(async (request: any, admin: any) => {
     try {
 
     const { searchParams } = new URL(request.url);

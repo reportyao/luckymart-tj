@@ -10,9 +10,9 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // 创建权限中间件
-const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
-  AdminPermissions.stats.read
-]);
+const withStatsPermission = AdminPermissionManager.createPermissionMiddleware({
+  customPermissions: AdminPermissions.stats.read()
+});
 
 /**
  * GET /api/admin/costs/daily
@@ -26,7 +26,7 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware([
  * - limit: 每页记录数
  */
 export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request: any, admin: any) => {
+  return await withStatsPermission(async (request: any, admin: any) => {
   try {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get('date');
@@ -129,7 +129,7 @@ export async function GET(request: NextRequest) {
  * }
  */
 export async function POST(request: NextRequest) {
-  return withStatsPermission(async (request: any, admin: any) => {
+  return await withStatsPermission(async (request: any, admin: any) => {
   try {
     const body = await request.json();
     const targetDate = body.date || new Date().toISOString().split('T')[0];

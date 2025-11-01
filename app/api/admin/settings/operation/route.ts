@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AdminPermissionManager } from '@/lib/admin-permission-manager';
-import { AdminPermissions } from '@/lib/admin-permission-manager';
+import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { prisma } from '@/lib/prisma';
 
-const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.OPERATIONS_READ);
-const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.OPERATIONS_WRITE);
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.operations.read() });
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.operations.write() });
 
 // 缓存运营配置以提高性能
 let operationCache: { data: any; timestamp: number } | null = null;

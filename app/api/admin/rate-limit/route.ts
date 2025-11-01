@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AdminPermissionManager } from '@/lib/admin-permission-manager';
-import { AdminPermissions } from '@/lib/admin-permission-manager';
+import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { rateLimitConfigManager, initializeRateLimitConfigs } from '@/lib/rate-limit-config';
 import { rateLimitMonitor, DEFAULT_ALERT_RULES } from '@/lib/rate-limit-monitor';
 import { getRateLimitStats, resetRateLimitStats, cleanupRateLimits } from '@/lib/rate-limit-middleware';
@@ -8,8 +7,8 @@ import { getSystemConfiguration, getRateLimitSystemStatus, restartRateLimitSyste
 import { getLogger } from '@/lib/logger';
 import { createTranslation } from '@/lib/createTranslation';
 
-const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.SETTINGS_READ);
-const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.SETTINGS_WRITE);
+const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.read() });
+const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.write() });
 
 // 获取系统概览
 export async function GET(request: NextRequest) {

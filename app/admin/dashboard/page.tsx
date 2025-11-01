@@ -293,7 +293,7 @@ function AdminDashboard() {
 
 function WrappedAdminDashboard() {
   return (
-    <PagePermission permissions={AdminPermissions.system.manage()}>
+    <PagePermission permissions={AdminPermissions.stats.read()}>
       <AdminDashboard />
     </PagePermission>
   );

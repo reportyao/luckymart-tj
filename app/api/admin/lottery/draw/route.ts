@@ -16,7 +16,7 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
  * 管理员可以手动触发某个已售罄的抽奖轮次的开奖
  */
 export async function POST(request: NextRequest) {
-  return withWritePermission(async (request: any, admin: any) => {
+  return await withWritePermission(async (request: any, admin: any) => {
     try {
 
     const body = await request.json();
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
  * GET - 获取待开奖列表
  */
 export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
+  return await withReadPermission(async (request: any, admin: any) => {
     try {
 
     // 查询已售罄但未开奖的轮次（soldShares >= totalShares）

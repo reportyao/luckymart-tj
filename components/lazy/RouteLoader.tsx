@@ -3,6 +3,7 @@
 import React, { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useResourcePreloader } from '@/utils/resource-preloader';
 
 // 预加载配置
@@ -353,6 +354,3 @@ export const DefaultLoadingComponent: React.FC<{ type?: string }> = ({ type = 'd
 };
 
 export default RouteLoader;
-
-// 导入Link组件
-import Link from 'next/link';

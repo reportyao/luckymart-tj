@@ -51,7 +51,9 @@ const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
   onError
 }) => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [showOfflineBanner, setShowOfflineBanner] = useState(false);
+  const [showOfflineBannerInternal, setShowOfflineBannerInternal] = useState(false);
+
+  // 修复变量名冲突：showOfflineBannerInternal
   const [isSyncing, setIsSyncing] = useState(false);
   const [offlineQueue, setOfflineQueue] = useState<OfflineQueueItem[]>([]);
   const [syncProgress, setSyncProgress] = useState(0);

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { useAuth } from '../../../contexts/AuthContext';
 import LotteryHistory from '../../../components/LotteryHistory';
-import { useNetworkStatus } from '../../../hooks/useNetwork-status';
+import { useNetworkStatus } from '../../../hooks/use-network-status';
 
 export interface LotteryRecord {
   id: string;

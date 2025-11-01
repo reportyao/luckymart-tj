@@ -103,6 +103,67 @@ export interface MarketingBadge {
   enabled: boolean; // 是否启用
 }
 
+// 营销横幅类型
+export interface MarketingBanner {
+  id: string;
+  type: 'promotion' | 'discount' | 'new_user' | 'activity' | 'announcement'; // 横幅类型
+  titleZh: string;
+  titleEn: string;
+  titleRu: string;
+  subtitleZh?: string;
+  subtitleEn?: string;
+  subtitleRu?: string;
+  descriptionZh?: string;
+  descriptionEn?: string;
+  descriptionRu?: string;
+  imageUrl?: string;
+  backgroundColor?: string;
+  textColor?: string;
+  textAlign?: 'left' | 'center' | 'right';
+  width?: 'full' | 'container' | 'auto';
+  height?: 'small' | 'medium' | 'large';
+  borderRadius?: 'none' | 'small' | 'medium' | 'large';
+  animation?: 'fade' | 'slide' | 'bounce' | 'pulse' | 'none';
+  autoPlay?: boolean;
+  autoPlayInterval?: number; // 轮播间隔（毫秒）
+  showIndicators?: boolean;
+  showArrows?: boolean;
+  clickable?: boolean;
+  linkUrl?: string;
+  linkTarget?: '_self' | '_blank';
+  priority: number; // 显示优先级，数字越大优先级越高
+  enabled: boolean;
+  startTime?: Date;
+  endTime?: Date;
+  viewCount: number;
+  clickCount: number;
+  conversionRate?: number;
+  tags?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// 营销横幅集合类型
+export interface MarketingBannerGroup {
+  id: string;
+  name: string;
+  description?: string;
+  banners: MarketingBanner[];
+  autoPlay?: boolean;
+  autoPlayInterval?: number;
+  loop?: boolean;
+  showIndicators?: boolean;
+  showArrows?: boolean;
+  responsive?: {
+    mobile: boolean;
+    tablet: boolean;
+    desktop: boolean;
+  };
+  enabled: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // 商品类型
 export interface Product {
   id: string;
@@ -213,6 +274,9 @@ export interface ResaleListing {
   };
 }
 
+// 提现方式类型
+export type WithdrawMethod = 'bank_card' | 'alipay' | 'wechat' | 'alif_mobi' | 'dc_bank';
+
 // 提现申请类型
 export interface WithdrawRequest {
   id: string;
@@ -220,21 +284,62 @@ export interface WithdrawRequest {
   amount: number; // Decimal @db.Decimal(10, 2)
   fee: number; // Decimal @db.Decimal(10, 2)
   actualAmount: number; // Decimal @db.Decimal(10, 2)
-  withdrawMethod: 'alif_mobi' | 'dc_bank'; // @db.VarChar(20)
+  withdrawMethod: WithdrawMethod; // 支持更多提现方式
   accountInfo: {
-    accountNumber: string;
-    accountName: string;
-    [key: string]: any; // Json data
+    accountNumber: string; // 账户号码
+    accountName: string; // 账户名称
+    bankName?: string; // 银行名称（银行卡专用）
+    phoneNumber?: string; // 手机号（支付宝、微信专用）
+    [key: string]: any; // 其他扩展字段
   };
   status: 'pending' | 'approved' | 'rejected' | 'completed'; // @db.VarChar(20)
   rejectReason?: string;
   adminNote?: string;
   processedAt?: Date;
   createdAt: Date;
+  updatedAt?: Date;
+  
   // 管理后台兼容性别名
-  paymentMethod?: 'alif_mobi' | 'dc_bank';
+  paymentMethod?: WithdrawMethod;
   paymentAccount?: string;
 }
+
+// 提现表单数据类型
+export interface WithdrawFormData {
+  amount: string; // 提现金额（字符串，便于表单处理）
+  method: WithdrawMethod; // 提现方式
+  accountInfo: {
+    accountNumber: string; // 账户号码
+    accountName: string; // 账户名称
+    bankName?: string; // 银行名称（仅银行卡需要）
+    phoneNumber?: string; // 手机号（支付宝、微信需要）
+  };
+  password: string; // 支付密码
+}
+
+// 提现配置类型
+export interface WithdrawConfig {
+  minAmount: number; // 最低提现金额
+  maxAmount: number; // 最高提现金额
+  dailyLimit: number; // 每日限额
+  monthlyLimit: number; // 每月限额
+  feeRate: number; // 手续费率
+  minFee: number; // 最低手续费
+  supportedMethods: WithdrawMethod[]; // 支持的提现方式
+  minPasswordLength: number; // 密码最小长度
+}
+
+// 提现限制常量
+export const WITHDRAW_LIMITS: WithdrawConfig = {
+  minAmount: 50,
+  maxAmount: 10000,
+  dailyLimit: 5000,
+  monthlyLimit: 50000,
+  feeRate: 0.05,
+  minFee: 2,
+  supportedMethods: ['alif_mobi', 'dc_bank', 'bank_card', 'alipay', 'wechat'],
+  minPasswordLength: 6
+};
 
 // 交易记录类型
 export interface Transaction {
@@ -299,7 +404,20 @@ export function isWithdrawRequest(obj: any): obj is WithdrawRequest {
     typeof obj.id === 'string' &&
     typeof obj.userId === 'string' &&
     typeof obj.amount === 'number' &&
-    typeof obj.withdrawMethod === 'string';
+    typeof obj.withdrawMethod === 'string' &&
+    obj.accountInfo &&
+    typeof obj.accountInfo.accountNumber === 'string' &&
+    typeof obj.accountInfo.accountName === 'string';
+}
+
+export function isWithdrawFormData(obj: any): obj is WithdrawFormData {
+  return obj && 
+    typeof obj.amount === 'string' &&
+    typeof obj.method === 'string' &&
+    obj.accountInfo &&
+    typeof obj.accountInfo.accountNumber === 'string' &&
+    typeof obj.accountInfo.accountName === 'string' &&
+    typeof obj.password === 'string';
 }
 
 export function isTransaction(obj: any): obj is Transaction {
@@ -389,6 +507,15 @@ export function convertWithdrawRequestFromPrisma(withdrawRequest: any): Withdraw
     amount: toNumber(withdrawRequest.amount),
     fee: toNumber(withdrawRequest.fee),
     actualAmount: toNumber(withdrawRequest.actualAmount),
+    accountInfo: {
+      accountNumber: accountInfo.accountNumber || accountInfo.account_number || '',
+      accountName: accountInfo.accountName || accountInfo.account_name || '',
+      bankName: accountInfo.bankName || accountInfo.bank_name,
+      phoneNumber: accountInfo.phoneNumber || accountInfo.phone_number
+    },
+    processedAt: withdrawRequest.processed_at ? new Date(withdrawRequest.processed_at) : undefined,
+    createdAt: new Date(withdrawRequest.created_at),
+    updatedAt: withdrawRequest.updated_at ? new Date(withdrawRequest.updated_at) : undefined,
     // 管理后台兼容性别名
     paymentMethod: withdrawRequest.withdrawMethod,
     paymentAccount: accountInfo.accountNumber || accountInfo.account_name || ''
@@ -648,3 +775,6 @@ export function convertReferralStatsFromPrisma(stats: any): ReferralStats {
     lastRewardDate: stats.last_reward_date ? new Date(stats.last_reward_date) : undefined
   };
 }
+
+// 重新导出订单历史相关类型
+export * from './order-history';

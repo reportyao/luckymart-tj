@@ -1,6 +1,6 @@
 // use-network-status.ts - 网络状态监控Hook
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { NetworkQuality } from './network-retry';
+import { NetworkQuality } from '../utils/network-retry';
 
 // 网络状态接口
 export interface NetworkStatus {
@@ -242,6 +242,8 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
       updateNetworkStatus();
     };
 
+    let handleConnectionChange: (() => void) | null = null;
+
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
@@ -249,7 +251,7 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
     if (isConnectionAPISupported()) {
       const connection = (navigator as any).connection;
       if (connection) {
-        const handleConnectionChange = () => {
+        handleConnectionChange = () => {
           console.log('连接信息变化:', connection);
           updateNetworkStatus();
         };
@@ -262,7 +264,7 @@ export function useNetworkStatus(config: NetworkMonitorConfig = {}) {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
 
-      if (isConnectionAPISupported()) {
+      if (isConnectionAPISupported() && handleConnectionChange) {
         const connection = (navigator as any).connection;
         if (connection) {
           connection.removeEventListener('change', handleConnectionChange);

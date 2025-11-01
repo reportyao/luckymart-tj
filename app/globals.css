@@ -19,3 +19,79 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Marketing Banner 动画 */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-in-out;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.5s ease-in-out;
+}
+
+/* 响应式文本优化 */
+.marketing-banner-text {
+  @apply text-sm md:text-base lg:text-lg;
+}
+
+.marketing-banner-title {
+  @apply text-base md:text-lg lg:text-xl font-bold leading-tight;
+}
+
+.marketing-banner-subtitle {
+  @apply text-sm md:text-base opacity-90;
+}
+
+.marketing-banner-description {
+  @apply text-xs md:text-sm opacity-75;
+}
+
+/* 横幅样式增强 */
+.marketing-banner-container {
+  @apply relative overflow-hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.marketing-banner-container:hover {
+  @apply transform scale-105;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* 移动端优化 */
+@media (max-width: 640px) {
+  .marketing-banner-text {
+    @apply text-xs;
+  }
+  
+  .marketing-banner-title {
+    @apply text-sm;
+  }
+  
+  .marketing-banner-subtitle {
+    @apply text-xs;
+  }
+  
+  .marketing-banner-description {
+    @apply text-xs;
+  }
+}

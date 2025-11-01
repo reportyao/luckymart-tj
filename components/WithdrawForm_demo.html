@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WithdrawForm 组件演示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .component-preview {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .feature-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .status-completed { background: #dcfce7; color: #166534; }
+        .status-planned { background: #fef3c7; color: #92400e; }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="demo-container">
+        <!-- 页面标题 -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">WithdrawForm 组件</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                功能完整的提现表单组件，支持多种提现方式、实时手续费计算、完整的表单验证等功能。
+            </p>
+        </div>
+
+        <!-- 功能特性 -->
+        <div class="component-preview">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">核心功能特性</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="text-2xl mb-2">💰</div>
+                    <h3 class="font-semibold mb-2">多种提现方式</h3>
+                    <p class="text-sm text-gray-600">支持银行卡、支付宝、微信、Alif Mobi、DC Bank</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-2xl mb-2">🧮</div>
+                    <h3 class="font-semibold mb-2">实时费用计算</h3>
+                    <p class="text-sm text-gray-600">自动计算手续费和实际到账金额</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-2xl mb-2">✅</div>
+                    <h3 class="font-semibold mb-2">完整验证</h3>
+                    <p class="text-sm text-gray-600">余额检查、限额验证、密码验证等</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-2xl mb-2">📱</div>
+                    <h3 class="font-semibold mb-2">响应式设计</h3>
+                    <p class="text-sm text-gray-600">完美适配移动端和桌面端</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-2xl mb-2">🌍</div>
+                    <h3 class="font-semibold mb-2">国际化支持</h3>
+                    <p class="text-sm text-gray-600">集成 react-i18next 多语言支持</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-2xl mb-2">🔧</div>
+                    <h3 class="font-semibold mb-2">高度可配置</h3>
+                    <p class="text-sm text-gray-600">支持自定义手续费率、最低金额等参数</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 支持的提现方式 -->
+        <div class="component-preview">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">支持的提现方式</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <div class="text-2xl mb-2">💜</div>
+                    <h3 class="font-semibold text-purple-900">Alif Mobi</h3>
+                    <p class="text-sm text-purple-700 mt-1">塔吉克斯坦移动支付</p>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="text-2xl mb-2">💙</div>
+                    <h3 class="font-semibold text-blue-900">DC Bank</h3>
+                    <p class="text-sm text-blue-700 mt-1">DC银行储蓄卡</p>
+                </div>
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <div class="text-2xl mb-2">🏦</div>
+                    <h3 class="font-semibold text-gray-900">银行卡</h3>
+                    <p class="text-sm text-gray-700 mt-1">支持各大银行储蓄卡</p>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="text-2xl mb-2">💙</div>
+                    <h3 class="font-semibold text-blue-900">支付宝</h3>
+                    <p class="text-sm text-blue-700 mt-1">快速到账，方便快捷</p>
+                </div>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div class="text-2xl mb-2">💚</div>
+                    <h3 class="font-semibold text-green-900">微信</h3>
+                    <p class="text-sm text-green-700 mt-1">微信零钱快速提现</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 使用示例 -->
+        <div class="component-preview">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">基本使用示例</h2>
+            <div class="bg-white rounded-lg border p-4">
+                <div class="code-block">
+<pre><code>import WithdrawForm from '@/components/WithdrawForm';
+
+function WithdrawPage() {
+  const handleWithdraw = async (data) => {
+    // 处理提现逻辑
+    const response = await fetch('/api/withdraw/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: parseFloat(data.amount),
+        withdrawMethod: data.method,
+        accountInfo: data.accountInfo,
+        password: data.password
+      })
+    });
+  };
+
+  return (
+    &lt;WithdrawForm
+      balance={1250.75}
+      user={user}
+      onSubmit={handleWithdraw}
+      loading={loading}
+      minWithdrawAmount={50}
+      feeRate={0.05}
+      minFee={2}
+    /&gt;
+  );
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- API接口 -->
+        <div class="component-preview">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">API 集成</h2>
+            <div class="space-y-4">
+                <div>
+                    <h3 class="font-semibold mb-2">提现申请接口</h3>
+                    <div class="code-block">
+<pre><code>POST /api/withdraw/create
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+  "amount": 100,
+  "withdrawMethod": "alif_mobi",
+  "accountInfo": {
+    "accountNumber": "+992900000000",
+    "accountName": "张三",
+    "bankName": "Alif Bank",
+    "phoneNumber": "+992900000000"
+  },
+  "password": "encrypted_password"
+}</code></pre>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">提现记录接口</h3>
+                    <div class="code-block">
+<pre><code>GET /api/withdraw/list
+Authorization: Bearer {token}
+
+Response:
+{
+  "success": true,
+  "data": {
+    "withdrawals": [
+      {
+        "id": "withdraw_123",
+        "amount": 100,
+        "fee": 5,
+        "actualAmount": 95,
+        "withdrawMethod": "alif_mobi",
+        "status": "pending",
+        "createdAt": "2023-01-01T00:00:00Z"
+      }
+    ]
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 手续费计算 -->
+        <div class="component-preview">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">手续费计算</h2>
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-semibold mb-4">计算规则</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span>手续费计算公式：</span>
+                        <code class="bg-gray-200 px-2 py-1 rounded">max(提现金额 × 手续费率, 最低手续费)</code>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>实际到账：</span>
+                        <code class="bg-gray-200 px-2 py-1 rounded">提现金额 - 手续费</code>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <h4 class="font-semibold mb-3">示例计算</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white rounded p-4 border">
+                            <h5 class="font-medium text-sm text-gray-900 mb-2">小额提现</h5>
+                            <div class="text-sm space-y-1">
+                                <div>提现金额: 100 TJS</div>
+                                <div>手续费率: 5%</div>
+                                <div>计算手续费: 5 TJS</div>
+                                <div>最低手续费: 2 TJS</div>
+                                <div class="font-semibold text-green-600">实际手续费: 5 TJS</div>
+                                <div class="font-semibold text-blue-600">实际到账: 95 TJS</div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded p-4 border">
+                            <h5 class="font-medium text-sm text-gray-900 mb-2">大额提现</h5>
+                            <div class="text-sm space-y-1">
+                                <div>提现金额: 1000 TJS</div>
+                                <div>手续费率: 5%</div>
+                                <div>计算手续费: 50 TJS</div>
+                                <div>最低手续费: 2 TJS</div>
+                                <div class="font-semibold text-green-600">实际手续费: 50 TJS</div>
+                                <div class="font-semibold text-blue-600">实际到账: 950 TJS</div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded p-4 border">
+                            <h5 class="font-medium text-sm text-gray-900 mb-2">超小额提现</h5>
+                            <div class="text-sm space-y-1">
+                                <div>提现金额: 20 TJS</div>
+                                <div>手续费率: 5%</div>
+                                <div>计算手续费: 1 TJS</div>
+                                <div>最低手续费: 2 TJS</div>
+                                <div class="font-semibold text-green-600">实际手续费: 2 TJS</div>
+                                <div class="font-semibold text-blue-600">实际到账: 18 TJS</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提现限制 -->
+        <div class="component-preview">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">提现限制</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">50</div>
+                    <div class="text-sm text-gray-600">最低提现金额 (TJS)</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">10,000</div>
+                    <div class="text-sm text-gray-600">单次最高金额 (TJS)</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">5,000</div>
+                    <div class="text-sm text-gray-600">每日限额 (TJS)</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600">50,000</div>
+                    <div class="text-sm text-gray-600">每月限额 (TJS)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文件结构 -->
+        <div class="component-preview">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">项目文件结构</h2>
+            <div class="code-block">
+<pre><code>components/
+├── WithdrawForm.tsx                 # 主要组件文件 (504行)
+├── WithdrawForm.examples.tsx        # 使用示例 (204行)
+├── WithdrawForm_README.md           # 完整文档 (324行)
+├── WithdrawPage.example.tsx         # 完整页面示例 (318行)
+├── WithdrawForm.test.tsx            # 测试用例 (270行)
+├── WithdrawForm.index.ts            # 统一导出 (10行)
+└── WithdrawForm_COMPLETION_REPORT.md # 完成报告 (260行)
+
+types/
+└── index.ts                         # 扩展的类型定义
+
+src/locales/
+└── zh-CN/wallet.json               # 更新的国际化文案</code></pre>
+            </div>
+        </div>
+
+        <!-- 开发状态 -->
+        <div class="component-preview">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">开发状态</h2>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span>核心组件开发</span>
+                    <span class="status-badge status-completed">✅ 完成</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>TypeScript 类型定义</span>
+                    <span class="status-badge status-completed">✅ 完成</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>组件文档编写</span>
+                    <span class="status-badge status-completed">✅ 完成</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>使用示例创建</span>
+                    <span class="status-badge status-completed">✅ 完成</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>测试用例编写</span>
+                    <span class="status-badge status-completed">✅ 完成</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>国际化支持</span>
+                    <span class="status-badge status-completed">✅ 完成</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>API 集成示例</span>
+                    <span class="status-badge status-completed">✅ 完成</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 总结 -->
+        <div class="component-preview">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">项目总结</h2>
+            <div class="prose max-w-none">
+                <p class="text-gray-600 leading-relaxed mb-4">
+                    成功创建了功能完整的 <code class="bg-gray-100 px-2 py-1 rounded">WithdrawForm</code> 组件，
+                    相比现有的提现页面实现，新组件具有以下显著优势：
+                </p>
+                <ul class="space-y-2 text-gray-600">
+                    <li>✅ <strong>高度可复用</strong> - 独立组件，可在任何页面使用</li>
+                    <li>✅ <strong>功能更完整</strong> - 包含更多提现方式和完整的验证逻辑</li>
+                    <li>✅ <strong>用户体验更好</strong> - 实时预览、密码隐藏、多方式支持等</li>
+                    <li>✅ <strong>代码质量更高</strong> - 类型安全、文档完整、测试覆盖</li>
+                    <li>✅ <strong>维护性更强</strong> - 组件化设计，易于维护和扩展</li>
+                </ul>
+                <p class="text-gray-600 leading-relaxed mt-4">
+                    该组件可以直接替换现有的提现页面中的表单部分，或者在新页面中直接使用，
+                    大大提高了开发效率和代码质量。
+                </p>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="text-center py-8 text-gray-500">
+            <p>WithdrawForm 组件开发完成 | 总计约 1900+ 行代码</p>
+        </div>
+    </div>
+</body>
+</html>

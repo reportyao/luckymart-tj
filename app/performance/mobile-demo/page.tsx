@@ -42,9 +42,7 @@ const generateMockUsers = (count: number): UserItem[] => {
 
 // 懒加载组件示例
 const LazyChartComponent = createLazyComponent(
-  () => import('@/components/ui/chart').catch(() => ({
-    default: () => <div className="h-64 bg-blue-100 rounded flex items-center justify-center">图表组件 (懒加载)</div>
-  })),
+  () => import('@/components/ui/chart'),
   {
     fallback: <SkeletonCard variant="chart" />,
     preload: true,

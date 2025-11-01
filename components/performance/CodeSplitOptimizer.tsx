@@ -75,7 +75,7 @@ interface LazyComponentOptions {
 }
 
 // 高阶组件：创建懒加载组件
-export function createLazyComponent<T extends ComponentType<any>>(
+function createLazyComponent<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   options: LazyComponentOptions = {}
 ) {
@@ -157,7 +157,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
 }
 
 // 路由预加载Hook
-export const useRoutePreloader = () => {
+const useRoutePreloader = () => {
   const preloadRoutes = React.useCallback(async (routes: string[]) => {
     const routeModules = routes.map(route => `./pages${route}`);
     await preloadManager.preloadBatch(routeModules);
@@ -176,7 +176,7 @@ export const useRoutePreloader = () => {
 };
 
 // 智能预加载Hook
-export const useSmartPreloader = () => {
+const useSmartPreloader = () => {
   const [isOnline, setIsOnline] = React.useState(navigator.onLine);
   const [connectionType, setConnectionType] = React.useState<string>('unknown');
 
@@ -233,7 +233,7 @@ export const useSmartPreloader = () => {
 };
 
 // 动态导入组件
-export const DynamicImport: React.FC<{
+const DynamicImport: React.FC<{
   importFn: () => Promise<any>;
   fallback?: ReactNode;
   onLoad?: () => void;
@@ -307,7 +307,7 @@ export interface PreloadStrategy {
 }
 
 // 预加载管理器Hook
-export const usePreloadManager = () => {
+const usePreloadManager = () => {
   const { isOnline, connectionType, shouldPreload } = useSmartPreloader();
   
   const registerPreload = React.useCallback((
@@ -391,7 +391,7 @@ const checkStrategyConditions = (strategy: PreloadStrategy): boolean => {
 };
 
 // 懒加载路由组件
-export const LazyRoute: React.FC<{
+const LazyRoute: React.FC<{
   component: string;
   fallback?: ReactNode;
   strategy?: PreloadStrategy;
@@ -408,7 +408,7 @@ export const LazyRoute: React.FC<{
 };
 
 // 代码分割优化配置
-export const CodeSplitConfig = {
+const CodeSplitConfig = {
   // 关键路径预加载
   criticalPaths: [
     '/',
@@ -438,24 +438,7 @@ export {
   useRoutePreloader,
   useSmartPreloader,
   DynamicImport,
-  LazyRoute
-} from './CodeSplitOptimizerTools';
-
-// 重命名导出，避免与主组件冲突
-export const CodeSplitOptimizerTools = {
-  createLazyComponent,
-  useRoutePreloader,
-  useSmartPreloader,
-  DynamicImport,
-  LazyRoute
-};
-
-export { 
-  createLazyComponent,
-  useRoutePreloader,
-  useSmartPreloader,
-  DynamicImport,
   LazyRoute,
   PreloadStrategy,
   usePreloadManager
-};
+} from './CodeSplitOptimizerTools.tsx';

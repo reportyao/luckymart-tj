@@ -9,9 +9,6 @@ export default function PagePermissionWrapper(props: PagePermissionProps) {
   return <PagePermission {...props} />;
 }
 
-// 保持命名导出
-export { PagePermission };
-
 interface PagePermissionProps {
   permissions: string[];
   children: React.ReactNode;

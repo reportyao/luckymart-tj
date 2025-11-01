@@ -66,9 +66,6 @@ function RootLayout({
                       {/* 弱网环境优化系统 - Service Worker注册 */}
                       <NetworkAwareServiceWorker 
                         enableDevControls={process.env.NODE_ENV === 'development'}
-                        enableStatusDisplay={true}
-                        autoPreload={true}
-                        enableCacheManager={true}
                       />
                       
                       {/* 主要内容 */}

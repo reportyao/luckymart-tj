@@ -627,4 +627,4 @@ function WrappedRiskControlPage() {
       <RiskControlPage />
     </PagePermission>
   );
-}
+}export default WrappedRiskControlPage;

@@ -573,3 +573,4 @@ function CreateProductPage() {
     </div>
   );
 }
+export default ProtectedCreateProductPage;

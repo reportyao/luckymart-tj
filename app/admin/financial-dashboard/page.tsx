@@ -487,3 +487,4 @@ function WrappedFinancialDashboard() {
     </PagePermission>
   );
 }
+export default ProtectedFinancialDashboard;

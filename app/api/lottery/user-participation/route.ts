@@ -62,7 +62,7 @@ const handleUserParticipation = async (request: NextRequest) => {
     logger.error('获取用户参与信息失败', error, {
       requestId,
       userId: decoded?.userId,
-      roundId: searchParams?.get('roundId'),
+      roundId: roundId,
       error: error.message,
       executionTime: Date.now() - startTime
     });
@@ -257,7 +257,7 @@ async function getAllParticipations(userId: string) {
   });
 
   // 4. 计算每个期次的中奖概率
-  roundStats.forEach(((stats, roundId) : any) => {
+  roundStats.forEach((stats, roundId) => {
     stats.winProbability = stats.totalShares > 0 
       ? (stats.userShares / stats.totalShares) * 100 
       : 0;

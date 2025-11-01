@@ -275,3 +275,4 @@ function WrappedRiskDashboard() {
     </PagePermission>
   );
 }
+export default WrappedRiskDashboard;

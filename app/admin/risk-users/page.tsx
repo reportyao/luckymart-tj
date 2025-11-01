@@ -663,3 +663,4 @@ function WrappedRiskUsersPage() {
     </PagePermission>
   );
 }
+export default ProtectedRiskUsersPage;

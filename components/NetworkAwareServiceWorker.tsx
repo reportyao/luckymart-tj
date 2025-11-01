@@ -12,6 +12,7 @@ interface NetworkAwareServiceWorkerProps {
   onNeedRefresh?: () => void;
   onNetworkChange?: (isOnline: boolean, quality: string) => void;
   className?: string;
+  enableDevControls?: boolean;
 }
 
 // SW状态
@@ -106,7 +107,8 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
   onOfflineReady,
   onNeedRefresh,
   onNetworkChange,
-  className = ''
+  className = '',
+  enableDevControls = false
 }) => {
   const { t } = useTranslation();
   const { 
@@ -384,7 +386,7 @@ const NetworkAwareServiceWorker: React.FC<NetworkAwareServiceWorkerProps> = ({
   return (
     <div className={`network-aware-sw ${className}`}>
       {/* 开发调试信息 */}
-      {process.env.NODE_ENV === 'development' && (
+      {enableDevControls && (
         <div className="fixed bottom-4 left-4 bg-gray-900 text-white luckymart-padding-md luckymart-rounded-lg text-xs max-w-sm z-50">
           <div className="luckymart-spacing-sm">
             <div className="font-semibold text-yellow-400">🔧 弱网优化系统</div>

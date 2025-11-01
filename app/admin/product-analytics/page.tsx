@@ -580,4 +580,4 @@ function ProductAnalyticsPage() {
       </div>
     </div>
   );
-}
+}export default ProtectedProductAnalyticsPage;

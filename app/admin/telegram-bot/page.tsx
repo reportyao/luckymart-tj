@@ -332,3 +332,4 @@ function TelegramBotPage() {
     </div>
   );
 }
+export default ProtectedTelegramBotPage;

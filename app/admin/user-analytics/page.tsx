@@ -578,4 +578,4 @@ function UserAnalytics() {
       </div>
     </div>
   );
-}
+}export default ProtectedUserAnalyticsPage;

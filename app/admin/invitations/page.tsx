@@ -382,3 +382,4 @@ function WrappedAdminInvitationsPage() {
     </PagePermission>
   );
 }
+export default ProtectedAdminInvitationsPage;

@@ -288,3 +288,4 @@ function AdminDashboard() {
     </div>
   );
 }
+export default WrappedAdminDashboard;

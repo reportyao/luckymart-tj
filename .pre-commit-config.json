@@ -1,0 +1,186 @@
+{
+  "version": "2.0.0",
+  "description": "LuckyMart-TJ 预提交钩子配置文件",
+  "checks": {
+    "typescript": {
+      "enabled": true,
+      "strict": true,
+      "autoFix": false,
+      "options": {
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true
+      }
+    },
+    "eslint": {
+      "enabled": true,
+      "autoFix": false,
+      "rules": {
+        "maxComplexity": 10,
+        "maxLineLength": 120,
+        "maxFunctionLength": 50,
+        "maxFileLength": 1000
+      }
+    },
+    "security": {
+      "enabled": true,
+      "checkHardcodedSecrets": true,
+      "checkSQLInjection": true,
+      "checkXSS": true,
+      "checkEval": true,
+      "checkObjectInjection": true,
+      "dangerousPatterns": [
+        "eval\\s*\\(",
+        "Function\\s*\\(",
+        "document\\.write\\s*\\(",
+        "\\.innerHTML\\s*=",
+        "innerHTML\\s*=",
+        "document\\.cookie",
+        "localStorage\\.setItem\\s*\\(",
+        "sessionStorage\\.setItem\\s*\\("
+      ]
+    },
+    "format": {
+      "enabled": true,
+      "checkArrowFunctions": true,
+      "checkDuplicateExports": true,
+      "checkConsoleLogs": "warning",
+      "checkDebugger": "error",
+      "checkTODOs": "warning",
+      "arrowFunctionRules": {
+        "preferConciseArrow": true,
+        "requireParensForSingleParam": false,
+        "checkReturnType": true
+      }
+    },
+    "git": {
+      "enabled": true,
+      "checkBranchNaming": true,
+      "checkRemoteSync": true,
+      "branchPatterns": {
+        "allow": [
+          "^feature/",
+          "^fix/",
+          "^hotfix/",
+          "^release/",
+          "^bugfix/",
+          "^refactor/",
+          "^docs/",
+          "^test/"
+        ],
+        "required": true
+      }
+    },
+    "dependencies": {
+      "enabled": true,
+      "checkUnused": true,
+      "checkSecurity": true,
+      "checkOutdated": false,
+      "auditLevel": "high"
+    }
+  },
+  "skipPatterns": [
+    "security:temp",
+    "dependencies:security"
+  ],
+  "filePatterns": {
+    "include": [
+      "**/*.{ts,tsx,js,jsx}",
+      "**/*.json",
+      "**/*.md",
+      "**/*.yml",
+      "**/*.yaml"
+    ],
+    "exclude": [
+      "node_modules/**",
+      ".next/**",
+      "dist/**",
+      "coverage/**",
+      "build/**",
+      "out/**",
+      "*.min.js",
+      "*.min.css",
+      "**/*.d.ts",
+      "**/*.config.js",
+      "**/*.test.js",
+      "**/*.spec.js"
+    ]
+  },
+  "autoFix": {
+    "enabled": false,
+    "commands": [
+      "npm run lint:fix",
+      "npm run format:fix"
+    ],
+    "safety": {
+      "requireConfirmation": true,
+      "backupBeforeFix": true,
+      "verifyAfterFix": true
+    }
+  },
+  "notifications": {
+    "enabled": true,
+    "onSuccess": true,
+    "onFailure": true,
+    "methods": ["console", "file"],
+    "reportFile": "pre-commit-reports/"
+  },
+  "performance": {
+    "timeout": 300000,
+    "parallel": true,
+    "maxFileSize": 1048576,
+    "maxFilesPerCheck": 1000
+  },
+  "integrations": {
+    "jest": {
+      "enabled": false,
+      "runTests": false,
+      "coverageThreshold": 80
+    },
+    "prettier": {
+      "enabled": true,
+      "configFile": ".prettierrc",
+      "checkFormat": true
+    },
+    "husky": {
+      "enabled": false,
+      "hooks": {
+        "pre-commit": "./scripts/pre-commit-check.sh"
+      }
+    }
+  },
+  "customRules": {
+    "noConsoleInProduction": {
+      "enabled": true,
+      "severity": "warning",
+      "files": ["src/**/*.{ts,tsx}"]
+    },
+    "consistentNaming": {
+      "enabled": true,
+      "severity": "error",
+      "patterns": {
+        "components": "^[A-Z][a-zA-Z0-9]*$",
+        "hooks": "^use[A-Z][a-zA-Z0-9]*$",
+        "constants": "^[A-Z_][A-Z0-9_]*$",
+        "variables": "^[a-z][a-zA-Z0-9]*$"
+      }
+    },
+    "errorHandling": {
+      "enabled": true,
+      "severity": "warning",
+      "requireTryCatch": ["async", "promise"]
+    },
+    "optimization": {
+      "enabled": true,
+      "checks": {
+        "unusedImports": true,
+        "deadCode": true,
+        "circularDependencies": true
+      }
+    }
+  }
+}

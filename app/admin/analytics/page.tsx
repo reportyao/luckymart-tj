@@ -685,3 +685,4 @@ function ProtectedAnalyticsPage() {
     </PagePermission>
   );
 }
+export default ProtectedAnalyticsPage;

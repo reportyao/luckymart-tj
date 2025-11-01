@@ -403,3 +403,4 @@ function EditProductPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
+export default ProtectedEditProductPage;

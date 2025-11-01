@@ -921,3 +921,4 @@ function WrappedRiskRulesPage() {
     </PagePermission>
   );
 }
+export default ProtectedRiskRulesPage;

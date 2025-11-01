@@ -381,7 +381,7 @@ function OrdersPage() {
 }
 
 // 错误边界包装
-export default function OrdersPageWithErrorBoundary() {
+function OrdersPageWithErrorBoundary() {
   return (
     <ErrorBoundary>
       <OrdersPage />

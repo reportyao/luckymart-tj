@@ -914,7 +914,7 @@ function RiskRulesPage() {
   );
 }
 
-export default function WrappedRiskRulesPage() {
+function WrappedRiskRulesPage() {
   return (
     <PagePermission permissions={AdminPermissions.system.manage()}>
       <RiskRulesPage />

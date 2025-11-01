@@ -40,7 +40,7 @@ interface EnhancedLotteryCardProps {
   onUpdate?: () => void;
 }
 
-export default function EnhancedLotteryCard({ round, onUpdate }: EnhancedLotteryCardProps) {
+function EnhancedLotteryCard({ round, onUpdate }: EnhancedLotteryCardProps) {
   const { t } = useLanguage();
   const router = useRouter();
   

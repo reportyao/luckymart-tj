@@ -15,7 +15,7 @@ interface TransferData {
   luckyCoins: number;
 }
 
-export default function TransferPage() {
+function TransferPage() {
   const router = useRouter();
   const { t } = useLanguage();
   const [amount, setAmount] = useState<string>('');

@@ -13,7 +13,7 @@ interface QuickParticipateProps {
   onSuccess?: (data: any) => void;
 }
 
-export default function QuickParticipate({ 
+function QuickParticipate({ 
   roundId, 
   pricePerShare, 
   availableShares,

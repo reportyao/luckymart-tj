@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { SUPPORTED_LANGUAGES } from '@/src/i18n/config';
 
-export default function I18nDemoPage() {
+function I18nDemoPage() {
   const { t, i18n } = useTranslation(['common', 'auth', 'lottery', 'wallet']);
   const { language, setLanguage } = useLanguage();
 

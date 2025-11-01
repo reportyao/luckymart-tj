@@ -47,7 +47,7 @@ interface CheckinStatus {
   };
 }
 
-export default function CheckinPage() {
+function CheckinPage() {
   const { user, token } = useAuth();
   const { language } = useLanguage();
   const [checkinStatus, setCheckinStatus] = useState<CheckinStatus | null>(null);

@@ -570,7 +570,7 @@ function CostMonitoringPage() {
   );
 }
 
-export default function WrappedCostMonitoringPage() {
+function WrappedCostMonitoringPage() {
   return (
     <PagePermission permissions={AdminPermissions.stats.read()}>
       <CostMonitoringPage />

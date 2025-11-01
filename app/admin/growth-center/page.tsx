@@ -25,7 +25,7 @@ interface UserSegment {
   percentage: number;
 }
 
-export default function GrowthCenterPage() {
+function GrowthCenterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState<GrowthMetrics | null>(null);

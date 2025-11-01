@@ -15,7 +15,7 @@ interface LotteryHistoryProps {
   onRefresh: () => void;
 }
 
-export default function LotteryHistory({
+function LotteryHistory({
   records,
   loading,
   loadingMore,

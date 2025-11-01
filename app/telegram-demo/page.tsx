@@ -22,7 +22,7 @@ import {
 } from '@/components/telegram/TelegramFeatures';
 import { ThemeMode } from '@/types/telegram';
 
-export default function TelegramMiniAppDemo() {
+function TelegramMiniAppDemo() {
   const { 
     user, 
     theme, 

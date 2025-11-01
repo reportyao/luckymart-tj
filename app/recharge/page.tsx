@@ -12,7 +12,7 @@ interface RechargePackage {
   sortOrder: number;
 }
 
-export default function RechargePage() {
+function RechargePage() {
   const router = useRouter();
   const [packages, setPackages] = useState<RechargePackage[]>([]);
   const [selectedPackage, setSelectedPackage] = useState<number | null>(null);

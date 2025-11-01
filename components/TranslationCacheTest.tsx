@@ -311,7 +311,7 @@ function TestSuite({
 }
 
 // 主要测试组件
-export default function TranslationCacheTest() {
+function TranslationCacheTest() {
   const [basicResults, setBasicResults] = useState<TestResult[]>([]);
   const [cacheResults, setCacheResults] = useState<TestResult[]>([]);
   const [preloadResults, setPreloadResults] = useState<TestResult[]>([]);

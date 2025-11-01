@@ -18,7 +18,7 @@ interface PaymentStep {
   image?: string;
 }
 
-export default function PaymentGuide({ orderId, amount, paymentMethod }: PaymentGuideProps) {
+function PaymentGuide({ orderId, amount, paymentMethod }: PaymentGuideProps) {
   const router = useRouter();
   const [copySuccess, setCopySuccess] = useState<string>('');
   const [timeLeft, setTimeLeft] = useState(15 * 60); // 15分钟倒计时

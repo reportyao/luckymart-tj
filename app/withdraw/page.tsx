@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { calculateWithdrawFee } from '@/lib/utils';
 import type { WithdrawRequest } from '@/types';
 
-export default function WithdrawPage() {
+function WithdrawPage() {
   const router = useRouter();
   const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState('');

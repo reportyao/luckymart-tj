@@ -7,7 +7,7 @@ import { AdminPermissions } from '@/lib/admin-permission-manager';
 import Link from 'next/link';
 import type { Product } from '@/types';
 
-export default function AdminProductsPage() {
+function AdminProductsPage() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

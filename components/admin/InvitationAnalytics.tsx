@@ -107,7 +107,7 @@ interface AnalyticsData {
   }>;
 }
 
-export default function InvitationAnalytics() {
+function InvitationAnalytics() {
   const { t } = useTranslation('referral');
   const { currentLanguage } = useLanguage();
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);

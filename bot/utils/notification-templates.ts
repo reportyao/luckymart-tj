@@ -105,7 +105,7 @@ export interface NotificationData {
 /**
  * 多语言通知模板配置
  */
-export const NOTIFICATION_TEMPLATES: Record<NotificationType, NotificationTemplate> = {
+export const NOTIFICATION_TEMPLATES = {
   [NotificationType.WELCOME_MESSAGE]: {
     type: NotificationType.WELCOME_MESSAGE,
     title: {
@@ -156,7 +156,7 @@ Click the button below to enter the Lucky Market and start your lucky journey!`,
 • 3 иштироки ройгон ҳаррӯза
 • Алгоритми одил ва шаффофи розиғш
 
-Ҳиссаи шумо сохта шудааст. Ҳоло баланс: {height} Нишонаи розиғш
+Ҳиссаи шумо сохта шудааст. Ҳоло баланс: {balance} Нишонаи розиғш
 
 Тугмаи поёнро пахш кунед то ба Бозори бахтшинос дохил шавед ва сафараи бахтнокатонро оғоз кунед!`
     },
@@ -311,30 +311,22 @@ Click the buttons below to recharge or view more`,
     message: {
       [Language.ZH]: `📋 {firstName}，您的订单信息：
 
-{hasOrders ? \`您最近有 \${orderCount} 个订单：
-
-\${orderList}\` : '您还没有任何订单'}
+{hasOrders ? "您最近有 " + orderCount + " 个订单：\n\n" + orderList : "您还没有任何订单"}
 
 点击下方按钮查看更多详情`,
       [Language.EN]: `📋 {firstName}, your order information:
 
-{hasOrders ? \`You have \${orderCount} recent orders:
-
-\${orderList}\` : 'You don\'t have any orders yet'}
+{hasOrders ? "You have " + orderCount + " recent orders:\n\n" + orderList : "You don't have any orders yet"}
 
 Click the buttons below to view more details`,
       [Language.RU]: `📋 {firstName}, информация о ваших заказах:
 
-{hasOrders ? \`У вас есть \${orderCount} недавних заказов:
-
-\${orderList}\` : 'У вас пока нет заказов'}
+{hasOrders ? "У вас есть " + orderCount + " недавних заказов:\n\n" + orderList : "У вас пока нет заказов"}
 
 Нажмите кнопки ниже, чтобы просмотреть более подробную информацию`,
       [Language.TJ]: `📋 {firstName}, маълумоти фармоишҳои шумо:
 
-{hasOrders ? \`Шумо \${orderCount} фармоиши охирин доред:
-
-\${orderList}\` : 'Шумо ҳоло ягон фармоиш надоред'}
+{hasOrders ? "Шумо " + orderCount + " фармоиши охирин доред:\n\n" + orderList : "Шумо ҳоло ягон фармоиш надоред"}
 
 Тугмаҳои поёнро пахш кунед барои дидани тафсилоти бештар`
     },
@@ -367,7 +359,7 @@ Click the buttons below to view more details`,
 
 状态：{status}
 金额：{amount} TJS
-{hasTracking ? \`运单号：\${trackingNumber}\` : ''}
+{hasTracking ? "运单号：" + trackingNumber : ""}
 
 {status === 'paid' ? '正在为您安排发货，请耐心等待～' : 
  status === 'shipped' ? '预计 2-3 个工作日送达' :
@@ -377,7 +369,7 @@ Click the buttons below to view more details`,
 
 Status: {status}
 Amount: {amount} TJS
-{hasTracking ? \`Tracking Number: \${trackingNumber}\` : ''}
+{hasTracking ? "Tracking Number: " + trackingNumber : ""}
 
 {status === 'paid' ? 'We are arranging shipment for you, please be patient ~' : 
  status === 'shipped' ? 'Expected delivery in 2-3 business days' :
@@ -387,7 +379,7 @@ Amount: {amount} TJS
 
 Статус: {status}
 Сумма: {amount} TJS
-{hasTracking ? \`Номер отслеживания: \${trackingNumber}\` : ''}
+{hasTracking ? "Номер отслеживания: " + trackingNumber : ""}
 
 {status === 'paid' ? 'Мы организуем для вас доставку, пожалуйста, наберитесь терпения ~' : 
  status === 'shipped' ? 'Ожидаемая доставка в течение 2-3 рабочих дней' :
@@ -397,7 +389,7 @@ Amount: {amount} TJS
 
 Ҳолат: {status}
 Маблағ: {amount} TJS
-{hasTracking ? \`Рақами пайгирӣ: \${trackingNumber}\` : ''}
+{hasTracking ? "Рақами пайгирӣ: " + trackingNumber : ""}
 
 {status === 'paid' ? 'Мо барои шумо интиқол месозем, лутфан сабр кунед ~' : 
  status === 'shipped' ? 'Расонидани интизорӣ дар муддати 2-3 рӯзи корӣ' :
@@ -595,7 +587,7 @@ Participate in more product lotteries immediately, luck is just ahead ~`,
 
 Маҳсулот: {productName}
 Гирдиш: {roundId}
-Иштироккунандагон: {нафар}
+Иштироккунандагон: {participants} нафар
 
 Мутаассифона, ин дафъа шумо ғолиб нашудед
 Аммо дил насустурӣ кунед, идомаи иштирок кунед, ғолиби навбатӣ метавонад шумо бошед!
@@ -832,6 +824,698 @@ Need help? Click the buttons below:`,
         { text: '🇹🇯 Тоҷикӣ', action: 'set_language_tg-TJ' }
       ]
     }
+  },
+
+  // 添加缺失的NotificationType模板
+  [NotificationType.ACCOUNT_INFO]: {
+    type: NotificationType.ACCOUNT_INFO,
+    title: {
+      [Language.ZH]: '👤 账户信息',
+      [Language.EN]: '👤 Account Information',
+      [Language.RU]: '👤 Информация об аккаунте',
+      [Language.TJ]: '👤 Маълумоти ҳисса'
+    },
+    message: {
+      [Language.ZH]: `👤 {firstName}，您的账户信息：
+
+用户名：{username}
+VIP等级：{vipLevel}
+余额：{balance} 夺宝币
+平台余额：{platformBalance} TJS
+总消费：{totalSpent} TJS`,
+      [Language.EN]: `👤 {firstName}, your account information:
+
+Username: {username}
+VIP Level: {vipLevel}
+Balance: {balance} Lottery Coins
+Platform Balance: {platformBalance} TJS
+Total Spent: {totalSpent} TJS`,
+      [Language.RU]: `👤 {firstName}, информация о вашем аккаунте:
+
+Имя пользователя: {username}
+Уровень VIP: {vipLevel}
+Баланс: {balance} Монет участия
+Баланс платформы: {platformBalance} TJS
+Всего потрачено: {totalSpent} TJS`,
+      [Language.TJ]: `👤 {firstName}, маълумоти ҳиссаи шумо:
+
+Номи корбар: {username}
+Сатҳи VIP: {vipLevel}
+Баланс: {balance} Нишонаи розиғш
+Баланси платформа: {platformBalance} TJS
+Ҷамъ харҷшуда: {totalSpent} TJS`
+    }
+  },
+
+  [NotificationType.ORDER_SHIPPED]: {
+    type: NotificationType.ORDER_SHIPPED,
+    title: {
+      [Language.ZH]: '🚚 订单已发货',
+      [Language.EN]: '🚚 Order Shipped',
+      [Language.RU]: '🚚 Заказ отправлен',
+      [Language.TJ]: '🚚 Фармоиш фиристода шудааст'
+    },
+    message: {
+      [Language.ZH]: `🚚 您的订单已发货！
+
+订单号：{orderNumber}
+运单号：{trackingNumber}
+预计到达：{expectedDelivery}`,
+
+      [Language.EN]: `🚚 Your order has been shipped!
+
+Order Number: {orderNumber}
+Tracking Number: {trackingNumber}
+Expected Delivery: {expectedDelivery}`,
+
+      [Language.RU]: `🚚 Ваш заказ отправлен!
+
+Номер заказа: {orderNumber}
+Номер отслеживания: {trackingNumber}
+Ожидаемая доставка: {expectedDelivery}`,
+
+      [Language.TJ]: `🚚 Фармоиши шумо фиристода шудааст!
+
+Рақами фармоиш: {orderNumber}
+Рақами пайгирӣ: {trackingNumber}
+Расонидани интизорӣ: {expectedDelivery}`
+    }
+  },
+
+  [NotificationType.ORDER_DELIVERED]: {
+    type: NotificationType.ORDER_DELIVERED,
+    title: {
+      [Language.ZH]: '✅ 订单已送达',
+      [Language.EN]: '✅ Order Delivered',
+      [Language.RU]: '✅ Заказ доставлен',
+      [Language.TJ]: '✅ Фармоиш расонида шудааст'
+    },
+    message: {
+      [Language.ZH]: `✅ 您的订单已送达！
+
+订单号：{orderNumber}
+送达时间：{deliveryTime}
+
+感谢您的购买，欢迎再次光临！`,
+
+      [Language.EN]: `✅ Your order has been delivered!
+
+Order Number: {orderNumber}
+Delivery Time: {deliveryTime}
+
+Thank you for your purchase, welcome back!`,
+
+      [Language.RU]: `✅ Ваш заказ доставлен!
+
+Номер заказа: {orderNumber}
+Время доставки: {deliveryTime}
+
+Спасибо за покупку, добро пожаловать снова!`,
+
+      [Language.TJ]: `✅ Фармоиши шумо расонида шудааст!
+
+Рақами фармоиш: {orderNumber}
+Вақти расонида: {deliveryTime}
+
+Ташаккур барои харидарики шумо, боз хуш омадед!`
+    }
+  },
+
+  [NotificationType.LOTTERY_ROUND_START]: {
+    type: NotificationType.LOTTERY_ROUND_START,
+    title: {
+      [Language.ZH]: '🎲 抽奖开始',
+      [Language.EN]: '🎲 Lottery Starts',
+      [Language.RU]: '🎲 Розыгрыш начинается',
+      [Language.TJ]: '🎲 Розиғш оғоз мешавад'
+    },
+    message: {
+      [Language.ZH]: `🎲 新的抽奖活动开始了！
+
+商品：{productName}
+价格：{price} 夺宝币/份
+总份数：{totalShares} 份
+
+快来参与，幸运等着您！`,
+
+      [Language.EN]: `🎲 New lottery activity starts now!
+
+Product: {productName}
+Price: {price} Lottery Coins/share
+Total Shares: {totalShares} shares
+
+Come and participate, luck awaits you!`,
+
+      [Language.RU]: `🎲 Новая лотерея начинается прямо сейчас!
+
+Товар: {productName}
+Цена: {price} Монет участия/доля
+Всего долей: {totalShares} долей
+
+Приходите участвовать, удача ждет вас!`,
+
+      [Language.TJ]: `🎲 Маҳдуди нави розиғш ҳоло оғоз мешавад!
+
+Маҳсулот: {productName}
+Нарх: {price} Нишонаи розиғш/ҳисса
+Ҷамъ ҳиссаҳо: {totalShares} ҳисса
+
+Оед иштирок кунед, бахт интизоратон аст!`
+    }
+  },
+
+  [NotificationType.VIP_BENEFITS]: {
+    type: NotificationType.VIP_BENEFITS,
+    title: {
+      [Language.ZH]: '👑 VIP 特权',
+      [Language.EN]: '👑 VIP Benefits',
+      [Language.RU]: '👑 Привилегии VIP',
+      [Language.TJ]: '👑 Имтиёзҳои VIP'
+    },
+    message: {
+      [Language.ZH]: `👑 您的VIP特权：
+
+{benefits}
+
+享受更好的服务体验！`,
+
+      [Language.EN]: `👑 Your VIP benefits:
+
+{benefits}
+
+Enjoy a better service experience!`,
+
+      [Language.RU]: `👑 Ваши привилегии VIP:
+
+{benefits}
+
+Наслаждайтесь лучшим опытом обслуживания!`,
+
+      [Language.TJ]: `👑 Имтиёзҳои VIP шумо:
+
+{benefits}
+
+Аз таҷрибаи хидмати беҳтар баҳра баред!`
+    }
+  },
+
+  [NotificationType.RESALE_STATUS_UPDATE]: {
+    type: NotificationType.RESALE_STATUS_UPDATE,
+    title: {
+      [Language.ZH]: '🔄 转售状态更新',
+      [Language.EN]: '🔄 Resale Status Update',
+      [Language.RU]: '🔄 Обновление статуса перепродажи',
+      [Language.TJ]: '🔄 Навсозии ҳолати фурӯштан'
+    },
+    message: {
+      [Language.ZH]: `🔄 您的转售商品状态已更新
+
+商品：{productName}
+状态：{status}
+价格：{price} TJS`,
+
+      [Language.EN]: `🔄 Your resale product status has been updated
+
+Product: {productName}
+Status: {status}
+Price: {price} TJS`,
+
+      [Language.RU]: `🔄 Статус вашего товара для перепродажи обновлен
+
+Товар: {productName}
+Статус: {status}
+Цена: {price} TJS`,
+
+      [Language.TJ]: `🔄 Ҳолати маҳсулоти фурӯши шумо навсозӣ шудааст
+
+Маҳсулот: {productName}
+Ҳолат: {status}
+Нарх: {price} TJS`
+    }
+  },
+
+  [NotificationType.RESALE_MATCHED]: {
+    type: NotificationType.RESALE_MATCHED,
+    title: {
+      [Language.ZH]: '🤝 转售匹配成功',
+      [Language.EN]: '🤝 Resale Match Successful',
+      [Language.RU]: '🤝 Успешное сопоставление перепродажи',
+      [Language.TJ]: '🤝 Мутобиқати фурӯштан муваффақиятӣ'
+    },
+    message: {
+      [Language.ZH]: `🤝 恭喜！您的转售商品已匹配成功
+
+买家：{buyerName}
+商品：{productName}
+成交价：{price} TJS
+
+我们将尽快安排交易完成。`,
+
+      [Language.EN]: `🤝 Congratulations! Your resale product has been successfully matched
+
+Buyer: {buyerName}
+Product: {productName}
+Sale Price: {price} TJS
+
+We will arrange transaction completion as soon as possible.`,
+
+      [Language.RU]: `🤝 Поздравляем! Ваш товар для перепродажи успешно сопоставлен
+
+Покупатель: {buyerName}
+Товар: {productName}
+Цена продажи: {price} TJS
+
+Мы организуем завершение транзакции как можно скорее.`,
+
+      [Language.TJ]: `🤝 Таҳният! Маҳсулоти фурӯши шумо бо муваффақият мувофиқат карда шудааст
+
+Харидор: {buyerName}
+Маҳсулот: {productName}
+Нархи фурӯш: {price} TJS
+
+Мо интиқоли коркардро ҳарчи зудтар ташкил мекунем.`
+    }
+  },
+
+  [NotificationType.RESALE_SOLD]: {
+    type: NotificationType.RESALE_SOLD,
+    title: {
+      [Language.ZH]: '💰 转售成功',
+      [Language.EN]: '💰 Resale Successful',
+      [Language.RU]: '💰 Успешная перепродажа',
+      [Language.TJ]: '💰 Фурӯш муваффақиятӣ'
+    },
+    message: {
+      [Language.ZH]: `💰 您的转售商品已成功售出！
+
+商品：{productName}
+成交价：{price} TJS
+买家：{buyerName}
+
+收入已添加到您的账户余额。`,
+
+      [Language.EN]: `💰 Your resale product has been successfully sold!
+
+Product: {productName}
+Sale Price: {price} TJS
+Buyer: {buyerName}
+
+Revenue has been added to your account balance.`,
+
+      [Language.RU]: `💰 Ваш товар для перепродажи успешно продан!
+
+Товар: {productName}
+Цена продажи: {price} TJS
+Покупатель: {buyerName}
+
+Доход добавлен к балансу вашего аккаунта.`,
+
+      [Language.TJ]: `💰 Маҳсулоти фурӯши шумо бо муваффақият фурūхта шудааст!
+
+Маҳсулот: {productName}
+Нархи фурūш: {price} TJS
+Харидор: {buyerName}
+
+Даромад ба баланси ҳиссаи шумо илова карда шудааст.`
+    }
+  },
+
+  [NotificationType.MAINTENANCE_NOTICE]: {
+    type: NotificationType.MAINTENANCE_NOTICE,
+    title: {
+      [Language.ZH]: '🔧 系统维护',
+      [Language.EN]: '🔧 System Maintenance',
+      [Language.RU]: '🔧 Техническое обслуживание системы',
+      [Language.TJ]: '🔧 Нигоҳурии система'
+    },
+    message: {
+      [Language.ZH]: `🔧 系统维护通知
+
+维护时间：{maintenanceTime}
+影响范围：{affectedServices}
+
+维护期间服务可能暂时不可用，感谢您的理解。`,
+
+      [Language.EN]: `🔧 System Maintenance Notice
+
+Maintenance Time: {maintenanceTime}
+Affected Services: {affectedServices}
+
+Services may be temporarily unavailable during maintenance, thank you for your understanding.`,
+
+      [Language.RU]: `🔧 Уведомление о техническом обслуживании системы
+
+Время технического обслуживания: {maintenanceTime}
+Затронутые службы: {affectedServices}
+
+Службы могут быть временно недоступны во время технического обслуживания, спасибо за понимание.`,
+
+      [Language.TJ]: `🔧 Огоҳиномаи нигоҳурии система
+
+Вақти нигоҳурин: {maintenanceTime}
+Хидматҳои таъсиркунанда: {affectedServices}
+
+Дар вақти нигоҳурин хидматҳо метавонанд муваққатан дастрас набошанд, ташаккур барои фаҳмиши шумо.`
+    }
+  },
+
+  [NotificationType.NEW_FEATURES]: {
+    type: NotificationType.NEW_FEATURES,
+    title: {
+      [Language.ZH]: '🆕 新功能上线',
+      [Language.EN]: '🆕 New Features Available',
+      [Language.RU]: '🆕 Доступны новые функции',
+      [Language.TJ]: '🆕 Функсияҳои нав дастрасанд'
+    },
+    message: {
+      [Language.ZH]: `🆕 新功能上线了！
+
+{features}
+
+立即体验新功能，让使用更加便捷！`,
+
+      [Language.EN]: `🆕 New features are now available!
+
+{features}
+
+Experience the new features now for a more convenient experience!`,
+
+      [Language.RU]: `🆕 Новые функции теперь доступны!
+
+{features}
+
+Оцените новые функции сейчас для более удобного использования!`,
+
+      [Language.TJ]: `🆕 Функсияҳои нав ҳоло дастрасанд!
+
+{features}
+
+Функсияҳои навро ҳоло таҷриба кунед барои таҷрибаи илтимосноктар!`
+    }
+  },
+
+  [NotificationType.REFERRAL_REWARD]: {
+    type: NotificationType.REFERRAL_REWARD,
+    title: {
+      [Language.ZH]: '🎁 邀请奖励',
+      [Language.EN]: '🎁 Referral Reward',
+      [Language.RU]: '🎁 Награда за приглашение',
+      [Language.TJ]: '🎁 Мукофоти даъват'
+    },
+    message: {
+      [Language.ZH]: `🎁 恭喜！您获得了邀请奖励
+
+邀请用户：{referredUser}
+奖励金额：{rewardAmount} 夺宝币
+
+感谢您邀请新用户加入！`,
+
+      [Language.EN]: `🎁 Congratulations! You received a referral reward
+
+Referred User: {referredUser}
+Reward Amount: {rewardAmount} Lottery Coins
+
+Thank you for inviting new users to join!`,
+
+      [Language.RU]: `🎁 Поздравляем! Вы получили награду за приглашение
+
+Приглашенный пользователь: {referredUser}
+Сумма награды: {rewardAmount} Монет участия
+
+Спасибо за приглашение новых пользователей присоединиться!`,
+
+      [Language.TJ]: `🎁 Таҳният! Шумо мукофоти даъват гирифтед
+
+Истифодабарандаи даъватшуда: {referredUser}
+Миқдори мукофот: {rewardAmount} Нишонаи розиғш
+
+Ташаккур барои даъвати истифодабарандагони нав барои пайвастан!`
+    }
+  },
+
+  [NotificationType.INVITATION_SUCCESS]: {
+    type: NotificationType.INVITATION_SUCCESS,
+    title: {
+      [Language.ZH]: '👥 邀请成功',
+      [Language.EN]: '👥 Invitation Successful',
+      [Language.RU]: '👥 Приглашение успешно',
+      [Language.TJ]: '👥 Даъват муваффақиятӣ'
+    },
+    message: {
+      [Language.ZH]: `👥 邀请成功！
+
+{referredUser} 已成功注册
+您获得：{rewardAmount} 夺宝币奖励
+
+继续邀请更多朋友，获得更多奖励！`,
+
+      [Language.EN]: `👥 Invitation successful!
+
+{referredUser} has successfully registered
+You received: {rewardAmount} Lottery Coins reward
+
+Continue inviting more friends to receive more rewards!`,
+
+      [Language.RU]: `👥 Приглашение успешно!
+
+{referredUser} успешно зарегистрирован
+Вы получили: {rewardAmount} Монет участия
+
+Продолжайте приглашать больше друзей, чтобы получать больше наград!`,
+
+      [Language.TJ]: `👥 Даъват муваффақиятӣ!
+
+{referredUser} бо муваффақият сабт шудааст
+Шумо гирифтед: {rewardAmount} нишонаи розиғш
+
+Давом кунед барои даъвати дӯстони бештар барои гирифтани мукофотҳои бештар!`
+    }
+  },
+
+  [NotificationType.TUTORIAL]: {
+    type: NotificationType.TUTORIAL,
+    title: {
+      [Language.ZH]: '📖 新手教程',
+      [Language.EN]: '📖 Tutorial',
+      [Language.RU]: '📖 Руководство',
+      [Language.TJ]: '📖 Дастури кор'
+    },
+    message: {
+      [Language.ZH]: `📖 新手教程
+
+{tutorialContent}
+
+有疑问？点击下方按钮联系客服。`,
+
+      [Language.EN]: `📖 Tutorial
+
+{tutorialContent}
+
+Have questions? Click the button below to contact support.`,
+
+      [Language.RU]: `📖 Руководство
+
+{tutorialContent}
+
+Есть вопросы? Нажмите кнопку ниже, чтобы связаться с поддержкой.`,
+
+      [Language.TJ]: `📖 Дастури кор
+
+{tutorialContent}
+
+Саволҳо доред? Тугмаи поёнро пахш кунед барои тамос бо дастгирӣ.`
+    }
+  },
+
+  [NotificationType.SUPPORT_MESSAGE]: {
+    type: NotificationType.SUPPORT_MESSAGE,
+    title: {
+      [Language.ZH]: '💬 客服消息',
+      [Language.EN]: '💬 Support Message',
+      [Language.RU]: '💬 Сообщение поддержки',
+      [Language.TJ]: '💬 Паёми дастгирӣ'
+    },
+    message: {
+      [Language.ZH]: `💬 客服回复：
+
+{message}
+
+需要进一步帮助？点击下方按钮。`,
+
+      [Language.EN]: `💬 Support reply:
+
+{message}
+
+Need further help? Click the button below.`,
+
+      [Language.RU]: `💬 Ответ поддержки:
+
+{message}
+
+Нужна дополнительная помощь? Нажмите кнопку ниже.`,
+
+      [Language.TJ]: `💬 Ҷавоби дастгирӣ:
+
+{message}
+
+Мӯҳтоҷи ёрии иловагӣ? Тугмаи поёнро пахш кунед.`
+    }
+  },
+
+  [NotificationType.FAQ]: {
+    type: NotificationType.FAQ,
+    title: {
+      [Language.ZH]: '❓ 常见问题',
+      [Language.EN]: '❓ FAQ',
+      [Language.RU]: '❓ Часто задаваемые вопросы',
+      [Language.TJ]: '❓ Саволҳои маъмул'
+    },
+    message: {
+      [Language.ZH]: `❓ 常见问题
+
+{faqContent}
+
+未找到答案？联系客服获得帮助。`,
+
+      [Language.EN]: `❓ FAQ
+
+{faqContent}
+
+Didn't find the answer? Contact support for help.`,
+
+      [Language.RU]: `❓ Часто задаваемые вопросы
+
+{faqContent}
+
+Не нашли ответ? Обратитесь в поддержку за помощью.`,
+
+      [Language.TJ]: `❓ Саволҳои маъмул
+
+{faqContent}
+
+Ҷавобро наёфтед? Барои ёрии дастгирӣ тамос кунед.`
+    }
+  },
+
+  [NotificationType.LANGUAGE_CHANGED]: {
+    type: NotificationType.LANGUAGE_CHANGED,
+    title: {
+      [Language.ZH]: '✅ 语言已切换',
+      [Language.EN]: '✅ Language Changed',
+      [Language.RU]: '✅ Язык изменен',
+      [Language.TJ]: '✅ Забон иваз шудааст'
+    },
+    message: {
+      [Language.ZH]: `✅ 语言已成功切换到：{newLanguage}
+
+界面和消息将以新语言显示。`,
+
+      [Language.EN]: `✅ Language successfully changed to: {newLanguage}
+
+Interface and messages will display in the new language.`,
+
+      [Language.RU]: `✅ Язык успешно изменен на: {newLanguage}
+
+Интерфейс и сообщения будут отображаться на новом языке.`,
+
+      [Language.TJ]: `✅ Забон бо муваффақият ба {newLanguage} иваз шудааст
+
+Интерфейс ва паёмҳо дар забони нав намоиш дода мешаванд.`
+    }
+  },
+
+  [NotificationType.NOTIFICATION_SETTINGS]: {
+    type: NotificationType.NOTIFICATION_SETTINGS,
+    title: {
+      [Language.ZH]: '🔔 通知设置',
+      [Language.EN]: '🔔 Notification Settings',
+      [Language.RU]: '🔔 Настройки уведомлений',
+      [Language.TJ]: '🔔 Танзимоти огоҳинома'
+    },
+    message: {
+      [Language.ZH]: `🔔 通知设置
+
+管理您希望接收的通知类型：
+
+• 订单状态更新
+• 抽奖结果通知
+• 邀请奖励通知
+• 系统维护通知`,
+
+      [Language.EN]: `🔔 Notification Settings
+
+Manage the types of notifications you want to receive:
+
+• Order status updates
+• Lottery result notifications
+• Referral reward notifications
+• System maintenance notifications`,
+
+      [Language.RU]: `🔔 Настройки уведомлений
+
+Управляйте типами уведомлений, которые хотите получать:
+
+• Обновления статуса заказа
+• Уведомления о результатах лотереи
+• Уведомления о наградах за приглашение
+• Уведомления о техническом обслуживании системы`,
+
+      [Language.TJ]: `🔔 Танзимоти огоҳинома
+
+Назорати навъҳои огоҳиномаҳое, ки мехоҳед гиред:
+
+• Навсозиҳои ҳолати фармоиш
+• Огоҳиномаҳои натиҷаи розиғш
+• Огоҳиномаҳои мукофоти даъват
+• Огоҳиномаҳои нигоҳурии система`
+    }
+  },
+
+  [NotificationType.NOTIFICATION_PREFERENCES]: {
+    type: NotificationType.NOTIFICATION_PREFERENCES,
+    title: {
+      [Language.ZH]: '🎛️ 通知偏好',
+      [Language.EN]: '🎛️ Notification Preferences',
+      [Language.RU]: '🎛️ Предпочтения уведомлений',
+      [Language.TJ]: '🎛️ Афзалиятҳои огоҳинома'
+    },
+    message: {
+      [Language.ZH]: `🎛️ 通知偏好设置
+
+选择您偏好的通知方式：
+
+• Telegram Bot推送
+• 邮件通知
+• 短信通知（可选）
+• 免打扰模式`,
+
+      [Language.EN]: `🎛️ Notification Preference Settings
+
+Choose your preferred notification methods:
+
+• Telegram Bot Push
+• Email notifications
+• SMS notifications (optional)
+• Do not disturb mode`,
+
+      [Language.RU]: `🎛️ Настройки предпочтений уведомлений
+
+Выберите предпочитаемые способы уведомлений:
+
+• Push-уведомления Telegram Bot
+• Email уведомления
+• SMS уведомления (опционально)
+• Режим "Не беспокоить"`,
+
+      [Language.TJ]: `🎛️ Танзимоти афзалиятҳои огоҳинома
+
+Усулҳои маънидоштаи огоҳиномаҳоро интихоб кунед:
+
+• фиристодани Telegram Bot
+• Огоҳиномаҳои email
+• Огоҳиномаҳои SMS (ихтиёрӣ)
+• Реҷими "Оҷоз накунед"`
+    }
   }
 };
 
@@ -849,7 +1533,7 @@ export class NotificationTemplateManager {
     parseMode?: 'HTML' | 'Markdown';
   } {
     const { user, type, variables } = data;
-    const template = NOTIFICATION_TEMPLATES[type];
+    const template = NOTIFICATION_TEMPLATES[type as keyof typeof NOTIFICATION_TEMPLATES];
     
     if (!template) {
       throw new Error(`通知模板未找到: ${type}`);
@@ -860,8 +1544,9 @@ export class NotificationTemplateManager {
     const message = this.replaceVariables(template.message[language], variables);
     
     let keyboard: any = null;
-    if (template.buttons && template.buttons[language]) {
-      const buttons = template.buttons[language].map(btn => {
+    const templateWithButtons = template as any;
+    if (templateWithButtons.buttons && templateWithButtons.buttons[language]) {
+      const buttons = templateWithButtons.buttons[language].map((btn: { text: string; action: string; url?: string }) => {
         if (btn.url) {
           const url = this.replaceVariables(btn.url, { ...variables, appUrl: apiConfig.telegram.miniAppURL });
           return [Markup.button.url(btn.text, url)];
@@ -876,7 +1561,7 @@ export class NotificationTemplateManager {
       title,
       message,
       keyboard,
-      parseMode: template.parseMode
+      parseMode: templateWithButtons.parseMode
     };
   }
 
@@ -918,7 +1603,7 @@ export class NotificationTemplateManager {
       errors.push('用户信息不完整');
     }
 
-    if (!data.type || !NOTIFICATION_TEMPLATES[data.type]) {
+    if (!data.type || !NOTIFICATION_TEMPLATES[data.type as keyof typeof NOTIFICATION_TEMPLATES]) {
       errors.push(`不支持的通知类型: ${data.type}`);
     }
 
@@ -982,10 +1667,8 @@ export class LanguageUtils {
 }
 
 /**
- * 导出主要类和枚举
+ * 主要类和枚举已在文件顶部导出
+ * - NOTIFICATION_TEMPLATES (第108行)
+ * - NotificationTemplateManager (第841行)  
+ * - LanguageUtils (第939行)
  */
-export {
-  NOTIFICATION_TEMPLATES,
-  NotificationTemplateManager,
-  LanguageUtils
-};

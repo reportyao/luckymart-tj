@@ -19,7 +19,7 @@ interface Round {
   createdAt: string;
 }
 
-export default function LotteryManagementPage() {
+function LotteryManagementPage() {
   const router = useRouter();
   const [adminInfo, setAdminInfo] = useState<any>(null);
   const [activeRounds, setActiveRounds] = useState<Round[]>([]);
@@ -286,7 +286,7 @@ function ProtectedLotteryPage() {
       permissions={AdminPermissions.lottery.read()}
       showFallback={true}
     >
-      <AdminLotteryPage />
+      <LotteryManagementPage />
     </PagePermission>
   );
 }

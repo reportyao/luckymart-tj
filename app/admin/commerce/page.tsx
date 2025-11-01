@@ -31,7 +31,7 @@ interface Promotion {
   isActive: boolean;
 }
 
-export default function CommercePage() {
+function CommercePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<ProductStats>({

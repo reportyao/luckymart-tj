@@ -5,7 +5,7 @@ import { useState } from 'react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
-export default function SettingsPage() {
+function SettingsPage() {
   const { t } = useTranslation(['common', 'settings']);
   const [notifications, setNotifications] = useState({
     lottery: true,

@@ -1,42 +1,42 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import { createMocks } from 'node-mocks-http';
 import { POST, OPTIONS } from '@/app/api/admin/reward-config/batch-update/route';
 import { rewardConfigManager } from '@/lib/reward-config-manager';
 
 // 模拟依赖模块
-vi.mock('@/lib/admin-auth-middleware', () => ({
-  requireAdminPermission: vi.fn((_resource: string, _action: string) => {
+jest.mock('@/lib/admin-auth-middleware', () => ({
+  requireAdminPermission: jest.fn((_resource: string, _action: string) => {
     return (handler: Function) => handler;
   }),
 }));
 
-vi.mock('@/lib/logger', () => ({
-  Logger: vi.fn().mockImplementation(() => ({
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    debug: vi.fn()
+jest.mock('@/lib/logger', () => ({
+  Logger: jest.fn().mockImplementation(() => ({
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn()
   }))
 }));
 
-vi.mock('@/lib/cache-manager', () => ({
+jest.mock('@/lib/cache-manager', () => ({
   cacheManager: {
     config: {
-      delete: vi.fn()
+      delete: jest.fn()
     }
   }
 }));
 
-vi.mock('@/lib/prisma', () => ({
+jest.mock('@/lib/prisma', () => ({
   prisma: {
-    $transaction: vi.fn(async (callback) => {
+    $transaction: jest.fn(async (callback) => {
       const mockTx = {
         rewardConfig: {
-          findMany: vi.fn(),
-          update: vi.fn()
+          findMany: jest.fn(),
+          update: jest.fn()
         },
         rewardConfigHistory: {
-          create: vi.fn()
+          create: jest.fn()
         }
       };
       return callback(mockTx);
@@ -44,19 +44,19 @@ vi.mock('@/lib/prisma', () => ({
   }
 }));
 
-vi.mock('@/lib/reward-config-manager', () => ({
+jest.mock('@/lib/reward-config-manager', () => ({
   rewardConfigManager: {
-    clearExpiredCache: vi.fn()
+    clearExpiredCache: jest.fn()
   }
 }));
 
 describe('POST /api/admin/reward-config/batch-update', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('应该成功批量更新奖励配置', async () => {
@@ -75,16 +75,16 @@ describe('POST /api/admin/reward-config/batch-update', () => {
 
     const mockTx = {
       rewardConfig: {
-        findMany: vi.fn().mockResolvedValue([mockConfig]),
-        update: vi.fn().mockResolvedValue(mockUpdatedConfig)
+        findMany: jest.fn().mockResolvedValue([mockConfig]),
+        update: jest.fn().mockResolvedValue(mockUpdatedConfig)
       },
       rewardConfigHistory: {
-        create: vi.fn().mockResolvedValue({})
+        create: jest.fn().mockResolvedValue({})
       }
     };
 
     // @ts-ignore
-    vi.mocked(require('@/lib/prisma').prisma.$transaction)
+    jest.mocked(require('@/lib/prisma').prisma.$transaction)
       .mockImplementationOnce(async (callback) => callback(mockTx));
 
     const { req, res } = createMocks({
@@ -124,18 +124,18 @@ describe('POST /api/admin/reward-config/batch-update', () => {
 
     const mockTx = {
       rewardConfig: {
-        findMany: vi.fn().mockResolvedValue(mockConfigs),
-        update: vi.fn()
+        findMany: jest.fn().mockResolvedValue(mockConfigs),
+        update: jest.fn()
           .mockResolvedValueOnce({ ...mockConfigs[0], reward_amount: 15.0 })
           .mockRejectedValueOnce(new Error('更新失败'))
       },
       rewardConfigHistory: {
-        create: vi.fn().mockResolvedValue({})
+        create: jest.fn().mockResolvedValue({})
       }
     };
 
     // @ts-ignore
-    vi.mocked(require('@/lib/prisma').prisma.$transaction)
+    jest.mocked(require('@/lib/prisma').prisma.$transaction)
       .mockImplementationOnce(async (callback) => callback(mockTx));
 
     const { req, res } = createMocks({
@@ -293,16 +293,16 @@ describe('POST /api/admin/reward-config/batch-update', () => {
 
     const mockTx = {
       rewardConfig: {
-        findMany: vi.fn().mockResolvedValue([mockConfig]),
-        update: vi.fn()
+        findMany: jest.fn().mockResolvedValue([mockConfig]),
+        update: jest.fn()
       },
       rewardConfigHistory: {
-        create: vi.fn().mockResolvedValue({})
+        create: jest.fn().mockResolvedValue({})
       }
     };
 
     // @ts-ignore
-    vi.mocked(require('@/lib/prisma').prisma.$transaction)
+    jest.mocked(require('@/lib/prisma').prisma.$transaction)
       .mockImplementationOnce(async (callback) => callback(mockTx));
 
     const { req, res } = createMocks({

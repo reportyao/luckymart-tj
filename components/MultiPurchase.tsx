@@ -13,7 +13,7 @@ interface MultiPurchaseProps {
   onSuccess?: (data: any) => void;
 }
 
-export default function MultiPurchase({ 
+function MultiPurchase({ 
   roundId, 
   pricePerShare, 
   availableShares,

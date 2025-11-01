@@ -18,7 +18,7 @@ interface WalletBalanceProps {
   className?: string;
 }
 
-export default function WalletBalance({ 
+function WalletBalance({ 
   showActions = true, 
   onTransferClick, 
   className = '' 

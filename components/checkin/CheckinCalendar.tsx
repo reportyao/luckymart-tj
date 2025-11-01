@@ -19,7 +19,7 @@ interface CheckinCalendarProps {
   language: string;
 }
 
-export default function CheckinCalendar({ 
+function CheckinCalendar({ 
   calendar, 
   rewardConfig,
   language 

@@ -485,7 +485,7 @@ function HomePage() {
 }
 
 // 使用错误边界包装组件
-export default function HomePageWithErrorBoundary() {
+function HomePageWithErrorBoundary() {
   return (
     <ErrorBoundary>
       <HomePage />

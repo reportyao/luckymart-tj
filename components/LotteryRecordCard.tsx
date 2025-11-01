@@ -9,7 +9,7 @@ interface LotteryRecordCardProps {
   onViewDetails?: (record: LotteryRecord) => void;
 }
 
-export default function LotteryRecordCard({ record, onViewDetails }: LotteryRecordCardProps) {
+function LotteryRecordCard({ record, onViewDetails }: LotteryRecordCardProps) {
   const { t, i18n } = useTranslation();
   
   const isWinner = record.isWinner;

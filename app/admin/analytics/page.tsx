@@ -120,7 +120,7 @@ const PieChart = ({ data, size = 200 }: any) => {
   );
 };
 
-export default function AnalyticsPage() {
+function AnalyticsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('realtime');
@@ -675,7 +675,7 @@ export default function AnalyticsPage() {
 }
 
 // 导出带权限控制的页面
-export default function ProtectedAnalyticsPage() {
+function ProtectedAnalyticsPage() {
   return (
     <PagePermission 
       permissions={AdminPermissions.stats.read()}

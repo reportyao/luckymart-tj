@@ -14,7 +14,7 @@ interface AdminWithdrawRequest extends WithdrawRequest {
   };
 }
 
-export default function AdminWithdrawalsPage() {
+function AdminWithdrawalsPage() {
   const router = useRouter();
   const [withdrawals, setWithdrawals] = useState<AdminWithdrawRequest[]>([]);
   const [loading, setLoading] = useState(true);

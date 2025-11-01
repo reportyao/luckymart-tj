@@ -268,7 +268,7 @@ function RiskDashboard() {
   );
 }
 
-export default function WrappedRiskDashboard() {
+function WrappedRiskDashboard() {
   return (
     <PagePermission permissions={AdminPermissions.system.manage()}>
       <RiskDashboard />

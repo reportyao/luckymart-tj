@@ -621,7 +621,7 @@ const RiskControlPage: React.FC = () => {
   );
 };
 
-export default function WrappedRiskControlPage() {
+function WrappedRiskControlPage() {
   return (
     <PagePermission permissions={AdminPermissions.system.manage()}>
       <RiskControlPage />

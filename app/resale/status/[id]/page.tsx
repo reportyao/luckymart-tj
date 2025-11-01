@@ -34,7 +34,7 @@ interface ResaleStatus {
   };
 }
 
-export default function ResaleStatusPage({ params }: { params: { id: string } }) {
+function ResaleStatusPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [resaleStatus, setResaleStatus] = useState<ResaleStatus | null>(null);
   const [loading, setLoading] = useState(true);

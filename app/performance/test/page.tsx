@@ -5,7 +5,7 @@ import LazyImage from '@/components/performance/LazyImage';
 import SkeletonCard from '@/components/performance/SkeletonCard';
 import PerformanceMonitor from '@/components/performance/PerformanceMonitor';
 
-export default function PerformanceTestPage() {
+function PerformanceTestPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto space-y-8">

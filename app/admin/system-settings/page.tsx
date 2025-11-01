@@ -586,7 +586,7 @@ function SystemSettingsPage() {
   );
 }
 
-export default function WrappedSystemSettingsPage() {
+function WrappedSystemSettingsPage() {
   return (
     <PagePermission permissions={AdminPermissions.settings.write()}>
       <SystemSettingsPage />

@@ -16,7 +16,7 @@ interface CheckinButtonProps {
   language: string;
 }
 
-export default function CheckinButton({
+function CheckinButton({
   canCheckIn,
   isCheckedIn,
   rewardAmount,

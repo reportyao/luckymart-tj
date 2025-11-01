@@ -34,7 +34,7 @@ interface ShowOffPost {
   createdAt: string;
 }
 
-export default function ShowOffPage() {
+function ShowOffPage() {
   const [posts, setPosts] = useState<ShowOffPost[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);

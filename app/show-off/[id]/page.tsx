@@ -97,7 +97,7 @@ interface Comment {
   replies: Comment[];
 }
 
-export default function ShowOffDetailPage() {
+function ShowOffDetailPage() {
   const router = useRouter();
   const params = useParams();
   const postId = params.id as string;

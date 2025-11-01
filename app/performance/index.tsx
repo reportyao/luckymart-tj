@@ -29,7 +29,7 @@ const performancePages = [
   }
 ];
 
-export default function PerformanceIndexPage() {
+function PerformanceIndexPage() {
   const pathname = usePathname();
 
   return (

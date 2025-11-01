@@ -547,7 +547,7 @@ function RiskEventsPage() {
   );
 }
 
-export default function WrappedRiskEventsPage() {
+function WrappedRiskEventsPage() {
   return (
     <PagePermission permissions={AdminPermissions.system.manage()}>
       <RiskEventsPage />

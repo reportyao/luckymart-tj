@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
-export default function AdminLoginPage() {
+function AdminLoginPage() {
   const { t } = useTranslation('admin');
   const router = useRouter();
   const [username, setUsername] = useState('');

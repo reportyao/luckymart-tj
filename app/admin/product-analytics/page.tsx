@@ -64,7 +64,7 @@ interface TrendingData {
   searchVolume: number;
 }
 
-export default function ProductAnalyticsPage() {
+function ProductAnalyticsPage() {
   const router = useRouter();
   const [adminInfo, setAdminInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);

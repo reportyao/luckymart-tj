@@ -33,7 +33,7 @@ export interface LotteryFilter {
   limit: number;
 }
 
-export default function LotteryRecordsPage() {
+function LotteryRecordsPage() {
   const { t } = useTranslation();
   const { user, isAuthenticated } = useAuth();
   const { isOnline } = useNetworkStatus();

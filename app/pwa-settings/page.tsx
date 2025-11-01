@@ -6,7 +6,7 @@ import { usePWA } from '@/hooks/usePWA';
 import NotificationManager from '@/components/NotificationManager';
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration';
 
-export default function PWASettingsPage() {
+function PWASettingsPage() {
   const {
     isInstallable,
     isInstalled,

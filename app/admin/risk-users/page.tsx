@@ -656,7 +656,7 @@ function RiskUsersPage() {
   );
 }
 
-export default function WrappedRiskUsersPage() {
+function WrappedRiskUsersPage() {
   return (
     <PagePermission permissions={AdminPermissions.system.manage()}>
       <RiskUsersPage />

@@ -15,7 +15,7 @@ interface UserAddress {
   isDefault: boolean;
 }
 
-export default function AddressPage() {
+function AddressPage() {
   const { t } = useTranslation('common');
   const router = useRouter();
   const [addresses, setAddresses] = useState<UserAddress[]>([]);

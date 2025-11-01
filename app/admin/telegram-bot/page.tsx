@@ -37,7 +37,7 @@ interface PushHistory {
 
 type TabType = 'status' | 'templates' | 'history' | 'settings';
 
-export default function TelegramBotPage() {
+function TelegramBotPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>('status');
   const [loading, setLoading] = useState(true);

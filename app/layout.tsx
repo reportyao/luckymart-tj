@@ -13,6 +13,8 @@ import PWAInstaller from "@/components/PWAInstaller";
 import OfflineIndicator from "@/components/OfflineIndicator";
 import UpdatePrompt from "@/components/UpdatePrompt";
 import NetworkAwareServiceWorker from "@/components/NetworkAwareServiceWorker";
+// 语言属性设置组件
+import LanguageAttributes from "@/components/LanguageAttributes";
 
 export const metadata: Metadata = {
   title: "LuckyMart TJ - 幸运集市",
@@ -44,16 +46,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh">
+    <html>
       <body className="antialiased">
         <ErrorBoundary>
           <I18nProvider>
+            {/* 动态设置语言属性 */}
+            <LanguageAttributes />
             <TelegramProvider>
               <ThemeProvider>
                 <OrientationProvider>

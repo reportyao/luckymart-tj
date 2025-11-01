@@ -8,7 +8,7 @@ import ProductImageCarousel from '@/components/ProductImageCarousel';
 import MarketingBadgeDisplay from '@/components/MarketingBadgeDisplay';
 import type { Product } from '@/types';
 
-export default function ProductDetailPage() {
+function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { language, t } = useLanguage();

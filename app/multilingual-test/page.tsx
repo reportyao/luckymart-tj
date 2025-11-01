@@ -11,7 +11,7 @@ import { useLanguage } from '@/src/i18n/useLanguageCompat';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
-export default function MultilingualTestPage() {
+function MultilingualTestPage() {
   const { language } = useLanguage();
   const { t } = useTranslation(['common', 'lottery']);
   

@@ -375,7 +375,7 @@ function AdminInvitationsPage() {
   );
 }
 
-export default function WrappedAdminInvitationsPage() {
+function WrappedAdminInvitationsPage() {
   return (
     <PagePermission permissions={AdminPermissions.users.read()}>
       <AdminInvitationsPage />

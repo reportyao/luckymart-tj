@@ -7,7 +7,7 @@ import type { User } from '@/types';
 interface ProfileUser extends Pick<User, 'firstName' | 'username' | 'balance' | 'platformBalance' | 'vipLevel' | 'totalSpent' | 'freeDailyCount'> {
 }
 
-export default function ProfilePage() {
+function ProfilePage() {
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
 

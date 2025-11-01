@@ -10,7 +10,7 @@ import CommissionHistory from '@/components/CommissionHistory';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export default function InvitationPage() {
+function InvitationPage() {
   const { t } = useTranslation('referral');
   const { currentLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState('code');

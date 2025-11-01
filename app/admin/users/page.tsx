@@ -31,7 +31,7 @@ interface UserDetail {
   transactions: any[];
 }
 
-export default function AdminUsersPage() {
+function AdminUsersPage() {
   const router = useRouter();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);

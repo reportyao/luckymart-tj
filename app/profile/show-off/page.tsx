@@ -81,7 +81,7 @@ interface ShowOffPost {
 
 type FilterType = 'all' | 'pending' | 'approved' | 'rejected';
 
-export default function MyShowOffPage() {
+function MyShowOffPage() {
   const [posts, setPosts] = useState<ShowOffPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');

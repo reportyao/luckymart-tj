@@ -38,7 +38,7 @@ interface FirstRechargeStatus {
   message: string;
 }
 
-export default function RewardsPage() {
+function RewardsPage() {
   const router = useRouter();
   const [status, setStatus] = useState<FirstRechargeStatus | null>(null);
   const [loading, setLoading] = useState(true);

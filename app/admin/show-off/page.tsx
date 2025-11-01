@@ -759,7 +759,7 @@ function RecommendationsTab() {
 }
 
 // 主组件
-export default function AdminShowOffPage() {
+function AdminShowOffPage() {
   const [activeTab, setActiveTab] = useState('audit');
 
   const tabs = [

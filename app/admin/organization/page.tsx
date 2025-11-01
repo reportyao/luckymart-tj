@@ -33,7 +33,7 @@ interface Admin {
 
 type TabType = 'departments' | 'roles' | 'admins' | 'logs';
 
-export default function OrganizationPage() {
+function OrganizationPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>('departments');
   const [loading, setLoading] = useState(true);

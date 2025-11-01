@@ -11,7 +11,7 @@ interface MobileLanguageBottomSheetProps {
   isChanging?: boolean;
 }
 
-export default function MobileLanguageBottomSheet({
+function MobileLanguageBottomSheet({
   isOpen,
   onClose,
   currentLanguage,

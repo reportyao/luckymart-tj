@@ -41,7 +41,7 @@ interface LotteryWin {
   };
 }
 
-export default function CreateShowOffPage() {
+function CreateShowOffPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const roundId = searchParams.get('round');

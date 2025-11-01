@@ -30,7 +30,7 @@ interface UserAnalyticsData {
   };
 }
 
-export default function UserAnalytics() {
+function UserAnalytics() {
   const router = useRouter();
   const [adminInfo, setAdminInfo] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('overview');

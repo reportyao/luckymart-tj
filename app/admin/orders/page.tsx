@@ -18,7 +18,7 @@ interface AdminOrder extends Order {
   };
 }
 
-export default function AdminOrdersPage() {
+function AdminOrdersPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);

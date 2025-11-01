@@ -25,7 +25,7 @@ interface ResaleListing {
   };
 }
 
-export default function ResalePage() {
+function ResalePage() {
   const router = useRouter();
   const [listings, setListings] = useState<ResaleListing[]>([]);
   const [loading, setLoading] = useState(true);

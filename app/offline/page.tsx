@@ -61,7 +61,7 @@ interface OfflineOperation {
   status: 'pending' | 'synced' | 'failed';
 }
 
-export default function OfflinePage() {
+function OfflinePage() {
   const { t } = useTranslation();
   const { 
     isOnline, 

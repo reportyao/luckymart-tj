@@ -30,7 +30,7 @@ const FiUser = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default function AdminLayout({
+function AdminLayout({
   children,
 }: {
   children: React.ReactNode;

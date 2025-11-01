@@ -480,7 +480,7 @@ function FinancialDashboard() {
   );
 }
 
-export default function WrappedFinancialDashboard() {
+function WrappedFinancialDashboard() {
   return (
     <PagePermission permissions={AdminPermissions.stats.read()}>
       <FinancialDashboard />

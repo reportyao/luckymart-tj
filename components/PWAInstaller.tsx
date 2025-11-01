@@ -25,7 +25,7 @@ interface PWAInstallerProps {
   customInstructions?: string[];
 }
 
-export default function PWAInstaller() {
+function PWAInstaller() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);

@@ -17,7 +17,7 @@ interface UpdatePromptProps {
   onDismiss?: () => void;
 }
 
-export default function UpdatePrompt({ onUpdate, onDismiss }: UpdatePromptProps) {
+function UpdatePrompt({ onUpdate, onDismiss }: UpdatePromptProps) {
   const [showPrompt, setShowPrompt] = useState(false);
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);

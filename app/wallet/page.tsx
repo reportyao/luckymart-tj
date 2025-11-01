@@ -20,7 +20,7 @@ interface Transaction {
   createdAt: string;
 }
 
-export default function WalletPage() {
+function WalletPage() {
   const router = useRouter();
   const { t } = useLanguage();
   const [transactions, setTransactions] = useState<Transaction[]>([]);

@@ -4,6 +4,14 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePermissions } from '@/hooks/admin/usePermissions';
 
+// 默认导出以兼容现有导入
+export default function PagePermissionWrapper(props: PagePermissionProps) {
+  return <PagePermission {...props} />;
+}
+
+// 保持命名导出
+export { PagePermission };
+
 interface PagePermissionProps {
   permissions: string[];
   children: React.ReactNode;

@@ -39,7 +39,7 @@ interface SystemSettings {
   rechargeInstructions: string;
 }
 
-export default function AdminSettings() {
+function AdminSettings() {
   const router = useRouter();
   const [settings, setSettings] = useState<SystemSettings>({
     siteName: 'LuckyMart TJ',

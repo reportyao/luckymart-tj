@@ -39,7 +39,7 @@ interface CustomAnalysis {
   };
 }
 
-export default function CreateResalePage() {
+function CreateResalePage() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);

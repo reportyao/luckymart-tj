@@ -1,25 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 临时的VAPID公钥路由，移除web-push依赖
 
 // 示例VAPID密钥（生产环境需要替换为真实密钥）
-const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa40HI80NQD6F0jFSJj7Up5khOs8HCAHOqBZGNqn1jWiGCZbfZMUjO_gCZME4Pg';
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `vapid-public-key_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('vapid-public-key_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// 获取VAPID公钥
-export async function GET() {
   try {
-    return NextResponse.json({
-      success: true,
-      publicKey: vapidPublicKey,
-      note: '这是示例密钥，生产环境需要使用真实VAPID密钥'
-    });
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取VAPID公钥失败:', error);
-    return NextResponse.json({
-      success: false,
-      error: '获取VAPID公钥失败'
-    }, { status: 500 });
+    logger.error('vapid-public-key_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
+});
+
+async function handleGET(request: NextRequest) {
+
+    // 获取VAPID公钥
+    export async function GET() {
+      try {
+        return NextResponse.json({
+          success: true,
+          publicKey: vapidPublicKey,
+          note: '这是示例密钥，生产环境需要使用真实VAPID密钥'
+        });
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取VAPID公钥失败:', error);
+        return NextResponse.json({
+          success: false,
+          error: '获取VAPID公钥失败'
+        }, { status: 500 });
+      }
 }
 
 // 保存订阅信息
@@ -45,7 +73,7 @@ export async function POST(request: NextRequest) {
     });
     global.subscriptions = subscriptions;
     
-    console.log('订阅保存成功:', subscription.endpoint);
+    logger.info("API Log", { requestId, data: '订阅保存成功:', subscription.endpoint });'订阅保存成功:', subscription.endpoint);
     
     return NextResponse.json({
       success: true,
@@ -54,7 +82,10 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('保存订阅失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'保存订阅失败:', error);
     return NextResponse.json({
       success: false,
       error: '保存订阅失败'

@@ -5,6 +5,9 @@ import { getLogger } from '@/lib/logger';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -13,108 +16,129 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.users.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `engagement_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('engagement_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('engagement_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// GET - 获取用户参与度分析
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const logger = getLogger();
+async function handleGET(request: NextRequest) {
 
-    try {
+    // GET - 获取用户参与度分析
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const logger = getLogger();
 
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const date = searchParams.get('date'); // 指定某一天的统计
-    const sortBy = searchParams.get('sortBy') || 'engagement_score';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
+        try {
 
-    // 构建查询条件
-    const whereConditions: any = {};
+        const { searchParams } = new URL(request.url);
+        const userId = searchParams.get('userId');
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const date = searchParams.get('date'); // 指定某一天的统计
+        const sortBy = searchParams.get('sortBy') || 'engagement_score';
+        const sortOrder = searchParams.get('sortOrder') || 'desc';
+        const limit = parseInt(searchParams.get('limit') || '50');
+        const offset = parseInt(searchParams.get('offset') || '0');
+
+        // 构建查询条件
+        const whereConditions: any = {};
     
-    if (userId) {
-      whereConditions.user_id = userId;
-    }
+        if (userId) {
+          whereConditions.user_id = userId;
+        }
     
-    if (date) {
-      whereConditions.date = new Date(date);
-    } else if (startDate || endDate) {
-      if (startDate && endDate) {
-        whereConditions.date = {
-          gte: new Date(startDate),
-          lte: new Date(endDate)
-        };
-      } else if (startDate) {
-        whereConditions.date = { gte: new Date(startDate) };
-      } else if (endDate) {
-        whereConditions.date = { lte: new Date(endDate) };
-      }
-    }
-
-    // 获取参与度统计数据
-    const [engagementStats, totalCount] = await Promise.all([
-      prisma.userEngagementStats.findMany({
-        where: whereConditions,
-        orderBy: {
-          [sortBy]: sortOrder as 'asc' | 'desc'
-        },
-        take: limit,
-        skip: offset,
-        include: {
-          users: {
-            select: {
-              id: true,
-              firstName: true,
-              username: true,
-              telegramId: true,
-              vipLevel: true
-            }
+        if (date) {
+          whereConditions.date = new Date(date);
+        } else if (startDate || endDate) {
+          if (startDate && endDate) {
+            whereConditions.date = {
+              gte: new Date(startDate),
+              lte: new Date(endDate)
+            };
+          } else if (startDate) {
+            whereConditions.date = { gte: new Date(startDate) };
+          } else if (endDate) {
+            whereConditions.date = { lte: new Date(endDate) };
           }
         }
-      }),
-      prisma.userEngagementStats.count({ where: whereConditions })
-    ]);
 
-    // 获取汇总统计
-    const summaryStats = await getEngagementSummaryStats(whereConditions);
+        // 获取参与度统计数据
+        const [engagementStats, totalCount] = await Promise.all([
+          prisma.userEngagementStats.findMany({
+            where: whereConditions,
+            orderBy: {
+              [sortBy]: sortOrder as 'asc' | 'desc'
+            },
+            take: limit,
+            skip: offset,
+            include: {
+              users: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  username: true,
+                  telegramId: true,
+                  vipLevel: true
+                }
+              }
+            }
+          }),
+          prisma.userEngagementStats.count({ where: whereConditions })
+        ]);
 
-    // 获取参与度分布
-    const engagementDistribution = await getEngagementDistribution(whereConditions);
+        // 获取汇总统计
+        const summaryStats = await getEngagementSummaryStats(whereConditions);
 
-    // 获取趋势数据
-    const trendData = await getEngagementTrendData(whereConditions);
+        // 获取参与度分布
+        const engagementDistribution = await getEngagementDistribution(whereConditions);
 
-    // 获取用户分群数据
-    const userSegmentation = await getUserSegmentation(whereConditions);
+        // 获取趋势数据
+        const trendData = await getEngagementTrendData(whereConditions);
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        engagementStats,
-        pagination: {
-          total: totalCount,
-          limit,
-          offset,
-          hasMore: offset + limit < totalCount
-        },
-        summary: summaryStats,
-        distribution: engagementDistribution,
-        trends: trendData,
-        segmentation: userSegmentation
-      }
-    });
+        // 获取用户分群数据
+        const userSegmentation = await getUserSegmentation(whereConditions);
 
-    } catch (error: any) {
-      logger.error('获取用户参与度分析失败', error as Error);
-      return NextResponse.json({
-        success: false,
-        error: error.message || '获取用户参与度分析失败'
-      }, { status: 500 });
-    }
-  })(request);
+        return NextResponse.json({
+          success: true,
+          data: {
+            engagementStats,
+            pagination: {
+              total: totalCount,
+              limit,
+              offset,
+              hasMore: offset + limit < totalCount
+            },
+            summary: summaryStats,
+            distribution: engagementDistribution,
+            trends: trendData,
+            segmentation: userSegmentation
+          }
+        });
+
+        } catch (error: any) {
+          logger.error('获取用户参与度分析失败', error as Error);
+          return NextResponse.json({
+            success: false,
+            error: error.message || '获取用户参与度分析失败'
+          }, { status: 500 });
+        }
+}
 }
 
 // PUT - 更新用户参与度统计

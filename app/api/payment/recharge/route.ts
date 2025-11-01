@@ -7,6 +7,9 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { getLogger } from '@/lib/logger';
 import { withRateLimit, rechargeRateLimit } from '@/lib/rate-limit-middleware';
 import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
+import { withErrorHandling } from '@/lib/middleware';
+import { respond } from '@/lib/responses';
+import { CommonErrors } from '@/lib/errors';
 
 // 首充奖励配置
 const FIRST_RECHARGE_REWARDS = {
@@ -141,33 +144,41 @@ async function checkAndGrantFirstRechargeReward(
 }
 
 // 应用速率限制的充值处理函数
-const handleRechargeRequest = async (request: NextRequest) => {
+const handleRechargeRequest = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `recharge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const startTime = Date.now();
 
-  try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return NextResponse.json(
+      respond.customError('UNAUTHORIZED', '未授权').toJSON(),
+      { status: 401 }
+    );
+  }
 
-    const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+  const token = authHeader.substring(7);
+  const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
 
-    logger.info('充值请求开始', {
-      requestId,
-      userId: decoded.userId,
-      tokenPrefix: `${token.substring(0, 10)  }...`
-    });
+  logger.info('充值请求开始', {
+    requestId,
+    userId: decoded.userId,
+    tokenPrefix: `${token.substring(0, 10)}...`
+  });
 
     const body = await request.json();
     const { packageId, paymentMethod } = body;
 
-    // 基础参数验证
-    if (!packageId || !paymentMethod) {
-      return NextResponse.json({ error: '参数不完整：packageId和paymentMethod都是必需的' }, { status: 400 });
-    }
+  // 基础参数验证
+  const body = await request.json();
+  const { packageId, paymentMethod } = body;
+
+  if (!packageId || !paymentMethod) {
+    return NextResponse.json(
+      respond.validationError('参数不完整：packageId和paymentMethod都是必需的').toJSON(),
+      { status: 400 }
+    );
+  }
 
     // 获取系统验证配置
     try {
@@ -234,16 +245,24 @@ const handleRechargeRequest = async (request: NextRequest) => {
       // 自动完成支付（仅用于开发测试）
       await handlePaymentSuccess(order.id, `MOCK_${  Date.now()}`);
       
-      return NextResponse.json({
-        success: true,
-        data: {
-          orderId: order.id,
-          orderNumber,
-          status: 'paid',
-          coins: pkg.coins + pkg.bonusCoins,
-          message: '充值成功（模拟支付）'
-        }
+      const responseData = {
+        orderId: order.id,
+        orderNumber,
+        status: 'paid',
+        coins: pkg.coins + pkg.bonusCoins,
+        message: '充值成功（模拟支付）'
+      };
+
+      logger.info('模拟支付成功', {
+        requestId,
+        orderId: order.id,
+        userId: decoded.userId,
+        coins: pkg.coins + pkg.bonusCoins
       });
+
+      return NextResponse.json(
+        respond.success(responseData, '充值成功（模拟支付）').toJSON()
+      );
     }
 
     // 真实支付 - 生成支付指引，隐藏敏感信息
@@ -274,13 +293,32 @@ const handleRechargeRequest = async (request: NextRequest) => {
       }
     });
 
+    const responseData = {
+      orderId: order.id,
+      orderNumber,
+      amount: parseFloat(pkg.price.toString()),
+      coins: pkg.coins + pkg.bonusCoins,
+      paymentInstructions
+    };
+
+    logger.info('创建支付指引成功', {
+      requestId,
+      orderId: order.id,
+      userId: decoded.userId,
+      amount: pkg.price
+    });
+
+    return NextResponse.json(
+      respond.success(responseData).toJSON()
+    );
+
   } catch (error: any) {
-    const logger = getLogger();
-    logger.error('创建充值订单失败', error, {
+    logger.error('创建充值订单失败', error as Error, {
       requestId,
       userId: decoded?.userId,
-      error: error.message,
-      stack: error.stack
+      packageId: body?.packageId,
+      paymentMethod: body?.paymentMethod,
+      error: error.message
     });
     
     // 记录速率限制监控数据
@@ -300,7 +338,7 @@ const handleRechargeRequest = async (request: NextRequest) => {
 
     // 统一错误处理，不暴露敏感信息
     return NextResponse.json(
-      { error: '创建充值订单失败' },
+      respond.customError('INTERNAL_ERROR', '创建充值订单失败').toJSON(),
       { status: 500 }
     );
   }

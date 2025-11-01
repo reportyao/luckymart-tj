@@ -1,134 +1,162 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { auth } from '@/lib/auth';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
-const prisma = new PrismaClient();
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `posts_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('posts_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// 获取晒单列表
-export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const sort = searchParams.get('sort') || 'latest'; // latest | hottest
-    const userId = searchParams.get('user_id'); // 可选：获取特定用户的晒单
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('posts_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
 
-    const skip = (page - 1) * limit;
+async function handleGET(request: NextRequest) {
 
-    let orderBy: any = {};
-    if (sort === 'hottest') {
-      orderBy = { hotScore: 'desc' };
-    } else {
-      orderBy = { createdAt: 'desc' };
-    }
+    // 获取晒单列表
+    export async function GET(request: NextRequest) {
+      try {
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const sort = searchParams.get('sort') || 'latest'; // latest | hottest
+        const userId = searchParams.get('user_id'); // 可选：获取特定用户的晒单
 
-    // 构建查询条件
-    const where: any = {
-      status: 'approved'
-    };
+        const skip = (page - 1) * limit;
 
-    if (userId) {
-      where.userId = userId;
-    }
+        let orderBy: any = {};
+        if (sort === 'hottest') {
+          orderBy = { hotScore: 'desc' };
+        } else {
+          orderBy = { createdAt: 'desc' };
+        }
 
-    const [posts, total] = await Promise.all([
-      prisma.showOffPosts.findMany({
-        where,
-        include: {
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              avatarUrl: true,
-              vipLevel: true,
-              preferredLanguage: true
-            }
-          },
-          round: {
-            select: {
-              id: true,
-              productId: true,
-              roundNumber: true,
-              winningNumber: true,
-              products: {
+        // 构建查询条件
+        const where: any = {
+          status: 'approved'
+        };
+
+        if (userId) {
+          where.userId = userId;
+        }
+
+        const [posts, total] = await Promise.all([
+          prisma.showOffPosts.findMany({
+            where,
+            include: {
+              user: {
                 select: {
                   id: true,
-                  nameMultilingual: true,
-                  nameZh: true,
-                  nameEn: true,
-                  nameRu: true,
-                  images: true,
-                  marketPrice: true
+                  firstName: true,
+                  lastName: true,
+                  avatarUrl: true,
+                  vipLevel: true,
+                  preferredLanguage: true
+                }
+              },
+              round: {
+                select: {
+                  id: true,
+                  productId: true,
+                  roundNumber: true,
+                  winningNumber: true,
+                  products: {
+                    select: {
+                      id: true,
+                      nameMultilingual: true,
+                      nameZh: true,
+                      nameEn: true,
+                      nameRu: true,
+                      images: true,
+                      marketPrice: true
+                    }
+                  }
                 }
               }
-            }
+            },
+            orderBy,
+            skip,
+            take: limit
+          }),
+          prisma.showOffPosts.count({ where })
+        ]);
+
+        // 计算分页信息
+        const totalPages = Math.ceil(total / limit);
+        const hasMore = page < totalPages;
+
+        // 格式化返回数据
+        const formattedPosts = posts.map((post : any) => ({
+          id: post.id,
+          user: {
+            id: post.user.id,
+            name: `${post.user.firstName} ${post.user.lastName || ''}`.trim(),
+            avatar: post.user.avatarUrl,
+            vipLevel: post.user.vipLevel,
+            preferredLanguage: post.user.preferredLanguage
+          },
+          content: post.content,
+          images: post.images,
+          product: {
+            id: post.round.products.id,
+            name: post.round.products.nameMultilingual || 
+                  post.round.products.nameZh || 
+                  post.round.products.nameEn || 
+                  post.round.products.nameRu,
+            images: post.round.products.images,
+            marketPrice: post.round.products.marketPrice
+          },
+          stats: {
+            likeCount: post.likeCount,
+            commentCount: post.commentCount,
+            shareCount: post.shareCount,
+            viewCount: post.viewCount
+          },
+          hotScore: post.hotScore,
+          createdAt: post.createdAt
+        }));
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            posts: formattedPosts,
+            pagination: {
+              page,
+              limit,
+              total,
+              totalPages,
+              hasMore
+            },
+            sort
           }
-        },
-        orderBy,
-        skip,
-        take: limit
-      }),
-      prisma.showOffPosts.count({ where })
-    ]);
+        });
 
-    // 计算分页信息
-    const totalPages = Math.ceil(total / limit);
-    const hasMore = page < totalPages;
-
-    // 格式化返回数据
-    const formattedPosts = posts.map((post : any) => ({
-      id: post.id,
-      user: {
-        id: post.user.id,
-        name: `${post.user.firstName} ${post.user.lastName || ''}`.trim(),
-        avatar: post.user.avatarUrl,
-        vipLevel: post.user.vipLevel,
-        preferredLanguage: post.user.preferredLanguage
-      },
-      content: post.content,
-      images: post.images,
-      product: {
-        id: post.round.products.id,
-        name: post.round.products.nameMultilingual || 
-              post.round.products.nameZh || 
-              post.round.products.nameEn || 
-              post.round.products.nameRu,
-        images: post.round.products.images,
-        marketPrice: post.round.products.marketPrice
-      },
-      stats: {
-        likeCount: post.likeCount,
-        commentCount: post.commentCount,
-        shareCount: post.shareCount,
-        viewCount: post.viewCount
-      },
-      hotScore: post.hotScore,
-      createdAt: post.createdAt
-    }));
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        posts: formattedPosts,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages,
-          hasMore
-        },
-        sort
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取晒单列表失败:', error);
+        return NextResponse.json(
+          { success: false, error: '获取晒单列表失败' },
+          { status: 500 }
+        );
       }
-    });
-
-  } catch (error) {
-    console.error('获取晒单列表失败:', error);
-    return NextResponse.json(
-      { success: false, error: '获取晒单列表失败' },
-      { status: 500 }
-    );
-  }
 }
 
 // 发布晒单
@@ -233,7 +261,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('发布晒单失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'发布晒单失败:', error);
     return NextResponse.json(
       { success: false, error: '发布晒单失败' },
       { status: 500 }
@@ -306,6 +337,9 @@ async function processPostReward(postId: string, userId: string) {
       });
     });
   } catch (error) {
-    console.error('处理晒单奖励失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'处理晒单奖励失败:', error);
   }
 }

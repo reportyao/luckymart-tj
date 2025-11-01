@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { prisma } from '@/lib/prisma';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.read() });
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.write() });
@@ -49,7 +53,10 @@ async function logSettingChange(
       VALUES (${settingKey}, ${oldValue}, ${newValue}, ${changeType}, ${operatorId}, ${operatorName}, ${changeReason}, ${ipAddress}::inet, ${userAgent})
     `;
   } catch (error) {
-    console.error('记录操作日志失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'记录操作日志失败:', error);
   }
 }
 
@@ -80,7 +87,10 @@ async function getAllSystemSettings() {
           try {
             value = JSON.parse(value);
           } catch (e) {
-            console.error('解析JSON设置失败:', setting.setting_key, e);
+            logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'解析JSON设置失败:', setting.setting_key, e);
           }
           break;
       }
@@ -102,7 +112,10 @@ async function getAllSystemSettings() {
     updateCache(settingsMap);
     return settingsMap;
   } catch (error) {
-    console.error('获取系统设置失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取系统设置失败:', error);
     throw error;
   }
 }
@@ -177,29 +190,53 @@ async function updateSystemSetting(
     settingsCache = null;
     
   } catch (error) {
-    console.error('更新系统设置失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新系统设置失败:', error);
+    throw error;
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `system_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('system_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('system_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
     throw error;
   }
-}
+});
 
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const url = new URL(request.url);
-    const category = url.searchParams.get('category');
-    const subCategory = url.searchParams.get('sub_category');
-    const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '50');
-    const offset = (page - 1) * limit;
-
-    let query = `
-      SELECT * FROM system_settings WHERE is_active = true
-    `;
-    const params: any[] = [];
-
-    if (category) {
-      query += ` AND category = $${params.length + 1}`;
-      params.push(category);
+async function handleGET(request: NextRequest) {
     }
+
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const url = new URL(request.url);
+        const category = url.searchParams.get('category');
+        const subCategory = url.searchParams.get('sub_category');
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = parseInt(url.searchParams.get('limit') || '50');
+        const offset = (page - 1) * limit;
+
+        let query = `
+          SELECT * FROM system_settings WHERE is_active = true
+        `;
+        const params: any[] = [];
+
+        if (category) {
+          query += ` AND category = $${params.length + 1}`;
+          params.push(category);
+}
 
     if (subCategory) {
       query += ` AND sub_category = $${params.length + 1}`;

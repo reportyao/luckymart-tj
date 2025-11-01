@@ -1,80 +1,105 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 创建权限中间件
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.USERS_READ);
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.USERS_WRITE);
 
 /**
- * GET /api/admin/show-off/recommendations
- * 获取推荐列表和配置
- */
-export async function GET(req: NextRequest) {
-  return withReadPermission(req, async (adminUser) => {
-    const { searchParams } = new URL(req.url);
-    const position = searchParams.get('position'); // homepage, detail, profile
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `recommendations_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('recommendations_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-    // 获取推荐配置
-    const recommendations = await prisma.showOffRecommendation.findMany({
-      where: position ? { position } : undefined,
-      include: {
-        post: {
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('recommendations_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
+
+async function handleGET(request: NextRequest) {
+     * 获取推荐列表和配置
+     */
+    export async function GET(req: NextRequest) {
+      return withReadPermission(req, async (adminUser) => {
+        const { searchParams } = new URL(req.url);
+        const position = searchParams.get('position'); // homepage, detail, profile
+
+        // 获取推荐配置
+        const recommendations = await prisma.showOffRecommendation.findMany({
+          where: position ? { position } : undefined,
           include: {
-            user: {
-              select: {
-                id: true,
-                username: true,
-                avatar: true,
-              },
-            },
-            prize: {
-              select: {
-                id: true,
-                name: true,
+            post: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    username: true,
+                    avatar: true,
+                  },
+                },
+                prize: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
           },
-        },
-      },
-      orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
-    });
+          orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
+        });
 
-    // 获取推荐位配置
-    const positionConfig = await prisma.systemSettings.findFirst({
-      where: {
-        key: 'show_off_recommendation_positions',
-      },
-    });
+        // 获取推荐位配置
+        const positionConfig = await prisma.systemSettings.findFirst({
+          where: {
+            key: 'show_off_recommendation_positions',
+          },
+        });
 
-    const positions = positionConfig?.value as any || {
-      homepage: { maxCount: 5, description: '首页推荐位' },
-      detail: { maxCount: 3, description: '详情页推荐位' },
-      profile: { maxCount: 4, description: '个人页推荐位' },
-    };
+        const positions = positionConfig?.value as any || {
+          homepage: { maxCount: 5, description: '首页推荐位' },
+          detail: { maxCount: 3, description: '详情页推荐位' },
+          profile: { maxCount: 4, description: '个人页推荐位' },
+        };
 
-    return NextResponse.json({
-      recommendations: recommendations.map((rec : any) => ({
-        id: rec.id,
-        position: rec.position,
-        priority: rec.priority,
-        startTime: rec.startTime,
-        endTime: rec.endTime,
-        isActive: rec.isActive,
-        post: {
-          id: rec.post.id,
-          content: rec.post.content,
-          images: rec.post.images,
-          likesCount: rec.post.likesCount,
-          commentsCount: rec.post.commentsCount,
-          hotnessScore: rec.post.hotnessScore,
-          user: rec.post.user,
-          prize: rec.post.prize,
-        },
-      })),
-      positions,
-    });
-  });
+        return NextResponse.json({
+          recommendations: recommendations.map((rec : any) => ({
+            id: rec.id,
+            position: rec.position,
+            priority: rec.priority,
+            startTime: rec.startTime,
+            endTime: rec.endTime,
+            isActive: rec.isActive,
+            post: {
+              id: rec.post.id,
+              content: rec.post.content,
+              images: rec.post.images,
+              likesCount: rec.post.likesCount,
+              commentsCount: rec.post.commentsCount,
+              hotnessScore: rec.post.hotnessScore,
+              user: rec.post.user,
+              prize: rec.post.prize,
+            },
+          })),
+          positions,
+        });
+      });
 }
 
 /**

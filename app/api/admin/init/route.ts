@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
+
 
 // 初始化管理员账号 - 仅供首次设置使用，增加IP白名单限制
 export async function POST(request: Request) {
@@ -56,7 +59,10 @@ export async function POST(request: Request) {
     });
 
   } catch (error: any) {
-    console.error('创建管理员失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建管理员失败:', error);
     // 统一错误处理，不暴露敏感信息
     return NextResponse.json(
       { error: '创建管理员账号失败' }, 

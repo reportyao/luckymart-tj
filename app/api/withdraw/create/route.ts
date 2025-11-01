@@ -7,6 +7,7 @@ import { validationEngine } from '@/lib/validation';
 import { withRateLimit, withdrawRateLimit } from '@/lib/rate-limit-middleware';
 import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
 import type { ApiResponse, WithdrawRequest } from '@/types';
+import { getLogger } from '@/lib/logger';
 
 // 应用速率限制的提现处理函数
 const handleWithdrawRequest = async (request: NextRequest) => {
@@ -146,7 +147,10 @@ const handleWithdrawRequest = async (request: NextRequest) => {
     });
 
   } catch (error: any) {
-    console.error('创建提现申请失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建提现申请失败:', error);
     
     // 记录速率限制监控数据
     rateLimitMonitor.recordMetric({

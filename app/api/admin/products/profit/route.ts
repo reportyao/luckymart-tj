@@ -4,6 +4,10 @@ import { prisma } from '@/lib/prisma';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -12,191 +16,215 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.products.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `profit_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('profit_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('profit_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// GET - 获取利润分析数据
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    try {
+async function handleGET(request: NextRequest) {
 
-    const { searchParams } = new URL(request.url);
-    const productId = searchParams.get('productId');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    // GET - 获取利润分析数据
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        try {
 
-    // 构建查询条件
-    const where: any = {};
-    if (productId) {
-      where.product_id = productId;
-    }
-    if (startDate && endDate) {
-      where.date = {
-        gte: new Date(startDate),
-        lte: new Date(endDate)
-      };
-    }
+        const { searchParams } = new URL(request.url);
+        const productId = searchParams.get('productId');
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '20');
 
-    // 获取分页数据
-    const [profitData, totalCount] = await Promise.all([
-      prisma.profitAnalysis.findMany({
-        where,
-        orderBy: { date: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-          products: {
-            select: {
-              nameZh: true,
-              nameEn: true,
-              nameRu: true,
-              category: true,
-              marketPrice: true
+        // 构建查询条件
+        const where: any = {};
+        if (productId) {
+          where.product_id = productId;
+        }
+        if (startDate && endDate) {
+          where.date = {
+            gte: new Date(startDate),
+            lte: new Date(endDate)
+          };
+        }
+
+        // 获取分页数据
+        const [profitData, totalCount] = await Promise.all([
+          prisma.profitAnalysis.findMany({
+            where,
+            orderBy: { date: 'desc' },
+            skip: (page - 1) * limit,
+            take: limit,
+            include: {
+              products: {
+                select: {
+                  nameZh: true,
+                  nameEn: true,
+                  nameRu: true,
+                  category: true,
+                  marketPrice: true
+                }
+              }
+            }
+          }),
+          prisma.profitAnalysis.count({ where })
+        ]);
+
+        // 统计汇总数据
+        const summary = await prisma.profitAnalysis.aggregate({
+          where,
+          _sum: {
+            revenue: true,
+            product_cost: true,
+            platform_fee: true,
+            operation_cost: true,
+            gross_profit: true,
+            net_profit: true
+          },
+          _avg: {
+            roi: true,
+            profit_margin: true,
+            cost_ratio: true
+          }
+        });
+
+        // 获取实时数据（从订单表计算今日数据）
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayStr = today.toISOString().split('T')[0];
+
+        // 今日收入
+        const todayRevenue = await prisma.orders.aggregate({
+          where: {
+            createdAt: {
+              gte: today
+            },
+            paymentStatus: 'completed'
+          },
+          _sum: {
+            totalAmount: true
+          }
+        });
+
+        // 今日平台费用
+        const todayPlatformFees = await prisma.resaleListings.aggregate({
+          where: {
+            listedAt: {
+              gte: today
+            },
+            status: 'sold'
+          },
+          _sum: {
+            platformFee: true
+          }
+        });
+
+        // 转换数据格式
+        const formattedData = profitData.map((item : any) => {
+          const revenue = Number(item.revenue);
+          const productCost = Number(item.product_cost);
+          const platformFee = Number(item.platform_fee);
+          const operationCost = Number(item.operation_cost);
+          const grossProfit = Number(item.gross_profit);
+          const netProfit = Number(item.net_profit);
+
+          return {
+            id: item.id,
+            productId: item.product_id,
+            productName: {
+              zh: item.products?.nameZh || '',
+              en: item.products?.nameEn || '',
+              ru: item.products?.nameRu || ''
+            },
+            category: item.products?.category || '',
+            marketPrice: Number(item.products?.marketPrice || 0),
+            date: item.date.toISOString().split('T')[0],
+            revenue,
+            productCost,
+            platformFee,
+            operationCost,
+            grossProfit,
+            netProfit,
+            roi: Number(item.roi),
+            profitMargin: Number(item.profit_margin),
+            costRatio: Number(item.cost_ratio),
+            createdAt: item.createdAt.toISOString(),
+            updatedAt: item.updatedAt.toISOString()
+          };
+        });
+
+        // 计算汇总指标
+        const totalRevenue = Number(summary._sum.revenue || 0);
+        const totalProductCost = Number(summary._sum.product_cost || 0);
+        const totalPlatformFee = Number(summary._sum.platform_fee || 0);
+        const totalOperationCost = Number(summary._sum.operation_cost || 0);
+        const totalGrossProfit = Number(summary._sum.gross_profit || 0);
+        const totalNetProfit = Number(summary._sum.net_profit || 0);
+
+        const overallProfitMargin = totalRevenue > 0 ? (totalNetProfit / totalRevenue) * 100 : 0;
+        const overallCostRatio = totalRevenue > 0 ? ((totalProductCost + totalPlatformFee + totalOperationCost) / totalRevenue) * 100 : 0;
+        const overallROI = totalProductCost > 0 ? ((totalNetProfit - totalOperationCost) / totalProductCost) * 100 : 0;
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            profit: formattedData,
+            pagination: {
+              currentPage: page,
+              totalPages: Math.ceil(totalCount / limit),
+              totalCount,
+              hasNext: page * limit < totalCount,
+              hasPrev: page > 1
+            },
+            summary: {
+              totalRevenue,
+              totalProductCost,
+              totalPlatformFee,
+              totalOperationCost,
+              totalGrossProfit,
+              totalNetProfit,
+              avgROI: Number(summary._avg.roi || 0),
+              avgProfitMargin: Number(summary._avg.profit_margin || 0),
+              avgCostRatio: Number(summary._avg.cost_ratio || 0)
+            },
+            overallMetrics: {
+              overallProfitMargin,
+              overallCostRatio,
+              overallROI
+            },
+            realTimeData: {
+              todayRevenue: Number(todayRevenue._sum.totalAmount || 0),
+              todayPlatformFees: Number(todayPlatformFees._sum.platformFee || 0),
+              date: todayStr
             }
           }
+        });
+        } catch (error: any) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取利润分析数据失败:', error);
+          return NextResponse.json({
+            success: false,
+            error: '获取利润分析数据失败'
+          }, { status: 500 });
         }
-      }),
-      prisma.profitAnalysis.count({ where })
-    ]);
-
-    // 统计汇总数据
-    const summary = await prisma.profitAnalysis.aggregate({
-      where,
-      _sum: {
-        revenue: true,
-        product_cost: true,
-        platform_fee: true,
-        operation_cost: true,
-        gross_profit: true,
-        net_profit: true
-      },
-      _avg: {
-        roi: true,
-        profit_margin: true,
-        cost_ratio: true
-      }
-    });
-
-    // 获取实时数据（从订单表计算今日数据）
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-
-    // 今日收入
-    const todayRevenue = await prisma.orders.aggregate({
-      where: {
-        createdAt: {
-          gte: today
-        },
-        paymentStatus: 'completed'
-      },
-      _sum: {
-        totalAmount: true
-      }
-    });
-
-    // 今日平台费用
-    const todayPlatformFees = await prisma.resaleListings.aggregate({
-      where: {
-        listedAt: {
-          gte: today
-        },
-        status: 'sold'
-      },
-      _sum: {
-        platformFee: true
-      }
-    });
-
-    // 转换数据格式
-    const formattedData = profitData.map((item : any) => {
-      const revenue = Number(item.revenue);
-      const productCost = Number(item.product_cost);
-      const platformFee = Number(item.platform_fee);
-      const operationCost = Number(item.operation_cost);
-      const grossProfit = Number(item.gross_profit);
-      const netProfit = Number(item.net_profit);
-
-      return {
-        id: item.id,
-        productId: item.product_id,
-        productName: {
-          zh: item.products?.nameZh || '',
-          en: item.products?.nameEn || '',
-          ru: item.products?.nameRu || ''
-        },
-        category: item.products?.category || '',
-        marketPrice: Number(item.products?.marketPrice || 0),
-        date: item.date.toISOString().split('T')[0],
-        revenue,
-        productCost,
-        platformFee,
-        operationCost,
-        grossProfit,
-        netProfit,
-        roi: Number(item.roi),
-        profitMargin: Number(item.profit_margin),
-        costRatio: Number(item.cost_ratio),
-        createdAt: item.createdAt.toISOString(),
-        updatedAt: item.updatedAt.toISOString()
-      };
-    });
-
-    // 计算汇总指标
-    const totalRevenue = Number(summary._sum.revenue || 0);
-    const totalProductCost = Number(summary._sum.product_cost || 0);
-    const totalPlatformFee = Number(summary._sum.platform_fee || 0);
-    const totalOperationCost = Number(summary._sum.operation_cost || 0);
-    const totalGrossProfit = Number(summary._sum.gross_profit || 0);
-    const totalNetProfit = Number(summary._sum.net_profit || 0);
-
-    const overallProfitMargin = totalRevenue > 0 ? (totalNetProfit / totalRevenue) * 100 : 0;
-    const overallCostRatio = totalRevenue > 0 ? ((totalProductCost + totalPlatformFee + totalOperationCost) / totalRevenue) * 100 : 0;
-    const overallROI = totalProductCost > 0 ? ((totalNetProfit - totalOperationCost) / totalProductCost) * 100 : 0;
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        profit: formattedData,
-        pagination: {
-          currentPage: page,
-          totalPages: Math.ceil(totalCount / limit),
-          totalCount,
-          hasNext: page * limit < totalCount,
-          hasPrev: page > 1
-        },
-        summary: {
-          totalRevenue,
-          totalProductCost,
-          totalPlatformFee,
-          totalOperationCost,
-          totalGrossProfit,
-          totalNetProfit,
-          avgROI: Number(summary._avg.roi || 0),
-          avgProfitMargin: Number(summary._avg.profit_margin || 0),
-          avgCostRatio: Number(summary._avg.cost_ratio || 0)
-        },
-        overallMetrics: {
-          overallProfitMargin,
-          overallCostRatio,
-          overallROI
-        },
-        realTimeData: {
-          todayRevenue: Number(todayRevenue._sum.totalAmount || 0),
-          todayPlatformFees: Number(todayPlatformFees._sum.platformFee || 0),
-          date: todayStr
-        }
-      }
-    });
-    } catch (error: any) {
-      console.error('获取利润分析数据失败:', error);
-      return NextResponse.json({
-        success: false,
-        error: '获取利润分析数据失败'
-      }, { status: 500 });
-    }
-  })(request);
+}
 }
 
 // POST - 创建或更新利润分析数据
@@ -302,7 +330,10 @@ export async function POST(request: NextRequest) {
       }
     });
     } catch (error: any) {
-      console.error('保存利润分析数据失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'保存利润分析数据失败:', error);
       return NextResponse.json({
         success: false,
         error: '保存利润分析数据失败'
@@ -439,7 +470,10 @@ export async function PUT(request: NextRequest) {
       }
     });
     } catch (error: any) {
-      console.error('批量更新利润数据失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'批量更新利润数据失败:', error);
       return NextResponse.json({
         success: false,
         error: '批量更新利润数据失败'

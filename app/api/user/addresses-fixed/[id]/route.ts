@@ -16,6 +16,7 @@ import {
   maskSensitiveData
 } from '@/lib/security-validation';
 import { AppError, ErrorFactory } from '@/lib/errors';
+import { getLogger } from '@/lib/logger';
 
 // 速率限制检查器
 const rateLimitChecker = new RateLimitChecker();
@@ -193,7 +194,10 @@ export async function PUT(
         .eq('userId', user.userId);
 
       if (updateError) {
-        console.error('取消其他默认地址失败:', updateError);
+        logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'取消其他默认地址失败:', updateError);
         throw new Error('设置默认地址失败');
       }
     }
@@ -218,7 +222,10 @@ export async function PUT(
       .single();
 
     if (error) {
-      console.error('更新地址失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新地址失败:', error);
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '更新地址失败'
@@ -271,7 +278,10 @@ export async function PUT(
     return setSecurityResponseHeaders(response.headers);
 
   } catch (error: any) {
-    console.error('更新地址失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新地址失败:', error);
     
     const appError = ErrorFactory.wrapError(error, '更新地址');
     const response = NextResponse.json<ApiResponse>({
@@ -386,7 +396,10 @@ export async function DELETE(
           .eq('id', otherAddresses[0].id);
 
         if (updateError) {
-          console.error('设置新的默认地址失败:', updateError);
+          logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'设置新的默认地址失败:', updateError);
         }
       }
     }
@@ -399,7 +412,10 @@ export async function DELETE(
       .eq('userId', user.userId); // 双重验证
 
     if (error) {
-      console.error('删除地址失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'删除地址失败:', error);
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '删除地址失败'
@@ -454,7 +470,10 @@ export async function DELETE(
     return setSecurityResponseHeaders(response.headers);
 
   } catch (error: any) {
-    console.error('删除地址失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'删除地址失败:', error);
     
     const appError = ErrorFactory.wrapError(error, '删除地址');
     const response = NextResponse.json<ApiResponse>({
@@ -505,7 +524,10 @@ async function logSecurityEvent(event: {
         created_at: new Date().toISOString()
       });
   } catch (error) {
-    console.error('记录安全事件失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'记录安全事件失败:', error);
   }
 }
 
@@ -531,6 +553,9 @@ async function logUserActivity(activity: {
         created_at: new Date().toISOString()
       });
   } catch (error) {
-    console.error('记录用户活动失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'记录用户活动失败:', error);
   }
 }

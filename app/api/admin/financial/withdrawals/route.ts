@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -21,143 +25,170 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware({
  * Query Parameters:
  * - periodType: 期间类型 (daily/weekly/monthly/quarterly)
  * - startDate: 开始日期
- * - endDate: 结束日期
- * - limit: 限制返回记录数
- */
-export async function GET(request: NextRequest) {
-  return await withStatsPermission(async (request: any, admin: any) => {
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `withdrawals_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('withdrawals_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
   try {
-    const { searchParams } = new URL(request.url);
-    const periodType = searchParams.get('periodType') || 'daily';
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const limit = parseInt(searchParams.get('limit') || '100');
-
-    let query = supabase
-      .from('withdrawal_records')
-      .select('*')
-      .eq('period_type', periodType)
-      .order('period_start', { ascending: false })
-      .limit(limit);
-
-    if (startDate && endDate) {
-      query = query
-        .gte('period_start', startDate)
-        .lte('period_end', endDate);
-    } else if (startDate) {
-      query = query.gte('period_start', startDate);
-    } else if (endDate) {
-      query = query.lte('period_end', endDate);
-    } else {
-      // 默认获取最近30天的数据
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      query = query.gte('period_start', thirtyDaysAgo.toISOString().split('T')[0]);
-    }
-
-    const { data: withdrawalData, error } = await query;
-
-    if (error) {
-      console.error('查询提现统计数据失败:', error);
-      return NextResponse.json(
-        { error: '查询提现统计数据失败' },
-        { status: 500 }
-      );
-    }
-
-    // 计算汇总统计
-    const totalStats = withdrawalData?.reduce((acc, curr) => {
-      acc.totalAmount += parseFloat(curr.total_amount.toString());
-      acc.totalUsers += curr.total_users;
-      acc.totalCount += curr.withdrawal_count;
-      acc.successCount += curr.success_count;
-      acc.failureCount += curr.failure_count;
-      acc.platformFee += parseFloat(curr.platform_fee.toString());
-      return acc;
-    }, {
-      totalAmount: 0,
-      totalUsers: 0,
-      totalCount: 0,
-      successCount: 0,
-      failureCount: 0,
-      platformFee: 0
-    }) || {};
-
-    const overallSuccessRate = totalStats.totalCount > 0 
-      ? (totalStats.successCount / totalStats.totalCount) * 100 
-      : 0;
-
-    const averageAmount = totalStats.totalUsers > 0 
-      ? totalStats.totalAmount / totalStats.totalUsers 
-      : 0;
-
-    // 按提现方式分组统计
-    const methodBreakdown = withdrawalData?.reduce((acc, curr) => {
-      // 从提现请求表获取提现方式分布
-      return acc;
-    }, {} as Record<string, any>) || {};
-
-    // 趋势数据
-    const trendData = withdrawalData?.slice(0, 30).reverse().map(item => ({
-      date: item.period_start,
-      totalAmount: parseFloat(item.total_amount.toString()),
-      totalUsers: item.total_users,
-      averageAmount: parseFloat(item.average_amount.toString()),
-      platformFee: parseFloat(item.platform_fee.toString()),
-      withdrawalCount: item.withdrawal_count,
-      successCount: item.success_count,
-      failureCount: item.failure_count,
-      successRate: parseFloat(item.success_rate.toString())
-    })) || [];
-
-    // 提现状态分布
-    const statusDistribution = {
-      success: totalStats.successCount,
-      failure: totalStats.failureCount,
-      percentage: {
-        success: overallSuccessRate,
-        failure: 100 - overallSuccessRate
-      }
-    };
-
-    // 提现金额分布分析
-    const amountDistribution = analyzeAmountDistribution(withdrawalData || []);
-
-    const response = {
-      data: withdrawalData || [],
-      summary: {
-        period: `${startDate || ''} - ${endDate || ''}`,
-        totalAmount: totalStats.totalAmount,
-        totalUsers: totalStats.totalUsers,
-        totalCount: totalStats.totalCount,
-        averageAmount,
-        platformFee: totalStats.platformFee,
-        successRate: overallSuccessRate,
-        periodType
-      },
-      statusDistribution,
-      amountDistribution,
-      trendData,
-      methodBreakdown,
-      keyMetrics: {
-        averageDailyAmount: trendData.length > 0 ? totalStats.totalAmount / trendData.length : 0,
-        averageDailyUsers: trendData.length > 0 ? totalStats.totalUsers / trendData.length : 0,
-        successRateTrend: calculateTrend(trendData.map((t : any) => t.successRate)),
-        amountTrend: calculateTrend(trendData.map((t : any) => t.totalAmount)),
-        platformRevenue: totalStats.platformFee
-      }
-    };
-
-    return NextResponse.json(response);
-
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取提现统计API错误:', error);
-    return NextResponse.json(
-      { error: '服务器内部错误' },
-      { status: 500 }
-    );
+    logger.error('withdrawals_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+     * - limit: 限制返回记录数
+     */
+    export async function GET(request: NextRequest) {
+      return await withStatsPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const periodType = searchParams.get('periodType') || 'daily';
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const limit = parseInt(searchParams.get('limit') || '100');
+
+        let query = supabase
+          .from('withdrawal_records')
+          .select('*')
+          .eq('period_type', periodType)
+          .order('period_start', { ascending: false })
+          .limit(limit);
+
+        if (startDate && endDate) {
+          query = query
+            .gte('period_start', startDate)
+            .lte('period_end', endDate);
+        } else if (startDate) {
+          query = query.gte('period_start', startDate);
+        } else if (endDate) {
+          query = query.lte('period_end', endDate);
+        } else {
+          // 默认获取最近30天的数据
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          query = query.gte('period_start', thirtyDaysAgo.toISOString().split('T')[0]);
+        }
+
+        const { data: withdrawalData, error } = await query;
+
+        if (error) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'查询提现统计数据失败:', error);
+          return NextResponse.json(
+            { error: '查询提现统计数据失败' },
+            { status: 500 }
+          );
+        }
+
+        // 计算汇总统计
+        const totalStats = withdrawalData?.reduce((acc, curr) => {
+          acc.totalAmount += parseFloat(curr.total_amount.toString());
+          acc.totalUsers += curr.total_users;
+          acc.totalCount += curr.withdrawal_count;
+          acc.successCount += curr.success_count;
+          acc.failureCount += curr.failure_count;
+          acc.platformFee += parseFloat(curr.platform_fee.toString());
+          return acc;
+        }, {
+          totalAmount: 0,
+          totalUsers: 0,
+          totalCount: 0,
+          successCount: 0,
+          failureCount: 0,
+          platformFee: 0
+        }) || {};
+
+        const overallSuccessRate = totalStats.totalCount > 0 
+          ? (totalStats.successCount / totalStats.totalCount) * 100 
+          : 0;
+
+        const averageAmount = totalStats.totalUsers > 0 
+          ? totalStats.totalAmount / totalStats.totalUsers 
+          : 0;
+
+        // 按提现方式分组统计
+        const methodBreakdown = withdrawalData?.reduce((acc, curr) => {
+          // 从提现请求表获取提现方式分布
+          return acc;
+        }, {} as Record<string, any>) || {};
+
+        // 趋势数据
+        const trendData = withdrawalData?.slice(0, 30).reverse().map(item => ({
+          date: item.period_start,
+          totalAmount: parseFloat(item.total_amount.toString()),
+          totalUsers: item.total_users,
+          averageAmount: parseFloat(item.average_amount.toString()),
+          platformFee: parseFloat(item.platform_fee.toString()),
+          withdrawalCount: item.withdrawal_count,
+          successCount: item.success_count,
+          failureCount: item.failure_count,
+          successRate: parseFloat(item.success_rate.toString())
+        })) || [];
+
+        // 提现状态分布
+        const statusDistribution = {
+          success: totalStats.successCount,
+          failure: totalStats.failureCount,
+          percentage: {
+            success: overallSuccessRate,
+            failure: 100 - overallSuccessRate
+          }
+        };
+
+        // 提现金额分布分析
+        const amountDistribution = analyzeAmountDistribution(withdrawalData || []);
+
+        const response = {
+          data: withdrawalData || [],
+          summary: {
+            period: `${startDate || ''} - ${endDate || ''}`,
+            totalAmount: totalStats.totalAmount,
+            totalUsers: totalStats.totalUsers,
+            totalCount: totalStats.totalCount,
+            averageAmount,
+            platformFee: totalStats.platformFee,
+            successRate: overallSuccessRate,
+            periodType
+          },
+          statusDistribution,
+          amountDistribution,
+          trendData,
+          methodBreakdown,
+          keyMetrics: {
+            averageDailyAmount: trendData.length > 0 ? totalStats.totalAmount / trendData.length : 0,
+            averageDailyUsers: trendData.length > 0 ? totalStats.totalUsers / trendData.length : 0,
+            successRateTrend: calculateTrend(trendData.map((t : any) => t.successRate)),
+            amountTrend: calculateTrend(trendData.map((t : any) => t.totalAmount)),
+            platformRevenue: totalStats.platformFee
+          }
+        };
+
+        return NextResponse.json(response);
+
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取提现统计API错误:', error);
+        return NextResponse.json(
+          { error: '服务器内部错误' },
+          { status: 500 }
+        );
+      }
+      })(request);
 }
 
 /**
@@ -281,7 +312,10 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('保存提现统计数据失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'保存提现统计数据失败:', error);
       return NextResponse.json(
         { error: '保存提现统计数据失败' },
         { status: 500 }
@@ -308,7 +342,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('计算提现统计API错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'计算提现统计API错误:', error);
     return NextResponse.json(
       { error: '服务器内部错误' },
       { status: 500 }

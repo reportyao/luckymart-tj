@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 创建权限中间件
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.USERS_READ);
@@ -87,105 +91,126 @@ function detectSuspiciousContent(post: any): string[] {
 }
 
 /**
- * GET /api/admin/show-off/content-quality
- * 获取内容质量分析
- */
-export async function GET(req: NextRequest) {
-  return withReadPermission(req, async (adminUser) => {
-    const { searchParams } = new URL(req.url);
-    const filter = searchParams.get('filter') || 'all'; // all, low_quality, suspicious
-    const limit = parseInt(searchParams.get('limit') || '50');
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `content-quality_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('content-quality_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-    // 获取晒单数据
-    const posts = await prisma.showOffPost.findMany({
-      where: {
-        status: 'approved',
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            avatar: true,
-            _count: {
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('content-quality_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
+
+async function handleGET(request: NextRequest) {
+     * 获取内容质量分析
+     */
+    export async function GET(req: NextRequest) {
+      return withReadPermission(req, async (adminUser) => {
+        const { searchParams } = new URL(req.url);
+        const filter = searchParams.get('filter') || 'all'; // all, low_quality, suspicious
+        const limit = parseInt(searchParams.get('limit') || '50');
+
+        // 获取晒单数据
+        const posts = await prisma.showOffPost.findMany({
+          where: {
+            status: 'approved',
+          },
+          include: {
+            user: {
               select: {
-                showOffPosts: true,
+                id: true,
+                username: true,
+                avatar: true,
+                _count: {
+                  select: {
+                    showOffPosts: true,
+                  },
+                },
+              },
+            },
+            prize: {
+              select: {
+                id: true,
+                name: true,
               },
             },
           },
-        },
-        prize: {
-          select: {
-            id: true,
-            name: true,
+          orderBy: {
+            createdAt: 'desc',
           },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: limit * 2, // 取多一些，后面筛选
-    });
+          take: limit * 2, // 取多一些，后面筛选
+        });
 
-    // 计算质量分数和检测问题
-    const analyzedPosts = posts.map((post : any) => {
-      const qualityScore = calculateQualityScore({
-        ...post,
-        user: {
-          showOffPostsCount: post.user._count.showOffPosts,
-        },
+        // 计算质量分数和检测问题
+        const analyzedPosts = posts.map((post : any) => {
+          const qualityScore = calculateQualityScore({
+            ...post,
+            user: {
+              showOffPostsCount: post.user._count.showOffPosts,
+            },
+          });
+
+          const issues = detectSuspiciousContent(post);
+
+          return {
+            id: post.id,
+            content: post.content,
+            images: post.images,
+            likesCount: post.likesCount,
+            commentsCount: post.commentsCount,
+            viewsCount: post.viewsCount,
+            createdAt: post.createdAt,
+            user: {
+              id: post.user.id,
+              username: post.user.username,
+              avatar: post.user.avatar,
+              postsCount: post.user._count.showOffPosts,
+            },
+            prize: post.prize,
+            qualityScore,
+            issues,
+          };
+        });
+
+        // 根据筛选条件过滤
+        let filteredPosts = analyzedPosts;
+        if (filter === 'low_quality') {
+          filteredPosts = analyzedPosts.filter((p : any) => p.qualityScore < 60);
+        } else if (filter === 'suspicious') {
+          filteredPosts = analyzedPosts.filter((p : any) => p.issues.length > 0);
+        }
+
+        // 限制返回数量
+        filteredPosts = filteredPosts.slice(0, limit);
+
+        // 统计信息
+        const stats = {
+          total: analyzedPosts.length,
+          highQuality: analyzedPosts.filter((p : any) => p.qualityScore >= 80).length,
+          mediumQuality: analyzedPosts.filter((p : any) => p.qualityScore >= 60 && p.qualityScore < 80).length,
+          lowQuality: analyzedPosts.filter((p : any) => p.qualityScore < 60).length,
+          suspicious: analyzedPosts.filter((p : any) => p.issues.length > 0).length,
+          averageScore: Math.round(
+            analyzedPosts.reduce((sum: any,  p: any) => sum + p.qualityScore, 0) / analyzedPosts.length
+          ),
+        };
+
+        return NextResponse.json({
+          posts: filteredPosts,
+          stats,
+        });
       });
-
-      const issues = detectSuspiciousContent(post);
-
-      return {
-        id: post.id,
-        content: post.content,
-        images: post.images,
-        likesCount: post.likesCount,
-        commentsCount: post.commentsCount,
-        viewsCount: post.viewsCount,
-        createdAt: post.createdAt,
-        user: {
-          id: post.user.id,
-          username: post.user.username,
-          avatar: post.user.avatar,
-          postsCount: post.user._count.showOffPosts,
-        },
-        prize: post.prize,
-        qualityScore,
-        issues,
-      };
-    });
-
-    // 根据筛选条件过滤
-    let filteredPosts = analyzedPosts;
-    if (filter === 'low_quality') {
-      filteredPosts = analyzedPosts.filter((p : any) => p.qualityScore < 60);
-    } else if (filter === 'suspicious') {
-      filteredPosts = analyzedPosts.filter((p : any) => p.issues.length > 0);
-    }
-
-    // 限制返回数量
-    filteredPosts = filteredPosts.slice(0, limit);
-
-    // 统计信息
-    const stats = {
-      total: analyzedPosts.length,
-      highQuality: analyzedPosts.filter((p : any) => p.qualityScore >= 80).length,
-      mediumQuality: analyzedPosts.filter((p : any) => p.qualityScore >= 60 && p.qualityScore < 80).length,
-      lowQuality: analyzedPosts.filter((p : any) => p.qualityScore < 60).length,
-      suspicious: analyzedPosts.filter((p : any) => p.issues.length > 0).length,
-      averageScore: Math.round(
-        analyzedPosts.reduce((sum: any,  p: any) => sum + p.qualityScore, 0) / analyzedPosts.length
-      ),
-    };
-
-    return NextResponse.json({
-      posts: filteredPosts,
-      stats,
-    });
-  });
 }
 
 /**

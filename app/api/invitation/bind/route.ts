@@ -9,6 +9,8 @@ import { invitationService } from '@/lib/services/invitation-service';
 import type { ApiResponse, BindReferralRequest, BindReferralResponse } from '@/types';
 import { ErrorFactory, CommonErrors } from '@/lib/errors';
 import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
+
 
 const logger = getLogger();
 

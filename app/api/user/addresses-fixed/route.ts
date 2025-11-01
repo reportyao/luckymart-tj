@@ -15,6 +15,10 @@ import {
   maskSensitiveData
 } from '@/lib/security-validation';
 import { AppError, ErrorFactory } from '@/lib/errors';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 速率限制检查器
 const rateLimitChecker = new RateLimitChecker();
@@ -22,138 +26,165 @@ const rateLimitChecker = new RateLimitChecker();
 // 地址操作频率限制配置
 const ADDRESS_RATE_LIMITS = {
   CREATE: { limit: 10, windowMs: 60 * 60 * 1000 }, // 每小时最多创建10个地址
-  LIST: { limit: 100, windowMs: 60 * 60 * 1000 },   // 每小时最多查询100次
-};
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `addresses-fixed_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('addresses-fixed_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-export async function GET(request: Request) {
   try {
-    const startTime = Date.now();
-    
-    // 1. 用户认证
-    const user = getUserFromRequest(request);
-    if (!user) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '未授权访问'
-      }, { 
-        status: 401,
-        headers: setSecurityResponseHeaders(new Headers())
-      });
-    }
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('addresses-fixed_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
 
-    // 2. 频率限制检查
-    const clientIP = getClientIP(request);
-    const rateLimitKey = `${user.userId}:${clientIP}:address_list`;
-    
-    const rateLimitResult = rateLimitChecker.check(
-      rateLimitKey,
-      ADDRESS_RATE_LIMITS.LIST.limit,
-      ADDRESS_RATE_LIMITS.LIST.windowMs
-    );
+async function handleGET(request: NextRequest) {
+    };
 
-    if (!rateLimitResult.allowed) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '请求过于频繁，请稍后再试'
-      }, {
-        status: 429,
-        headers: setSecurityResponseHeaders(new Headers())
-      });
-    }
-
-    // 3. 参数安全检查
-    const url = new URL(request.url);
-    const searchParams = url.searchParams;
+    export async function GET(request: Request) {
+      try {
+        const startTime = Date.now();
     
-    // 检查是否存在SQL注入攻击迹象
-    for (const [key, value] of searchParams.entries()) {
-      if (checkSQLInjectionRisk(value) || detectXSSAttempt(value)) {
-        await logSecurityEvent({
-          type: 'SUSPICIOUS_REQUEST',
+        // 1. 用户认证
+        const user = getUserFromRequest(request);
+        if (!user) {
+          return NextResponse.json<ApiResponse>({
+            success: false,
+            error: '未授权访问'
+          }, { 
+            status: 401,
+            headers: setSecurityResponseHeaders(new Headers())
+          });
+        }
+
+        // 2. 频率限制检查
+        const clientIP = getClientIP(request);
+        const rateLimitKey = `${user.userId}:${clientIP}:address_list`;
+    
+        const rateLimitResult = rateLimitChecker.check(
+          rateLimitKey,
+          ADDRESS_RATE_LIMITS.LIST.limit,
+          ADDRESS_RATE_LIMITS.LIST.windowMs
+        );
+
+        if (!rateLimitResult.allowed) {
+          return NextResponse.json<ApiResponse>({
+            success: false,
+            error: '请求过于频繁，请稍后再试'
+          }, {
+            status: 429,
+            headers: setSecurityResponseHeaders(new Headers())
+          });
+        }
+
+        // 3. 参数安全检查
+        const url = new URL(request.url);
+        const searchParams = url.searchParams;
+    
+        // 检查是否存在SQL注入攻击迹象
+        for (const [key, value] of searchParams.entries()) {
+          if (checkSQLInjectionRisk(value) || detectXSSAttempt(value)) {
+            await logSecurityEvent({
+              type: 'SUSPICIOUS_REQUEST',
+              userId: user.userId,
+              ip: clientIP,
+              details: { 
+                parameter: key, 
+                value,
+                endpoint: '/api/user/addresses',
+                method: 'GET'
+              }
+            });
+        
+            return NextResponse.json<ApiResponse>({
+              success: false,
+              error: '请求包含非法参数'
+            }, {
+              status: 400,
+              headers: setSecurityResponseHeaders(new Headers())
+            });
+          }
+        }
+
+        // 4. 数据库查询优化：使用索引字段
+        const { data: addresses, error } = await supabaseAdmin
+          .from('user_addresses')
+          .select(`
+            id,
+            recipientName,
+            recipientPhone,
+            province,
+            city,
+            district,
+            detailAddress,
+            isDefault,
+            createdAt,
+            updatedAt
+          `)
+          .eq('userId', user.userId)
+          .order('isDefault', { ascending: false })
+          .order('createdAt', { ascending: false });
+
+        if (error) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取地址列表失败:', error);
+          return NextResponse.json<ApiResponse>({
+            success: false,
+            error: '获取地址列表失败'
+          }, {
+            status: 500,
+            headers: setSecurityResponseHeaders(new Headers())
+          });
+        }
+
+        // 5. 数据脱敏处理
+        const sanitizedAddresses = (addresses || []).map(address => ({
+          ...address,
+          recipientPhone: maskPhoneNumber(address.recipientPhone), // 脱敏手机号
+        }));
+
+        // 6. 记录操作日志
+        await logUserActivity({
           userId: user.userId,
+          action: 'VIEW_ADDRESSES',
+          details: {
+            count: sanitizedAddresses.length,
+            operationTime: Date.now() - startTime
+          },
           ip: clientIP,
-          details: { 
-            parameter: key, 
-            value,
-            endpoint: '/api/user/addresses',
-            method: 'GET'
+          userAgent: request.headers.get('user-agent')
+        });
+
+        // 7. 返回响应（包含安全头）
+        const response = NextResponse.json<ApiResponse<UserAddress[]>>({
+          success: true,
+          data: sanitizedAddresses,
+          meta: {
+            rateLimit: {
+              remaining: rateLimitResult.remaining,
+              resetTime: new Date(rateLimitResult.resetTime).toISOString()
+            }
           }
         });
-        
-        return NextResponse.json<ApiResponse>({
-          success: false,
-          error: '请求包含非法参数'
-        }, {
-          status: 400,
-          headers: setSecurityResponseHeaders(new Headers())
-        });
-      }
-    }
 
-    // 4. 数据库查询优化：使用索引字段
-    const { data: addresses, error } = await supabaseAdmin
-      .from('user_addresses')
-      .select(`
-        id,
-        recipientName,
-        recipientPhone,
-        province,
-        city,
-        district,
-        detailAddress,
-        isDefault,
-        createdAt,
-        updatedAt
-      `)
-      .eq('userId', user.userId)
-      .order('isDefault', { ascending: false })
-      .order('createdAt', { ascending: false });
+        return setSecurityResponseHeaders(response.headers);
 
-    if (error) {
-      console.error('获取地址列表失败:', error);
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '获取地址列表失败'
-      }, {
-        status: 500,
-        headers: setSecurityResponseHeaders(new Headers())
-      });
-    }
-
-    // 5. 数据脱敏处理
-    const sanitizedAddresses = (addresses || []).map(address => ({
-      ...address,
-      recipientPhone: maskPhoneNumber(address.recipientPhone), // 脱敏手机号
-    }));
-
-    // 6. 记录操作日志
-    await logUserActivity({
-      userId: user.userId,
-      action: 'VIEW_ADDRESSES',
-      details: {
-        count: sanitizedAddresses.length,
-        operationTime: Date.now() - startTime
-      },
-      ip: clientIP,
-      userAgent: request.headers.get('user-agent')
-    });
-
-    // 7. 返回响应（包含安全头）
-    const response = NextResponse.json<ApiResponse<UserAddress[]>>({
-      success: true,
-      data: sanitizedAddresses,
-      meta: {
-        rateLimit: {
-          remaining: rateLimitResult.remaining,
-          resetTime: new Date(rateLimitResult.resetTime).toISOString()
-        }
-      }
-    });
-
-    return setSecurityResponseHeaders(response.headers);
-
-  } catch (error: any) {
-    console.error('获取地址列表失败:', error);
+}
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取地址列表失败:', error);
     
     const appError = ErrorFactory.wrapError(error, '获取地址列表');
     const response = NextResponse.json<ApiResponse>({
@@ -299,7 +330,10 @@ export async function POST(request: Request) {
         .eq('userId', user.userId);
 
       if (updateError) {
-        console.error('取消其他默认地址失败:', updateError);
+        logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'取消其他默认地址失败:', updateError);
         throw new Error('设置默认地址失败');
       }
     }
@@ -331,7 +365,10 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
-      console.error('插入地址失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'插入地址失败:', error);
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '创建地址失败'
@@ -372,7 +409,10 @@ export async function POST(request: Request) {
     return setSecurityResponseHeaders(response.headers);
 
   } catch (error: any) {
-    console.error('添加地址失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'添加地址失败:', error);
     
     const appError = ErrorFactory.wrapError(error, '创建地址');
     const response = NextResponse.json<ApiResponse>({
@@ -423,7 +463,10 @@ async function logSecurityEvent(event: {
         created_at: new Date().toISOString()
       });
   } catch (error) {
-    console.error('记录安全事件失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'记录安全事件失败:', error);
   }
 }
 
@@ -449,6 +492,9 @@ async function logUserActivity(activity: {
         created_at: new Date().toISOString()
       });
   } catch (error) {
-    console.error('记录用户活动失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'记录用户活动失败:', error);
   }
 }

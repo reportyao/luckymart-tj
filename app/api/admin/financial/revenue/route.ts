@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 类型定义
 interface RevenueStatistics {
@@ -45,140 +49,167 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware({
  * Query Parameters:
  * - periodType: 期间类型 (daily/weekly/monthly/quarterly)
  * - startDate: 开始日期
- * - endDate: 结束日期
- * - limit: 限制返回记录数
- */
-export async function GET(request: NextRequest) {
-  return await withStatsPermission(async (request: any, admin: any) => {
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `revenue_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('revenue_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
   try {
-    const { searchParams } = new URL(request.url);
-    const periodType = searchParams.get('periodType') || 'daily';
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const limit = parseInt(searchParams.get('limit') || '100');
-
-    let query = supabase
-      .from('revenue_statistics')
-      .select('*')
-      .eq('period_type', periodType)
-      .order('period_start', { ascending: false })
-      .limit(limit);
-
-    if (startDate && endDate) {
-      query = query
-        .gte('period_start', startDate)
-        .lte('period_end', endDate);
-    } else if (startDate) {
-      query = query.gte('period_start', startDate);
-    } else if (endDate) {
-      query = query.lte('period_end', endDate);
-    } else {
-      // 默认获取最近30天的数据
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      query = query.gte('period_start', thirtyDaysAgo.toISOString().split('T')[0]);
-    }
-
-    const { data: revenueData, error } = await query;
-
-    if (error) {
-      console.error('查询收入统计数据失败:', error);
-      return NextResponse.json(
-        { error: '查询收入统计数据失败' },
-        { status: 500 }
-      );
-    }
-
-    // 计算汇总统计
-    const totalStats = revenueData?.reduce((acc: RevenueStats, curr: RevenueStatistics) => {
-      acc.totalRevenue += parseFloat(curr.total_revenue.toString());
-      acc.actualReceived += parseFloat(curr.actual_received.toString());
-      acc.totalOrders += curr.order_count;
-      return acc;
-    }, {
-      totalRevenue: 0,
-      actualReceived: 0,
-      totalOrders: 0
-    }) || {};
-
-    const averageOrderValue = totalStats.totalOrders > 0 
-      ? totalStats.totalRevenue / totalStats.totalOrders 
-      : 0;
-
-    // 计算增长率
-    let growthRate = 0;
-    if (revenueData && revenueData.length > 1) {
-      const current = revenueData[0];
-      const previous = revenueData[1];
-      if (previous && previous.total_revenue > 0) {
-        growthRate = ((current.total_revenue - previous.total_revenue) / previous.total_revenue) * 100;
-      }
-    }
-
-    // 趋势数据
-    const trendData = revenueData?.slice(0, 30).reverse().map(item => ({
-      date: item.period_start,
-      totalRevenue: parseFloat(item.total_revenue.toString()),
-      actualReceived: parseFloat(item.actual_received.toString()),
-      orderCount: item.order_count,
-      averageOrderValue: parseFloat(item.average_order_value.toString()),
-      growthRate: item.growth_rate ? parseFloat(item.growth_rate.toString()) : null
-    })) || [];
-
-    // 按期间类型分组统计
-    const periodBreakdown = revenueData?.reduce((acc: Record<string, PeriodBreakdown>, curr: RevenueStatistics) => {
-      const period = curr.period_start;
-      if (!acc[period]) {
-        acc[period] = {
-          revenue: 0,
-          actualReceived: 0,
-          orders: 0
-        };
-      }
-      acc[period].revenue += parseFloat(curr.total_revenue.toString());
-      acc[period].actualReceived += parseFloat(curr.actual_received.toString());
-      acc[period].orders += curr.order_count;
-      return acc;
-    }, {} as Record<string, PeriodBreakdown>) || {};
-
-    const response = {
-      data: revenueData || [],
-      summary: {
-        period: `${startDate || ''} - ${endDate || ''}`,
-        totalRevenue: totalStats.totalRevenue,
-        actualReceived: totalStats.actualReceived,
-        totalOrders: totalStats.totalOrders,
-        averageOrderValue,
-        platformFees: totalStats.totalRevenue - totalStats.actualReceived,
-        growthRate,
-        periodType
-      },
-      periodBreakdown,
-      trendData,
-      revenueDistribution: {
-        actualReceived: totalStats.actualReceived,
-        platformFees: totalStats.totalRevenue - totalStats.actualReceived,
-        percentage: {
-          actualReceived: totalStats.totalRevenue > 0 
-            ? (totalStats.actualReceived / totalStats.totalRevenue) * 100 
-            : 0,
-          platformFees: totalStats.totalRevenue > 0 
-            ? ((totalStats.totalRevenue - totalStats.actualReceived) / totalStats.totalRevenue) * 100 
-            : 0
-        }
-      }
-    };
-
-    return NextResponse.json(response);
-
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取收入统计API错误:', error);
-    return NextResponse.json(
-      { error: '服务器内部错误' },
-      { status: 500 }
-    );
+    logger.error('revenue_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+     * - limit: 限制返回记录数
+     */
+    export async function GET(request: NextRequest) {
+      return await withStatsPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const periodType = searchParams.get('periodType') || 'daily';
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const limit = parseInt(searchParams.get('limit') || '100');
+
+        let query = supabase
+          .from('revenue_statistics')
+          .select('*')
+          .eq('period_type', periodType)
+          .order('period_start', { ascending: false })
+          .limit(limit);
+
+        if (startDate && endDate) {
+          query = query
+            .gte('period_start', startDate)
+            .lte('period_end', endDate);
+        } else if (startDate) {
+          query = query.gte('period_start', startDate);
+        } else if (endDate) {
+          query = query.lte('period_end', endDate);
+        } else {
+          // 默认获取最近30天的数据
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          query = query.gte('period_start', thirtyDaysAgo.toISOString().split('T')[0]);
+        }
+
+        const { data: revenueData, error } = await query;
+
+        if (error) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'查询收入统计数据失败:', error);
+          return NextResponse.json(
+            { error: '查询收入统计数据失败' },
+            { status: 500 }
+          );
+        }
+
+        // 计算汇总统计
+        const totalStats = revenueData?.reduce((acc: RevenueStats, curr: RevenueStatistics) => {
+          acc.totalRevenue += parseFloat(curr.total_revenue.toString());
+          acc.actualReceived += parseFloat(curr.actual_received.toString());
+          acc.totalOrders += curr.order_count;
+          return acc;
+        }, {
+          totalRevenue: 0,
+          actualReceived: 0,
+          totalOrders: 0
+        }) || {};
+
+        const averageOrderValue = totalStats.totalOrders > 0 
+          ? totalStats.totalRevenue / totalStats.totalOrders 
+          : 0;
+
+        // 计算增长率
+        let growthRate = 0;
+        if (revenueData && revenueData.length > 1) {
+          const current = revenueData[0];
+          const previous = revenueData[1];
+          if (previous && previous.total_revenue > 0) {
+            growthRate = ((current.total_revenue - previous.total_revenue) / previous.total_revenue) * 100;
+          }
+        }
+
+        // 趋势数据
+        const trendData = revenueData?.slice(0, 30).reverse().map(item => ({
+          date: item.period_start,
+          totalRevenue: parseFloat(item.total_revenue.toString()),
+          actualReceived: parseFloat(item.actual_received.toString()),
+          orderCount: item.order_count,
+          averageOrderValue: parseFloat(item.average_order_value.toString()),
+          growthRate: item.growth_rate ? parseFloat(item.growth_rate.toString()) : null
+        })) || [];
+
+        // 按期间类型分组统计
+        const periodBreakdown = revenueData?.reduce((acc: Record<string, PeriodBreakdown>, curr: RevenueStatistics) => {
+          const period = curr.period_start;
+          if (!acc[period]) {
+            acc[period] = {
+              revenue: 0,
+              actualReceived: 0,
+              orders: 0
+            };
+          }
+          acc[period].revenue += parseFloat(curr.total_revenue.toString());
+          acc[period].actualReceived += parseFloat(curr.actual_received.toString());
+          acc[period].orders += curr.order_count;
+          return acc;
+        }, {} as Record<string, PeriodBreakdown>) || {};
+
+        const response = {
+          data: revenueData || [],
+          summary: {
+            period: `${startDate || ''} - ${endDate || ''}`,
+            totalRevenue: totalStats.totalRevenue,
+            actualReceived: totalStats.actualReceived,
+            totalOrders: totalStats.totalOrders,
+            averageOrderValue,
+            platformFees: totalStats.totalRevenue - totalStats.actualReceived,
+            growthRate,
+            periodType
+          },
+          periodBreakdown,
+          trendData,
+          revenueDistribution: {
+            actualReceived: totalStats.actualReceived,
+            platformFees: totalStats.totalRevenue - totalStats.actualReceived,
+            percentage: {
+              actualReceived: totalStats.totalRevenue > 0 
+                ? (totalStats.actualReceived / totalStats.totalRevenue) * 100 
+                : 0,
+              platformFees: totalStats.totalRevenue > 0 
+                ? ((totalStats.totalRevenue - totalStats.actualReceived) / totalStats.totalRevenue) * 100 
+                : 0
+            }
+          }
+        };
+
+        return NextResponse.json(response);
+
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取收入统计API错误:', error);
+        return NextResponse.json(
+          { error: '服务器内部错误' },
+          { status: 500 }
+        );
+      }
+      })(request);
 }
 
 /**
@@ -286,7 +317,10 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('保存收入统计数据失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'保存收入统计数据失败:', error);
       return NextResponse.json(
         { error: '保存收入统计数据失败' },
         { status: 500 }
@@ -309,7 +343,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('计算收入统计API错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'计算收入统计API错误:', error);
     return NextResponse.json(
       { error: '服务器内部错误' },
       { status: 500 }

@@ -48,7 +48,10 @@ async function checkFirstRechargeEligibility(userId: string): Promise<{
       hasFirstRecharge: !!existingRecharge
     };
   } catch (error) {
-    console.error('检查首充资格失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'检查首充资格失败:', error);
     return {
       isEligible: false,
       hasFirstRecharge: false,
@@ -91,7 +94,10 @@ async function getFirstRechargeStatus(userId: string) {
       message: '首次充值可享受奖励！'
     };
   } catch (error) {
-    console.error('获取首充状态失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取首充状态失败:', error);
     return {
       hasFirstRecharge: false,
       isEligible: false,

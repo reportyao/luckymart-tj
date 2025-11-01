@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRiskTelegramBot, RiskAlertMessage } from '@/lib/risk-telegram-bot';
 import { RiskControlService } from '@/lib/risk-control';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // POST /api/risk/alert - 发送风险预警通知
 export async function POST(request: NextRequest) {
@@ -131,7 +135,10 @@ export async function POST(request: NextRequest) {
     try {
       await recordNotificationAttempts(incidentId, selectedChannels, results);
     } catch (dbError) {
-      console.error('记录通知尝试失败:', dbError);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'记录通知尝试失败:', dbError);
       // 不影响主流程，继续执行
     }
 
@@ -156,7 +163,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response, { status: statusCode });
 
   } catch (error) {
-    console.error('发送风险预警通知错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'发送风险预警通知错误:', error);
     return NextResponse.json(
       {
         error: '发送预警通知失败',
@@ -165,57 +175,81 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `alert_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('alert_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// GET /api/risk/alert - 查询通知状态
-export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const incidentId = searchParams.get('incidentId');
-    const notificationType = searchParams.get('type');
-    const status = searchParams.get('status');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const offset = parseInt(searchParams.get('offset') || '0');
-
-    if (!incidentId) {
-      return NextResponse.json(
-        { error: '缺少必要参数: incidentId' },
-        { status: 400 }
-      );
-    }
-
-    // 查询通知记录
-    const notifications = await getNotificationsByIncident(incidentId, {
-      type: notificationType,
-      status,
-      limit,
-      offset
-    });
-
-    const response = {
-      success: true,
-      data: {
-        incidentId,
-        notifications,
-        pagination: {
-          total: notifications.length,
-          limit,
-          offset,
-          hasMore: notifications.length === limit
-        },
-        summary: {
-          total: notifications.length,
-          sent: notifications.filter((n : any) => n.status === 'sent').length,
-          failed: notifications.filter((n : any) => n.status === 'failed').length,
-          pending: notifications.filter((n : any) => n.status === 'pending').length
-        }
-      }
-    };
-
-    return NextResponse.json(response);
-
+    return await handleGET(request);
   } catch (error) {
-    console.error('查询通知状态错误:', error);
+    logger.error('alert_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
+
+async function handleGET(request: NextRequest) {
+
+    // GET /api/risk/alert - 查询通知状态
+    export async function GET(request: NextRequest) {
+      try {
+        const searchParams = request.nextUrl.searchParams;
+        const incidentId = searchParams.get('incidentId');
+        const notificationType = searchParams.get('type');
+        const status = searchParams.get('status');
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const offset = parseInt(searchParams.get('offset') || '0');
+
+        if (!incidentId) {
+          return NextResponse.json(
+            { error: '缺少必要参数: incidentId' },
+            { status: 400 }
+          );
+        }
+
+        // 查询通知记录
+        const notifications = await getNotificationsByIncident(incidentId, {
+          type: notificationType,
+          status,
+          limit,
+          offset
+        });
+
+        const response = {
+          success: true,
+          data: {
+            incidentId,
+            notifications,
+            pagination: {
+              total: notifications.length,
+              limit,
+              offset,
+              hasMore: notifications.length === limit
+            },
+            summary: {
+              total: notifications.length,
+              sent: notifications.filter((n : any) => n.status === 'sent').length,
+              failed: notifications.filter((n : any) => n.status === 'failed').length,
+              pending: notifications.filter((n : any) => n.status === 'pending').length
+            }
+          }
+        };
+
+        return NextResponse.json(response);
+
+}
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'查询通知状态错误:', error);
     return NextResponse.json(
       {
         error: '查询通知状态失败',
@@ -253,7 +287,10 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(response);
 
   } catch (error) {
-    console.error('确认通知错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'确认通知错误:', error);
     return NextResponse.json(
       {
         error: '确认通知失败',
@@ -269,10 +306,13 @@ async function sendEmailNotification(alert: RiskAlertMessage): Promise<boolean> 
   try {
     // 邮件发送逻辑（需要集成邮件服务，如SendGrid、AWS SES等）
     // 这里返回模拟结果
-    console.log('发送邮件通知:', alert.incidentId);
+    logger.info("API Log", { requestId, data: '发送邮件通知:', alert.incidentId });'发送邮件通知:', alert.incidentId);
     return true;
   } catch (error) {
-    console.error('发送邮件通知失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'发送邮件通知失败:', error);
     return false;
   }
 }
@@ -282,10 +322,13 @@ async function sendSmsNotification(alert: RiskAlertMessage): Promise<boolean> {
   try {
     // 短信发送逻辑（需要集成短信服务，如阿里云、腾讯云等）
     // 这里返回模拟结果
-    console.log('发送短信通知:', alert.incidentId);
+    logger.info("API Log", { requestId, data: '发送短信通知:', alert.incidentId });'发送短信通知:', alert.incidentId);
     return true;
   } catch (error) {
-    console.error('发送短信通知失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'发送短信通知失败:', error);
     return false;
   }
 }
@@ -313,7 +356,10 @@ async function sendWebhookNotification(alert: RiskAlertMessage): Promise<boolean
 
     return response.ok;
   } catch (error) {
-    console.error('发送Webhook通知失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'发送Webhook通知失败:', error);
     return false;
   }
 }
@@ -327,13 +373,12 @@ async function recordNotificationAttempts(
   try {
     // 这里需要实际保存到数据库
     // 为了演示，仅打印日志
-    console.log('记录通知尝试:', {
-      incidentId,
-      channels,
-      results
-    });
+    logger.info("API Log", { requestId, data: arguments[0] });
   } catch (error) {
-    console.error('记录通知尝试失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'记录通知尝试失败:', error);
   }
 }
 
@@ -365,7 +410,10 @@ async function getNotificationsByIncident(
       }
     ];
   } catch (error) {
-    console.error('查询通知失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'查询通知失败:', error);
     return [];
   }
 }
@@ -385,7 +433,10 @@ async function acknowledgeNotification(
       acknowledgedBy
     };
   } catch (error) {
-    console.error('确认通知失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'确认通知失败:', error);
     throw error;
   }
 }

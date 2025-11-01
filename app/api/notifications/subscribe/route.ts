@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getLogger } from '@/lib/logger';
 
 // 保存订阅信息到全局存储
 interface Subscription {
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
     
     global.subscriptions.set(subscription.endpoint, subscriptionData);
     
-    console.log('订阅保存成功:', subscription.endpoint);
+    logger.info("API Log", { requestId, data: '订阅保存成功:', subscription.endpoint });'订阅保存成功:', subscription.endpoint);
     
     return NextResponse.json({
       success: true,
@@ -52,7 +53,10 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('保存订阅失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'保存订阅失败:', error);
     return NextResponse.json({
       success: false,
       error: '保存订阅失败'

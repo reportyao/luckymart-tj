@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withI18n, ApiLanguageContext } from '@/lib/i18n-middleware';
 import { validateLanguageParameter } from '@/lib/i18n-middleware';
+import { getLogger } from '@/lib/logger';
 
 /**
  * 更新用户语言偏好设置
@@ -59,7 +60,10 @@ async function PUT(request: NextRequest & { languageContext: ApiLanguageContext 
     });
 
   } catch (error: any) {
-    console.error('Update user language error:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Update user language error:', error);
     
     // 处理特定错误类型
     if (error.code === 'P2025') {
@@ -136,7 +140,10 @@ async function GET(request: NextRequest & { languageContext: ApiLanguageContext 
     return NextResponse.json(response);
 
   } catch (error: any) {
-    console.error('Get user language error:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Get user language error:', error);
     
     return NextResponse.json(
       formatter.formatError('internal_error', 'error', {

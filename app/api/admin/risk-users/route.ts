@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
-const withReadPermission =  AdminPermissionManager.createPermissionMiddleware({
-  customPermissions: 
-  AdminPermissions.stats.read
-]);
+const withReadPermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
-const withWritePermission =  AdminPermissionManager.createPermissionMiddleware({
-  customPermissions: 
-  AdminPermissions.stats.read
-]);
+const withWritePermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
 // 模拟风险用户数据
 const mockRiskUsers = [
@@ -63,61 +61,85 @@ const mockRiskUsers = [
       { date: '2025-10-30T22:30:00Z', event: '异常登录', score: 88 },
       { date: '2025-10-29T19:20:00Z', event: '设备指纹异常', score: 90 }
     ]
-  }
-];
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `risk-users_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('risk-users_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
   try {
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const riskLevel = searchParams.get('riskLevel');
-    const accountStatus = searchParams.get('accountStatus');
-    const search = searchParams.get('search');
-
-    // 筛选数据
-    let filteredUsers = mockRiskUsers;
-
-    if (riskLevel && riskLevel !== 'all') {
-      filteredUsers = filteredUsers.filter((user : any) => user.riskLevel === riskLevel);
-    }
-
-    if (accountStatus && accountStatus !== 'all') {
-      filteredUsers = filteredUsers.filter((user : any) => user.accountStatus === accountStatus);
-    }
-
-    if (search) {
-      filteredUsers = filteredUsers.filter((user : any) => 
-        user.userName.toLowerCase().includes(search.toLowerCase()) ||
-        user.email.toLowerCase().includes(search.toLowerCase()) ||
-        user.id.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
-    // 分页
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        users: paginatedUsers,
-        total: filteredUsers.length,
-        page,
-        limit,
-        totalPages: Math.ceil(filteredUsers.length / limit)
-      }
-    });
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取风险用户失败:', error);
-    return NextResponse.json(
-      { success: false, error: '获取数据失败' },
-      { status: 500 }
-    );
+    logger.error('risk-users_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+    ];
+
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const riskLevel = searchParams.get('riskLevel');
+        const accountStatus = searchParams.get('accountStatus');
+        const search = searchParams.get('search');
+
+        // 筛选数据
+        let filteredUsers = mockRiskUsers;
+
+        if (riskLevel && riskLevel !== 'all') {
+          filteredUsers = filteredUsers.filter((user : any) => user.riskLevel === riskLevel);
+        }
+
+        if (accountStatus && accountStatus !== 'all') {
+          filteredUsers = filteredUsers.filter((user : any) => user.accountStatus === accountStatus);
+        }
+
+        if (search) {
+          filteredUsers = filteredUsers.filter((user : any) => 
+            user.userName.toLowerCase().includes(search.toLowerCase()) ||
+            user.email.toLowerCase().includes(search.toLowerCase()) ||
+            user.id.toLowerCase().includes(search.toLowerCase())
+          );
+        }
+
+        // 分页
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            users: paginatedUsers,
+            total: filteredUsers.length,
+            page,
+            limit,
+            totalPages: Math.ceil(filteredUsers.length / limit)
+          }
+        });
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取风险用户失败:', error);
+        return NextResponse.json(
+          { success: false, error: '获取数据失败' },
+          { status: 500 }
+        );
+      }
+}
 }
 
 export async function PATCH(request: NextRequest) {
@@ -170,7 +192,10 @@ export async function PATCH(request: NextRequest) {
       message: '用户状态更新成功'
     });
   } catch (error) {
-    console.error('更新用户状态失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新用户状态失败:', error);
     return NextResponse.json(
       { success: false, error: '更新失败' },
       { status: 500 }

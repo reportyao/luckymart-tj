@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -21,138 +25,165 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware({
  * Query Parameters:
  * - periodType: 期间类型 (daily/weekly/monthly/quarterly)
  * - startDate: 开始日期
- * - endDate: 结束日期
- * - limit: 限制返回记录数
- */
-export async function GET(request: NextRequest) {
-  return await withStatsPermission(async (request: any, admin: any) => {
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `profits_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('profits_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
   try {
-    const { searchParams } = new URL(request.url);
-    const periodType = searchParams.get('periodType') || 'daily';
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const limit = parseInt(searchParams.get('limit') || '100');
-
-    let query = supabase
-      .from('profit_analysis')
-      .select('*')
-      .eq('product_id', null) // 只获取总体利润分析
-      .order('date', { ascending: false })
-      .limit(limit);
-
-    if (startDate && endDate) {
-      query = query
-        .gte('date', startDate)
-        .lte('date', endDate);
-    } else {
-      // 默认获取最近30天的数据
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      query = query.gte('date', thirtyDaysAgo.toISOString().split('T')[0]);
-    }
-
-    const { data: profitData, error } = await query;
-
-    if (error) {
-      console.error('查询利润分析数据失败:', error);
-      return NextResponse.json(
-        { error: '查询利润分析数据失败' },
-        { status: 500 }
-      );
-    }
-
-    // 计算汇总统计
-    const totalStats = profitData?.reduce((acc: any, curr: any) => {
-      acc.grossRevenue += parseFloat(curr.revenue.toString());
-      acc.productCosts += parseFloat(curr.product_cost.toString());
-      acc.platformFees += parseFloat(curr.platform_fee.toString());
-      acc.operationCosts += parseFloat(curr.operation_cost.toString());
-      acc.grossProfit += parseFloat(curr.gross_profit.toString());
-      acc.netProfit += parseFloat(curr.net_profit.toString());
-      return acc;
-    }, {
-      grossRevenue: 0,
-      productCosts: 0,
-      platformFees: 0,
-      operationCosts: 0,
-      grossProfit: 0,
-      netProfit: 0
-    }) || {};
-
-    // 计算总体指标
-    const totalCosts = totalStats.productCosts + totalStats.platformFees + totalStats.operationCosts;
-    const overallMargin = totalStats.grossRevenue > 0 ? (totalStats.netProfit / totalStats.grossRevenue) * 100 : 0;
-    const costRatio = totalStats.grossRevenue > 0 ? (totalCosts / totalStats.grossRevenue) * 100 : 0;
-
-    // 趋势数据
-    const trendData = profitData?.slice(0, 30).reverse().map(item => ({
-      date: item.date,
-      revenue: parseFloat(item.revenue.toString()),
-      productCost: parseFloat(item.product_cost.toString()),
-      platformFee: parseFloat(item.platform_fee.toString()),
-      operationCost: parseFloat(item.operation_cost.toString()),
-      grossProfit: parseFloat(item.gross_profit.toString()),
-      netProfit: parseFloat(item.net_profit.toString()),
-      profitMargin: item.profit_margin ? parseFloat(item.profit_margin.toString()) : 0,
-      roi: item.roi ? parseFloat(item.roi.toString()) : 0
-    })) || [];
-
-    // 成本构成分析
-    const costBreakdown = {
-      productCosts: totalStats.productCosts,
-      platformFees: totalStats.platformFees,
-      operationCosts: totalStats.operationCosts,
-      totalCosts,
-      percentages: {
-        productCosts: totalCosts > 0 ? (totalStats.productCosts / totalCosts) * 100 : 0,
-        platformFees: totalCosts > 0 ? (totalStats.platformFees / totalCosts) * 100 : 0,
-        operationCosts: totalCosts > 0 ? (totalStats.operationCosts / totalCosts) * 100 : 0
-      }
-    };
-
-    // 利润分析
-    const profitAnalysis = {
-      grossProfit: totalStats.grossProfit,
-      netProfit: totalStats.netProfit,
-      grossProfitMargin: totalStats.grossRevenue > 0 ? (totalStats.grossProfit / totalStats.grossRevenue) * 100 : 0,
-      netProfitMargin: totalStats.grossRevenue > 0 ? (totalStats.netProfit / totalStats.grossRevenue) * 100 : 0,
-      costEfficiency: totalCosts > 0 ? (totalStats.netProfit / totalCosts) * 100 : 0
-    };
-
-    const response = {
-      data: profitData || [],
-      summary: {
-        period: `${startDate || ''} - ${endDate || ''}`,
-        grossRevenue: totalStats.grossRevenue,
-        totalCosts,
-        grossProfit: totalStats.grossProfit,
-        netProfit: totalStats.netProfit,
-        overallMargin,
-        costRatio,
-        periodType
-      },
-      costBreakdown,
-      profitAnalysis,
-      trendData,
-      keyMetrics: {
-        averageDailyRevenue: trendData.length > 0 ? totalStats.grossRevenue / trendData.length : 0,
-        averageDailyProfit: trendData.length > 0 ? totalStats.netProfit / trendData.length : 0,
-        profitVolatility: calculateVolatility(trendData.map((t: any) => t.netProfit)),
-        costTrend: calculateTrend(trendData.map((t: any) => t.productCost + t.platformFee + t.operationCost)),
-        revenueGrowth: calculateGrowth(trendData.map((t: any) => t.revenue))
-      }
-    };
-
-    return NextResponse.json(response);
-
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取利润分析API错误:', error);
-    return NextResponse.json(
-      { error: '服务器内部错误' },
-      { status: 500 }
-    );
+    logger.error('profits_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+     * - limit: 限制返回记录数
+     */
+    export async function GET(request: NextRequest) {
+      return await withStatsPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const periodType = searchParams.get('periodType') || 'daily';
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const limit = parseInt(searchParams.get('limit') || '100');
+
+        let query = supabase
+          .from('profit_analysis')
+          .select('*')
+          .eq('product_id', null) // 只获取总体利润分析
+          .order('date', { ascending: false })
+          .limit(limit);
+
+        if (startDate && endDate) {
+          query = query
+            .gte('date', startDate)
+            .lte('date', endDate);
+        } else {
+          // 默认获取最近30天的数据
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          query = query.gte('date', thirtyDaysAgo.toISOString().split('T')[0]);
+        }
+
+        const { data: profitData, error } = await query;
+
+        if (error) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'查询利润分析数据失败:', error);
+          return NextResponse.json(
+            { error: '查询利润分析数据失败' },
+            { status: 500 }
+          );
+        }
+
+        // 计算汇总统计
+        const totalStats = profitData?.reduce((acc: any, curr: any) => {
+          acc.grossRevenue += parseFloat(curr.revenue.toString());
+          acc.productCosts += parseFloat(curr.product_cost.toString());
+          acc.platformFees += parseFloat(curr.platform_fee.toString());
+          acc.operationCosts += parseFloat(curr.operation_cost.toString());
+          acc.grossProfit += parseFloat(curr.gross_profit.toString());
+          acc.netProfit += parseFloat(curr.net_profit.toString());
+          return acc;
+        }, {
+          grossRevenue: 0,
+          productCosts: 0,
+          platformFees: 0,
+          operationCosts: 0,
+          grossProfit: 0,
+          netProfit: 0
+        }) || {};
+
+        // 计算总体指标
+        const totalCosts = totalStats.productCosts + totalStats.platformFees + totalStats.operationCosts;
+        const overallMargin = totalStats.grossRevenue > 0 ? (totalStats.netProfit / totalStats.grossRevenue) * 100 : 0;
+        const costRatio = totalStats.grossRevenue > 0 ? (totalCosts / totalStats.grossRevenue) * 100 : 0;
+
+        // 趋势数据
+        const trendData = profitData?.slice(0, 30).reverse().map(item => ({
+          date: item.date,
+          revenue: parseFloat(item.revenue.toString()),
+          productCost: parseFloat(item.product_cost.toString()),
+          platformFee: parseFloat(item.platform_fee.toString()),
+          operationCost: parseFloat(item.operation_cost.toString()),
+          grossProfit: parseFloat(item.gross_profit.toString()),
+          netProfit: parseFloat(item.net_profit.toString()),
+          profitMargin: item.profit_margin ? parseFloat(item.profit_margin.toString()) : 0,
+          roi: item.roi ? parseFloat(item.roi.toString()) : 0
+        })) || [];
+
+        // 成本构成分析
+        const costBreakdown = {
+          productCosts: totalStats.productCosts,
+          platformFees: totalStats.platformFees,
+          operationCosts: totalStats.operationCosts,
+          totalCosts,
+          percentages: {
+            productCosts: totalCosts > 0 ? (totalStats.productCosts / totalCosts) * 100 : 0,
+            platformFees: totalCosts > 0 ? (totalStats.platformFees / totalCosts) * 100 : 0,
+            operationCosts: totalCosts > 0 ? (totalStats.operationCosts / totalCosts) * 100 : 0
+          }
+        };
+
+        // 利润分析
+        const profitAnalysis = {
+          grossProfit: totalStats.grossProfit,
+          netProfit: totalStats.netProfit,
+          grossProfitMargin: totalStats.grossRevenue > 0 ? (totalStats.grossProfit / totalStats.grossRevenue) * 100 : 0,
+          netProfitMargin: totalStats.grossRevenue > 0 ? (totalStats.netProfit / totalStats.grossRevenue) * 100 : 0,
+          costEfficiency: totalCosts > 0 ? (totalStats.netProfit / totalCosts) * 100 : 0
+        };
+
+        const response = {
+          data: profitData || [],
+          summary: {
+            period: `${startDate || ''} - ${endDate || ''}`,
+            grossRevenue: totalStats.grossRevenue,
+            totalCosts,
+            grossProfit: totalStats.grossProfit,
+            netProfit: totalStats.netProfit,
+            overallMargin,
+            costRatio,
+            periodType
+          },
+          costBreakdown,
+          profitAnalysis,
+          trendData,
+          keyMetrics: {
+            averageDailyRevenue: trendData.length > 0 ? totalStats.grossRevenue / trendData.length : 0,
+            averageDailyProfit: trendData.length > 0 ? totalStats.netProfit / trendData.length : 0,
+            profitVolatility: calculateVolatility(trendData.map((t: any) => t.netProfit)),
+            costTrend: calculateTrend(trendData.map((t: any) => t.productCost + t.platformFee + t.operationCost)),
+            revenueGrowth: calculateGrowth(trendData.map((t: any) => t.revenue))
+          }
+        };
+
+        return NextResponse.json(response);
+
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取利润分析API错误:', error);
+        return NextResponse.json(
+          { error: '服务器内部错误' },
+          { status: 500 }
+        );
+      }
+      })(request);
 }
 
 /**
@@ -256,7 +287,10 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('保存利润分析数据失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'保存利润分析数据失败:', error);
       return NextResponse.json(
         { error: '保存利润分析数据失败' },
         { status: 500 }
@@ -281,7 +315,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('计算利润分析API错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'计算利润分析API错误:', error);
     return NextResponse.json(
       { error: '服务器内部错误' },
       { status: 500 }

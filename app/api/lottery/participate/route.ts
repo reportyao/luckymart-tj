@@ -6,8 +6,11 @@ import { getUserFromRequest } from '@/lib/auth';
 import { rateLimitMonitor } from '@/lib/rate-limit-monitor';
 import { withRateLimit, lotteryRateLimit } from '@/lib/rate-limit-middleware';
 import { triggerImmediateDraw } from '@/lib/lottery';
+import { withErrorHandling } from '@/lib/middleware';
+import { respond } from '@/lib/responses';
+import { CommonErrors } from '@/lib/errors';
 
-const handleLotteryParticipation = async (request: NextRequest) => {
+const handleLotteryParticipation = withErrorHandling(async (request: NextRequest) => {
   const logger = getLogger();
   const requestId = `lottery_participate_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const startTime = Date.now();
@@ -15,41 +18,43 @@ const handleLotteryParticipation = async (request: NextRequest) => {
   // 在函数开始就声明decoded变量，避免未定义引用
   let decoded: { userId: string } | null = null;
 
-  try {
-    logger.info('抽奖参与请求开始', {
-      requestId,
-      ip: request.headers.get('x-forwarded-for') || 'unknown',
-      userAgent: request.headers.get('user-agent') || 'unknown',
-      algorithmVersion: '3.0-secure-optimized-vrf',
-      timezone: 'Asia/Dushanbe'
-    });
+  logger.info('抽奖参与请求开始', {
+    requestId,
+    ip: request.headers.get('x-forwarded-for') || 'unknown',
+    userAgent: request.headers.get('user-agent') || 'unknown',
+    algorithmVersion: '3.0-secure-optimized-vrf',
+    timezone: 'Asia/Dushanbe'
+  });
 
-    // 验证用户身份 - 使用更安全的方法
-    const user = getUserFromRequest(request);
-    if (!user?.userId) {
-      return NextResponse.json({ error: '未授权访问' }, { status: 401 });
-    }
-    decoded = { userId: user.userId };
+  // 验证用户身份 - 使用更安全的方法
+  const user = getUserFromRequest(request);
+  if (!user?.userId) {
+    return NextResponse.json(
+      respond.customError('UNAUTHORIZED', '未授权访问').toJSON(),
+      { status: 401 }
+    );
+  }
+  decoded = { userId: user.userId };
 
-    // 验证请求体
-    const body = await request.json();
-    const { roundId, quantity } = body;
+  // 验证请求体
+  const body = await request.json();
+  const { roundId, quantity } = body;
 
-    // 参数验证
-    if (!roundId || !quantity) {
-      return NextResponse.json(
-        { error: '参数不完整：roundId和quantity都是必需的' }, 
-        { status: 400 }
-      );
-    }
+  // 参数验证
+  if (!roundId || !quantity) {
+    return NextResponse.json(
+      respond.validationError('参数不完整：roundId和quantity都是必需的').toJSON(),
+      { status: 400 }
+    );
+  }
 
-    // 验证数量范围
-    if (typeof quantity !== 'number' || quantity < 1 || quantity > 100) {
-      return NextResponse.json(
-        { error: '数量必须在1-100之间' }, 
-        { status: 400 }
-      );
-    }
+  // 验证数量范围
+  if (typeof quantity !== 'number' || quantity < 1 || quantity > 100) {
+    return NextResponse.json(
+      respond.validationError('数量必须在1-100之间').toJSON(),
+      { status: 400 }
+    );
+  }
 
     // 开始数据库事务
     const result = await prisma.$transaction(async (tx) => {
@@ -248,20 +253,17 @@ const handleLotteryParticipation = async (request: NextRequest) => {
       executionTime: Date.now() - startTime
     });
 
-    return NextResponse.json({
-      success: true,
-      data: result,
-      message: '抽奖参与成功！'
-    });
+    return NextResponse.json(
+      respond.success(result, '抽奖参与成功！').toJSON()
+    );
 
   } catch (error: any) {
-    logger.error('抽奖参与失败', error, {
+    logger.error('抽奖参与失败', error as Error, {
       requestId,
-      userId: decoded?.userId, // 现在decoded确保不会为undefined
+      userId: decoded?.userId,
       roundId: body?.roundId,
       quantity: body?.quantity,
       error: error.message,
-      stack: error.stack,
       executionTime: Date.now() - startTime
     });
 
@@ -280,30 +282,36 @@ const handleLotteryParticipation = async (request: NextRequest) => {
       responseTime: Date.now() - startTime
     });
 
-    // 根据错误类型返回不同状态码
-    let statusCode = 500;
-    let errorMessage = '抽奖参与失败';
-
+    // 根据错误类型返回不同状态码和统一响应格式
     if (error.message.includes('幸运币余额不足')) {
-      statusCode = 400;
-      errorMessage = '幸运币余额不足';
+      return NextResponse.json(
+        respond.customError('INSUFFICIENT_BALANCE', '幸运币余额不足').toJSON(),
+        { status: 400 }
+      );
     } else if (error.message.includes('夺宝期次不存在')) {
-      statusCode = 404;
-      errorMessage = '抽奖期次不存在';
+      return NextResponse.json(
+        respond.customError('NOT_FOUND', '抽奖期次不存在').toJSON(),
+        { status: 404 }
+      );
     } else if (error.message.includes('份额不足')) {
-      statusCode = 400;
-      errorMessage = error.message;
+      return NextResponse.json(
+        respond.customError('INSUFFICIENT_STOCK', error.message).toJSON(),
+        { status: 400 }
+      );
     } else if (error.message.includes('未授权')) {
-      statusCode = 401;
-      errorMessage = '未授权访问';
+      return NextResponse.json(
+        respond.customError('UNAUTHORIZED', '未授权访问').toJSON(),
+        { status: 401 }
+      );
     }
 
+    // 默认服务器错误
     return NextResponse.json(
-      { error: errorMessage },
-      { status: statusCode }
+      respond.customError('INTERNAL_ERROR', '抽奖参与失败').toJSON(),
+      { status: 500 }
     );
   }
-};
+});
 
 // 应用速率限制并导出处理函数
 const processRequest = withRateLimit(handleLotteryParticipation, lotteryRateLimit({
@@ -317,25 +325,28 @@ const processRequest = withRateLimit(handleLotteryParticipation, lotteryRateLimi
       resetTime: result.resetTime
     });
 
-    return NextResponse.json(
-      {
-        success: false,
-        error: '参与抽奖过于频繁，请稍后再试',
-        rateLimit: {
-          limit: result.totalHits + result.remaining,
-          remaining: result.remaining,
-          resetTime: new Date(result.resetTime).toISOString()
-        }
+    const rateLimitResponse = {
+      success: false,
+      error: {
+        code: 'RATE_LIMIT_EXCEEDED',
+        message: '参与抽奖过于频繁，请稍后再试'
       },
-      {
-        status: 429,
-        headers: {
-          'X-RateLimit-Limit': (result.totalHits + result.remaining).toString(),
-          'X-RateLimit-Remaining': result.remaining.toString(),
-          'X-RateLimit-Reset': result.resetTime.toString()
-        }
+      rateLimit: {
+        limit: result.totalHits + result.remaining,
+        remaining: result.remaining,
+        resetTime: new Date(result.resetTime).toISOString()
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    return NextResponse.json(rateLimitResponse, {
+      status: 429,
+      headers: {
+        'X-RateLimit-Limit': (result.totalHits + result.remaining).toString(),
+        'X-RateLimit-Remaining': result.remaining.toString(),
+        'X-RateLimit-Reset': result.resetTime.toString()
       }
-    );
+    });
   }
 }));
 

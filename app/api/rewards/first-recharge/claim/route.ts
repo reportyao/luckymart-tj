@@ -66,7 +66,10 @@ async function validateAndGetRewardTier(orderId: string, userId: string): Promis
     };
 
   } catch (error) {
-    console.error('验证订单失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'验证订单失败:', error);
     return {
       success: false,
       error: '验证订单失败'

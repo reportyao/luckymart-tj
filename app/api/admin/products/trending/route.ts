@@ -4,6 +4,10 @@ import { prisma } from '@/lib/prisma';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -12,228 +16,252 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.products.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `trending_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('trending_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('trending_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// GET - 获取热销趋势数据
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    try {
+async function handleGET(request: NextRequest) {
 
-    const { searchParams } = new URL(request.url);
-    const productId = searchParams.get('productId');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const rankType = searchParams.get('rankType') || 'popularity'; // 'sales', 'popularity', 'search'
+    // GET - 获取热销趋势数据
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        try {
 
-    // 构建查询条件
-    const where: any = {};
-    if (productId) {
-      where.product_id = productId;
-    }
-    if (startDate && endDate) {
-      where.date = {
-        gte: new Date(startDate),
-        lte: new Date(endDate)
-      };
-    }
+        const { searchParams } = new URL(request.url);
+        const productId = searchParams.get('productId');
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const rankType = searchParams.get('rankType') || 'popularity'; // 'sales', 'popularity', 'search'
 
-    // 排序字段
-    let orderBy: any = { date: 'desc' };
-    switch (rankType) {
-      case 'sales':
-        orderBy = { sales_trend: 'desc' };
-        break;
-      case 'popularity':
-        orderBy = { popularity_score: 'desc' };
-        break;
-      case 'search':
-        orderBy = { search_volume: 'desc' };
-        break;
-    }
+        // 构建查询条件
+        const where: any = {};
+        if (productId) {
+          where.product_id = productId;
+        }
+        if (startDate && endDate) {
+          where.date = {
+            gte: new Date(startDate),
+            lte: new Date(endDate)
+          };
+        }
 
-    // 获取分页数据
-    const [trendingData, totalCount] = await Promise.all([
-      prisma.productTrending.findMany({
-        where,
-        orderBy,
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-          products: {
-            select: {
-              nameZh: true,
-              nameEn: true,
-              nameRu: true,
-              category: true,
-              marketPrice: true,
-              status: true
+        // 排序字段
+        let orderBy: any = { date: 'desc' };
+        switch (rankType) {
+          case 'sales':
+            orderBy = { sales_trend: 'desc' };
+            break;
+          case 'popularity':
+            orderBy = { popularity_score: 'desc' };
+            break;
+          case 'search':
+            orderBy = { search_volume: 'desc' };
+            break;
+        }
+
+        // 获取分页数据
+        const [trendingData, totalCount] = await Promise.all([
+          prisma.productTrending.findMany({
+            where,
+            orderBy,
+            skip: (page - 1) * limit,
+            take: limit,
+            include: {
+              products: {
+                select: {
+                  nameZh: true,
+                  nameEn: true,
+                  nameRu: true,
+                  category: true,
+                  marketPrice: true,
+                  status: true
+                }
+              }
+            }
+          }),
+          prisma.productTrending.count({ where })
+        ]);
+
+        // 统计汇总数据
+        const summary = await prisma.productTrending.aggregate({
+          where,
+          _sum: {
+            sales_trend: true,
+            search_volume: true,
+            social_mentions: true
+          },
+          _avg: {
+            popularity_score: true,
+            sales_trend: true,
+            rank_position: true
+          },
+          _max: {
+            popularity_score: true,
+            sales_trend: true
+          },
+          _min: {
+            popularity_score: true,
+            sales_trend: true
+          }
+        });
+
+        // 获取热销排行榜（今日数据）
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayStr = today.toISOString().split('T')[0];
+
+        const topProducts = await prisma.productTrending.findMany({
+          where: {
+            date: today
+          },
+          orderBy: { popularity_score: 'desc' },
+          take: 10,
+          include: {
+            products: {
+              select: {
+                nameZh: true,
+                nameEn: true,
+                nameRu: true,
+                category: true,
+                marketPrice: true
+              }
             }
           }
-        }
-      }),
-      prisma.productTrending.count({ where })
-    ]);
+        });
 
-    // 统计汇总数据
-    const summary = await prisma.productTrending.aggregate({
-      where,
-      _sum: {
-        sales_trend: true,
-        search_volume: true,
-        social_mentions: true
-      },
-      _avg: {
-        popularity_score: true,
-        sales_trend: true,
-        rank_position: true
-      },
-      _max: {
-        popularity_score: true,
-        sales_trend: true
-      },
-      _min: {
-        popularity_score: true,
-        sales_trend: true
-      }
-    });
-
-    // 获取热销排行榜（今日数据）
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-
-    const topProducts = await prisma.productTrending.findMany({
-      where: {
-        date: today
-      },
-      orderBy: { popularity_score: 'desc' },
-      take: 10,
-      include: {
-        products: {
-          select: {
-            nameZh: true,
-            nameEn: true,
-            nameRu: true,
-            category: true,
-            marketPrice: true
+        // 获取实时数据（从基础表计算今日数据）
+        const todayParticipations = await prisma.participations.count({
+          where: {
+            createdAt: {
+              gte: today
+            }
           }
+        });
+
+        const todaySales = await prisma.orders.aggregate({
+          where: {
+            createdAt: {
+              gte: today
+            },
+            paymentStatus: 'completed'
+          },
+          _sum: {
+            totalAmount: true
+          },
+          _count: {
+            id: true
+          }
+        });
+
+        // 转换数据格式
+        const formattedData = trendingData.map((item : any) => ({
+          id: item.id,
+          productId: item.product_id,
+          productName: {
+            zh: item.products?.nameZh || '',
+            en: item.products?.nameEn || '',
+            ru: item.products?.nameRu || ''
+          },
+          category: item.products?.category || '',
+          marketPrice: Number(item.products?.marketPrice || 0),
+          status: item.products?.status || 'active',
+          date: item.date.toISOString().split('T')[0],
+          rankPosition: Number(item.rank_position),
+          popularityScore: Number(item.popularity_score),
+          salesTrend: Number(item.sales_trend),
+          searchVolume: Number(item.search_volume),
+          socialMentions: Number(item.social_mentions),
+          competitorAnalysis: item.competitor_analysis,
+          marketPosition: item.market_position,
+          createdAt: item.createdAt.toISOString(),
+          updatedAt: item.updatedAt.toISOString()
+        }));
+
+        // 转换排行榜数据格式
+        const formattedTopProducts = topProducts.map((item : any) => ({
+          id: item.id,
+          productId: item.product_id,
+          productName: {
+            zh: item.products?.nameZh || '',
+            en: item.products?.nameEn || '',
+            ru: item.products?.nameRu || ''
+          },
+          category: item.products?.category || '',
+          marketPrice: Number(item.products?.marketPrice || 0),
+          rankPosition: Number(item.rank_position),
+          popularityScore: Number(item.popularity_score),
+          salesTrend: Number(item.sales_trend)
+        }));
+
+        // 计算趋势分析
+        const trendAnalysis = {
+          avgPopularityScore: Number(summary._avg.popularity_score || 0),
+          maxPopularityScore: Number(summary._max.popularity_score || 0),
+          minPopularityScore: Number(summary._min.popularity_score || 0),
+          avgSalesTrend: Number(summary._avg.sales_trend || 0),
+          maxSalesTrend: Number(summary._max.sales_trend || 0),
+          minSalesTrend: Number(summary._min.sales_trend || 0),
+          totalSearchVolume: Number(summary._sum.search_volume || 0),
+          totalSocialMentions: Number(summary._sum.social_mentions || 0),
+          avgRankPosition: Number(summary._avg.rank_position || 0)
+        };
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            trending: formattedData,
+            pagination: {
+              currentPage: page,
+              totalPages: Math.ceil(totalCount / limit),
+              totalCount,
+              hasNext: page * limit < totalCount,
+              hasPrev: page > 1
+            },
+            topProducts: formattedTopProducts,
+            summary: {
+              totalSearchVolume: trendAnalysis.totalSearchVolume,
+              totalSocialMentions: trendAnalysis.totalSocialMentions,
+              avgRankPosition: trendAnalysis.avgRankPosition
+            },
+            trendAnalysis,
+            realTimeData: {
+              todayParticipations,
+              todaySalesAmount: Number(todaySales._sum.totalAmount || 0),
+              todaySalesCount: Number(todaySales._count.id || 0),
+              date: todayStr
+            }
+          }
+        });
+        } catch (error: any) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取热销趋势数据失败:', error);
+          return NextResponse.json({
+            success: false,
+            error: '获取热销趋势数据失败'
+          }, { status: 500 });
         }
-      }
-    });
-
-    // 获取实时数据（从基础表计算今日数据）
-    const todayParticipations = await prisma.participations.count({
-      where: {
-        createdAt: {
-          gte: today
-        }
-      }
-    });
-
-    const todaySales = await prisma.orders.aggregate({
-      where: {
-        createdAt: {
-          gte: today
-        },
-        paymentStatus: 'completed'
-      },
-      _sum: {
-        totalAmount: true
-      },
-      _count: {
-        id: true
-      }
-    });
-
-    // 转换数据格式
-    const formattedData = trendingData.map((item : any) => ({
-      id: item.id,
-      productId: item.product_id,
-      productName: {
-        zh: item.products?.nameZh || '',
-        en: item.products?.nameEn || '',
-        ru: item.products?.nameRu || ''
-      },
-      category: item.products?.category || '',
-      marketPrice: Number(item.products?.marketPrice || 0),
-      status: item.products?.status || 'active',
-      date: item.date.toISOString().split('T')[0],
-      rankPosition: Number(item.rank_position),
-      popularityScore: Number(item.popularity_score),
-      salesTrend: Number(item.sales_trend),
-      searchVolume: Number(item.search_volume),
-      socialMentions: Number(item.social_mentions),
-      competitorAnalysis: item.competitor_analysis,
-      marketPosition: item.market_position,
-      createdAt: item.createdAt.toISOString(),
-      updatedAt: item.updatedAt.toISOString()
-    }));
-
-    // 转换排行榜数据格式
-    const formattedTopProducts = topProducts.map((item : any) => ({
-      id: item.id,
-      productId: item.product_id,
-      productName: {
-        zh: item.products?.nameZh || '',
-        en: item.products?.nameEn || '',
-        ru: item.products?.nameRu || ''
-      },
-      category: item.products?.category || '',
-      marketPrice: Number(item.products?.marketPrice || 0),
-      rankPosition: Number(item.rank_position),
-      popularityScore: Number(item.popularity_score),
-      salesTrend: Number(item.sales_trend)
-    }));
-
-    // 计算趋势分析
-    const trendAnalysis = {
-      avgPopularityScore: Number(summary._avg.popularity_score || 0),
-      maxPopularityScore: Number(summary._max.popularity_score || 0),
-      minPopularityScore: Number(summary._min.popularity_score || 0),
-      avgSalesTrend: Number(summary._avg.sales_trend || 0),
-      maxSalesTrend: Number(summary._max.sales_trend || 0),
-      minSalesTrend: Number(summary._min.sales_trend || 0),
-      totalSearchVolume: Number(summary._sum.search_volume || 0),
-      totalSocialMentions: Number(summary._sum.social_mentions || 0),
-      avgRankPosition: Number(summary._avg.rank_position || 0)
-    };
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        trending: formattedData,
-        pagination: {
-          currentPage: page,
-          totalPages: Math.ceil(totalCount / limit),
-          totalCount,
-          hasNext: page * limit < totalCount,
-          hasPrev: page > 1
-        },
-        topProducts: formattedTopProducts,
-        summary: {
-          totalSearchVolume: trendAnalysis.totalSearchVolume,
-          totalSocialMentions: trendAnalysis.totalSocialMentions,
-          avgRankPosition: trendAnalysis.avgRankPosition
-        },
-        trendAnalysis,
-        realTimeData: {
-          todayParticipations,
-          todaySalesAmount: Number(todaySales._sum.totalAmount || 0),
-          todaySalesCount: Number(todaySales._count.id || 0),
-          date: todayStr
-        }
-      }
-    });
-    } catch (error: any) {
-      console.error('获取热销趋势数据失败:', error);
-      return NextResponse.json({
-        success: false,
-        error: '获取热销趋势数据失败'
-      }, { status: 500 });
-    }
-  })(request);
+}
 }
 
 // POST - 创建或更新热销趋势数据
@@ -324,7 +352,10 @@ export async function POST(request: NextRequest) {
       }
     });
     } catch (error: any) {
-      console.error('保存热销趋势数据失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'保存热销趋势数据失败:', error);
       return NextResponse.json({
         success: false,
         error: '保存热销趋势数据失败'
@@ -441,7 +472,10 @@ export async function PUT(request: NextRequest) {
       }
     });
     } catch (error: any) {
-      console.error('批量更新排行榜数据失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'批量更新排行榜数据失败:', error);
       return NextResponse.json({
         success: false,
         error: '批量更新排行榜数据失败'

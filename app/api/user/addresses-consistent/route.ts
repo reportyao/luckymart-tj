@@ -4,42 +4,66 @@ import { userService } from '@/lib/user-service';
 import { getUserFromRequest } from '@/lib/auth';
 import type { ApiResponse, UserAddress } from '@/types';
 import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
-const logger = getLogger();
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `addresses-consistent_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('addresses-consistent_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// 获取用户地址列表
-export async function GET(request: Request) {
   try {
-    // 验证用户
-    const user = getUserFromRequest(request);
-    if (!user) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '未授权访问'
-      }, { status: 401 });
-    }
-
-    logger.info('获取用户地址列表', { userId: user.userId });
-
-    // 使用用户服务获取地址列表（带缓存）
-    const addresses = await userService.getUserAddresses(user.userId);
-
-    return NextResponse.json<ApiResponse<UserAddress[]>>({
-      success: true,
-      data: addresses
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('addresses-consistent_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
     });
-
-  } catch (error: any) {
-    logger.error('获取地址列表失败', {
-      error: error.message,
-      stack: error.stack
-    });
-    
-    return NextResponse.json<ApiResponse>({
-      success: false,
-      error: error.message || '获取地址列表失败'
-    }, { status: 500 });
+    throw error;
   }
+});
+
+async function handleGET(request: NextRequest) {
+
+    // 获取用户地址列表
+    export async function GET(request: Request) {
+      try {
+        // 验证用户
+        const user = getUserFromRequest(request);
+        if (!user) {
+          return NextResponse.json<ApiResponse>({
+            success: false,
+            error: '未授权访问'
+          }, { status: 401 });
+        }
+
+        logger.info('获取用户地址列表', { userId: user.userId });
+
+        // 使用用户服务获取地址列表（带缓存）
+        const addresses = await userService.getUserAddresses(user.userId);
+
+        return NextResponse.json<ApiResponse<UserAddress[]>>({
+          success: true,
+          data: addresses
+        });
+
+      } catch (error: any) {
+        logger.error('获取地址列表失败', {
+          error: error.message,
+          stack: error.stack
+        });
+    
+        return NextResponse.json<ApiResponse>({
+          success: false,
+          error: error.message || '获取地址列表失败'
+        }, { status: 500 });
+      }
 }
 
 // 创建新地址

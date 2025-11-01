@@ -6,6 +6,10 @@ import type { ApiResponse } from '@/types';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -14,65 +18,89 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.withdrawals.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `withdrawals_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('withdrawals_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('withdrawals_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// 获取提现申请列表
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    try {
+async function handleGET(request: NextRequest) {
 
-    const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const offset = (page - 1) * limit;
+    // 获取提现申请列表
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        try {
 
-    // 构建查询条件
-    const where: any = {};
-    if (status && ['pending', 'processing', 'completed', 'rejected'].includes(status)) {
-      where.status = status;
-    }
+        const { searchParams } = new URL(request.url);
+        const status = searchParams.get('status');
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const offset = (page - 1) * limit;
 
-    // 获取提现列表和总数
-    const [withdrawals, total] = await Promise.all([
-      prisma.withdrawRequests.findMany({
-        where,
-        include: {
-          users: {
-            select: {
-              id: true,
-              username: true,
-              firstName: true,
-              telegramId: true
-            }
+        // 构建查询条件
+        const where: any = {};
+        if (status && ['pending', 'processing', 'completed', 'rejected'].includes(status)) {
+          where.status = status;
+        }
+
+        // 获取提现列表和总数
+        const [withdrawals, total] = await Promise.all([
+          prisma.withdrawRequests.findMany({
+            where,
+            include: {
+              users: {
+                select: {
+                  id: true,
+                  username: true,
+                  firstName: true,
+                  telegramId: true
+                }
+              }
+            },
+            orderBy: { createdAt: 'desc' },
+            skip: offset,
+            take: limit
+          }),
+          prisma.withdrawRequests.count({ where })
+        ]);
+
+        return NextResponse.json<ApiResponse>({
+          success: true,
+          data: {
+            withdrawals: withdrawals || [],
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
           }
-        },
-        orderBy: { createdAt: 'desc' },
-        skip: offset,
-        take: limit
-      }),
-      prisma.withdrawRequests.count({ where })
-    ]);
+        });
 
-    return NextResponse.json<ApiResponse>({
-      success: true,
-      data: {
-        withdrawals: withdrawals || [],
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit)
-      }
-    });
-
-    } catch (error: any) {
-      console.error('获取提现列表失败:', error);
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: error.message || '获取提现列表失败'
-      }, { status: 500 });
-    }
-  })(request);
+        } catch (error: any) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取提现列表失败:', error);
+          return NextResponse.json<ApiResponse>({
+            success: false,
+            error: error.message || '获取提现列表失败'
+          }, { status: 500 });
+        }
+}
 }
 
 // 审核提现申请
@@ -273,7 +301,10 @@ export async function POST(request: NextRequest) {
     });
 
     } catch (error: any) {
-      console.error('审核提现失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'审核提现失败:', error);
       
       // 处理具体的错误信息
       const errorMessage = error.message || '审核提现失败';

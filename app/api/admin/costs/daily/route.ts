@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -22,100 +26,127 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware({
  * - date: 特定日期 (格式: YYYY-MM-DD)
  * - startDate: 开始日期 (格式: YYYY-MM-DD)
  * - endDate: 结束日期 (格式: YYYY-MM-DD)
- * - page: 页码
- * - limit: 每页记录数
- */
-export async function GET(request: NextRequest) {
-  return await withStatsPermission(async (request: any, admin: any) => {
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `daily_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('daily_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
   try {
-    const { searchParams } = new URL(request.url);
-    const date = searchParams.get('date');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '30');
-    const offset = (page - 1) * limit;
-
-    let query = supabase
-      .from('cost_statistics')
-      .select('*')
-      .order('stat_date', { ascending: false });
-
-    if (date) {
-      query = query.eq('stat_date', date);
-    } else if (startDate && endDate) {
-      query = query
-        .gte('stat_date', startDate)
-        .lte('stat_date', endDate);
-    } else {
-      // 默认获取最近30天的数据
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      query = query.gte('stat_date', thirtyDaysAgo.toISOString().split('T')[0]);
-    }
-
-    // 获取总数
-    const { count } = await query.select('*', { count: 'exact', head: true });
-    
-    // 获取分页数据
-    const { data: costData, error } = await query
-      .range(offset, offset + limit - 1);
-
-    if (error) {
-      console.error('查询成本统计数据失败:', error);
-      return NextResponse.json(
-        { error: '查询成本统计数据失败' },
-        { status: 500 }
-      );
-    }
-
-    // 计算汇总统计
-    const totalStats = costData?.reduce((acc: any, curr: any) => {
-      acc.totalCost += parseFloat(curr.total_cost.toString());
-      acc.incentiveCost += parseFloat(curr.incentive_cost.toString());
-      acc.operationCost += parseFloat(curr.operation_cost.toString());
-      acc.referralCost += parseFloat(curr.referral_cost.toString());
-      acc.lotteryCost += parseFloat(curr.lottery_cost.toString());
-      return acc;
-    }, {
-      totalCost: 0,
-      incentiveCost: 0,
-      operationCost: 0,
-      referralCost: 0,
-      lotteryCost: 0
-    }) || {};
-
-    const response = {
-      data: costData || [],
-      pagination: {
-        total: count || 0,
-        page,
-        limit,
-        totalPages: Math.ceil((count || 0) / limit)
-      },
-      summary: {
-        period: date ? date : `${startDate || ''} - ${endDate || ''}`,
-        totalCost: totalStats.totalCost,
-        averageDailyCost: (totalStats.totalCost / (costData?.length || 1)),
-        costBreakdown: {
-          incentive: totalStats.incentiveCost,
-          operation: totalStats.operationCost,
-          referral: totalStats.referralCost,
-          lottery: totalStats.lotteryCost
-        }
-      }
-    };
-
-    return NextResponse.json(response);
-
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取每日成本统计API错误:', error);
-    return NextResponse.json(
-      { error: '服务器内部错误' },
-      { status: 500 }
-    );
+    logger.error('daily_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+     * - limit: 每页记录数
+     */
+    export async function GET(request: NextRequest) {
+      return await withStatsPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const date = searchParams.get('date');
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '30');
+        const offset = (page - 1) * limit;
+
+        let query = supabase
+          .from('cost_statistics')
+          .select('*')
+          .order('stat_date', { ascending: false });
+
+        if (date) {
+          query = query.eq('stat_date', date);
+        } else if (startDate && endDate) {
+          query = query
+            .gte('stat_date', startDate)
+            .lte('stat_date', endDate);
+        } else {
+          // 默认获取最近30天的数据
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          query = query.gte('stat_date', thirtyDaysAgo.toISOString().split('T')[0]);
+        }
+
+        // 获取总数
+        const { count } = await query.select('*', { count: 'exact', head: true });
+    
+        // 获取分页数据
+        const { data: costData, error } = await query
+          .range(offset, offset + limit - 1);
+
+        if (error) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'查询成本统计数据失败:', error);
+          return NextResponse.json(
+            { error: '查询成本统计数据失败' },
+            { status: 500 }
+          );
+        }
+
+        // 计算汇总统计
+        const totalStats = costData?.reduce((acc: any, curr: any) => {
+          acc.totalCost += parseFloat(curr.total_cost.toString());
+          acc.incentiveCost += parseFloat(curr.incentive_cost.toString());
+          acc.operationCost += parseFloat(curr.operation_cost.toString());
+          acc.referralCost += parseFloat(curr.referral_cost.toString());
+          acc.lotteryCost += parseFloat(curr.lottery_cost.toString());
+          return acc;
+        }, {
+          totalCost: 0,
+          incentiveCost: 0,
+          operationCost: 0,
+          referralCost: 0,
+          lotteryCost: 0
+        }) || {};
+
+        const response = {
+          data: costData || [],
+          pagination: {
+            total: count || 0,
+            page,
+            limit,
+            totalPages: Math.ceil((count || 0) / limit)
+          },
+          summary: {
+            period: date ? date : `${startDate || ''} - ${endDate || ''}`,
+            totalCost: totalStats.totalCost,
+            averageDailyCost: (totalStats.totalCost / (costData?.length || 1)),
+            costBreakdown: {
+              incentive: totalStats.incentiveCost,
+              operation: totalStats.operationCost,
+              referral: totalStats.referralCost,
+              lottery: totalStats.lotteryCost
+            }
+          }
+        };
+
+        return NextResponse.json(response);
+
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取每日成本统计API错误:', error);
+        return NextResponse.json(
+          { error: '服务器内部错误' },
+          { status: 500 }
+        );
+      }
+      })(request);
 }
 
 /**
@@ -158,7 +189,10 @@ export async function POST(request: NextRequest) {
       });
 
     if (error) {
-      console.error('计算成本统计数据失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'计算成本统计数据失败:', error);
       return NextResponse.json(
         { error: '计算成本统计数据失败', details: error.message },
         { status: 500 }
@@ -180,7 +214,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('计算每日成本统计API错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'计算每日成本统计API错误:', error);
     return NextResponse.json(
       { error: '服务器内部错误' },
       { status: 500 }

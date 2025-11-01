@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyPassword, generateAdminToken } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
+
 
 export async function POST(request: NextRequest) {
   try {
@@ -83,7 +86,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('管理员登录失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'管理员登录失败:', error);
     return NextResponse.json<ApiResponse>({
       success: false,
       error: '登录失败'

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
+
 
 // 创建权限中间件
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -143,7 +146,10 @@ export async function GET(
         }
       });
     } catch (error: any) {
-      console.error('Get user error:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Get user error:', error);
       return NextResponse.json({
         success: false,
         error: error.message || '获取用户详情失败'
@@ -200,7 +206,10 @@ export async function POST(
         }
       });
     } catch (error: any) {
-      console.error('Recharge user error:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Recharge user error:', error);
       return NextResponse.json({
         success: false,
         error: error.message || '充值失败'

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { auth } from '@/lib/auth';
+import { getLogger } from '@/lib/logger';
 
 const prisma = new PrismaClient();
 
@@ -112,7 +113,10 @@ export async function GET(
     });
 
   } catch (error) {
-    console.error('获取评论列表失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取评论列表失败:', error);
     return NextResponse.json(
       { success: false, error: '获取评论列表失败' },
       { status: 500 }
@@ -245,7 +249,10 @@ export async function POST(
     });
 
   } catch (error) {
-    console.error('发表评论失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'发表评论失败:', error);
     return NextResponse.json(
       { success: false, error: '发表评论失败' },
       { status: 500 }
@@ -305,6 +312,9 @@ async function processCommentReward(postId: string, userId: string) {
       });
     });
   } catch (error) {
-    console.error('处理评论奖励失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'处理评论奖励失败:', error);
   }
 }

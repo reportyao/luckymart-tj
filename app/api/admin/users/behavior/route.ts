@@ -5,6 +5,9 @@ import { getLogger } from '@/lib/logger';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -13,105 +16,126 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.users.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `behavior_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('behavior_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('behavior_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// GET - 获取用户行为统计
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const logger = getLogger();
+async function handleGET(request: NextRequest) {
 
-    try {
+    // GET - 获取用户行为统计
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const logger = getLogger();
 
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const behaviorType = searchParams.get('behaviorType');
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
+        try {
 
-    // 构建查询条件
-    const whereConditions: any = {};
+        const { searchParams } = new URL(request.url);
+        const userId = searchParams.get('userId');
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const behaviorType = searchParams.get('behaviorType');
+        const limit = parseInt(searchParams.get('limit') || '50');
+        const offset = parseInt(searchParams.get('offset') || '0');
+
+        // 构建查询条件
+        const whereConditions: any = {};
     
-    if (userId) {
-      whereConditions.user_id = userId;
-    }
+        if (userId) {
+          whereConditions.user_id = userId;
+        }
     
-    if (behaviorType) {
-      whereConditions.behavior_type = behaviorType;
-    }
+        if (behaviorType) {
+          whereConditions.behavior_type = behaviorType;
+        }
     
-    if (startDate || endDate) {
-      whereConditions.created_at = {};
-      if (startDate) {
-        whereConditions.created_at.gte = new Date(startDate);
-      }
-      if (endDate) {
-        whereConditions.created_at.lte = new Date(endDate);
-      }
-    }
-
-    // 获取行为日志数据
-    const [behaviorLogs, totalCount] = await Promise.all([
-      prisma.userBehaviorLogs.findMany({
-        where: whereConditions,
-        orderBy: { created_at: 'desc' },
-        take: limit,
-        skip: offset,
-        include: {
-          users: {
-            select: {
-              id: true,
-              firstName: true,
-              username: true,
-              telegramId: true
-            }
+        if (startDate || endDate) {
+          whereConditions.created_at = {};
+          if (startDate) {
+            whereConditions.created_at.gte = new Date(startDate);
+          }
+          if (endDate) {
+            whereConditions.created_at.lte = new Date(endDate);
           }
         }
-      }),
-      prisma.userBehaviorLogs.count({ where: whereConditions })
-    ]);
 
-    // 获取统计数据
-    const stats = await getBehaviorStatistics(whereConditions);
+        // 获取行为日志数据
+        const [behaviorLogs, totalCount] = await Promise.all([
+          prisma.userBehaviorLogs.findMany({
+            where: whereConditions,
+            orderBy: { created_at: 'desc' },
+            take: limit,
+            skip: offset,
+            include: {
+              users: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  username: true,
+                  telegramId: true
+                }
+              }
+            }
+          }),
+          prisma.userBehaviorLogs.count({ where: whereConditions })
+        ]);
 
-    // 获取行为类型分布
-    const behaviorTypeStats = await prisma.userBehaviorLogs.groupBy({
-      by: ['behavior_type'],
-      where: whereConditions,
-      _count: {
-        behavior_type: true
-      },
-      _count: true
-    });
+        // 获取统计数据
+        const stats = await getBehaviorStatistics(whereConditions);
 
-    // 获取用户行为热度图数据
-    const heatmapData = await getBehaviorHeatmapData(whereConditions);
+        // 获取行为类型分布
+        const behaviorTypeStats = await prisma.userBehaviorLogs.groupBy({
+          by: ['behavior_type'],
+          where: whereConditions,
+          _count: {
+            behavior_type: true
+          },
+          _count: true
+        });
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        behaviorLogs,
-        pagination: {
-          total: totalCount,
-          limit,
-          offset,
-          hasMore: offset + limit < totalCount
-        },
-        statistics: stats,
-        behaviorTypeDistribution: behaviorTypeStats,
-        heatmap: heatmapData
-      }
-    });
+        // 获取用户行为热度图数据
+        const heatmapData = await getBehaviorHeatmapData(whereConditions);
 
-    } catch (error: any) {
-      logger.error('获取用户行为统计失败', error as Error);
-      return NextResponse.json({
-        success: false,
-        error: error.message || '获取用户行为统计失败'
-      }, { status: 500 });
-    }
-  })(request);
+        return NextResponse.json({
+          success: true,
+          data: {
+            behaviorLogs,
+            pagination: {
+              total: totalCount,
+              limit,
+              offset,
+              hasMore: offset + limit < totalCount
+            },
+            statistics: stats,
+            behaviorTypeDistribution: behaviorTypeStats,
+            heatmap: heatmapData
+          }
+        });
+
+        } catch (error: any) {
+          logger.error('获取用户行为统计失败', error as Error);
+          return NextResponse.json({
+            success: false,
+            error: error.message || '获取用户行为统计失败'
+          }, { status: 500 });
+        }
+}
 }
 
 // POST - 记录用户行为

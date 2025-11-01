@@ -2,117 +2,142 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { PrismaClient } from '@prisma/client';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 const prisma = new PrismaClient();
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.USERS_READ);
-const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.USERS_WRITE);
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `posts_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('posts_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// 获取待审核晒单列表
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const status = searchParams.get('status') || 'pending'; // pending, approved, rejected
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('posts_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
 
-    const skip = (page - 1) * limit;
+async function handleGET(request: NextRequest) {
 
-    const [posts, total] = await Promise.all([
-      prisma.showOffPosts.findMany({
-        where: { status },
-        include: {
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              avatarUrl: true,
-              vipLevel: true,
-              preferredLanguage: true
-            }
-          },
-          round: {
-            select: {
-              id: true,
-              roundNumber: true,
-              winningNumber: true,
-              drawTime: true,
-              products: {
+    // 获取待审核晒单列表
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const status = searchParams.get('status') || 'pending'; // pending, approved, rejected
+
+        const skip = (page - 1) * limit;
+
+        const [posts, total] = await Promise.all([
+          prisma.showOffPosts.findMany({
+            where: { status },
+            include: {
+              user: {
                 select: {
                   id: true,
-                  nameMultilingual: true,
-                  nameZh: true,
-                  nameEn: true,
-                  nameRu: true,
-                  images: true,
-                  marketPrice: true
+                  firstName: true,
+                  lastName: true,
+                  avatarUrl: true,
+                  vipLevel: true,
+                  preferredLanguage: true
+                }
+              },
+              round: {
+                select: {
+                  id: true,
+                  roundNumber: true,
+                  winningNumber: true,
+                  drawTime: true,
+                  products: {
+                    select: {
+                      id: true,
+                      nameMultilingual: true,
+                      nameZh: true,
+                      nameEn: true,
+                      nameRu: true,
+                      images: true,
+                      marketPrice: true
+                    }
+                  }
                 }
               }
+            },
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take: limit
+          }),
+          prisma.showOffPosts.count({ where: { status } })
+        ]);
+
+        // 格式化返回数据
+        const formattedPosts = posts.map((post : any) => ({
+          id: post.id,
+          user: {
+            id: post.user.id,
+            name: `${post.user.firstName} ${post.user.lastName || ''}`.trim(),
+            avatar: post.user.avatarUrl,
+            vipLevel: post.user.vipLevel,
+            preferredLanguage: post.user.preferredLanguage
+          },
+          content: post.content,
+          images: post.images,
+          product: {
+            id: post.round.products.id,
+            name: post.round.products.nameMultilingual || 
+                  post.round.products.nameZh || 
+                  post.round.products.nameEn || 
+                  post.round.products.nameRu,
+            winningNumber: post.round.winningNumber,
+            drawTime: post.round.drawTime
+          },
+          stats: {
+            likeCount: post.likeCount,
+            commentCount: post.commentCount,
+            shareCount: post.shareCount,
+            viewCount: post.viewCount
+          },
+          review: {
+            autoReviewPassed: post.autoReviewPassed,
+            autoReviewReason: post.autoReviewReason,
+            reviewedBy: post.reviewedBy,
+            reviewedAt: post.reviewedAt,
+            rejectReason: post.rejectReason
+          },
+          createdAt: post.createdAt
+        }));
+
+        const totalPages = Math.ceil(total / limit);
+        const hasMore = page < totalPages;
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            posts: formattedPosts,
+            pagination: {
+              page,
+              limit,
+              total,
+              totalPages,
+              hasMore
             }
           }
-        },
-        orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit
-      }),
-      prisma.showOffPosts.count({ where: { status } })
-    ]);
-
-    // 格式化返回数据
-    const formattedPosts = posts.map((post : any) => ({
-      id: post.id,
-      user: {
-        id: post.user.id,
-        name: `${post.user.firstName} ${post.user.lastName || ''}`.trim(),
-        avatar: post.user.avatarUrl,
-        vipLevel: post.user.vipLevel,
-        preferredLanguage: post.user.preferredLanguage
-      },
-      content: post.content,
-      images: post.images,
-      product: {
-        id: post.round.products.id,
-        name: post.round.products.nameMultilingual || 
-              post.round.products.nameZh || 
-              post.round.products.nameEn || 
-              post.round.products.nameRu,
-        winningNumber: post.round.winningNumber,
-        drawTime: post.round.drawTime
-      },
-      stats: {
-        likeCount: post.likeCount,
-        commentCount: post.commentCount,
-        shareCount: post.shareCount,
-        viewCount: post.viewCount
-      },
-      review: {
-        autoReviewPassed: post.autoReviewPassed,
-        autoReviewReason: post.autoReviewReason,
-        reviewedBy: post.reviewedBy,
-        reviewedAt: post.reviewedAt,
-        rejectReason: post.rejectReason
-      },
-      createdAt: post.createdAt
-    }));
-
-    const totalPages = Math.ceil(total / limit);
-    const hasMore = page < totalPages;
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        posts: formattedPosts,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages,
-          hasMore
-        }
-      }
-    });
-  })(request);
+        });
+      })(request);
 }
 
 // 审核晒单

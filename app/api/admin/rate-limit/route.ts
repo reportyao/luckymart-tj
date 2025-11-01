@@ -6,41 +6,65 @@ import { getRateLimitStats, resetRateLimitStats, cleanupRateLimits } from '@/lib
 import { getSystemConfiguration, getRateLimitSystemStatus, restartRateLimitSystem } from '@/lib/rate-limit-system';
 import { getLogger } from '@/lib/logger';
 import { createTranslation } from '@/lib/createTranslation';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.read() });
-const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.write() });
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `rate-limit_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('rate-limit_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// 获取系统概览
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const logger = getLogger();
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('rate-limit_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
 
-    const url = new URL(request.url);
-    const action = url.searchParams.get('action') || 'overview';
+async function handleGET(request: NextRequest) {
 
-    switch (action) {
-      case 'overview':
-        return handleSystemOverview();
+    // 获取系统概览
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const logger = getLogger();
+
+        const url = new URL(request.url);
+        const action = url.searchParams.get('action') || 'overview';
+
+        switch (action) {
+          case 'overview':
+            return handleSystemOverview();
       
-      case 'config':
-        return handleConfigList(request);
+          case 'config':
+            return handleConfigList(request);
       
-      case 'stats':
-        return handleStats();
+          case 'stats':
+            return handleStats();
       
-      case 'alerts':
-        return handleAlerts();
+          case 'alerts':
+            return handleAlerts();
       
-      case 'monitoring':
-        return handleMonitoring();
+          case 'monitoring':
+            return handleMonitoring();
       
-      case 'health':
-        return handleHealthCheck();
+          case 'health':
+            return handleHealthCheck();
       
-      default:
-        return NextResponse.json({ error: '未知操作' }, { status: 400 });
-    }
-  })(request);
+          default:
+            return NextResponse.json({ error: '未知操作' }, { status: 400 });
+        }
+      })(request);
 }
 
 // 系统概览

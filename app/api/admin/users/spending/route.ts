@@ -5,6 +5,9 @@ import { getLogger } from '@/lib/logger';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -13,44 +16,65 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.users.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `spending_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('spending_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('spending_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// GET - 获取用户消费行为分析
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const logger = getLogger();
+async function handleGET(request: NextRequest) {
 
-    try {
+    // GET - 获取用户消费行为分析
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const logger = getLogger();
 
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    const analysisType = searchParams.get('analysisType') || 'overview'; // 'overview', 'user', 'segments'
-    const spendingSegment = searchParams.get('spendingSegment'); // 'low', 'medium', 'high', 'vip'
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const sortBy = searchParams.get('sortBy') || 'total_spent';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
+        try {
 
-    // 根据分析类型返回不同数据
-    switch (analysisType) {
-      case 'user':
-        return await getUserSpendingAnalysis(admin, userId);
-      case 'segments':
-        return await getSpendingSegmentsAnalysis(admin, spendingSegment, startDate, endDate, sortBy, sortOrder, limit, offset);
-      default:
-        return await getSpendingOverview(admin, startDate, endDate);
-    }
+        const { searchParams } = new URL(request.url);
+        const userId = searchParams.get('userId');
+        const analysisType = searchParams.get('analysisType') || 'overview'; // 'overview', 'user', 'segments'
+        const spendingSegment = searchParams.get('spendingSegment'); // 'low', 'medium', 'high', 'vip'
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const sortBy = searchParams.get('sortBy') || 'total_spent';
+        const sortOrder = searchParams.get('sortOrder') || 'desc';
+        const limit = parseInt(searchParams.get('limit') || '50');
+        const offset = parseInt(searchParams.get('offset') || '0');
 
-    } catch (error: any) {
-      logger.error('获取用户消费行为分析失败', error as Error);
-      return NextResponse.json({
-        success: false,
-        error: error.message || '获取用户消费行为分析失败'
-      }, { status: 500 });
-    }
-  })(request);
+        // 根据分析类型返回不同数据
+        switch (analysisType) {
+          case 'user':
+            return await getUserSpendingAnalysis(admin, userId);
+          case 'segments':
+            return await getSpendingSegmentsAnalysis(admin, spendingSegment, startDate, endDate, sortBy, sortOrder, limit, offset);
+          default:
+            return await getSpendingOverview(admin, startDate, endDate);
+        }
+
+        } catch (error: any) {
+          logger.error('获取用户消费行为分析失败', error as Error);
+          return NextResponse.json({
+            success: false,
+            error: error.message || '获取用户消费行为分析失败'
+          }, { status: 500 });
+        }
+}
 }
 
 // POST - 更新用户消费分析

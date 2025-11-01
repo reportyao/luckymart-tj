@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { auth } from '@/lib/auth';
+import { getLogger } from '@/lib/logger';
 
 const prisma = new PrismaClient();
 
@@ -135,7 +136,10 @@ export async function GET(
     });
 
   } catch (error) {
-    console.error('获取晒单详情失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取晒单详情失败:', error);
     return NextResponse.json(
       { success: false, error: '获取晒单详情失败' },
       { status: 500 }
@@ -252,7 +256,10 @@ export async function POST(
     });
 
   } catch (error) {
-    console.error('点赞操作失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'点赞操作失败:', error);
     return NextResponse.json(
       { success: false, error: '点赞操作失败' },
       { status: 500 }
@@ -317,6 +324,9 @@ async function processLikeReward(postId: string, userId: string) {
       });
     });
   } catch (error) {
-    console.error('处理点赞奖励失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'处理点赞奖励失败:', error);
   }
 }

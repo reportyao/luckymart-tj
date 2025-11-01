@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 import { authenticateUser } from '../../../../lib/auth';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // POST /api/notifications/win - 发送中奖通知
 export async function POST(request: NextRequest) {
@@ -93,7 +97,10 @@ export async function POST(request: NextRequest) {
       try {
         telegramSuccess = await sendTelegramWinNotification(user.telegramId, notificationContent);
       } catch (error) {
-        console.error('发送Telegram通知失败:', error);
+        logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'发送Telegram通知失败:', error);
       }
     }
 
@@ -131,96 +138,123 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('发送中奖通知失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'发送中奖通知失败:', error);
     return NextResponse.json(
       { success: false, error: '服务器错误' },
       { status: 500 }
     );
   }
-}
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `win_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('win_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// GET /api/notifications/win - 获取用户中奖通知
-export async function GET(request: NextRequest) {
   try {
-    // 验证用户身份
-    const authResult = await authenticateUser(request);
-    if (!authResult.success) {
-      return NextResponse.json(
-        { success: false, error: '认证失败' },
-        { status: 401 }
-      );
-    }
-
-    const user = authResult.user;
-    const { searchParams } = new URL(request.url);
-    
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
-    const offset = (page - 1) * limit;
-    const status = searchParams.get('status') || 'all'; // 'all', 'sent', 'pending', 'failed'
-
-    // 构建查询条件
-    let whereConditions: any = {
-      userId: user.id,
-      type: 'lottery_win'
-    };
-
-    if (status !== 'all') {
-      whereConditions.status = status;
-    }
-
-    // 获取通知总数
-    const totalCount = await prisma.notifications.count({
-      where: whereConditions
-    });
-
-    // 获取通知列表
-    const notifications = await prisma.notifications.findMany({
-      where: whereConditions,
-      orderBy: {
-        createdAt: 'desc'
-      },
-      skip: offset,
-      take: limit
-    });
-
-    // 转换数据格式
-    const notificationList = notifications.map((notification : any) => {
-      let content = {};
-      try {
-        content = typeof notification.content === 'string' 
-          ? JSON.parse(notification.content) 
-          : notification.content;
-      } catch (error) {
-        console.warn('解析通知内容失败:', error);
-      }
-
-      return {
-        id: notification.id,
-        type: notification.type,
-        status: notification.status,
-        sentAt: notification.sentAt?.toISOString(),
-        createdAt: notification.createdAt.toISOString(),
-        content
-      };
-    });
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        notifications: notificationList,
-        pagination: {
-          page,
-          limit,
-          total: totalCount,
-          hasMore: offset + notificationList.length < totalCount,
-          totalPages: Math.ceil(totalCount / limit)
-        }
-      }
-    });
-
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取中奖通知失败:', error);
+    logger.error('win_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
+
+async function handleGET(request: NextRequest) {
+
+    // GET /api/notifications/win - 获取用户中奖通知
+    export async function GET(request: NextRequest) {
+      try {
+        // 验证用户身份
+        const authResult = await authenticateUser(request);
+        if (!authResult.success) {
+          return NextResponse.json(
+            { success: false, error: '认证失败' },
+            { status: 401 }
+          );
+        }
+
+        const user = authResult.user;
+        const { searchParams } = new URL(request.url);
+    
+        const page = parseInt(searchParams.get('page') || '1', 10);
+        const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
+        const offset = (page - 1) * limit;
+        const status = searchParams.get('status') || 'all'; // 'all', 'sent', 'pending', 'failed'
+
+        // 构建查询条件
+        let whereConditions: any = {
+          userId: user.id,
+          type: 'lottery_win'
+        };
+
+        if (status !== 'all') {
+          whereConditions.status = status;
+        }
+
+        // 获取通知总数
+        const totalCount = await prisma.notifications.count({
+          where: whereConditions
+        });
+
+        // 获取通知列表
+        const notifications = await prisma.notifications.findMany({
+          where: whereConditions,
+          orderBy: {
+            createdAt: 'desc'
+          },
+          skip: offset,
+          take: limit
+        });
+
+        // 转换数据格式
+        const notificationList = notifications.map((notification : any) => {
+          let content = {};
+          try {
+            content = typeof notification.content === 'string' 
+              ? JSON.parse(notification.content) 
+              : notification.content;
+          } catch (error) {
+            console.warn('解析通知内容失败:', error);
+          }
+
+          return {
+            id: notification.id,
+            type: notification.type,
+            status: notification.status,
+            sentAt: notification.sentAt?.toISOString(),
+            createdAt: notification.createdAt.toISOString(),
+            content
+          };
+        });
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            notifications: notificationList,
+            pagination: {
+              page,
+              limit,
+              total: totalCount,
+              hasMore: offset + notificationList.length < totalCount,
+              totalPages: Math.ceil(totalCount / limit)
+            }
+          }
+        });
+
+}
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取中奖通知失败:', error);
     return NextResponse.json(
       { success: false, error: '服务器错误' },
       { status: 500 }
@@ -262,16 +296,22 @@ async function sendTelegramWinNotification(telegramId: string, notificationConte
     });
 
     if (response.ok) {
-      console.log('Telegram中奖通知发送成功:', chatId);
+      logger.info("API Log", { requestId, data: 'Telegram中奖通知发送成功:', chatId });'Telegram中奖通知发送成功:', chatId);
       return true;
     } else {
       const errorData = await response.text();
-      console.error('Telegram发送失败:', errorData);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Telegram发送失败:', errorData);
       return false;
     }
 
   } catch (error) {
-    console.error('Telegram通知发送异常:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Telegram通知发送异常:', error);
     return false;
   }
 }
@@ -403,9 +443,12 @@ async function updateUserWinStats(userId: string, participationId: string) {
       }
     });
     
-    console.log('用户中奖统计已更新:', userId);
+    logger.info("API Log", { requestId, data: '用户中奖统计已更新:', userId });'用户中奖统计已更新:', userId);
   } catch (error) {
-    console.error('更新用户统计失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新用户统计失败:', error);
   }
 }
 

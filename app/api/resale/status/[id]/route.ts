@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import type { ApiResponse } from '@/types';
+import { getLogger } from '@/lib/logger';
 
 export async function GET(
   request: Request,
@@ -84,7 +85,10 @@ export async function GET(
     });
 
   } catch (error: any) {
-    console.error('查询转售状态失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'查询转售状态失败:', error);
     return NextResponse.json<ApiResponse>({
       success: false,
       error: error.message || '查询转售状态失败'

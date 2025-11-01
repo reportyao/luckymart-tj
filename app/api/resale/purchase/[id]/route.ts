@@ -5,6 +5,9 @@ import { getUserFromRequest } from '@/lib/auth';
 import { generateOrderNumber } from '@/lib/utils';
 import type { ApiResponse } from '@/types';
 import { randomUUID } from 'crypto';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
+
 
 export async function POST(
   request: Request,
@@ -14,12 +17,12 @@ export async function POST(
   const requestId = randomUUID();
   
   try {
-    console.log(`[${requestId}] 开始处理转售购买请求`);
+    logger.info("API Log", { requestId, data: `[${requestId}] 开始处理转售购买请求` });`[${requestId}] 开始处理转售购买请求`);
 
     // 验证用户
     const user = getUserFromRequest(request);
     if (!user) {
-      console.log(`[${requestId}] 用户未授权`);
+      logger.info("API Log", { requestId, data: `[${requestId}] 用户未授权` });`[${requestId}] 用户未授权`);
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '未授权访问'
@@ -27,11 +30,11 @@ export async function POST(
     }
 
     const listingId = params.id;
-    console.log(`[${requestId}] 处理商品ID: ${listingId}`);
+    logger.info("API Log", { requestId, data: `[${requestId}] 处理商品ID: ${listingId}` });`[${requestId}] 处理商品ID: ${listingId}`);
 
     // 验证listingId格式
     if (!listingId || typeof listingId !== 'string') {
-      console.log(`[${requestId}] 无效的商品ID格式`);
+      logger.info("API Log", { requestId, data: `[${requestId}] 无效的商品ID格式` });`[${requestId}] 无效的商品ID格式`);
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '无效的商品ID'
@@ -40,7 +43,7 @@ export async function POST(
 
     // 生成订单号
     const orderNumber = generateOrderNumber();
-    console.log(`[${requestId}] 生成订单号: ${orderNumber}`);
+    logger.info("API Log", { requestId, data: `[${requestId}] 生成订单号: ${orderNumber}` });`[${requestId}] 生成订单号: ${orderNumber}`);
 
     // 调用数据库事务函数处理整个购买流程
     const { data: result, error: transactionError } = await supabaseAdmin
@@ -52,11 +55,14 @@ export async function POST(
       });
 
     const executionTime = Date.now() - startTime;
-    console.log(`[${requestId}] 事务执行完成，耗时: ${executionTime}ms`);
+    logger.info("API Log", { requestId, data: `[${requestId}] 事务执行完成，耗时: ${executionTime}ms` });`[${requestId}] 事务执行完成，耗时: ${executionTime}ms`);
 
     // 处理数据库函数执行错误
     if (transactionError) {
-      console.error(`[${requestId}] 数据库事务执行失败:`, transactionError);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });`[${requestId}] 数据库事务执行失败:`, transactionError);
       
       // 根据错误类型返回合适的错误信息
       let errorMessage = '购买失败，请稍后重试';
@@ -99,7 +105,7 @@ export async function POST(
 
     // 检查事务函数返回的结果
     if (!result) {
-      console.log(`[${requestId}] 事务函数返回空结果`);
+      logger.info("API Log", { requestId, data: `[${requestId}] 事务函数返回空结果` });`[${requestId}] 事务函数返回空结果`);
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '系统异常，请稍后重试'
@@ -111,7 +117,10 @@ export async function POST(
     try {
       transactionResult = typeof result === 'string' ? JSON.parse(result) : result;
     } catch (parseError) {
-      console.error(`[${requestId}] 事务结果解析失败:`, parseError);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });`[${requestId}] 事务结果解析失败:`, parseError);
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '系统异常，响应数据格式错误'
@@ -120,7 +129,7 @@ export async function POST(
 
     if (!transactionResult.success) {
       // 业务逻辑错误（如余额不足等）
-      console.log(`[${requestId}] 业务逻辑错误:`, transactionResult.error);
+      logger.info("API Log", { requestId, data: `[${requestId}] 业务逻辑错误:`, transactionResult.error });`[${requestId}] 业务逻辑错误:`, transactionResult.error);
       return NextResponse.json<ApiResponse>({
         success: false,
         error: transactionResult.error || '购买失败'
@@ -128,7 +137,7 @@ export async function POST(
     }
 
     // 成功购买，返回结果
-    console.log(`[${requestId}] 购买成功，订单: ${transactionResult.data?.order?.order_number}`);
+    logger.info("API Log", { requestId, data: `[${requestId}] 购买成功，订单: ${transactionResult.data?.order?.order_number}` });`[${requestId}] 购买成功，订单: ${transactionResult.data?.order?.order_number}`);
     return NextResponse.json<ApiResponse>({
       success: true,
       data: {
@@ -140,16 +149,18 @@ export async function POST(
 
   } catch (error: any) {
     const executionTime = Date.now() - startTime;
-    console.error(`[${requestId}] 购买转售商品异常 (${executionTime}ms):`, error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });`[${requestId}] 购买转售商品异常 (${executionTime}ms):`, error);
     
     // 记录详细错误信息用于调试
     if (error instanceof Error) {
-      console.error(`[${requestId}] 错误堆栈:`, error.stack);
-      console.error(`[${requestId}] 错误详情:`, {
-        message: error.message,
-        name: error.name,
-        cause: error.cause
-      });
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });`[${requestId}] 错误堆栈:`, error.stack);
+      logger.error("API Error", error as Error, { requestId, endpoint: request.url });
     }
     
     // 返回通用错误响应
@@ -234,7 +245,10 @@ export async function GET(
     });
 
   } catch (error: any) {
-    console.error('获取转售商品信息失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取转售商品信息失败:', error);
     
     return NextResponse.json<ApiResponse>({
       success: false,

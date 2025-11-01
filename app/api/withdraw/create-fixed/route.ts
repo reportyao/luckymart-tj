@@ -16,6 +16,7 @@ import {
   detectXSSAttempt
 } from '@/lib/security-validation';
 import { AppError, ErrorFactory } from '@/lib/errors';
+import { getLogger } from '@/lib/logger';
 
 // 速率限制检查器
 const rateLimitChecker = new RateLimitChecker();
@@ -270,7 +271,10 @@ export async function POST(request: Request) {
       .single();
 
     if (insertError) {
-      console.error('创建提现申请失败:', insertError);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建提现申请失败:', insertError);
       return NextResponse.json<ApiResponse>({
         success: false,
         error: '创建提现申请失败'
@@ -289,7 +293,10 @@ export async function POST(request: Request) {
     });
 
     if (updateError) {
-      console.error('扣除余额失败:', updateError);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'扣除余额失败:', updateError);
       
       // 增强的回滚机制
       try {
@@ -330,7 +337,10 @@ export async function POST(request: Request) {
           userAgent
         });
       } catch (rollbackError) {
-        console.error('回滚操作失败:', rollbackError);
+        logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'回滚操作失败:', rollbackError);
         // 如果回滚也失败，需要人工干预标记
         await supabaseAdmin
           .from('withdraw_requests')
@@ -412,7 +422,10 @@ export async function POST(request: Request) {
     return setSecurityResponseHeaders(response.headers);
 
   } catch (error: any) {
-    console.error('创建提现申请失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建提现申请失败:', error);
     
     const appError = ErrorFactory.wrapError(error, '创建提现申请');
     const response = NextResponse.json<ApiResponse>({
@@ -460,7 +473,10 @@ async function verifySMSCode(userId: string, account: string, code: string): Pro
 
     return true;
   } catch (error) {
-    console.error('验证码验证失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'验证码验证失败:', error);
     return false;
   }
 }
@@ -581,7 +597,10 @@ async function assessWithdrawRisk(data: {
 
     return Math.min(100, riskScore);
   } catch (error) {
-    console.error('风险评估失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'风险评估失败:', error);
     return 50; // 中等风险
   }
 }
@@ -619,7 +638,10 @@ async function logSecurityEvent(event: {
         created_at: new Date().toISOString()
       });
   } catch (error) {
-    console.error('记录安全事件失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'记录安全事件失败:', error);
   }
 }
 
@@ -645,6 +667,9 @@ async function logUserActivity(activity: {
         created_at: new Date().toISOString()
       });
   } catch (error) {
-    console.error('记录用户活动失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'记录用户活动失败:', error);
   }
 }

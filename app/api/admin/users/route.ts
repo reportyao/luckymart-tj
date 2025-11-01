@@ -8,6 +8,9 @@ import { getLogger } from '@/lib/logger';
 import { getMonitor } from '@/lib/monitoring';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 创建权限中间件
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -16,37 +19,61 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.users.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `users_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('users_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('users_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// GET - 获取用户列表
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    try {
+async function handleGET(request: NextRequest) {
 
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const search = searchParams.get('search') || '';
+    // GET - 获取用户列表
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        try {
 
-    // 使用优化后的查询方法
-    const result = await QueryOptimizer.getOptimizedUsersList({
-      page,
-      limit,
-      search
-    });
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const search = searchParams.get('search') || '';
 
-      return NextResponse.json({
-        success: true,
-        data: result
-      });
-    } catch (error: any) {
-      console.error('Get users error:', error);
-      return NextResponse.json({
-        success: false,
-        error: error.message || '获取用户列表失败'
-      }, { status: 500 });
-    }
-  })(request);
+        // 使用优化后的查询方法
+        const result = await QueryOptimizer.getOptimizedUsersList({
+          page,
+          limit,
+          search
+        });
+
+          return NextResponse.json({
+            success: true,
+            data: result
+          });
+        } catch (error: any) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'Get users error:', error);
+          return NextResponse.json({
+            success: false,
+            error: error.message || '获取用户列表失败'
+          }, { status: 500 });
+        }
+}
 }
 
 // POST - 创建用户（支持邀请奖励触发）

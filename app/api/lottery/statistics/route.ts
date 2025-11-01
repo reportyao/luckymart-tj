@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 import { authenticateUser } from '../../../../lib/auth';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 类型定义
 interface ParticipationRecord {
@@ -16,122 +20,146 @@ interface ParticipationRecord {
   isWinner: boolean;
   type: 'paid' | 'free';
   createdAt: Date;
-}
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `statistics_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('statistics_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// GET /api/lottery/statistics - 获取用户抽奖统计
-export async function GET(request: NextRequest) {
   try {
-    // 验证用户身份
-    const authResult = await authenticateUser(request);
-    if (!authResult.success) {
-      return NextResponse.json(
-        { success: false, error: '认证失败' },
-        { status: 401 }
-      );
-    }
-
-    const user = authResult.user;
-    const { searchParams } = new URL(request.url);
-    
-    // 解析查询参数
-    const period = searchParams.get('period') || 'all'; // 'week', 'month', 'year', 'all'
-    const type = searchParams.get('type') || 'all'; // 'paid', 'free', 'all'
-
-    // 构建时间筛选条件
-    const dateFilter = getDateFilter(period);
-
-    // 构建查询条件
-    let whereConditions: any = {
-      userId: user.id
-    };
-
-    if (type !== 'all') {
-      whereConditions.type = type;
-    }
-
-    if (dateFilter) {
-      whereConditions.createdAt = {
-        gte: dateFilter
-      };
-    }
-
-    // 基础统计
-    const [
-      totalParticipations,
-      totalWins,
-      totalAmountSpent,
-      winningRecords
-    ] = await Promise.all([
-      // 总参与次数
-      prisma.participations.count({
-        where: whereConditions
-      }),
-      
-      // 总中奖次数
-      prisma.participations.count({
-        where: {
-          ...whereConditions,
-          isWinner: true
-        }
-      }),
-      
-      // 总消费金额
-      prisma.participations.aggregate({
-        where: whereConditions,
-        _sum: {
-          cost: true
-        }
-      }),
-      
-      // 中奖记录详情（用于计算总奖金）
-      prisma.participations.findMany({
-        where: {
-          ...whereConditions,
-          isWinner: true
-        },
-        include: {
-          round: {
-            include: {
-              product: true
-            }
-          }
-        }
-      })
-    ]);
-
-    // 计算总奖金
-    const totalWinnings = winningRecords.reduce((sum: number,  record: ParticipationRecord) => {
-      const prize = calculatePrize(record.round.product, record.sharesCount);
-      return sum + prize.amount;
-    }, 0);
-
-    // 计算中奖率
-    const winRate = totalParticipations > 0 ? totalWins / totalParticipations : 0;
-
-    // 详细统计
-    const detailedStats = await getDetailedStatistics(user.id, period, type);
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        // 基础统计
-        totalParticipations,
-        totalWins,
-        totalWinnings: parseFloat(totalWinnings.toFixed(2)),
-        totalAmountSpent: parseFloat((totalAmountSpent._sum.cost || 0).toFixed(2)),
-        winRate,
-        
-        // 详细统计
-        ...detailedStats,
-        
-        // 筛选条件
-        period,
-        type
-      }
-    });
-
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取抽奖统计失败:', error);
+    logger.error('statistics_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
+
+async function handleGET(request: NextRequest) {
+
+    // GET /api/lottery/statistics - 获取用户抽奖统计
+    export async function GET(request: NextRequest) {
+      try {
+        // 验证用户身份
+        const authResult = await authenticateUser(request);
+        if (!authResult.success) {
+          return NextResponse.json(
+            { success: false, error: '认证失败' },
+            { status: 401 }
+          );
+        }
+
+        const user = authResult.user;
+        const { searchParams } = new URL(request.url);
+    
+        // 解析查询参数
+        const period = searchParams.get('period') || 'all'; // 'week', 'month', 'year', 'all'
+        const type = searchParams.get('type') || 'all'; // 'paid', 'free', 'all'
+
+        // 构建时间筛选条件
+        const dateFilter = getDateFilter(period);
+
+        // 构建查询条件
+        let whereConditions: any = {
+          userId: user.id
+        };
+
+        if (type !== 'all') {
+          whereConditions.type = type;
+        }
+
+        if (dateFilter) {
+          whereConditions.createdAt = {
+            gte: dateFilter
+          };
+        }
+
+        // 基础统计
+        const [
+          totalParticipations,
+          totalWins,
+          totalAmountSpent,
+          winningRecords
+        ] = await Promise.all([
+          // 总参与次数
+          prisma.participations.count({
+            where: whereConditions
+          }),
+      
+          // 总中奖次数
+          prisma.participations.count({
+            where: {
+              ...whereConditions,
+              isWinner: true
+            }
+          }),
+      
+          // 总消费金额
+          prisma.participations.aggregate({
+            where: whereConditions,
+            _sum: {
+              cost: true
+            }
+          }),
+      
+          // 中奖记录详情（用于计算总奖金）
+          prisma.participations.findMany({
+            where: {
+              ...whereConditions,
+              isWinner: true
+            },
+            include: {
+              round: {
+                include: {
+                  product: true
+                }
+              }
+            }
+          })
+        ]);
+
+        // 计算总奖金
+        const totalWinnings = winningRecords.reduce((sum: number,  record: ParticipationRecord) => {
+          const prize = calculatePrize(record.round.product, record.sharesCount);
+          return sum + prize.amount;
+        }, 0);
+
+        // 计算中奖率
+        const winRate = totalParticipations > 0 ? totalWins / totalParticipations : 0;
+
+        // 详细统计
+        const detailedStats = await getDetailedStatistics(user.id, period, type);
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            // 基础统计
+            totalParticipations,
+            totalWins,
+            totalWinnings: parseFloat(totalWinnings.toFixed(2)),
+            totalAmountSpent: parseFloat((totalAmountSpent._sum.cost || 0).toFixed(2)),
+            winRate,
+        
+            // 详细统计
+            ...detailedStats,
+        
+            // 筛选条件
+            period,
+            type
+          }
+        });
+
+}
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取抽奖统计失败:', error);
     return NextResponse.json(
       { success: false, error: '服务器错误' },
       { status: 500 }

@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { API_BASE_URL } from '@/config/api-config';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 图片优化参数验证
 const ImageOptimizationSchema = z.object({
@@ -13,34 +17,58 @@ const ImageOptimizationSchema = z.object({
   position: z.string().default('center'),
   background: z.string().optional(),
   dpr: z.number().min(1).max(3).default(1),
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `image_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('image_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('image_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// GET /api/image/optimize - 图片优化端点
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    
-    // 解析查询参数
-    const imageParams = ImageOptimizationSchema.parse({
-      src: searchParams.get('src'),
-      width: searchParams.get('width') ? parseInt(searchParams.get('width')!) : undefined,
-      height: searchParams.get('height') ? parseInt(searchParams.get('height')!) : undefined,
-      quality: searchParams.get('quality') ? parseInt(searchParams.get('quality')!) : 75,
-      format: searchParams.get('format') || 'auto',
-      fit: searchParams.get('fit') || 'cover',
-      position: searchParams.get('position') || 'center',
-      background: searchParams.get('background') || undefined,
-      dpr: searchParams.get('dpr') ? parseInt(searchParams.get('dpr')!) : 1,
-    });
+async function handleGET(request: NextRequest) {
 
-    // 生成优化后的图片URL
-    const optimizedUrl = generateOptimizedImageUrl(imageParams);
+    // GET /api/image/optimize - 图片优化端点
+    export async function GET(request: NextRequest) {
+      try {
+        const { searchParams } = new URL(request.url);
     
-    // 返回重定向到优化后的图片
-    return NextResponse.redirect(optimizedUrl);
+        // 解析查询参数
+        const imageParams = ImageOptimizationSchema.parse({
+          src: searchParams.get('src'),
+          width: searchParams.get('width') ? parseInt(searchParams.get('width')!) : undefined,
+          height: searchParams.get('height') ? parseInt(searchParams.get('height')!) : undefined,
+          quality: searchParams.get('quality') ? parseInt(searchParams.get('quality')!) : 75,
+          format: searchParams.get('format') || 'auto',
+          fit: searchParams.get('fit') || 'cover',
+          position: searchParams.get('position') || 'center',
+          background: searchParams.get('background') || undefined,
+          dpr: searchParams.get('dpr') ? parseInt(searchParams.get('dpr')!) : 1,
+        });
 
-  } catch (error) {
-    console.error('Image optimization error:', error);
+        // 生成优化后的图片URL
+        const optimizedUrl = generateOptimizedImageUrl(imageParams);
+    
+        // 返回重定向到优化后的图片
+        return NextResponse.redirect(optimizedUrl);
+
+}
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Image optimization error:', error);
     
     return NextResponse.json({
       success: false,
@@ -97,7 +125,10 @@ export async function POST(request: NextRequest) {
     }, { status: 400 });
 
   } catch (error) {
-    console.error('Image analysis error:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Image analysis error:', error);
     
     return NextResponse.json({
       success: false,

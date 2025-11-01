@@ -5,6 +5,9 @@ import { getLogger } from '@/lib/logger';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -13,110 +16,131 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.users.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `segments_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('segments_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('segments_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// GET - 获取用户分群数据
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const logger = getLogger();
+async function handleGET(request: NextRequest) {
 
-    try {
+    // GET - 获取用户分群数据
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const logger = getLogger();
 
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    const segmentType = searchParams.get('segmentType'); // 'behavior_segment', 'spending_segment', 'engagement_segment'
-    const engagementLevel = searchParams.get('engagementLevel'); // 'high', 'medium', 'low'
-    const spendingLevel = searchParams.get('spendingLevel'); // 'high', 'medium', 'low'
-    const riskLevel = searchParams.get('riskLevel'); // 'low', 'medium', 'high'
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
+        try {
 
-    // 构建查询条件
-    const whereConditions: any = {};
-    
-    if (userId) {
-      whereConditions.user_id = userId;
-    }
-    
-    if (segmentType) {
-      whereConditions.segment_type = segmentType;
-    }
-    
-    if (engagementLevel) {
-      whereConditions.engagement_level = engagementLevel;
-    }
-    
-    if (spendingLevel) {
-      whereConditions.spending_level = spendingLevel;
-    }
-    
-    if (riskLevel) {
-      whereConditions.risk_level = riskLevel;
-    }
+        const { searchParams } = new URL(request.url);
+        const userId = searchParams.get('userId');
+        const segmentType = searchParams.get('segmentType'); // 'behavior_segment', 'spending_segment', 'engagement_segment'
+        const engagementLevel = searchParams.get('engagementLevel'); // 'high', 'medium', 'low'
+        const spendingLevel = searchParams.get('spendingLevel'); // 'high', 'medium', 'low'
+        const riskLevel = searchParams.get('riskLevel'); // 'low', 'medium', 'high'
+        const limit = parseInt(searchParams.get('limit') || '50');
+        const offset = parseInt(searchParams.get('offset') || '0');
 
-    // 获取用户分群数据
-    const [segmentUsers, totalCount] = await Promise.all([
-      prisma.userSegments.findMany({
-        where: whereConditions,
-        orderBy: {
-          value_score: 'desc'
-        },
-        take: limit,
-        skip: offset,
-        include: {
-          users: {
-            select: {
-              id: true,
-              firstName: true,
-              username: true,
-              telegramId: true,
-              vipLevel: true,
-              luckyCoins: true,
-              createdAt: true
-            }
-          }
+        // 构建查询条件
+        const whereConditions: any = {};
+    
+        if (userId) {
+          whereConditions.user_id = userId;
         }
-      }),
-      prisma.userSegments.count({ where: whereConditions })
-    ]);
+    
+        if (segmentType) {
+          whereConditions.segment_type = segmentType;
+        }
+    
+        if (engagementLevel) {
+          whereConditions.engagement_level = engagementLevel;
+        }
+    
+        if (spendingLevel) {
+          whereConditions.spending_level = spendingLevel;
+        }
+    
+        if (riskLevel) {
+          whereConditions.risk_level = riskLevel;
+        }
 
-    // 获取分群分布统计
-    const segmentDistribution = await getSegmentDistribution();
+        // 获取用户分群数据
+        const [segmentUsers, totalCount] = await Promise.all([
+          prisma.userSegments.findMany({
+            where: whereConditions,
+            orderBy: {
+              value_score: 'desc'
+            },
+            take: limit,
+            skip: offset,
+            include: {
+              users: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  username: true,
+                  telegramId: true,
+                  vipLevel: true,
+                  luckyCoins: true,
+                  createdAt: true
+                }
+              }
+            }
+          }),
+          prisma.userSegments.count({ where: whereConditions })
+        ]);
 
-    // 获取用户行为分群分析
-    const behaviorSegmentation = await getBehaviorSegmentation();
+        // 获取分群分布统计
+        const segmentDistribution = await getSegmentDistribution();
 
-    // 获取消费分群分析
-    const spendingSegmentation = await getSpendingSegmentation();
+        // 获取用户行为分群分析
+        const behaviorSegmentation = await getBehaviorSegmentation();
 
-    // 获取分群转换漏斗
-    const segmentFunnel = await getSegmentFunnel();
+        // 获取消费分群分析
+        const spendingSegmentation = await getSpendingSegmentation();
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        segmentUsers,
-        pagination: {
-          total: totalCount,
-          limit,
-          offset,
-          hasMore: offset + limit < totalCount
-        },
-        segmentDistribution,
-        behaviorSegmentation,
-        spendingSegmentation,
-        segmentFunnel
-      }
-    });
+        // 获取分群转换漏斗
+        const segmentFunnel = await getSegmentFunnel();
 
-    } catch (error: any) {
-      logger.error('获取用户分群数据失败', error as Error);
-      return NextResponse.json({
-        success: false,
-        error: error.message || '获取用户分群数据失败'
-      }, { status: 500 });
-    }
-  })(request);
+        return NextResponse.json({
+          success: true,
+          data: {
+            segmentUsers,
+            pagination: {
+              total: totalCount,
+              limit,
+              offset,
+              hasMore: offset + limit < totalCount
+            },
+            segmentDistribution,
+            behaviorSegmentation,
+            spendingSegmentation,
+            segmentFunnel
+          }
+        });
+
+        } catch (error: any) {
+          logger.error('获取用户分群数据失败', error as Error);
+          return NextResponse.json({
+            success: false,
+            error: error.message || '获取用户分群数据失败'
+          }, { status: 500 });
+        }
+}
 }
 
 // POST - 自动更新用户分群
@@ -380,7 +404,10 @@ async function batchUpdateUserSegmentation(): Promise<number> {
       await updateUserSegmentation(user.id);
       updatedCount++;
     } catch (error) {
-      console.error(`更新用户 ${user.id} 分群失败:`, error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });`更新用户 ${user.id} 分群失败:`, error);
     }
   }
 

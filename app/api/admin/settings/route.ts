@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { prisma } from '@/lib/prisma';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.read() });
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.settings.write() });
@@ -174,18 +178,39 @@ async function updateSetting(key: string, value: any, type: string = 'string') {
   });
   
   // 清除缓存
-  settingsCache.clear();
-}
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `settings_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('settings_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const settings = await getAllSettings();
-
-    return NextResponse.json({ 
-      success: true,
-      settings 
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('settings_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
     });
-  })(request);
+    throw error;
+  }
+});
+
+async function handleGET(request: NextRequest) {
+    }
+
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const settings = await getAllSettings();
+
+        return NextResponse.json({ 
+          success: true,
+          settings 
+        });
+}
 }
 
 export async function POST(request: NextRequest) {

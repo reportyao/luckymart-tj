@@ -74,7 +74,10 @@ async function checkExistingRecharge(userId: string): Promise<{
     };
 
   } catch (error) {
-    console.error('检查用户充值记录失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'检查用户充值记录失败:', error);
     return {
       hasRecharge: false
     };
@@ -137,7 +140,10 @@ async function getFirstRechargeStatus(userId: string) {
     };
 
   } catch (error) {
-    console.error('获取首充状态失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取首充状态失败:', error);
     return {
       isEligible: false,
       hasClaimed: false,

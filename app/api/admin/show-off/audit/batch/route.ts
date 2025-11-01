@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
 import { prisma } from '@/lib/prisma';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
+
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware(AdminPermissions.USERS_WRITE);
 
@@ -60,7 +63,10 @@ export async function POST(request: NextRequest) {
         results
       });
     } catch (error) {
-      console.error('批量审核失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'批量审核失败:', error);
       return NextResponse.json(
         { success: false, error: '批量审核失败' },
         { status: 500 }

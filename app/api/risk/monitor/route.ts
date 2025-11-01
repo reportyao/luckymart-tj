@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RiskControlService } from '@/lib/risk-control';
 import crypto from 'crypto';
+import { getLogger } from '@/lib/logger';
 
 // POST /api/risk/monitor - 启动实时监控会话
 export async function POST(request: NextRequest) {
@@ -76,7 +77,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(response, { status: 201 });
 
     } catch (dbError) {
-      console.error('创建监控会话失败:', dbError);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建监控会话失败:', dbError);
       return NextResponse.json(
         { error: '监控服务暂时不可用' },
         { status: 503 }
@@ -84,7 +88,10 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('实时监控API错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'实时监控API错误:', error);
     return NextResponse.json(
       {
         error: '监控服务启动失败',
@@ -155,7 +162,10 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(response);
 
   } catch (error) {
-    console.error('更新监控会话错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新监控会话错误:', error);
     return NextResponse.json(
       { error: '监控会话更新失败' },
       { status: 500 }
@@ -207,7 +217,10 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json(response);
 
   } catch (error) {
-    console.error('结束监控会话错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'结束监控会话错误:', error);
     return NextResponse.json(
       { error: '结束监控会话失败' },
       { status: 500 }
@@ -261,7 +274,10 @@ async function performInitialRiskAssessment(
 
     return Math.min(riskScore, 100);
   } catch (error) {
-    console.error('初步风险评估失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'初步风险评估失败:', error);
     return 50; // 默认中等风险
   }
 }
@@ -324,7 +340,10 @@ async function analyzeUserBehavior(
       analysis
     };
   } catch (error) {
-    console.error('行为分析失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'行为分析失败:', error);
     return {
       isSuspicious: false,
       riskIncrease: 0,
@@ -369,7 +388,10 @@ async function handleHighRiskSession(
     ]);
 
   } catch (error) {
-    console.error('处理高风险会话失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'处理高风险会话失败:', error);
   }
 }
 

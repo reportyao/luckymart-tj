@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { triggerImmediateDraw } from '@/lib/lottery';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
+
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.lottery.write()
@@ -16,7 +19,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { action, roundId, dryRun = true } = body;
 
-    console.log(`[DataFix] 开始执行: ${action}, roundId: ${roundId}, dryRun: ${dryRun}`);
+    logger.info("API Log", { requestId, data: `[DataFix] 开始执行: ${action}, roundId: ${roundId}, dryRun: ${dryRun}` });`[DataFix] 开始执行: ${action}, roundId: ${roundId}, dryRun: ${dryRun}`);
 
     let result;
     switch (action) {
@@ -54,7 +57,10 @@ export async function POST(request: NextRequest) {
     });
 
     } catch (error: any) {
-      console.error('DataFix error:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'DataFix error:', error);
       return NextResponse.json(
         { error: '数据修复失败', message: error.message },
         { status: 500 }

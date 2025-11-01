@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAdminFromRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { requireAdminPermission } from '@/lib/admin-auth-middleware';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
@@ -20,22 +23,26 @@ const withDeletePermission = AdminPermissionManager.createPermissionMiddleware({
 });
 
 // GET - 获取所有商品
-export async function GET(request: NextRequest) {
+export const GET = withErrorHandling(async (request: NextRequest) => {
   return withReadPermission(async (request: any, admin: any) => {
+    const logger = getLogger();
+
     try {
+      const { searchParams } = new URL(request.url);
+      const status = searchParams.get('status');
 
-    const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status');
+      logger.info('获取商品列表请求', { status }, {
+        endpoint: '/api/admin/products',
+        method: 'GET'
+      });
 
-    // 获取所有商品
-    const products = await prisma.products.findMany({
-      where: status ? { status } : undefined,
-      orderBy: { createdAt: 'desc' }
-    });
+      // 获取所有商品
+      const products = await prisma.products.findMany({
+        where: status ? { status } : undefined,
+        orderBy: { createdAt: 'desc' }
+      });
 
-    return NextResponse.json({
-      success: true,
-      data: {
+      const responseData = {
         products: products.map((p : any) => ({
           id: p.id,
           nameZh: p.nameZh,
@@ -61,19 +68,42 @@ export async function GET(request: NextRequest) {
         }
       }
     });
+      };
+
+      logger.info('成功获取商品列表', { 
+        count: products.length,
+        status 
+      }, {
+        endpoint: '/api/admin/products',
+        method: 'GET'
+      });
+
+      return NextResponse.json(
+        respond.success(responseData).toJSON()
+      );
+
     } catch (error: any) {
-      console.error('获取商品列表失败:', error);
-      return NextResponse.json({
-        success: false,
-        error: '获取商品列表失败'
-      }, { status: 500 });
+      logger.error('获取商品列表失败', error as Error, {
+        status,
+        error: error.message
+      }, {
+        endpoint: '/api/admin/products',
+        method: 'GET'
+      });
+
+      return NextResponse.json(
+        respond.customError('DATABASE_QUERY_FAILED', '获取商品列表失败').toJSON(),
+        { status: 500 }
+      );
     }
   })(request);
 }
 
 // POST - 创建商品
-export async function POST(request: NextRequest) {
+export const POST = withErrorHandling(async (request: NextRequest) => {
   return withWritePermission(async (request: any, admin: any) => {
+    const logger = getLogger();
+
     try {
 
     const body = await request.json();
@@ -92,12 +122,23 @@ export async function POST(request: NextRequest) {
       stock
     } = body;
 
+    logger.info('创建商品请求', { 
+      nameZh, 
+      nameEn, 
+      nameRu, 
+      marketPrice, 
+      totalShares 
+    }, {
+      endpoint: '/api/admin/products',
+      method: 'POST'
+    });
+
     // 验证必填字段
     if (!nameZh || !nameEn || !nameRu || !marketPrice || !totalShares) {
-      return NextResponse.json({
-        success: false,
-        error: '缺少必填字段'
-      }, { status: 400 });
+      return NextResponse.json(
+        respond.validationError('缺少必填字段').toJSON(),
+        { status: 400 }
+      );
     }
 
     // 创建商品
@@ -133,41 +174,76 @@ export async function POST(request: NextRequest) {
         }
       });
     } catch (roundError) {
-      console.error('Failed to create lottery round:', roundError);
+      logger.error('创建抽奖轮次失败', roundError as Error, {
+        productId: product.id,
+        totalShares,
+        pricePerShare
+      }, {
+        endpoint: '/api/admin/products',
+        method: 'POST'
+      });
       // 即使创建轮次失败，商品也已创建成功，不影响返回
     }
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        productId: product.id,
-        message: '商品创建成功'
-      }
+    const responseData = {
+      productId: product.id,
+      message: '商品创建成功'
+    };
+
+    logger.info('商品创建成功', { 
+      productId: product.id,
+      nameZh 
+    }, {
+      endpoint: '/api/admin/products',
+      method: 'POST'
     });
+
+    return NextResponse.json(
+      respond.success(responseData).toJSON()
+    );
+
     } catch (error: any) {
-      console.error('Create product error:', error);
-      return NextResponse.json({
-        success: false,
-        error: '创建商品失败'
-      }, { status: 500 });
+      logger.error('创建商品失败', error as Error, {
+        nameZh,
+        marketPrice,
+        totalShares,
+        error: error.message
+      }, {
+        endpoint: '/api/admin/products',
+        method: 'POST'
+      });
+
+      return NextResponse.json(
+        respond.customError('DATABASE_QUERY_FAILED', '创建商品失败').toJSON(),
+        { status: 500 }
+      );
     }
   })(request);
 }
 
 // PUT - 更新商品
-export async function PUT(request: NextRequest) {
+export const PUT = withErrorHandling(async (request: NextRequest) => {
   return withWritePermission(async (request: any, admin: any) => {
+    const logger = getLogger();
+
     try {
+      const body = await request.json();
+      const { productId, ...updateData } = body;
 
-    const body = await request.json();
-    const { productId, ...updateData } = body;
+      if (!productId) {
+        return NextResponse.json(
+          respond.validationError('缺少商品ID').toJSON(),
+          { status: 400 }
+        );
+      }
 
-    if (!productId) {
-      return NextResponse.json({
-        success: false,
-        error: '缺少商品ID'
-      }, { status: 400 });
-    }
+      logger.info('更新商品请求', { 
+        productId,
+        updateFields: Object.keys(updateData)
+      }, {
+        endpoint: '/api/admin/products',
+        method: 'PUT'
+      });
 
     // 构建更新数据
     const data: any = {};
@@ -191,34 +267,59 @@ export async function PUT(request: NextRequest) {
       data
     });
 
-    return NextResponse.json({
-      success: true,
-      data: { message: '更新成功' }
-    });
+      const responseData = { message: '更新成功' };
+
+      logger.info('商品更新成功', { 
+        productId,
+        updatedFields: Object.keys(data)
+      }, {
+        endpoint: '/api/admin/products',
+        method: 'PUT'
+      });
+
+      return NextResponse.json(
+        respond.success(responseData).toJSON()
+      );
+
     } catch (error: any) {
-      console.error('Update product error:', error);
-      return NextResponse.json({
-        success: false,
-        error: '更新商品失败'
-      }, { status: 500 });
+      logger.error('更新商品失败', error as Error, {
+        productId,
+        updateData,
+        error: error.message
+      }, {
+        endpoint: '/api/admin/products',
+        method: 'PUT'
+      });
+
+      return NextResponse.json(
+        respond.customError('DATABASE_QUERY_FAILED', '更新商品失败').toJSON(),
+        { status: 500 }
+      );
     }
   })(request);
 }
 
 // DELETE - 删除商品
-export async function DELETE(request: NextRequest) {
+export const DELETE = withErrorHandling(async (request: NextRequest) => {
   return withDeletePermission(async (request: any, admin: any) => {
+    const logger = getLogger();
+
     try {
 
-    const { searchParams } = new URL(request.url);
-    const productId = searchParams.get('productId');
+      const { searchParams } = new URL(request.url);
+      const productId = searchParams.get('productId');
 
-    if (!productId) {
-      return NextResponse.json({
-        success: false,
-        error: '缺少商品ID'
-      }, { status: 400 });
-    }
+      if (!productId) {
+        return NextResponse.json(
+          respond.validationError('缺少商品ID').toJSON(),
+          { status: 400 }
+        );
+      }
+
+      logger.info('删除商品请求', { productId }, {
+        endpoint: '/api/admin/products',
+        method: 'DELETE'
+      });
 
     // 检查商品是否有进行中的抽奖
     const activeRounds = await prisma.lotteryRounds.findFirst({
@@ -228,28 +329,42 @@ export async function DELETE(request: NextRequest) {
       }
     });
 
-    if (activeRounds) {
-      return NextResponse.json({
-        success: false,
-        error: '该商品有进行中的抽奖，无法删除'
-      }, { status: 400 });
-    }
+      if (activeRounds) {
+        return NextResponse.json(
+          respond.customError('INVALID_OPERATION', '该商品有进行中的抽奖，无法删除').toJSON(),
+          { status: 400 }
+        );
+      }
 
     // 删除商品
     await prisma.products.delete({
       where: { id: productId }
     });
 
-    return NextResponse.json({
-      success: true,
-      data: { message: '删除成功' }
-    });
+      const responseData = { message: '删除成功' };
+
+      logger.info('商品删除成功', { productId }, {
+        endpoint: '/api/admin/products',
+        method: 'DELETE'
+      });
+
+      return NextResponse.json(
+        respond.success(responseData).toJSON()
+      );
+
     } catch (error: any) {
-      console.error('Delete product error:', error);
-      return NextResponse.json({
-        success: false,
-        error: '删除商品失败'
-      }, { status: 500 });
+      logger.error('删除商品失败', error as Error, {
+        productId,
+        error: error.message
+      }, {
+        endpoint: '/api/admin/products',
+        method: 'DELETE'
+      });
+
+      return NextResponse.json(
+        respond.customError('DATABASE_QUERY_FAILED', '删除商品失败').toJSON(),
+        { status: 500 }
+      );
     }
   })(request);
 }

@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
-const withReadPermission =  AdminPermissionManager.createPermissionMiddleware({
-  customPermissions: 
-  AdminPermissions.stats.read
-]);
+const withReadPermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
-const withWritePermission =  AdminPermissionManager.createPermissionMiddleware({
-  customPermissions: 
-  AdminPermissions.stats.read // 风控规则暂用stats:read
-]);
+const withWritePermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
 // 模拟风控规则数据
 const mockRiskRules = [
@@ -58,61 +56,85 @@ const mockRiskRules = [
     lastModified: '2025-10-28T10:15:00Z',
     executionCount: 234,
     successRate: 95.8
-  }
-];
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `risk-rules_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('risk-rules_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
   try {
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const category = searchParams.get('category');
-    const isActive = searchParams.get('isActive');
-    const search = searchParams.get('search');
-
-    // 筛选数据
-    let filteredRules = mockRiskRules;
-
-    if (category && category !== 'all') {
-      filteredRules = filteredRules.filter((rule : any) => rule.category === category);
-    }
-
-    if (isActive !== null && isActive !== 'all') {
-      const active = isActive === 'active';
-      filteredRules = filteredRules.filter((rule : any) => rule.isActive === active);
-    }
-
-    if (search) {
-      filteredRules = filteredRules.filter((rule : any) => 
-        rule.name.toLowerCase().includes(search.toLowerCase()) ||
-        rule.description.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
-    // 分页
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedRules = filteredRules.slice(startIndex, endIndex);
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        rules: paginatedRules,
-        total: filteredRules.length,
-        page,
-        limit,
-        totalPages: Math.ceil(filteredRules.length / limit)
-      }
-    });
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取风控规则失败:', error);
-    return NextResponse.json(
-      { success: false, error: '获取数据失败' },
-      { status: 500 }
-    );
+    logger.error('risk-rules_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+    ];
+
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const category = searchParams.get('category');
+        const isActive = searchParams.get('isActive');
+        const search = searchParams.get('search');
+
+        // 筛选数据
+        let filteredRules = mockRiskRules;
+
+        if (category && category !== 'all') {
+          filteredRules = filteredRules.filter((rule : any) => rule.category === category);
+        }
+
+        if (isActive !== null && isActive !== 'all') {
+          const active = isActive === 'active';
+          filteredRules = filteredRules.filter((rule : any) => rule.isActive === active);
+        }
+
+        if (search) {
+          filteredRules = filteredRules.filter((rule : any) => 
+            rule.name.toLowerCase().includes(search.toLowerCase()) ||
+            rule.description.toLowerCase().includes(search.toLowerCase())
+          );
+        }
+
+        // 分页
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedRules = filteredRules.slice(startIndex, endIndex);
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            rules: paginatedRules,
+            total: filteredRules.length,
+            page,
+            limit,
+            totalPages: Math.ceil(filteredRules.length / limit)
+          }
+        });
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取风控规则失败:', error);
+        return NextResponse.json(
+          { success: false, error: '获取数据失败' },
+          { status: 500 }
+        );
+      }
+}
 }
 
 export async function POST(request: NextRequest) {
@@ -153,7 +175,10 @@ export async function POST(request: NextRequest) {
       message: '风控规则创建成功'
     });
   } catch (error) {
-    console.error('创建风控规则失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建风控规则失败:', error);
     return NextResponse.json(
       { success: false, error: '创建失败' },
       { status: 500 }
@@ -197,7 +222,10 @@ export async function PATCH(request: NextRequest) {
       message: '风控规则更新成功'
     });
   } catch (error) {
-    console.error('更新风控规则失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新风控规则失败:', error);
     return NextResponse.json(
       { success: false, error: '更新失败' },
       { status: 500 }
@@ -234,7 +262,10 @@ export async function DELETE(request: NextRequest) {
       message: '风控规则删除成功'
     });
   } catch (error) {
-    console.error('删除风控规则失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'删除风控规则失败:', error);
     return NextResponse.json(
       { success: false, error: '删除失败' },
       { status: 500 }

@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { prisma } from '@/lib/prisma';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.rewards.read() });
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.rewards.write() });
@@ -44,7 +48,10 @@ async function getAllRewardConfigs() {
     updateCache(rewards);
     return rewards;
   } catch (error) {
-    console.error('获取奖励配置失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取奖励配置失败:', error);
     throw error;
   }
 }
@@ -76,7 +83,10 @@ async function createRewardConfig(data: any, operatorId: string) {
     clearCache();
     return result[0];
   } catch (error) {
-    console.error('创建奖励配置失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建奖励配置失败:', error);
     throw error;
   }
 }
@@ -117,7 +127,10 @@ async function updateRewardConfig(id: string, data: any, operatorId: string) {
     clearCache();
     return result[0];
   } catch (error) {
-    console.error('更新奖励配置失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新奖励配置失败:', error);
     throw error;
   }
 }
@@ -138,27 +151,51 @@ async function deleteRewardConfig(id: string, operatorId: string) {
     clearCache();
     return result[0];
   } catch (error) {
-    console.error('删除奖励配置失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'删除奖励配置失败:', error);
+    throw error;
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `rewards_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('rewards_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('rewards_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
     throw error;
   }
-}
+});
 
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const url = new URL(request.url);
-    const category = url.searchParams.get('category');
-    const isActive = url.searchParams.get('is_active');
-    const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '50');
-    const offset = (page - 1) * limit;
-
-    let query = `SELECT * FROM reward_configs WHERE 1=1`;
-    const params: any[] = [];
-
-    if (category) {
-      query += ` AND category = $${params.length + 1}`;
-      params.push(category);
+async function handleGET(request: NextRequest) {
     }
+
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const url = new URL(request.url);
+        const category = url.searchParams.get('category');
+        const isActive = url.searchParams.get('is_active');
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = parseInt(url.searchParams.get('limit') || '50');
+        const offset = (page - 1) * limit;
+
+        let query = `SELECT * FROM reward_configs WHERE 1=1`;
+        const params: any[] = [];
+
+        if (category) {
+          query += ` AND category = $${params.length + 1}`;
+          params.push(category);
+}
 
     if (isActive !== null) {
       query += ` AND is_active = $${params.length + 1}`;

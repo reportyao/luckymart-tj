@@ -5,6 +5,9 @@ import { getLogger } from '@/lib/logger';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -13,40 +16,61 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.users.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `retention_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('retention_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('retention_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// GET - 获取用户留存分析
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const logger = getLogger();
+async function handleGET(request: NextRequest) {
 
-    try {
+    // GET - 获取用户留存分析
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const logger = getLogger();
 
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    const cohortType = searchParams.get('cohortType') || 'weekly'; // 'weekly' 或 'monthly'
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const analysisType = searchParams.get('analysisType') || 'overview'; // 'overview', 'cohort', 'user'
+        try {
 
-    // 根据分析类型返回不同数据
-    switch (analysisType) {
-      case 'cohort':
-        return await getCohortAnalysis(admin, cohortType, startDate, endDate);
-      case 'user':
-        return await getUserRetentionAnalysis(admin, userId);
-      default:
-        return await getRetentionOverview(admin, cohortType, startDate, endDate);
-    }
+        const { searchParams } = new URL(request.url);
+        const userId = searchParams.get('userId');
+        const cohortType = searchParams.get('cohortType') || 'weekly'; // 'weekly' 或 'monthly'
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const analysisType = searchParams.get('analysisType') || 'overview'; // 'overview', 'cohort', 'user'
 
-    } catch (error: any) {
-      logger.error('获取用户留存分析失败', error as Error);
-      return NextResponse.json({
-        success: false,
-        error: error.message || '获取用户留存分析失败'
-      }, { status: 500 });
-    }
-  })(request);
+        // 根据分析类型返回不同数据
+        switch (analysisType) {
+          case 'cohort':
+            return await getCohortAnalysis(admin, cohortType, startDate, endDate);
+          case 'user':
+            return await getUserRetentionAnalysis(admin, userId);
+          default:
+            return await getRetentionOverview(admin, cohortType, startDate, endDate);
+        }
+
+        } catch (error: any) {
+          logger.error('获取用户留存分析失败', error as Error);
+          return NextResponse.json({
+            success: false,
+            error: error.message || '获取用户留存分析失败'
+          }, { status: 500 });
+        }
+}
 }
 
 // POST - 更新用户留存分析

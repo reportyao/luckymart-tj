@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { prisma } from '@/lib/prisma';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.risk.read() });
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.risk.write() });
@@ -44,7 +48,10 @@ async function getAllRiskConfigs() {
     updateCache(configs);
     return configs;
   } catch (error) {
-    console.error('获取风控配置失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取风控配置失败:', error);
     throw error;
   }
 }
@@ -72,7 +79,10 @@ async function createRiskConfig(data: any, operatorId: string) {
     clearCache();
     return result[0];
   } catch (error) {
-    console.error('创建风控配置失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建风控配置失败:', error);
     throw error;
   }
 }
@@ -109,7 +119,10 @@ async function updateRiskConfig(id: string, data: any, operatorId: string) {
     clearCache();
     return result[0];
   } catch (error) {
-    console.error('更新风控配置失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新风控配置失败:', error);
     throw error;
   }
 }
@@ -130,29 +143,53 @@ async function deleteRiskConfig(id: string, operatorId: string) {
     clearCache();
     return result[0];
   } catch (error) {
-    console.error('删除风控配置失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'删除风控配置失败:', error);
+    throw error;
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `risk_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('risk_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('risk_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
     throw error;
   }
-}
+});
 
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const url = new URL(request.url);
-    const category = url.searchParams.get('category');
-    const riskType = url.searchParams.get('risk_type');
-    const autoAction = url.searchParams.get('auto_action');
-    const isActive = url.searchParams.get('is_active');
-    const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '50');
-    const offset = (page - 1) * limit;
-
-    let query = `SELECT * FROM risk_configs WHERE 1=1`;
-    const params: any[] = [];
-
-    if (category) {
-      query += ` AND category = $${params.length + 1}`;
-      params.push(category);
+async function handleGET(request: NextRequest) {
     }
+
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const url = new URL(request.url);
+        const category = url.searchParams.get('category');
+        const riskType = url.searchParams.get('risk_type');
+        const autoAction = url.searchParams.get('auto_action');
+        const isActive = url.searchParams.get('is_active');
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = parseInt(url.searchParams.get('limit') || '50');
+        const offset = (page - 1) * limit;
+
+        let query = `SELECT * FROM risk_configs WHERE 1=1`;
+        const params: any[] = [];
+
+        if (category) {
+          query += ` AND category = $${params.length + 1}`;
+          params.push(category);
+}
 
     if (riskType) {
       query += ` AND risk_type = $${params.length + 1}`;

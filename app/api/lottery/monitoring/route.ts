@@ -1,60 +1,88 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `monitoring_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('monitoring_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// 开奖监控系统 - 实时监控开奖状态和数据一致性
-export async function GET(request: NextRequest) {
   try {
-    // 验证管理员权限
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: '未授权' }, { status: 401 });
-    }
-
-    const token = authHeader.substring(7);
-    let decoded: any;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-    } catch {
-      return NextResponse.json({ error: '无效token' }, { status: 401 });
-    }
-
-    // 验证管理员权限
-    const admin = await prisma.admins.findUnique({
-      where: { username: decoded.username || 'admin' }
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('monitoring_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
     });
-
-    if (!admin) {
-      return NextResponse.json({ error: '无管理员权限' }, { status: 403 });
-    }
-
-    const { searchParams } = new URL(request.url);
-    const action = searchParams.get('action') || 'overview';
-
-    switch (action) {
-      case 'overview':
-        return await getOverviewStats();
-      case 'full-rounds':
-        return await getFullRounds();
-      case 'pending-draws':
-        return await getPendingDraws();
-      case 'recent-draws':
-        return await getRecentDraws();
-      case 'data-consistency':
-        return await checkDataConsistency();
-      case 'performance':
-        return await getPerformanceStats();
-      default:
-        return NextResponse.json({ error: '不支持的操作' }, { status: 400 });
-    }
-
-  } catch (error: any) {
-    console.error('Monitoring error:', error);
-    return NextResponse.json(
-      { error: '监控获取失败', message: error.message },
-      { status: 500 }
-    );
+    throw error;
   }
+});
+
+async function handleGET(request: NextRequest) {
+
+    // 开奖监控系统 - 实时监控开奖状态和数据一致性
+    export async function GET(request: NextRequest) {
+      try {
+        // 验证管理员权限
+        const authHeader = request.headers.get('authorization');
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+          return NextResponse.json({ error: '未授权' }, { status: 401 });
+        }
+
+        const token = authHeader.substring(7);
+        let decoded: any;
+        try {
+          decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+        } catch {
+          return NextResponse.json({ error: '无效token' }, { status: 401 });
+        }
+
+        // 验证管理员权限
+        const admin = await prisma.admins.findUnique({
+          where: { username: decoded.username || 'admin' }
+        });
+
+        if (!admin) {
+          return NextResponse.json({ error: '无管理员权限' }, { status: 403 });
+        }
+
+        const { searchParams } = new URL(request.url);
+        const action = searchParams.get('action') || 'overview';
+
+        switch (action) {
+          case 'overview':
+            return await getOverviewStats();
+          case 'full-rounds':
+            return await getFullRounds();
+          case 'pending-draws':
+            return await getPendingDraws();
+          case 'recent-draws':
+            return await getRecentDraws();
+          case 'data-consistency':
+            return await checkDataConsistency();
+          case 'performance':
+            return await getPerformanceStats();
+          default:
+            return NextResponse.json({ error: '不支持的操作' }, { status: 400 });
+        }
+
+      } catch (error: any) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'Monitoring error:', error);
+        return NextResponse.json(
+          { error: '监控获取失败', message: error.message },
+          { status: 500 }
+        );
+      }
 }
 
 // 获取概览统计

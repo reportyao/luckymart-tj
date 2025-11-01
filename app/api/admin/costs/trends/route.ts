@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -22,125 +26,152 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware({
  * - period: 趋势周期 (7d/30d/90d)
  * - costType: 成本类型 (all/incentive/operation/referral/lottery)
  * - groupBy: 分组方式 (daily/weekly/monthly)
- * - startDate: 自定义开始日期
- * - endDate: 自定义结束日期
- */
-export async function GET(request: NextRequest) {
-  return await withStatsPermission(async (request: any, admin: any) => {
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `trends_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('trends_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
   try {
-    const { searchParams } = new URL(request.url);
-    const period = searchParams.get('period') || '30d';
-    const costType = searchParams.get('costType') || 'all';
-    const groupBy = searchParams.get('groupBy') || 'daily';
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-
-    // 计算日期范围
-    let calculatedStartDate: string;
-    let calculatedEndDate = new Date().toISOString().split('T')[0];
-
-    if (startDate && endDate) {
-      calculatedStartDate = startDate;
-    } else {
-      const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
-      const start = new Date();
-      start.setDate(start.getDate() - days);
-      calculatedStartDate = start.toISOString().split('T')[0];
-    }
-
-    // 获取成本统计数据
-    let query = supabase
-      .from('cost_statistics')
-      .select('*')
-      .gte('stat_date', calculatedStartDate)
-      .lte('stat_date', calculatedEndDate)
-      .order('stat_date', { ascending: true });
-
-    const { data: costData, error } = await query;
-
-    if (error) {
-      console.error('查询成本趋势数据失败:', error);
-      return NextResponse.json(
-        { error: '查询成本趋势数据失败' },
-        { status: 500 }
-      );
-    }
-
-    // 处理数据并按成本类型过滤
-    const processedData = costData?.map((item: any) => {
-      const totalCost = parseFloat(item.total_cost.toString());
-      const incentiveCost = parseFloat(item.incentive_cost.toString());
-      const operationCost = parseFloat(item.operation_cost.toString());
-      const referralCost = parseFloat(item.referral_cost.toString());
-      const lotteryCost = parseFloat(item.lottery_cost.toString());
-
-      let selectedCost = totalCost;
-      if (costType === 'incentive') selectedCost = incentiveCost;
-      else if (costType === 'operation') selectedCost = operationCost;
-      else if (costType === 'referral') selectedCost = referralCost;
-      else if (costType === 'lottery') selectedCost = lotteryCost;
-
-      return {
-        date: item.stat_date,
-        totalCost,
-        incentiveCost,
-        operationCost,
-        referralCost,
-        lotteryCost,
-        selectedCost
-      };
-    }) || [];
-
-    // 按周期分组（如果需要周/月统计）
-    let groupedData = processedData;
-    if (groupBy === 'weekly' || groupBy === 'monthly') {
-      groupedData = groupDataByPeriod(processedData, groupBy);
-    }
-
-    // 计算趋势统计
-    const trendStats = calculateTrendStats(processedData);
-
-    // 计算成本占比
-    const costBreakdown = calculateCostBreakdown(processedData);
-
-    // 计算同比增长（如果有足够的历史数据）
-    const growthMetrics = calculateGrowthMetrics(processedData);
-
-    const response = {
-      data: groupedData,
-      summary: {
-        period: period,
-        dateRange: {
-          start: calculatedStartDate,
-          end: calculatedEndDate
-        },
-        costType,
-        groupBy,
-        totalCost: trendStats.totalCost,
-        averageDailyCost: trendStats.averageDailyCost,
-        maxDailyCost: trendStats.maxDailyCost,
-        minDailyCost: trendStats.minDailyCost,
-        costVolatility: trendStats.costVolatility
-      },
-      costBreakdown,
-      trendAnalysis: {
-        trendDirection: trendStats.trendDirection,
-        growthRate: trendStats.growthRate,
-        consistency: trendStats.consistency
-      },
-      growthMetrics
-    };
-
-    return NextResponse.json(response);
-
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取成本趋势API错误:', error);
-    return NextResponse.json(
-      { error: '服务器内部错误' },
-      { status: 500 }
-    );
+    logger.error('trends_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+     * - endDate: 自定义结束日期
+     */
+    export async function GET(request: NextRequest) {
+      return await withStatsPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const period = searchParams.get('period') || '30d';
+        const costType = searchParams.get('costType') || 'all';
+        const groupBy = searchParams.get('groupBy') || 'daily';
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+
+        // 计算日期范围
+        let calculatedStartDate: string;
+        let calculatedEndDate = new Date().toISOString().split('T')[0];
+
+        if (startDate && endDate) {
+          calculatedStartDate = startDate;
+        } else {
+          const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
+          const start = new Date();
+          start.setDate(start.getDate() - days);
+          calculatedStartDate = start.toISOString().split('T')[0];
+        }
+
+        // 获取成本统计数据
+        let query = supabase
+          .from('cost_statistics')
+          .select('*')
+          .gte('stat_date', calculatedStartDate)
+          .lte('stat_date', calculatedEndDate)
+          .order('stat_date', { ascending: true });
+
+        const { data: costData, error } = await query;
+
+        if (error) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'查询成本趋势数据失败:', error);
+          return NextResponse.json(
+            { error: '查询成本趋势数据失败' },
+            { status: 500 }
+          );
+        }
+
+        // 处理数据并按成本类型过滤
+        const processedData = costData?.map((item: any) => {
+          const totalCost = parseFloat(item.total_cost.toString());
+          const incentiveCost = parseFloat(item.incentive_cost.toString());
+          const operationCost = parseFloat(item.operation_cost.toString());
+          const referralCost = parseFloat(item.referral_cost.toString());
+          const lotteryCost = parseFloat(item.lottery_cost.toString());
+
+          let selectedCost = totalCost;
+          if (costType === 'incentive') selectedCost = incentiveCost;
+          else if (costType === 'operation') selectedCost = operationCost;
+          else if (costType === 'referral') selectedCost = referralCost;
+          else if (costType === 'lottery') selectedCost = lotteryCost;
+
+          return {
+            date: item.stat_date,
+            totalCost,
+            incentiveCost,
+            operationCost,
+            referralCost,
+            lotteryCost,
+            selectedCost
+          };
+        }) || [];
+
+        // 按周期分组（如果需要周/月统计）
+        let groupedData = processedData;
+        if (groupBy === 'weekly' || groupBy === 'monthly') {
+          groupedData = groupDataByPeriod(processedData, groupBy);
+        }
+
+        // 计算趋势统计
+        const trendStats = calculateTrendStats(processedData);
+
+        // 计算成本占比
+        const costBreakdown = calculateCostBreakdown(processedData);
+
+        // 计算同比增长（如果有足够的历史数据）
+        const growthMetrics = calculateGrowthMetrics(processedData);
+
+        const response = {
+          data: groupedData,
+          summary: {
+            period: period,
+            dateRange: {
+              start: calculatedStartDate,
+              end: calculatedEndDate
+            },
+            costType,
+            groupBy,
+            totalCost: trendStats.totalCost,
+            averageDailyCost: trendStats.averageDailyCost,
+            maxDailyCost: trendStats.maxDailyCost,
+            minDailyCost: trendStats.minDailyCost,
+            costVolatility: trendStats.costVolatility
+          },
+          costBreakdown,
+          trendAnalysis: {
+            trendDirection: trendStats.trendDirection,
+            growthRate: trendStats.growthRate,
+            consistency: trendStats.consistency
+          },
+          growthMetrics
+        };
+
+        return NextResponse.json(response);
+
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取成本趋势API错误:', error);
+        return NextResponse.json(
+          { error: '服务器内部错误' },
+          { status: 500 }
+        );
+      }
+      })(request);
 }
 
 // 数据分组函数

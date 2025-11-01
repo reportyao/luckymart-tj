@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
+import { getLogger } from '@/lib/logger';
 
 const prisma = new PrismaClient();
 
@@ -138,7 +139,10 @@ export async function POST(req: NextRequest) {
     });
 
   } catch (error) {
-    console.error('余额转幸运币失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'余额转幸运币失败:', error);
     
     // 处理业务错误
     if (error instanceof Error) {

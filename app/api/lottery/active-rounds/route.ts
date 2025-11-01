@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
+
 
 const handleActiveRounds = async (request: NextRequest) => {
   const logger = getLogger();

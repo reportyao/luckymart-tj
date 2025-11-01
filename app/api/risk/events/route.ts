@@ -1,135 +1,163 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RiskControlService } from '@/lib/risk-control';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `events_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('events_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// GET /api/risk/events - 查询风险事件记录
-export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    
-    // 提取查询参数
-    const userId = searchParams.get('userId');
-    const status = searchParams.get('status');
-    const severity = searchParams.get('severity');
-    const incidentType = searchParams.get('incidentType');
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
-    const sortBy = searchParams.get('sortBy') || 'createdAt';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
-    
-    // 日期范围过滤
-    const dateFrom = searchParams.get('dateFrom');
-    const dateTo = searchParams.get('dateTo');
-    
-    // 搜索关键词
-    const search = searchParams.get('search');
-
-    // 构建查询条件
-    const where: any = {};
-    if (userId) where.userId = userId;
-    if (status) where.status = status;
-    if (severity) where.severity = severity;
-    if (incidentType) where.incident_type = incidentType;
-    
-    // 日期范围过滤
-    if (dateFrom || dateTo) {
-      where.createdAt = {};
-      if (dateFrom) {
-        where.createdAt.gte = new Date(dateFrom);
-      }
-      if (dateTo) {
-        where.createdAt.lte = new Date(dateTo);
-      }
-    }
-
-    // 搜索过滤
-    if (search) {
-      where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-        { userId: { contains: search, mode: 'insensitive' } }
-      ];
-    }
-
-    // 获取风险事件
-    const result = await RiskControlService.getRiskIncidents({
-      userId,
-      status,
-      severity,
-      limit,
-      offset
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('events_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
     });
+    throw error;
+  }
+});
 
-    // 转换数据格式并添加额外信息
-    const incidentsWithDetails = await Promise.all(
-      result.incidents.map(async (incident: any) => {
-        // 获取相关的风险处理记录
-        const actions = await getRiskActionsForIncident(incident.id);
-        
-        // 获取相关的通知记录
-        const notifications = await getNotificationsForIncident(incident.id);
-        
-        // 计算事件持续时间
-        const duration = incident.resolved_at 
-          ? new Date(incident.resolved_at).getTime() - new Date(incident.created_at).getTime()
-          : new Date().getTime() - new Date(incident.created_at).getTime();
-        
-        return {
-          ...incident,
-          duration: Math.round(duration / 1000), // 秒数
-          actions,
-          notifications,
-          priority: calculateEventPriority(incident),
-          canResolve: incident.status === 'open' || incident.status === 'investigating',
-          canEscalate: incident.status === 'open' && incident.severity !== 'critical'
-        };
-      })
-    );
+async function handleGET(request: NextRequest) {
 
-    // 生成统计信息
-    const stats = await generateIncidentStats(where);
+    // GET /api/risk/events - 查询风险事件记录
+    export async function GET(request: NextRequest) {
+      try {
+        const searchParams = request.nextUrl.searchParams;
+    
+        // 提取查询参数
+        const userId = searchParams.get('userId');
+        const status = searchParams.get('status');
+        const severity = searchParams.get('severity');
+        const incidentType = searchParams.get('incidentType');
+        const limit = parseInt(searchParams.get('limit') || '50');
+        const offset = parseInt(searchParams.get('offset') || '0');
+        const sortBy = searchParams.get('sortBy') || 'createdAt';
+        const sortOrder = searchParams.get('sortOrder') || 'desc';
+    
+        // 日期范围过滤
+        const dateFrom = searchParams.get('dateFrom');
+        const dateTo = searchParams.get('dateTo');
+    
+        // 搜索关键词
+        const search = searchParams.get('search');
 
-    const response = {
-      success: true,
-      data: {
-        incidents: incidentsWithDetails,
-        pagination: {
-          total: result.total,
-          limit,
-          offset,
-          hasMore: result.hasMore,
-          currentPage: Math.floor(offset / limit) + 1,
-          totalPages: Math.ceil(result.total / limit)
-        },
-        filters: {
+        // 构建查询条件
+        const where: any = {};
+        if (userId) where.userId = userId;
+        if (status) where.status = status;
+        if (severity) where.severity = severity;
+        if (incidentType) where.incident_type = incidentType;
+    
+        // 日期范围过滤
+        if (dateFrom || dateTo) {
+          where.createdAt = {};
+          if (dateFrom) {
+            where.createdAt.gte = new Date(dateFrom);
+          }
+          if (dateTo) {
+            where.createdAt.lte = new Date(dateTo);
+          }
+        }
+
+        // 搜索过滤
+        if (search) {
+          where.OR = [
+            { title: { contains: search, mode: 'insensitive' } },
+            { description: { contains: search, mode: 'insensitive' } },
+            { userId: { contains: search, mode: 'insensitive' } }
+          ];
+        }
+
+        // 获取风险事件
+        const result = await RiskControlService.getRiskIncidents({
           userId,
           status,
           severity,
-          incidentType,
-          dateFrom,
-          dateTo,
-          search
-        },
-        stats,
-        availableFilters: {
-          statuses: ['open', 'investigating', 'resolved', 'false_positive', 'escalated'],
-          severities: ['low', 'medium', 'high', 'critical'],
-          incidentTypes: ['login', 'transaction', 'registration', 'withdrawal', 'suspicious_session']
-        }
+          limit,
+          offset
+        });
+
+        // 转换数据格式并添加额外信息
+        const incidentsWithDetails = await Promise.all(
+          result.incidents.map(async (incident: any) => {
+            // 获取相关的风险处理记录
+            const actions = await getRiskActionsForIncident(incident.id);
+        
+            // 获取相关的通知记录
+            const notifications = await getNotificationsForIncident(incident.id);
+        
+            // 计算事件持续时间
+            const duration = incident.resolved_at 
+              ? new Date(incident.resolved_at).getTime() - new Date(incident.created_at).getTime()
+              : new Date().getTime() - new Date(incident.created_at).getTime();
+        
+            return {
+              ...incident,
+              duration: Math.round(duration / 1000), // 秒数
+              actions,
+              notifications,
+              priority: calculateEventPriority(incident),
+              canResolve: incident.status === 'open' || incident.status === 'investigating',
+              canEscalate: incident.status === 'open' && incident.severity !== 'critical'
+            };
+          })
+        );
+
+        // 生成统计信息
+        const stats = await generateIncidentStats(where);
+
+        const response = {
+          success: true,
+          data: {
+            incidents: incidentsWithDetails,
+            pagination: {
+              total: result.total,
+              limit,
+              offset,
+              hasMore: result.hasMore,
+              currentPage: Math.floor(offset / limit) + 1,
+              totalPages: Math.ceil(result.total / limit)
+            },
+            filters: {
+              userId,
+              status,
+              severity,
+              incidentType,
+              dateFrom,
+              dateTo,
+              search
+            },
+            stats,
+            availableFilters: {
+              statuses: ['open', 'investigating', 'resolved', 'false_positive', 'escalated'],
+              severities: ['low', 'medium', 'high', 'critical'],
+              incidentTypes: ['login', 'transaction', 'registration', 'withdrawal', 'suspicious_session']
+            }
+          }
+        };
+
+        return NextResponse.json(response);
+
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'查询风险事件错误:', error);
+        return NextResponse.json(
+          {
+            error: '查询风险事件失败',
+            message: '系统正在处理其他请求，请稍后重试'
+          },
+          { status: 500 }
+        );
       }
-    };
-
-    return NextResponse.json(response);
-
-  } catch (error) {
-    console.error('查询风险事件错误:', error);
-    return NextResponse.json(
-      {
-        error: '查询风险事件失败',
-        message: '系统正在处理其他请求，请稍后重试'
-      },
-      { status: 500 }
-    );
-  }
 }
 
 // POST /api/risk/events - 创建新的风险事件
@@ -194,7 +222,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response, { status: 201 });
 
   } catch (error) {
-    console.error('创建风险事件错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建风险事件错误:', error);
     return NextResponse.json(
       {
         error: '创建风险事件失败',
@@ -244,7 +275,10 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(response);
 
   } catch (error) {
-    console.error('更新风险事件错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新风险事件错误:', error);
     return NextResponse.json(
       {
         error: '更新风险事件失败',
@@ -262,7 +296,10 @@ async function getRiskActionsForIncident(incidentId: string) {
     // 为了演示，返回模拟数据
     return [];
   } catch (error) {
-    console.error('获取风险处理记录失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取风险处理记录失败:', error);
     return [];
   }
 }
@@ -274,7 +311,10 @@ async function getNotificationsForIncident(incidentId: string) {
     // 为了演示，返回模拟数据
     return [];
   } catch (error) {
-    console.error('获取通知记录失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取通知记录失败:', error);
     return [];
   }
 }
@@ -341,7 +381,10 @@ async function generateIncidentStats(where: any) {
       }
     };
   } catch (error) {
-    console.error('生成统计信息失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'生成统计信息失败:', error);
     return null;
   }
 }
@@ -390,7 +433,10 @@ async function updateIncidentStatus(
       updatedAt: new Date()
     };
   } catch (error) {
-    console.error('更新事件状态失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新事件状态失败:', error);
     throw error;
   }
 }

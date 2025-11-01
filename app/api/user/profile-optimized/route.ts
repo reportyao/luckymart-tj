@@ -11,6 +11,9 @@ import { InputValidator, RateLimiter, PermissionValidator, AuditLogger, DataMask
 import { createDatabaseOptimizer } from '@/lib/database-optimizer';
 import { getMonitor } from '@/lib/monitoring';
 import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 数据库客户端
 const prisma = new PrismaClient();
@@ -276,49 +279,70 @@ class UpdateUserProfileHandler extends BaseApiHandler {
       throw error;
     }
   }
-}
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `profile-optimized_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('profile-optimized_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-// 导出API路由
-export async function GET(request: NextRequest) {
-  const handler = new UserProfileApiHandler();
-  return handler.handleRequest(request);
-}
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('profile-optimized_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
 
-export async function POST(request: NextRequest) {
-  const handler = new UpdateUserProfileHandler();
-  return handler.handleRequest(request);
-}
+async function handleGET(request: NextRequest) {
 
-/**
- * API文档和使用示例
- * 
- * GET /api/user/profile
- * 获取当前用户的资料信息
- * 
- * Headers:
- *   Authorization: Bearer <token>
- * 
- * Query Parameters:
- *   userId?: string - 用户ID（管理员权限才能查看其他用户）
- * 
- * Response:
- *   {
- *     "success": true,
- *     "data": {
- *       "id": "uuid",
- *       "username": "string",
- *       "firstName": "string",
- *       "lastName": "string",
- *       "avatarUrl": "string",
- *       "language": "zh",
- *       "balance": "decimal",
- *       "vipLevel": 0,
- *       "totalSpent": "decimal",
- *       "freeDailyCount": 0,
- *       "lastFreeResetDate": "datetime",
- *       "createdAt": "datetime",
- *       "updatedAt": "datetime"
- *     },
+    // 导出API路由
+    export async function GET(request: NextRequest) {
+      const handler = new UserProfileApiHandler();
+      return handler.handleRequest(request);
+    }
+
+    export async function POST(request: NextRequest) {
+      const handler = new UpdateUserProfileHandler();
+      return handler.handleRequest(request);
+    }
+
+    /**
+     * API文档和使用示例
+     * 
+     * GET /api/user/profile
+     * 获取当前用户的资料信息
+     * 
+     * Headers:
+     *   Authorization: Bearer <token>
+     * 
+     * Query Parameters:
+     *   userId?: string - 用户ID（管理员权限才能查看其他用户）
+     * 
+     * Response:
+     *   {
+     *     "success": true,
+     *     "data": {
+     *       "id": "uuid",
+     *       "username": "string",
+     *       "firstName": "string",
+     *       "lastName": "string",
+     *       "avatarUrl": "string",
+     *       "language": "zh",
+     *       "balance": "decimal",
+     *       "vipLevel": 0,
+     *       "totalSpent": "decimal",
+     *       "freeDailyCount": 0,
+     *       "lastFreeResetDate": "datetime",
+     *       "createdAt": "datetime",
+     *       "updatedAt": "datetime"
+}
  *     "timestamp": "2025-10-31T10:08:09.000Z",
  *     "requestId": "req_1727687890123_abc123def"
  *   }

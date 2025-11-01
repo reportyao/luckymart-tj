@@ -4,6 +4,10 @@ import { prisma } from '@/lib/prisma';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
@@ -12,150 +16,174 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.products.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `performance_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('performance_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('performance_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// GET - 获取商品表现统计数据
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    try {
+async function handleGET(request: NextRequest) {
 
-    const { searchParams } = new URL(request.url);
-    const productId = searchParams.get('productId');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    // GET - 获取商品表现统计数据
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        try {
 
-    // 构建查询条件
-    const where: any = {};
-    if (productId) {
-      where.product_id = productId;
-    }
-    if (startDate && endDate) {
-      where.date = {
-        gte: new Date(startDate),
-        lte: new Date(endDate)
-      };
-    }
+        const { searchParams } = new URL(request.url);
+        const productId = searchParams.get('productId');
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '20');
 
-    // 获取分页数据
-    const [performanceData, totalCount] = await Promise.all([
-      prisma.productPerformance.findMany({
-        where,
-        orderBy: { date: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-          products: {
-            select: {
-              nameZh: true,
-              nameEn: true,
-              nameRu: true,
-              category: true
+        // 构建查询条件
+        const where: any = {};
+        if (productId) {
+          where.product_id = productId;
+        }
+        if (startDate && endDate) {
+          where.date = {
+            gte: new Date(startDate),
+            lte: new Date(endDate)
+          };
+        }
+
+        // 获取分页数据
+        const [performanceData, totalCount] = await Promise.all([
+          prisma.productPerformance.findMany({
+            where,
+            orderBy: { date: 'desc' },
+            skip: (page - 1) * limit,
+            take: limit,
+            include: {
+              products: {
+                select: {
+                  nameZh: true,
+                  nameEn: true,
+                  nameRu: true,
+                  category: true
+                }
+              }
+            }
+          }),
+          prisma.productPerformance.count({ where })
+        ]);
+
+        // 统计汇总数据
+        const summary = await prisma.productPerformance.aggregate({
+          where,
+          _sum: {
+            participants_count: true,
+            sales_amount: true,
+            total_revenue: true
+          },
+          _avg: {
+            conversion_rate: true,
+            inventory_turnover: true,
+            avg_price_per_share: true
+          }
+        });
+
+        // 获取实时数据（从基础表计算今日数据）
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayStr = today.toISOString().split('T')[0];
+
+        // 今日参与人数
+        const todayParticipants = await prisma.participations.count({
+          where: {
+            createdAt: {
+              gte: today
             }
           }
+        });
+
+        // 今日销售额（从订单表计算）
+        const todaySales = await prisma.orders.aggregate({
+          where: {
+            createdAt: {
+              gte: today
+            },
+            paymentStatus: 'completed'
+          },
+          _sum: {
+            totalAmount: true
+          }
+        });
+
+        // 转换数据格式
+        const formattedData = performanceData.map((item : any) => ({
+          id: item.id,
+          productId: item.product_id,
+          productName: {
+            zh: item.products?.nameZh || '',
+            en: item.products?.nameEn || '',
+            ru: item.products?.nameRu || ''
+          },
+          category: item.products?.category || '',
+          date: item.date.toISOString().split('T')[0],
+          participantsCount: Number(item.participants_count),
+          salesAmount: Number(item.sales_amount),
+          conversionRate: Number(item.conversion_rate),
+          inventoryTurnover: Number(item.inventory_turnover),
+          avgPricePerShare: Number(item.avg_price_per_share),
+          totalRevenue: Number(item.total_revenue),
+          createdAt: item.createdAt.toISOString(),
+          updatedAt: item.updatedAt.toISOString()
+        }));
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            performance: formattedData,
+            pagination: {
+              currentPage: page,
+              totalPages: Math.ceil(totalCount / limit),
+              totalCount,
+              hasNext: page * limit < totalCount,
+              hasPrev: page > 1
+            },
+            summary: {
+              totalParticipants: Number(summary._sum.participants_count || 0),
+              totalSalesAmount: Number(summary._sum.sales_amount || 0),
+              totalRevenue: Number(summary._sum.total_revenue || 0),
+              avgConversionRate: Number(summary._avg.conversion_rate || 0),
+              avgInventoryTurnover: Number(summary._avg.inventory_turnover || 0),
+              avgPricePerShare: Number(summary._avg.avg_price_per_share || 0)
+            },
+            realTimeData: {
+              todayParticipants,
+              todaySalesAmount: Number(todaySales._sum.totalAmount || 0),
+              date: todayStr
+            }
+          }
+        });
+        } catch (error: any) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取商品表现数据失败:', error);
+          return NextResponse.json({
+            success: false,
+            error: '获取商品表现数据失败'
+          }, { status: 500 });
         }
-      }),
-      prisma.productPerformance.count({ where })
-    ]);
-
-    // 统计汇总数据
-    const summary = await prisma.productPerformance.aggregate({
-      where,
-      _sum: {
-        participants_count: true,
-        sales_amount: true,
-        total_revenue: true
-      },
-      _avg: {
-        conversion_rate: true,
-        inventory_turnover: true,
-        avg_price_per_share: true
-      }
-    });
-
-    // 获取实时数据（从基础表计算今日数据）
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-
-    // 今日参与人数
-    const todayParticipants = await prisma.participations.count({
-      where: {
-        createdAt: {
-          gte: today
-        }
-      }
-    });
-
-    // 今日销售额（从订单表计算）
-    const todaySales = await prisma.orders.aggregate({
-      where: {
-        createdAt: {
-          gte: today
-        },
-        paymentStatus: 'completed'
-      },
-      _sum: {
-        totalAmount: true
-      }
-    });
-
-    // 转换数据格式
-    const formattedData = performanceData.map((item : any) => ({
-      id: item.id,
-      productId: item.product_id,
-      productName: {
-        zh: item.products?.nameZh || '',
-        en: item.products?.nameEn || '',
-        ru: item.products?.nameRu || ''
-      },
-      category: item.products?.category || '',
-      date: item.date.toISOString().split('T')[0],
-      participantsCount: Number(item.participants_count),
-      salesAmount: Number(item.sales_amount),
-      conversionRate: Number(item.conversion_rate),
-      inventoryTurnover: Number(item.inventory_turnover),
-      avgPricePerShare: Number(item.avg_price_per_share),
-      totalRevenue: Number(item.total_revenue),
-      createdAt: item.createdAt.toISOString(),
-      updatedAt: item.updatedAt.toISOString()
-    }));
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        performance: formattedData,
-        pagination: {
-          currentPage: page,
-          totalPages: Math.ceil(totalCount / limit),
-          totalCount,
-          hasNext: page * limit < totalCount,
-          hasPrev: page > 1
-        },
-        summary: {
-          totalParticipants: Number(summary._sum.participants_count || 0),
-          totalSalesAmount: Number(summary._sum.sales_amount || 0),
-          totalRevenue: Number(summary._sum.total_revenue || 0),
-          avgConversionRate: Number(summary._avg.conversion_rate || 0),
-          avgInventoryTurnover: Number(summary._avg.inventory_turnover || 0),
-          avgPricePerShare: Number(summary._avg.avg_price_per_share || 0)
-        },
-        realTimeData: {
-          todayParticipants,
-          todaySalesAmount: Number(todaySales._sum.totalAmount || 0),
-          date: todayStr
-        }
-      }
-    });
-    } catch (error: any) {
-      console.error('获取商品表现数据失败:', error);
-      return NextResponse.json({
-        success: false,
-        error: '获取商品表现数据失败'
-      }, { status: 500 });
-    }
-  })(request);
+}
 }
 
 // POST - 创建或更新商品表现数据
@@ -244,7 +272,10 @@ export async function POST(request: NextRequest) {
       }
     });
     } catch (error: any) {
-      console.error('保存商品表现数据失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'保存商品表现数据失败:', error);
       return NextResponse.json({
         success: false,
         error: '保存商品表现数据失败'

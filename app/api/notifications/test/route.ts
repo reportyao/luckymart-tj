@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
+
 
 // 临时的通知测试路由，移除web-push依赖
 export async function POST(request: NextRequest) {
@@ -14,11 +17,7 @@ export async function POST(request: NextRequest) {
     }
     
     // 模拟通知发送
-    console.log('模拟发送通知:', {
-      subscription: subscription.endpoint,
-      title: title || 'LuckyMart-TJ',
-      body: body || '您有新的消息',
-      timestamp: new Date().toISOString()
+    logger.info("API Log", { requestId, data: arguments[0] }).toISOString()
     });
     
     return NextResponse.json({
@@ -29,7 +28,10 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('发送测试通知失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'发送测试通知失败:', error);
     
     return NextResponse.json({
       success: false,

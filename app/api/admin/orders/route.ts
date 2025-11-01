@@ -10,6 +10,9 @@ import { createOrderValidationMiddleware, ORDER_VALIDATION_MIDDLEWARES } from '@
 import { ErrorFactory } from '@/lib/errors';
 
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 订单状态更新请求体
 interface OrderUpdateRequest {
@@ -25,72 +28,93 @@ const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.orders.write()
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `orders_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('orders_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('orders_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
 });
 
-// 获取订单列表
-export async function GET(request: NextRequest) {
-  return await withReadPermission(async (request: any, admin: any) => {
-    const logger = getLogger();
+async function handleGET(request: NextRequest) {
+
+    // 获取订单列表
+    export async function GET(request: NextRequest) {
+      return await withReadPermission(async (request: any, admin: any) => {
+        const logger = getLogger();
     
-    try {
+        try {
 
-    const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = (page - 1) * limit;
+        const { searchParams } = new URL(request.url);
+        const status = searchParams.get('status');
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '50');
+        const offset = (page - 1) * limit;
 
-    // 构建查询条件
-    const where: any = {};
-    if (status) {
-      where.status = status;
-    }
+        // 构建查询条件
+        const where: any = {};
+        if (status) {
+          where.status = status;
+        }
 
-    // 获取订单列表和总数
-    const [orders, total] = await Promise.all([
-      prisma.orders.findMany({
-        where,
-        include: {
-          users: {
-            select: {
-              id: true,
-              username: true,
-              email: true,
-              referred_by_user_id: true,
-              has_first_purchase: true
+        // 获取订单列表和总数
+        const [orders, total] = await Promise.all([
+          prisma.orders.findMany({
+            where,
+            include: {
+              users: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                  referred_by_user_id: true,
+                  has_first_purchase: true
+                }
+              }
+            },
+            skip: offset,
+            take: limit,
+            orderBy: {
+              createdAt: 'desc'
+            }
+          }),
+          prisma.orders.count({ where })
+        ]);
+
+        return NextResponse.json<ApiResponse>({
+          success: true,
+          data: {
+            orders,
+            pagination: {
+              page,
+              limit,
+              total,
+              pages: Math.ceil(total / limit)
             }
           }
-        },
-        skip: offset,
-        take: limit,
-        orderBy: {
-          createdAt: 'desc'
-        }
-      }),
-      prisma.orders.count({ where })
-    ]);
+        });
 
-    return NextResponse.json<ApiResponse>({
-      success: true,
-      data: {
-        orders,
-        pagination: {
-          page,
-          limit,
-          total,
-          pages: Math.ceil(total / limit)
+        } catch (error) {
+          logger.error('获取订单列表失败', error as Error);
+          return NextResponse.json<ApiResponse>({
+            success: false,
+            error: '获取订单列表失败'
+          }, { status: 500 });
         }
-      }
-    });
-
-    } catch (error) {
-      logger.error('获取订单列表失败', error as Error);
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: '获取订单列表失败'
-      }, { status: 500 });
-    }
-  })(request);
+}
 }
 
 // 更新订单状态

@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 类型定义
 interface CostData {
@@ -50,175 +54,202 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware({
  * - periodType: 期间类型 (daily/weekly/monthly/quarterly)
  * - costType: 成本类型 (incentive/prize/operation/platform)
  * - startDate: 开始日期
- * - endDate: 结束日期
- * - limit: 限制返回记录数
- */
-export async function GET(request: NextRequest) {
-  return await withStatsPermission(async (request: any, admin: any) => {
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `costs_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('costs_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
   try {
-    const { searchParams } = new URL(request.url);
-    const periodType = searchParams.get('periodType') || 'daily';
-    const costType = searchParams.get('costType');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const limit = parseInt(searchParams.get('limit') || '100');
-
-    // 从cost_breakdown表获取数据
-    let query = supabase
-      .from('cost_breakdown')
-      .select('*')
-      .order('breakdown_date', { ascending: false })
-      .limit(limit);
-
-    if (costType) {
-      query = query.eq('user_type', costType);
-    }
-
-    if (startDate && endDate) {
-      query = query
-        .gte('breakdown_date', startDate)
-        .lte('breakdown_date', endDate);
-    } else {
-      // 默认获取最近30天的数据
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      query = query.gte('breakdown_date', thirtyDaysAgo.toISOString().split('T')[0]);
-    }
-
-    const { data: costData, error } = await query;
-
-    if (error) {
-      console.error('查询成本统计数据失败:', error);
-      return NextResponse.json(
-        { error: '查询成本统计数据失败' },
-        { status: 500 }
-      );
-    }
-
-    // 计算汇总统计
-    const totalStats = costData?.reduce((acc: CostStats, curr: CostData) => {
-      acc.totalCost += parseFloat(curr.cost_amount.toString());
-      acc.totalUserCount += curr.user_count;
-      acc.totalTransactionCount += curr.transaction_count;
-      return acc;
-    }, {
-      totalCost: 0,
-      totalUserCount: 0,
-      totalTransactionCount: 0
-    } as CostStats) || {};
-
-    const averageCostPerUser = totalStats.totalUserCount > 0 
-      ? totalStats.totalCost / totalStats.totalUserCount 
-      : 0;
-
-    // 按成本类型分组统计
-    const costTypeBreakdown = costData?.reduce((acc: Record<string, CostTypeBreakdown>, curr: CostData) => {
-      const type = curr.user_type || 'unknown';
-      if (!acc[type]) {
-        acc[type] = {
-          cost: 0,
-          userCount: 0,
-          transactionCount: 0,
-          avgCostPerUser: 0
-        };
-      }
-      acc[type].cost += parseFloat(curr.cost_amount.toString());
-      acc[type].userCount += curr.user_count;
-      acc[type].transactionCount += curr.transaction_count;
-      return acc;
-    }, {} as Record<string, CostTypeBreakdown>) || {};
-
-    // 计算各类型的平均成本
-    Object.keys(costTypeBreakdown).forEach((type: string) => {
-      const stats = costTypeBreakdown[type];
-      stats.avgCostPerUser = stats.userCount > 0 ? stats.cost / stats.userCount : 0;
-    });
-
-    // 按时间维度分组统计
-    const timeDimensionBreakdown = costData?.reduce((acc: Record<string, TimeDimensionBreakdown>, curr: CostData) => {
-      const date = curr.breakdown_date;
-      if (!acc[date]) {
-        acc[date] = {
-          cost: 0,
-          userCount: 0,
-          transactionCount: 0
-        };
-      }
-      acc[date].cost += parseFloat(curr.cost_amount.toString());
-      acc[date].userCount += curr.user_count;
-      acc[date].transactionCount += curr.transaction_count;
-      return acc;
-    }, {} as Record<string, TimeDimensionBreakdown>) || {};
-
-    // 成本趋势数据（最近30天）
-    const trendData = costData?.slice(0, 30).reverse().map(item => ({
-      date: item.breakdown_date,
-      cost: parseFloat(item.cost_amount.toString()),
-      userCount: item.user_count,
-      transactionCount: item.transaction_count,
-      costPerUser: parseFloat(item.cost_per_user?.toString() || '0')
-    })) || [];
-
-    // 成本效率分析
-    const costEfficiency = {
-      costPerUser: averageCostPerUser,
-      costPerTransaction: totalStats.totalTransactionCount > 0 
-        ? totalStats.totalCost / totalStats.totalTransactionCount 
-        : 0,
-      userEngagementRate: totalStats.totalUserCount > 0 
-        ? (totalStats.totalTransactionCount / totalStats.totalUserCount) * 100 
-        : 0
-    };
-
-    // 成本类型详细分析
-    const costTypeAnalysis = analyzeCostTypes(costTypeBreakdown);
-
-    // 计算成本增长率
-    let costGrowthRate = 0;
-    if (costData && costData.length > 1) {
-      const recentCost = costData.slice(0, 7).reduce((sum: number, item: CostData) => 
-        sum + parseFloat(item.cost_amount.toString()), 0);
-      const previousCost = costData.slice(7, 14).reduce((sum: number, item: CostData) => 
-        sum + parseFloat(item.cost_amount.toString()), 0);
-      if (previousCost > 0) {
-        costGrowthRate = ((recentCost - previousCost) / previousCost) * 100;
-      }
-    }
-
-    const response = {
-      data: costData || [],
-      summary: {
-        period: `${startDate || ''} - ${endDate || ''}`,
-        totalCost: totalStats.totalCost,
-        totalUserCount: totalStats.totalUserCount,
-        totalTransactionCount: totalStats.totalTransactionCount,
-        averageCostPerUser,
-        costGrowthRate,
-        periodType
-      },
-      costTypeBreakdown,
-      timeDimensionBreakdown,
-      trendData,
-      costEfficiency,
-      costTypeAnalysis,
-      keyMetrics: {
-        highestCostDay: findHighestCostDay(trendData),
-        mostEfficientType: findMostEfficientType(costTypeBreakdown),
-        costVolatility: calculateCostVolatility(trendData),
-        userAcquisitionCost: calculateUserAcquisitionCost(costTypeBreakdown)
-      }
-    };
-
-    return NextResponse.json(response);
-
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取成本统计API错误:', error);
-    return NextResponse.json(
-      { error: '服务器内部错误' },
-      { status: 500 }
-    );
+    logger.error('costs_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+     * - limit: 限制返回记录数
+     */
+    export async function GET(request: NextRequest) {
+      return await withStatsPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const periodType = searchParams.get('periodType') || 'daily';
+        const costType = searchParams.get('costType');
+        const startDate = searchParams.get('startDate');
+        const endDate = searchParams.get('endDate');
+        const limit = parseInt(searchParams.get('limit') || '100');
+
+        // 从cost_breakdown表获取数据
+        let query = supabase
+          .from('cost_breakdown')
+          .select('*')
+          .order('breakdown_date', { ascending: false })
+          .limit(limit);
+
+        if (costType) {
+          query = query.eq('user_type', costType);
+        }
+
+        if (startDate && endDate) {
+          query = query
+            .gte('breakdown_date', startDate)
+            .lte('breakdown_date', endDate);
+        } else {
+          // 默认获取最近30天的数据
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          query = query.gte('breakdown_date', thirtyDaysAgo.toISOString().split('T')[0]);
+        }
+
+        const { data: costData, error } = await query;
+
+        if (error) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'查询成本统计数据失败:', error);
+          return NextResponse.json(
+            { error: '查询成本统计数据失败' },
+            { status: 500 }
+          );
+        }
+
+        // 计算汇总统计
+        const totalStats = costData?.reduce((acc: CostStats, curr: CostData) => {
+          acc.totalCost += parseFloat(curr.cost_amount.toString());
+          acc.totalUserCount += curr.user_count;
+          acc.totalTransactionCount += curr.transaction_count;
+          return acc;
+        }, {
+          totalCost: 0,
+          totalUserCount: 0,
+          totalTransactionCount: 0
+        } as CostStats) || {};
+
+        const averageCostPerUser = totalStats.totalUserCount > 0 
+          ? totalStats.totalCost / totalStats.totalUserCount 
+          : 0;
+
+        // 按成本类型分组统计
+        const costTypeBreakdown = costData?.reduce((acc: Record<string, CostTypeBreakdown>, curr: CostData) => {
+          const type = curr.user_type || 'unknown';
+          if (!acc[type]) {
+            acc[type] = {
+              cost: 0,
+              userCount: 0,
+              transactionCount: 0,
+              avgCostPerUser: 0
+            };
+          }
+          acc[type].cost += parseFloat(curr.cost_amount.toString());
+          acc[type].userCount += curr.user_count;
+          acc[type].transactionCount += curr.transaction_count;
+          return acc;
+        }, {} as Record<string, CostTypeBreakdown>) || {};
+
+        // 计算各类型的平均成本
+        Object.keys(costTypeBreakdown).forEach((type: string) => {
+          const stats = costTypeBreakdown[type];
+          stats.avgCostPerUser = stats.userCount > 0 ? stats.cost / stats.userCount : 0;
+        });
+
+        // 按时间维度分组统计
+        const timeDimensionBreakdown = costData?.reduce((acc: Record<string, TimeDimensionBreakdown>, curr: CostData) => {
+          const date = curr.breakdown_date;
+          if (!acc[date]) {
+            acc[date] = {
+              cost: 0,
+              userCount: 0,
+              transactionCount: 0
+            };
+          }
+          acc[date].cost += parseFloat(curr.cost_amount.toString());
+          acc[date].userCount += curr.user_count;
+          acc[date].transactionCount += curr.transaction_count;
+          return acc;
+        }, {} as Record<string, TimeDimensionBreakdown>) || {};
+
+        // 成本趋势数据（最近30天）
+        const trendData = costData?.slice(0, 30).reverse().map(item => ({
+          date: item.breakdown_date,
+          cost: parseFloat(item.cost_amount.toString()),
+          userCount: item.user_count,
+          transactionCount: item.transaction_count,
+          costPerUser: parseFloat(item.cost_per_user?.toString() || '0')
+        })) || [];
+
+        // 成本效率分析
+        const costEfficiency = {
+          costPerUser: averageCostPerUser,
+          costPerTransaction: totalStats.totalTransactionCount > 0 
+            ? totalStats.totalCost / totalStats.totalTransactionCount 
+            : 0,
+          userEngagementRate: totalStats.totalUserCount > 0 
+            ? (totalStats.totalTransactionCount / totalStats.totalUserCount) * 100 
+            : 0
+        };
+
+        // 成本类型详细分析
+        const costTypeAnalysis = analyzeCostTypes(costTypeBreakdown);
+
+        // 计算成本增长率
+        let costGrowthRate = 0;
+        if (costData && costData.length > 1) {
+          const recentCost = costData.slice(0, 7).reduce((sum: number, item: CostData) => 
+            sum + parseFloat(item.cost_amount.toString()), 0);
+          const previousCost = costData.slice(7, 14).reduce((sum: number, item: CostData) => 
+            sum + parseFloat(item.cost_amount.toString()), 0);
+          if (previousCost > 0) {
+            costGrowthRate = ((recentCost - previousCost) / previousCost) * 100;
+          }
+        }
+
+        const response = {
+          data: costData || [],
+          summary: {
+            period: `${startDate || ''} - ${endDate || ''}`,
+            totalCost: totalStats.totalCost,
+            totalUserCount: totalStats.totalUserCount,
+            totalTransactionCount: totalStats.totalTransactionCount,
+            averageCostPerUser,
+            costGrowthRate,
+            periodType
+          },
+          costTypeBreakdown,
+          timeDimensionBreakdown,
+          trendData,
+          costEfficiency,
+          costTypeAnalysis,
+          keyMetrics: {
+            highestCostDay: findHighestCostDay(trendData),
+            mostEfficientType: findMostEfficientType(costTypeBreakdown),
+            costVolatility: calculateCostVolatility(trendData),
+            userAcquisitionCost: calculateUserAcquisitionCost(costTypeBreakdown)
+          }
+        };
+
+        return NextResponse.json(response);
+
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取成本统计API错误:', error);
+        return NextResponse.json(
+          { error: '服务器内部错误' },
+          { status: 500 }
+        );
+      }
+      })(request);
 }
 
 /**
@@ -269,7 +300,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('计算成本统计API错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'计算成本统计API错误:', error);
     return NextResponse.json(
       { error: '服务器内部错误' },
       { status: 500 }

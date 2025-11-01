@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
-const withReadPermission =  AdminPermissionManager.createPermissionMiddleware({
-  customPermissions: 
-  AdminPermissions.stats.read
-]);
+const withReadPermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
-const withWritePermission =  AdminPermissionManager.createPermissionMiddleware({
-  customPermissions: 
-  AdminPermissions.stats.read
-]);
+const withWritePermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
 // 模拟风险事件数据
 const mockRiskEvents = [
@@ -46,65 +44,89 @@ const mockRiskEvents = [
     description: '短时间内进行大量账户操作，疑似机器人行为',
     timestamp: '2025-10-31T13:45:00Z',
     riskScore: 95
-  }
-];
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `risk-events_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('risk-events_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
   try {
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const riskLevel = searchParams.get('riskLevel');
-    const status = searchParams.get('status');
-    const eventType = searchParams.get('eventType');
-    const search = searchParams.get('search');
-
-    // 筛选数据
-    let filteredEvents = mockRiskEvents;
-
-    if (riskLevel && riskLevel !== 'all') {
-      filteredEvents = filteredEvents.filter((event : any) => event.riskLevel === riskLevel);
-    }
-
-    if (status && status !== 'all') {
-      filteredEvents = filteredEvents.filter((event : any) => event.status === status);
-    }
-
-    if (eventType && eventType !== 'all') {
-      filteredEvents = filteredEvents.filter((event : any) => event.eventType === eventType);
-    }
-
-    if (search) {
-      filteredEvents = filteredEvents.filter((event : any) => 
-        event.userName.toLowerCase().includes(search.toLowerCase()) ||
-        event.id.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
-    // 分页
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedEvents = filteredEvents.slice(startIndex, endIndex);
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        events: paginatedEvents,
-        total: filteredEvents.length,
-        page,
-        limit,
-        totalPages: Math.ceil(filteredEvents.length / limit)
-      }
-    });
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取风险事件失败:', error);
-    return NextResponse.json(
-      { success: false, error: '获取数据失败' },
-      { status: 500 }
-    );
+    logger.error('risk-events_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+    ];
+
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = parseInt(searchParams.get('limit') || '20');
+        const riskLevel = searchParams.get('riskLevel');
+        const status = searchParams.get('status');
+        const eventType = searchParams.get('eventType');
+        const search = searchParams.get('search');
+
+        // 筛选数据
+        let filteredEvents = mockRiskEvents;
+
+        if (riskLevel && riskLevel !== 'all') {
+          filteredEvents = filteredEvents.filter((event : any) => event.riskLevel === riskLevel);
+        }
+
+        if (status && status !== 'all') {
+          filteredEvents = filteredEvents.filter((event : any) => event.status === status);
+        }
+
+        if (eventType && eventType !== 'all') {
+          filteredEvents = filteredEvents.filter((event : any) => event.eventType === eventType);
+        }
+
+        if (search) {
+          filteredEvents = filteredEvents.filter((event : any) => 
+            event.userName.toLowerCase().includes(search.toLowerCase()) ||
+            event.id.toLowerCase().includes(search.toLowerCase())
+          );
+        }
+
+        // 分页
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedEvents = filteredEvents.slice(startIndex, endIndex);
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            events: paginatedEvents,
+            total: filteredEvents.length,
+            page,
+            limit,
+            totalPages: Math.ceil(filteredEvents.length / limit)
+          }
+        });
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取风险事件失败:', error);
+        return NextResponse.json(
+          { success: false, error: '获取数据失败' },
+          { status: 500 }
+        );
+      }
+}
 }
 
 export async function POST(request: NextRequest) {
@@ -140,7 +162,10 @@ export async function POST(request: NextRequest) {
       message: '风险事件创建成功'
     });
   } catch (error) {
-    console.error('创建风险事件失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建风险事件失败:', error);
     return NextResponse.json(
       { success: false, error: '创建失败' },
       { status: 500 }

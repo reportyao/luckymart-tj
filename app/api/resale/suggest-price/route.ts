@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { getUserFromRequest } from '@/lib/auth';
 import { validationEngine } from '@/lib/validation';
 import type { ApiResponse } from '@/types';
+import { getLogger } from '@/lib/logger';
 
 export async function POST(request: Request) {
   try {
@@ -140,7 +141,10 @@ export async function POST(request: Request) {
     });
 
   } catch (error: any) {
-    console.error('获取定价建议失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取定价建议失败:', error);
     return NextResponse.json<ApiResponse>({
       success: false,
       error: error.message || '获取定价建议失败'

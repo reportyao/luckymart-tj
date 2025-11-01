@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 性能指标数据验证Schema
 const PerformanceMetricsSchema = z.object({
@@ -36,97 +40,121 @@ const PerformanceMetricsSchema = z.object({
 });
 
 // 简单的内存存储
-const performanceStore: any[] = [];
-const MAX_RECORDS = 1000;
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `performance_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('performance_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const type = searchParams.get('type') || 'stats';
-    const timeRange = searchParams.get('timeRange') || '24h';
-    const deviceType = searchParams.get('deviceType');
-    const pageUrl = searchParams.get('pageUrl');
-
-    // 移动端性能数据查询
-    if (type === 'mobile-stats') {
-      const stats = await getMobilePerformanceStats({ timeRange, deviceType, pageUrl });
-      return NextResponse.json({
-        success: true,
-        data: stats
-      });
-    }
-
-    if (type === 'mobile-issues') {
-      const issues = getMobilePerformanceIssues({ timeRange, deviceType, pageUrl });
-      return NextResponse.json({
-        success: true,
-        data: issues
-      });
-    }
-
-    if (type === 'mobile-recommendations') {
-      const recommendations = getMobileOptimizationRecommendations({ timeRange, deviceType, pageUrl });
-      return NextResponse.json({
-        success: true,
-        data: recommendations
-      });
-    }
-
-    // 兼容原有的API
-    if (type === 'stats') {
-      const stats = {
-        totalRequests: performanceStore.length,
-        averageResponseTime: 0,
-        cacheHitRate: 0,
-        errorRate: 0,
-        slowQueries: [],
-        mobileStats: getMockMobileStats()
-      };
-
-      return NextResponse.json({
-        success: true,
-        data: {
-          timestamp: Date.now(),
-          performance: stats,
-          summary: stats
-        }
-      });
-    }
-
-    if (type === 'export') {
-      const exportData = {
-        exportTime: new Date().toISOString(),
-        performance: performanceStore.slice(-50)
-      };
-
-      return NextResponse.json({
-        success: true,
-        data: exportData
-      });
-    }
-
-    // 默认返回基本统计
-    return NextResponse.json({
-      success: true,
-      data: {
-        timestamp: Date.now(),
-        performance: {
-          totalRecords: performanceStore.length,
-          mobileStats: getMockMobileStats()
-        }
-      }
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('performance_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
     });
-
-  } catch (error: any) {
-    console.error('Performance stats error:', error);
-    return NextResponse.json(
-      { 
-        error: '获取性能统计失败', 
-        message: error.message 
-      },
-      { status: 500 }
-    );
+    throw error;
   }
+});
+
+async function handleGET(request: NextRequest) {
+    const MAX_RECORDS = 1000;
+
+    export async function GET(request: NextRequest) {
+      try {
+        const searchParams = request.nextUrl.searchParams;
+        const type = searchParams.get('type') || 'stats';
+        const timeRange = searchParams.get('timeRange') || '24h';
+        const deviceType = searchParams.get('deviceType');
+        const pageUrl = searchParams.get('pageUrl');
+
+        // 移动端性能数据查询
+        if (type === 'mobile-stats') {
+          const stats = await getMobilePerformanceStats({ timeRange, deviceType, pageUrl });
+          return NextResponse.json({
+            success: true,
+            data: stats
+          });
+        }
+
+        if (type === 'mobile-issues') {
+          const issues = getMobilePerformanceIssues({ timeRange, deviceType, pageUrl });
+          return NextResponse.json({
+            success: true,
+            data: issues
+          });
+        }
+
+        if (type === 'mobile-recommendations') {
+          const recommendations = getMobileOptimizationRecommendations({ timeRange, deviceType, pageUrl });
+          return NextResponse.json({
+            success: true,
+            data: recommendations
+          });
+        }
+
+        // 兼容原有的API
+        if (type === 'stats') {
+          const stats = {
+            totalRequests: performanceStore.length,
+            averageResponseTime: 0,
+            cacheHitRate: 0,
+            errorRate: 0,
+            slowQueries: [],
+            mobileStats: getMockMobileStats()
+          };
+
+          return NextResponse.json({
+            success: true,
+            data: {
+              timestamp: Date.now(),
+              performance: stats,
+              summary: stats
+            }
+          });
+        }
+
+        if (type === 'export') {
+          const exportData = {
+            exportTime: new Date().toISOString(),
+            performance: performanceStore.slice(-50)
+          };
+
+          return NextResponse.json({
+            success: true,
+            data: exportData
+          });
+        }
+
+        // 默认返回基本统计
+        return NextResponse.json({
+          success: true,
+          data: {
+            timestamp: Date.now(),
+            performance: {
+              totalRecords: performanceStore.length,
+              mobileStats: getMockMobileStats()
+            }
+          }
+        });
+
+      } catch (error: any) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'Performance stats error:', error);
+        return NextResponse.json(
+          { 
+            error: '获取性能统计失败', 
+            message: error.message 
+          },
+          { status: 500 }
+        );
+      }
 }
 
 // 获取移动端性能统计数据
@@ -385,7 +413,10 @@ export async function DELETE(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('Clear performance data error:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Clear performance data error:', error);
     return NextResponse.json(
       { 
         error: '清除数据失败', 
@@ -433,10 +464,7 @@ export async function POST(request: NextRequest) {
       
       // 发送告警（如果有问题）
       if (issues.length > 0) {
-        console.log('Performance Alert:', {
-          pageUrl: validatedData.pageUrl,
-          sessionId: validatedData.sessionId,
-          issues: issues.map((i : any) => ({ type: i.type, severity: i.severity })),
+        logger.info("API Log", { requestId, data: arguments[0] }) => ({ type: i.type, severity: i.severity })),
           timestamp: new Date()
         });
       }
@@ -474,7 +502,10 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error: any) {
-    console.error('Record metric error:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Record metric error:', error);
     return NextResponse.json(
       { 
         error: '记录指标失败', 

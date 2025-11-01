@@ -3,6 +3,32 @@ import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { validateOrder, validateOrderQuery } from '@/lib/order-validator';
 import { CommonErrors } from '@/lib/errors';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `list_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('list_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('list_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
+
+async function handleGET(request: NextRequest) {
+
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -103,7 +129,10 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('Get orders error:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Get orders error:', error);
     return NextResponse.json(
       { error: '获取订单列表失败', message: error.message },
       { status: 500 }

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { TajikistanTimeUtils } from '@/lib/timezone-utils';
 import { createTranslation } from '@/lib/createTranslation';
+import { getLogger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -188,7 +189,10 @@ export async function POST(request: NextRequest) {
           body: JSON.stringify({ roundId })
         });
       } catch (drawError) {
-        console.error('触发开奖失败:', drawError);
+        logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'触发开奖失败:', drawError);
         // 不影响主流程，开奖失败由定时任务处理
       }
     }
@@ -210,7 +214,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('Participate error:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Participate error:', error);
     
     // 根据错误类型返回不同状态码
     const statusCode = error.message.includes('份额不足') || 

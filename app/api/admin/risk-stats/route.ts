@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
-const withStatsPermission =  AdminPermissionManager.createPermissionMiddleware({
-  customPermissions: 
-  AdminPermissions.stats.read
-]);
+const withStatsPermission =  AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.stats.read });
 
 // 模拟风控统计数据
 const mockDashboardData = {
@@ -70,47 +71,71 @@ const mockDashboardData = {
     { type: '频繁操作', count: 28, percentage: 21.9 },
     { type: '设备异常', count: 15, percentage: 11.7 },
     { type: 'IP异常', count: 8, percentage: 6.2 }
-  ]
-};
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `risk-stats_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('risk-stats_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-export async function GET(request: NextRequest) {
-  return withStatsPermission(async (request: any, admin: any) => {
   try {
-    const { searchParams } = new URL(request.url);
-    const period = searchParams.get('period') || 'today'; // today, week, month
-    const refresh = searchParams.get('refresh') === 'true';
-
-    // 在实际应用中，这里会根据 period 参数获取不同时间段的数据
-    // refresh 参数用于强制刷新缓存
-    
-    // 模拟数据加载延迟
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        ...mockDashboardData,
-        period,
-        timestamp: new Date().toISOString(),
-        // 根据时间段调整数据
-        ...(period === 'week' && {
-          todayRiskEvents: mockDashboardData.todayRiskEvents * 7,
-          rulesExecuted: mockDashboardData.rulesExecuted * 7
-        }),
-        ...(period === 'month' && {
-          todayRiskEvents: mockDashboardData.todayRiskEvents * 30,
-          rulesExecuted: mockDashboardData.rulesExecuted * 30
-        })
-      }
-    });
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取风控统计数据失败:', error);
-    return NextResponse.json(
-      { success: false, error: '获取数据失败' },
-      { status: 500 }
-    );
+    logger.error('risk-stats_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+    };
+
+    export async function GET(request: NextRequest) {
+      return withStatsPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const period = searchParams.get('period') || 'today'; // today, week, month
+        const refresh = searchParams.get('refresh') === 'true';
+
+        // 在实际应用中，这里会根据 period 参数获取不同时间段的数据
+        // refresh 参数用于强制刷新缓存
+    
+        // 模拟数据加载延迟
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            ...mockDashboardData,
+            period,
+            timestamp: new Date().toISOString(),
+            // 根据时间段调整数据
+            ...(period === 'week' && {
+              todayRiskEvents: mockDashboardData.todayRiskEvents * 7,
+              rulesExecuted: mockDashboardData.rulesExecuted * 7
+            }),
+            ...(period === 'month' && {
+              todayRiskEvents: mockDashboardData.todayRiskEvents * 30,
+              rulesExecuted: mockDashboardData.rulesExecuted * 30
+            })
+          }
+        });
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取风控统计数据失败:', error);
+        return NextResponse.json(
+          { success: false, error: '获取数据失败' },
+          { status: 500 }
+        );
+      }
+}
 }
 
 // 获取实时统计数据（用于WebSocket或轮询）
@@ -151,7 +176,10 @@ export async function POST(request: NextRequest) {
       message: '数据更新成功'
     });
   } catch (error) {
-    console.error('更新统计数据失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新统计数据失败:', error);
     return NextResponse.json(
       { success: false, error: '更新失败' },
       { status: 500 }

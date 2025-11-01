@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getLogger } from '@/lib/logger';
 
 declare global {
   var subscriptions: Map<string, any> | undefined;
@@ -21,7 +22,7 @@ export async function DELETE(request: NextRequest) {
     if (global.subscriptions && global.subscriptions.has(endpoint)) {
       global.subscriptions.delete(endpoint);
       
-      console.log('订阅删除成功:', endpoint);
+      logger.info("API Log", { requestId, data: '订阅删除成功:', endpoint });'订阅删除成功:', endpoint);
       
       return NextResponse.json({
         success: true,
@@ -35,7 +36,10 @@ export async function DELETE(request: NextRequest) {
     }
     
   } catch (error) {
-    console.error('删除订阅失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'删除订阅失败:', error);
     return NextResponse.json({
       success: false,
       error: '删除订阅失败'

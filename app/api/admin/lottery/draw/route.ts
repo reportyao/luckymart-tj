@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { calculateSecureWinningNumber, generateSecureDrawProof, findWinner } from '@/lib/lottery-algorithm';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.lottery.write()
@@ -194,7 +198,10 @@ export async function POST(request: NextRequest) {
       }
     });
     } catch (error: any) {
-      console.error('Manual draw error:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Manual draw error:', error);
       return NextResponse.json({
         success: false,
         error: error.message || '开奖失败'
@@ -203,67 +210,91 @@ export async function POST(request: NextRequest) {
   })(request);
 }
 
-/**
- * GET - 获取待开奖列表
- */
-export async function GET(request: NextRequest) {
-  return await withReadPermission(async (request: any, admin: any) => {
-    try {
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `draw_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('draw_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
 
-    // 查询已售罄但未开奖的轮次（soldShares >= totalShares）
-    const allActiveRounds = await prisma.lotteryRounds.findMany({
-      where: { status: 'active' },
-      orderBy: { createdAt: 'asc' }
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('draw_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
     });
-    
-    // 筛选出已售罄的轮次
-    const readyRounds = allActiveRounds.filter((r : any) => r.soldShares >= r.totalShares);
+    throw error;
+  }
+});
 
-    // 手动查询产品信息和参与人数
-    const roundsWithDetails = await Promise.all(
-      readyRounds.map(async (r) : any => {
-        const product = await prisma.products.findUnique({
-          where: { id: r.productId },
-          select: {
-            nameZh: true,
-            nameEn: true,
-            nameRu: true,
-            images: true,
-            marketPrice: true
+async function handleGET(request: NextRequest) {
+     * GET - 获取待开奖列表
+     */
+    export async function GET(request: NextRequest) {
+      return await withReadPermission(async (request: any, admin: any) => {
+        try {
+
+        // 查询已售罄但未开奖的轮次（soldShares >= totalShares）
+        const allActiveRounds = await prisma.lotteryRounds.findMany({
+          where: { status: 'active' },
+          orderBy: { createdAt: 'asc' }
+        });
+    
+        // 筛选出已售罄的轮次
+        const readyRounds = allActiveRounds.filter((r : any) => r.soldShares >= r.totalShares);
+
+        // 手动查询产品信息和参与人数
+        const roundsWithDetails = await Promise.all(
+          readyRounds.map(async (r) : any => {
+            const product = await prisma.products.findUnique({
+              where: { id: r.productId },
+              select: {
+                nameZh: true,
+                nameEn: true,
+                nameRu: true,
+                images: true,
+                marketPrice: true
+              }
+            });
+
+            const participantCount = await prisma.participations.count({
+              where: { roundId: r.id }
+            });
+
+            return {
+              id: r.id,
+              productId: r.productId,
+              productName: product?.nameZh || '',
+              productImages: product?.images || [],
+              marketPrice: Number(product?.marketPrice || 0),
+              roundNumber: r.roundNumber,
+              totalShares: r.totalShares,
+              soldShares: r.soldShares,
+              participants: participantCount,
+              createdAt: r.createdAt.toISOString()
+            };
+          })
+        );
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            rounds: roundsWithDetails
           }
         });
-
-        const participantCount = await prisma.participations.count({
-          where: { roundId: r.id }
-        });
-
-        return {
-          id: r.id,
-          productId: r.productId,
-          productName: product?.nameZh || '',
-          productImages: product?.images || [],
-          marketPrice: Number(product?.marketPrice || 0),
-          roundNumber: r.roundNumber,
-          totalShares: r.totalShares,
-          soldShares: r.soldShares,
-          participants: participantCount,
-          createdAt: r.createdAt.toISOString()
-        };
-      })
-    );
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        rounds: roundsWithDetails
-      }
-    });
-    } catch (error: any) {
-      console.error('Get ready rounds error:', error);
-      return NextResponse.json({
-        success: false,
-        error: error.message || '获取待开奖列表失败'
-      }, { status: 500 });
-    }
-  })(request);
+        } catch (error: any) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'Get ready rounds error:', error);
+          return NextResponse.json({
+            success: false,
+            error: error.message || '获取待开奖列表失败'
+          }, { status: 500 });
+        }
+      })(request);
 }

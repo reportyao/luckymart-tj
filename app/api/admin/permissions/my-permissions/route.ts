@@ -1,5 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { respond } from '@/lib/responses';
+
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `my-permissions_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('my-permissions_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('my-permissions_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
+  }
+});
+
+async function handleGET(request: NextRequest) {
+
+}
 
 export async function GET(request: NextRequest) {
   const withPermission = AdminPermissionManager.createPermissionMiddleware();
@@ -20,7 +48,10 @@ export async function GET(request: NextRequest) {
         permissions: admin.role === 'super_admin' ? ['*:*'] : permissions
       });
     } catch (error) {
-      console.error('获取权限失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取权限失败:', error);
       return NextResponse.json({
         success: false,
         error: '获取权限失败'

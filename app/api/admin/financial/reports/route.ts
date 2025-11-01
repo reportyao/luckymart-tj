@@ -3,6 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin-permission-manager';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 // 获取数据库连接
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -20,89 +24,116 @@ const withStatsPermission = AdminPermissionManager.createPermissionMiddleware({
  * 
  * Query Parameters:
  * - reportType: 报告类型 (monthly/quarterly/yearly)
- * - status: 状态 (draft/published/archived)
- * - limit: 限制返回记录数
- */
-export async function GET(request: NextRequest) {
-  return await withStatsPermission(async (request: any, admin: any) => {
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `reports_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('reports_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
   try {
-    const { searchParams } = new URL(request.url);
-    const reportType = searchParams.get('reportType');
-    const status = searchParams.get('status');
-    const limit = parseInt(searchParams.get('limit') || '50');
-
-    let query = supabase
-      .from('financial_reports')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(limit);
-
-    if (reportType) {
-      query = query.eq('report_type', reportType);
-    }
-
-    if (status) {
-      query = query.eq('status', status);
-    }
-
-    const { data: reportsData, error } = await query;
-
-    if (error) {
-      console.error('查询财务报告数据失败:', error);
-      return NextResponse.json(
-        { error: '查询财务报告数据失败' },
-        { status: 500 }
-      );
-    }
-
-    // 按报告类型分组统计
-    const reportTypeStats = reportsData?.reduce((acc, curr) => {
-      if (!acc[curr.report_type]) {
-        acc[curr.report_type] = {
-          count: 0,
-          published: 0,
-          draft: 0,
-          archived: 0
-        };
-      }
-      acc[curr.report_type].count++;
-      if (curr.status === 'published') acc[curr.report_type].published++;
-      else if (curr.status === 'draft') acc[curr.report_type].draft++;
-      else if (curr.status === 'archived') acc[curr.report_type].archived++;
-      return acc;
-    }, {} as Record<string, any>) || {};
-
-    // 最新报告摘要
-    const latestReports = reportsData?.slice(0, 5).map(report => ({
-      id: report.id,
-      reportType: report.report_type,
-      reportPeriod: report.report_period,
-      title: report.title,
-      status: report.status,
-      publishedAt: report.published_at,
-      createdAt: report.created_at,
-      summary: report.summary
-    })) || [];
-
-    const response = {
-      data: reportsData || [],
-      summary: {
-        totalReports: reportsData?.length || 0,
-        reportTypeStats,
-        latestReports
-      }
-    };
-
-    return NextResponse.json(response);
-
+    return await handleGET(request);
   } catch (error) {
-    console.error('获取财务报告API错误:', error);
-    return NextResponse.json(
-      { error: '服务器内部错误' },
-      { status: 500 }
-    );
+    logger.error('reports_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
+    throw error;
   }
-  })(request);
+});
+
+async function handleGET(request: NextRequest) {
+     * - limit: 限制返回记录数
+     */
+    export async function GET(request: NextRequest) {
+      return await withStatsPermission(async (request: any, admin: any) => {
+      try {
+        const { searchParams } = new URL(request.url);
+        const reportType = searchParams.get('reportType');
+        const status = searchParams.get('status');
+        const limit = parseInt(searchParams.get('limit') || '50');
+
+        let query = supabase
+          .from('financial_reports')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(limit);
+
+        if (reportType) {
+          query = query.eq('report_type', reportType);
+        }
+
+        if (status) {
+          query = query.eq('status', status);
+        }
+
+        const { data: reportsData, error } = await query;
+
+        if (error) {
+          logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'查询财务报告数据失败:', error);
+          return NextResponse.json(
+            { error: '查询财务报告数据失败' },
+            { status: 500 }
+          );
+        }
+
+        // 按报告类型分组统计
+        const reportTypeStats = reportsData?.reduce((acc, curr) => {
+          if (!acc[curr.report_type]) {
+            acc[curr.report_type] = {
+              count: 0,
+              published: 0,
+              draft: 0,
+              archived: 0
+            };
+          }
+          acc[curr.report_type].count++;
+          if (curr.status === 'published') acc[curr.report_type].published++;
+          else if (curr.status === 'draft') acc[curr.report_type].draft++;
+          else if (curr.status === 'archived') acc[curr.report_type].archived++;
+          return acc;
+        }, {} as Record<string, any>) || {};
+
+        // 最新报告摘要
+        const latestReports = reportsData?.slice(0, 5).map(report => ({
+          id: report.id,
+          reportType: report.report_type,
+          reportPeriod: report.report_period,
+          title: report.title,
+          status: report.status,
+          publishedAt: report.published_at,
+          createdAt: report.created_at,
+          summary: report.summary
+        })) || [];
+
+        const response = {
+          data: reportsData || [],
+          summary: {
+            totalReports: reportsData?.length || 0,
+            reportTypeStats,
+            latestReports
+          }
+        };
+
+        return NextResponse.json(response);
+
+      } catch (error) {
+        logger.error("API Error", error as Error, {
+          requestId,
+          endpoint: request.url
+        });'获取财务报告API错误:', error);
+        return NextResponse.json(
+          { error: '服务器内部错误' },
+          { status: 500 }
+        );
+      }
+      })(request);
 }
 
 /**
@@ -231,7 +262,10 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('生成财务报告失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'生成财务报告失败:', error);
       return NextResponse.json(
         { error: '生成财务报告失败' },
         { status: 500 }
@@ -254,7 +288,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('生成财务报告API错误:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'生成财务报告API错误:', error);
     return NextResponse.json(
       { error: '服务器内部错误' },
       { status: 500 }

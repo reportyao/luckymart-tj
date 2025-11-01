@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { AdminPermissionManager } from '@/lib/admin-permission-manager';
 import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
+
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.products.read()
@@ -51,7 +54,10 @@ export async function GET(
       }
     });
     } catch (error: any) {
-      console.error('获取商品详情失败:', error);
+      logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取商品详情失败:', error);
       return NextResponse.json({
         success: false,
         error: '获取商品详情失败'

@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 import { prisma } from '@/lib/prisma';
+import { getLogger } from '@/lib/logger';
+import { withErrorHandling } from '@/lib/middleware';
+import { getLogger } from '@/lib/logger';
+import { respond } from '@/lib/responses';
 
 const withReadPermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.features.read() });
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({ customPermissions: AdminPermissions.features.write() });
@@ -44,7 +48,10 @@ async function getAllFeatureFlags() {
     updateCache(flags);
     return flags;
   } catch (error) {
-    console.error('获取功能开关失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'获取功能开关失败:', error);
     throw error;
   }
 }
@@ -78,7 +85,10 @@ async function createFeatureFlag(data: any, operatorId: string) {
     clearCache();
     return result[0];
   } catch (error) {
-    console.error('创建功能开关失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'创建功能开关失败:', error);
     throw error;
   }
 }
@@ -124,7 +134,10 @@ async function updateFeatureFlag(id: string, data: any, operatorId: string) {
     clearCache();
     return result[0];
   } catch (error) {
-    console.error('更新功能开关失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'更新功能开关失败:', error);
     throw error;
   }
 }
@@ -145,7 +158,10 @@ async function deleteFeatureFlag(id: string, operatorId: string) {
     clearCache();
     return result[0];
   } catch (error) {
-    console.error('删除功能开关失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'删除功能开关失败:', error);
     throw error;
   }
 }
@@ -166,29 +182,53 @@ async function toggleFeatureFlag(id: string, enabled: boolean, operatorId: strin
     clearCache();
     return result[0];
   } catch (error) {
-    console.error('切换功能开关失败:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'切换功能开关失败:', error);
+    throw error;
+export const GET = withErrorHandling(async (request: NextRequest) => {
+  const logger = getLogger();
+  const requestId = `features_route.ts_{Date.now()}_{Math.random().toString(36).substr(2, 9)}`;
+  
+  logger.info('features_route.ts request started', {
+    requestId,
+    method: request.method,
+    url: request.url
+  });
+
+  try {
+    return await handleGET(request);
+  } catch (error) {
+    logger.error('features_route.ts request failed', error as Error, {
+      requestId,
+      error: (error as Error).message
+    });
     throw error;
   }
-}
+});
 
-export async function GET(request: NextRequest) {
-  return withReadPermission(async (request: any, admin: any) => {
-    const url = new URL(request.url);
-    const category = url.searchParams.get('category');
-    const isEnabled = url.searchParams.get('is_enabled');
-    const isActive = url.searchParams.get('is_active');
-    const flagKey = url.searchParams.get('flag_key');
-    const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '50');
-    const offset = (page - 1) * limit;
-
-    let query = `SELECT * FROM feature_flags WHERE 1=1`;
-    const params: any[] = [];
-
-    if (category) {
-      query += ` AND category = $${params.length + 1}`;
-      params.push(category);
+async function handleGET(request: NextRequest) {
     }
+
+    export async function GET(request: NextRequest) {
+      return withReadPermission(async (request: any, admin: any) => {
+        const url = new URL(request.url);
+        const category = url.searchParams.get('category');
+        const isEnabled = url.searchParams.get('is_enabled');
+        const isActive = url.searchParams.get('is_active');
+        const flagKey = url.searchParams.get('flag_key');
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = parseInt(url.searchParams.get('limit') || '50');
+        const offset = (page - 1) * limit;
+
+        let query = `SELECT * FROM feature_flags WHERE 1=1`;
+        const params: any[] = [];
+
+        if (category) {
+          query += ` AND category = $${params.length + 1}`;
+          params.push(category);
+}
 
     if (isEnabled !== null) {
       query += ` AND is_enabled = $${params.length + 1}`;

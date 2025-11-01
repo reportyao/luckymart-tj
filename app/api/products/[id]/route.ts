@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { PerformanceMonitor } from '@/lib/performance';
 import { MemoryCache } from '@/lib/memory-cache';
 import {
+import { getLogger } from '@/lib/logger';
   ProductMultilingualService,
   type SupportedLanguage,
 } from '@/lib/services/multilingual-query';
@@ -43,7 +44,7 @@ export async function GET(
     // 尝试从缓存获取数据
     const cached = cache.get(cacheKey);
     if (cached) {
-      console.log('Cache hit for product detail:', id);
+      logger.info("API Log", { requestId, data: 'Cache hit for product detail:', id });'Cache hit for product detail:', id);
       return NextResponse.json({
         success: true,
         data: cached,
@@ -154,7 +155,10 @@ export async function GET(
     });
 
   } catch (error: any) {
-    console.error('Get product error:', error);
+    logger.error("API Error", error as Error, {
+      requestId,
+      endpoint: request.url
+    });'Get product error:', error);
     return NextResponse.json(
       { 
         error: '获取商品详情失败', 

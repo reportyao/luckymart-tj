@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiUsers, FiShield, FiSettings, FiPlus, FiEdit, FiTrash2, FiCheck, FiX } from 'react-icons/fi';
+import { PagePermission } from '@/components/admin/PagePermission';
+import { AdminPermissions } from '@/lib/admin/permissions';
 
 interface Department {
   id: string;

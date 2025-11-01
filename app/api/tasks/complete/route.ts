@@ -72,10 +72,10 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       }
 
       // 获取任务状态
-      const taskStatus = await prisma.$queryRawUnsafe(`
+      const taskStatus = await prisma.$queryRaw`
         SELECT * FROM user_new_user_task_status 
-        WHERE user_id = '${userId}' AND task_type = '${taskType}'
-      `);
+        WHERE user_id = ${userId}::uuid AND task_type = ${taskType}
+      `;
 
       if (!taskStatus || taskStatus.length === 0) {
         logger.warn('任务配置不存在', { userId, taskType }, {
@@ -136,9 +136,9 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
       });
 
       // 使用数据库函数发放奖励
-      const rewardResult = await prisma.$queryRawUnsafe(`
-        SELECT claim_task_reward('${userId}'::uuid, '${taskType}') as result
-      `);
+      const rewardResult = await prisma.$queryRaw`
+        SELECT claim_task_reward(${userId}::uuid, ${taskType}) as result
+      `;
 
       const rewardData = rewardResult[0];
 

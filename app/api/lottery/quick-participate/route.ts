@@ -137,15 +137,22 @@ const handleQuickParticipate = async (request: NextRequest) => {
         }
       });
 
-      // 5. 更新用户幸运币余额
-      await tx.users.update({
-        where: { id: decoded!.userId },
+      // 5. 使用乐观锁更新用户幸运币余额，防止并发冲突
+      const updatedUser = await tx.users.updateMany({
+        where: {
+          id: decoded!.userId,
+          luckyCoinsVersion: user.luckyCoinsVersion
+        },
         data: {
           luckyCoins: { decrement: totalCost },
           totalSpent: { increment: totalCost },
           luckyCoinsVersion: { increment: 1 }
         }
       });
+
+      if (updatedUser.count === 0) {
+        throw new Error('用户余额更新失败，可能是并发操作，请重试');
+      }
 
       // 6. 更新期次已售份额
       await tx.lotteryRounds.update({

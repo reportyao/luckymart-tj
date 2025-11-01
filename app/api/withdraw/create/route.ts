@@ -105,40 +105,27 @@ const handleWithdrawRequest = async (request: NextRequest) => {
     const fee = calculateWithdrawFee(amountNum);
     const totalRequired = amountNum + fee;
 
-    // 重新检查余额（包含手续费）
-    if (userData.platform_balance < totalRequired) {
-      return NextResponse.json<ApiResponse>({
-        success: false,
-        error: `余额不足。需要 ${totalRequired} TJS（含手续费 ${fee} TJS），当前余额 ${userData.platform_balance} TJS`
-      }, { status: 400 });
+    // 使用原子操作扣除余额，防止并发冲突
+    const { data: withdrawRequest, error: withdrawError } = await supabaseAdmin.rpc('create_withdraw_request_atomic', {
+      p_user_id: user.userId,
+      p_amount: amountNum,
+      p_fee: fee,
+      p_actual_amount: amountNum - fee,
+      p_payment_method: paymentMethod,
+      p_payment_account: paymentAccount,
+      p_total_required: totalRequired
+    });
+
+    if (withdrawError) {
+      // 如果是余额不足或并发冲突错误，返回更友好的错误信息
+      if (withdrawError.message?.includes('余额不足') || withdrawError.message?.includes('insufficient')) {
+        return NextResponse.json<ApiResponse>({
+          success: false,
+          error: '余额不足，无法创建提现申请'
+        }, { status: 400 });
+      }
+      throw withdrawError;
     }
-
-    // 创建提现申请
-    const { data: withdrawRequest, error: insertError } = await supabaseAdmin
-      .from('withdraw_requests')
-      .insert({
-        user_id: user.userId,
-        amount: amountNum,
-        fee,
-        actual_amount: amountNum - fee,
-        withdraw_method: paymentMethod,
-        account_info: { account: paymentAccount },
-        status: 'pending'
-      })
-      .select()
-      .single();
-
-    if (insertError) {throw insertError;}
-
-    // 扣除余额
-    const { error: updateError } = await supabaseAdmin
-      .from('users')
-      .update({ 
-        platform_balance: userData.platform_balance - totalRequired 
-      })
-      .eq('id', user.userId);
-
-    if (updateError) {throw updateError;}
 
     // 记录交易
     await supabaseAdmin

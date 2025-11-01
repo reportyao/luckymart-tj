@@ -9,8 +9,7 @@ import { getMonitor } from '@/lib/monitoring';
 import { createOrderValidationMiddleware, ORDER_VALIDATION_MIDDLEWARES } from '@/lib/order-validation-middleware';
 import { ErrorFactory } from '@/lib/errors';
 
-import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
-import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 
 // 订单状态更新请求体
 interface OrderUpdateRequest {

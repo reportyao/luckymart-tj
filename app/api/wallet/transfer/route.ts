@@ -121,7 +121,7 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 使用参数化查询防止SQL注入
-    const transferResult = await prisma.$queryRawUnsafe`
+    const transferResult = await prisma.$queryRaw`
       SELECT * FROM transfer_balance_to_luckycoins(${user.userId}::uuid, ${amount})
     `;
 

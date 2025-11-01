@@ -149,16 +149,23 @@ export async function POST(request: NextRequest) {
             }
           });
 
-          // 10. 更新用户余额或免费次数
+          // 10. 使用乐观锁更新用户余额或免费次数，防止并发冲突
           if (useType === 'paid') {
-            await tx.users.update({
-              where: { id: user.id },
+            const userUpdateResult = await tx.users.updateMany({
+              where: {
+                id: user.id,
+                balanceVersion: user.balanceVersion
+              },
               data: {
                 balance: { decrement: cost },
                 totalSpent: { increment: cost },
                 balanceVersion: { increment: 1 }
               }
             });
+
+            if (userUpdateResult.count === 0) {
+              throw new Error('用户余额更新失败，可能是并发操作，请重试');
+            }
 
             // 记录交易
             await tx.transactions.create({

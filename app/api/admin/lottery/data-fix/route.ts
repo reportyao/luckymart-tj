@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { triggerImmediateDraw } from '@/lib/lottery';
-import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
-import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.lottery.write()

@@ -76,30 +76,54 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 获取更新后的任务状态
-    const updatedTasks = await prisma.$queryRawUnsafe(`
-      SELECT 
-        task_id,
-        task_type,
-        name_multilingual,
-        description_multilingual,
-        reward_amount,
-        reward_type,
-        status,
-        completed_at,
-        reward_claimed,
-        progress_data
-      FROM user_new_user_task_status
-      WHERE user_id = '${userId}'
-      ${taskType !== 'all' ? `AND task_type = '${taskType}'` : ''}
-      ORDER BY (
-        CASE task_type
-          WHEN 'register' THEN 1
-          WHEN 'first_recharge' THEN 2
-          WHEN 'first_lottery' THEN 3
-          ELSE 4
-        END
-      )
-    `);
+    const updatedTasks = taskType !== 'all' 
+      ? await prisma.$queryRaw`
+        SELECT 
+          task_id,
+          task_type,
+          name_multilingual,
+          description_multilingual,
+          reward_amount,
+          reward_type,
+          status,
+          completed_at,
+          reward_claimed,
+          progress_data
+        FROM user_new_user_task_status
+        WHERE user_id = ${userId}
+        AND task_type = ${taskType}
+        ORDER BY (
+          CASE task_type
+            WHEN 'register' THEN 1
+            WHEN 'first_recharge' THEN 2
+            WHEN 'first_lottery' THEN 3
+            ELSE 4
+          END
+        )
+      `
+      : await prisma.$queryRaw`
+        SELECT 
+          task_id,
+          task_type,
+          name_multilingual,
+          description_multilingual,
+          reward_amount,
+          reward_type,
+          status,
+          completed_at,
+          reward_claimed,
+          progress_data
+        FROM user_new_user_task_status
+        WHERE user_id = ${userId}
+        ORDER BY (
+          CASE task_type
+            WHEN 'register' THEN 1
+            WHEN 'first_recharge' THEN 2
+            WHEN 'first_lottery' THEN 3
+            ELSE 4
+          END
+        )
+      `;
 
     // 构建响应数据
     const tasks = updatedTasks.map((task: any) => {
@@ -232,15 +256,15 @@ async function checkSingleTaskCompletion(userId: string, taskType: string, userC
 
     case 'first_recharge':
       // 首次充值任务：检查是否有成功的充值订单
-      const rechargeCheck = await prisma.$queryRawUnsafe(`
+      const rechargeCheck = await prisma.$queryRaw`
         SELECT EXISTS (
           SELECT 1 FROM orders 
-          WHERE user_id = '${userId}'
+          WHERE user_id = ${userId}
             AND type = 'recharge'
             AND status = 'completed'
             AND payment_status = 'completed'
         ) as has_recharge
-      `);
+      `;
       shouldComplete = rechargeCheck[0]?.has_recharge === true;
       completionReason = shouldComplete 
         ? '检测到成功的充值订单' 
@@ -249,12 +273,12 @@ async function checkSingleTaskCompletion(userId: string, taskType: string, userC
 
     case 'first_lottery':
       // 首次抽奖任务：检查是否有抽奖参与记录
-      const lotteryCheck = await prisma.$queryRawUnsafe(`
+      const lotteryCheck = await prisma.$queryRaw`
         SELECT EXISTS (
           SELECT 1 FROM participations 
-          WHERE user_id = '${userId}'
+          WHERE user_id = ${userId}
         ) as has_lottery
-      `);
+      `;
       shouldComplete = lotteryCheck[0]?.has_lottery === true;
       completionReason = shouldComplete 
         ? '检测到抽奖参与记录' 
@@ -270,36 +294,37 @@ async function checkSingleTaskCompletion(userId: string, taskType: string, userC
   let wasUpdated = false;
   if (shouldComplete) {
     // 检查当前任务进度状态
-    const currentProgress = await prisma.$queryRawUnsafe(`
+    const currentProgress = await prisma.$queryRaw`
       SELECT status FROM user_task_progress 
-      WHERE user_id = '${userId}' 
+      WHERE user_id = ${userId}
       AND task_id = (
         SELECT id FROM new_user_tasks 
-        WHERE task_type = '${taskType}' AND is_active = true
+        WHERE task_type = ${taskType} AND is_active = true
         LIMIT 1
       )
-    `);
+    `;
 
     const currentStatus = currentProgress[0]?.status;
 
     // 如果当前状态不是completed，则更新为完成状态
     if (currentStatus !== 'completed') {
-      await prisma.$queryRawUnsafe(`
+      const checkedAtTime = new Date().toISOString();
+      await prisma.$queryRaw`
         INSERT INTO user_task_progress (user_id, task_id, status, completed_at, progress_data)
         VALUES (
-          '${userId}', 
-          (SELECT id FROM new_user_tasks WHERE task_type = '${taskType}' AND is_active = true LIMIT 1), 
+          ${userId}, 
+          (SELECT id FROM new_user_tasks WHERE task_type = ${taskType} AND is_active = true LIMIT 1), 
           'completed', 
           CURRENT_TIMESTAMP, 
-          '{"checked_at": "${new Date().toISOString()}", "manual_check": true}'
+          ${JSON.stringify({checked_at: checkedAtTime, manual_check: true})}
         )
         ON CONFLICT (user_id, task_id) 
         DO UPDATE SET 
           status = 'completed',
           completed_at = CURRENT_TIMESTAMP,
-          progress_data = '{"checked_at": "${new Date().toISOString()}", "manual_check": true, "updated": true}',
+          progress_data = ${JSON.stringify({checked_at: checkedAtTime, manual_check: true, updated: true})},
           updated_at = CURRENT_TIMESTAMP
-      `);
+      `;
       
       wasUpdated = true;
     }

@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
  * 获取留存概览
  */
 async function getRetentionOverview(
-  admin: any,
+  admin: AdminUser,
   cohortType: string,
   startDate?: string | null,
   endDate?: string | null
@@ -170,7 +170,7 @@ async function getRetentionOverview(
  * 获取同期群分析
  */
 async function getCohortAnalysis(
-  admin: any,
+  admin: AdminUser,
   cohortType: string,
   startDate?: string | null,
   endDate?: string | null
@@ -220,7 +220,7 @@ async function getCohortAnalysis(
 /**
  * 获取单个用户留存分析
  */
-async function getUserRetentionAnalysis(admin: any, userId?: string | null) {
+async function getUserRetentionAnalysis(admin: AdminUser, userId?: string | null) {
   if (!userId) {
     return NextResponse.json({
       success: false,

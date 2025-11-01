@@ -38,9 +38,9 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     });
 
     // 获取用户签到状态汇总信息
-    const userCheckInSummary = await prisma.$queryRawUnsafe(`
-      SELECT * FROM user_check_in_summary WHERE user_id = '${user.userId}'::uuid
-    `);
+    const userCheckInSummary = await prisma.$queryRaw`
+      SELECT * FROM user_check_in_summary WHERE user_id = ${user.userId}::uuid
+    `;
 
     // 如果用户不存在，返回错误
     if (!userCheckInSummary || userCheckInSummary.length === 0) {
@@ -58,7 +58,7 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     const summaryData = userCheckInSummary[0];
 
     // 获取最近7天的签到记录
-    const recentCheckIns = await prisma.$queryRawUnsafe(`
+    const recentCheckIns = await prisma.$queryRaw`
       SELECT 
         check_in_date,
         check_in_day,
@@ -66,14 +66,14 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         status,
         created_at
       FROM check_in_records 
-      WHERE user_id = '${user.userId}'::uuid 
+      WHERE user_id = ${user.userId}::uuid 
       AND check_in_date >= CURRENT_DATE - INTERVAL '6 days'
       AND status = 'claimed'
       ORDER BY check_in_date DESC
-    `);
+    `;
 
     // 获取签到周期历史
-    const cycleHistory = await prisma.$queryRawUnsafe(`
+    const cycleHistory = await prisma.$queryRaw`
       SELECT 
         id,
         cycle_start_date,
@@ -84,10 +84,10 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
         is_completed,
         created_at
       FROM check_in_cycles 
-      WHERE user_id = '${user.userId}'::uuid 
+      WHERE user_id = ${user.userId}::uuid 
       ORDER BY created_at DESC 
       LIMIT 5
-    `);
+    `;
 
     // 构建响应数据
     const responseData = {

@@ -1,3 +1,4 @@
+import { PagePermission, AdminPermissions } from '@/lib/admin';
 'use client';
 
 import { useState } from 'react';

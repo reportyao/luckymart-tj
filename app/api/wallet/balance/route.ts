@@ -35,9 +35,9 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     });
 
     // 使用专用函数获取用户双货币余额信息，确保数据一致性
-    const walletBalanceInfo = await prisma.$queryRawUnsafe(`
-      SELECT * FROM get_user_wallet_balance('${user.userId}'::uuid)
-    `);
+    const walletBalanceInfo = await prisma.$queryRaw`
+      SELECT * FROM get_user_wallet_balance(${user.userId}::uuid)
+    `;
 
     // 如果用户不存在，返回错误
     if (!walletBalanceInfo || walletBalanceInfo.length === 0) {

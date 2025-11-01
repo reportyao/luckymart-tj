@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { calculateSecureWinningNumber, generateSecureDrawProof, findWinner } from '@/lib/lottery-algorithm';
-import { AdminPermissionManager } from '@/lib/admin/permissions/AdminPermissionManager';
-import { AdminPermissions } from '@/lib/admin/permissions/AdminPermissions';
+import { AdminPermissionManager, AdminPermissions } from '@/lib/admin-permission-manager';
 
 const withWritePermission = AdminPermissionManager.createPermissionMiddleware({
   customPermissions: AdminPermissions.lottery.write()

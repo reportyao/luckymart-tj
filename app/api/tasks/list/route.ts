@@ -82,16 +82,16 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
       let currentStatus = task.status;
       if (currentStatus === 'pending') {
         // 调用数据库函数检查完成状态
-        const completionCheck = await prisma.$queryRawUnsafe(`
-          SELECT update_user_task_progress('${userId}', '${task.task_type}') as result
-        `);
+        const completionCheck = await prisma.$queryRaw`
+          SELECT update_user_task_progress(${userId}, ${task.task_type}) as result
+        `;
         
         // 重新获取更新后的状态
-        const updatedStatus = await prisma.$queryRawUnsafe(`
+        const updatedStatus = await prisma.$queryRaw`
           SELECT status FROM user_task_progress 
-          WHERE user_id = '${userId}' 
-          AND task_id = '${task.task_id}'
-        `);
+          WHERE user_id = ${userId} 
+          AND task_id = ${task.task_id}
+        `;
         
         if (updatedStatus.length > 0) {
           currentStatus = updatedStatus[0].status;

@@ -104,17 +104,17 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 使用优化后的分页查询函数
-    const transactionQueryResult = await prisma.$queryRawUnsafe(`
+    const transactionQueryResult = await prisma.$queryRaw`
       SELECT * FROM get_user_transactions_paginated(
-        '${user.userId}'::uuid,
-        ${page},
-        ${limit},
-        ${params.balanceType ? `'${params.balanceType}'` : 'NULL'},
-        ${params.type ? `'${params.type}'` : 'NULL'},
-        ${params.startDate ? `'${params.startDate}'` : 'NULL'},
-        ${params.endDate ? `'${params.endDate}'` : 'NULL'}
+        ${user.userId}::uuid,
+        ${page}::integer,
+        ${limit}::integer,
+        ${params.balanceType || null},
+        ${params.type || null},
+        ${params.startDate || null},
+        ${params.endDate || null}
       )
-    `);
+    `;
 
     // 检查查询结果
     if (!transactionQueryResult || transactionQueryResult.length === 0) {

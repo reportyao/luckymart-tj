@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
 /**
  * 获取消费概览
  */
-async function getSpendingOverview(admin: any, startDate?: string | null, endDate?: string | null) {
+async function getSpendingOverview(admin: AdminUser, startDate?: string | null, endDate?: string | null) {
   const { searchParams } = new URL(admin.url);
 
   // 构建日期过滤条件
@@ -163,7 +163,7 @@ async function getSpendingOverview(admin: any, startDate?: string | null, endDat
 /**
  * 获取单个用户消费分析
  */
-async function getUserSpendingAnalysis(admin: any, userId?: string | null) {
+async function getUserSpendingAnalysis(admin: AdminUser, userId?: string | null) {
   if (!userId) {
     return NextResponse.json({
       success: false,
@@ -236,7 +236,7 @@ async function getUserSpendingAnalysis(admin: any, userId?: string | null) {
  * 获取消费分群分析
  */
 async function getSpendingSegmentsAnalysis(
-  admin: any,
+  admin: AdminUser,
   spendingSegment?: string | null,
   startDate?: string | null,
   endDate?: string | null,

@@ -80,9 +80,9 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     }
 
     // 调用数据库函数领取奖励
-    const result = await prisma.$queryRawUnsafe(`
-      SELECT claim_task_reward('${userId}', '${taskType}') as result
-    `);
+    const result = await prisma.$queryRaw`
+      SELECT claim_task_reward(${userId}, ${taskType}) as result
+    `;
 
     if (!result || result.length === 0 || !result[0].result) {
       const errorResult = result?.[0]?.result;
@@ -142,15 +142,15 @@ export const POST = withAuth(async (request: NextRequest, user: any) => {
     });
 
     // 获取任务详细信息用于响应
-    const taskInfo = await prisma.$queryRawUnsafe(`
+    const taskInfo = await prisma.$queryRaw`
       SELECT 
         t.name_multilingual,
         t.description_multilingual,
         t.reward_amount,
         t.reward_type
       FROM new_user_tasks t
-      WHERE t.task_type = '${taskType}' AND t.is_active = true
-    `);
+      WHERE t.task_type = ${taskType} AND t.is_active = true
+    `;
 
     const task = taskInfo[0];
     const userLanguage = userRecord.preferredLanguage || 'tg-TJ';

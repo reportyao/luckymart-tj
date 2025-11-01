@@ -127,42 +127,42 @@ export const GET = withAuth(async (request: NextRequest, user: any) => {
             break;
           case 'first_recharge':
             // 检查是否有成功的充值订单
-            const rechargeCheck = await prisma.$queryRawUnsafe(`
+            const rechargeCheck = await prisma.$queryRaw`
               SELECT EXISTS (
                 SELECT 1 FROM orders 
-                WHERE user_id = '${userId}'
+                WHERE user_id = ${userId}
                   AND type = 'recharge'
                   AND status = 'completed'
                   AND payment_status = 'completed'
               ) as has_recharge
-            `);
+            `;
             shouldUpdate = rechargeCheck[0]?.has_recharge === true;
             break;
           case 'first_lottery':
             // 检查是否有抽奖参与记录
-            const lotteryCheck = await prisma.$queryRawUnsafe(`
+            const lotteryCheck = await prisma.$queryRaw`
               SELECT EXISTS (
                 SELECT 1 FROM participations 
-                WHERE user_id = '${userId}'
+                WHERE user_id = ${userId}
               ) as has_lottery
-            `);
+            `;
             shouldUpdate = lotteryCheck[0]?.has_lottery === true;
             break;
         }
 
         // 如果应该更新为完成状态
         if (shouldUpdate) {
-          await prisma.$queryRawUnsafe(`
+          await prisma.$queryRaw`
             INSERT INTO user_task_progress (user_id, task_id, status, completed_at, progress_data)
-            VALUES ('${userId}', '${task.task_id}', 'completed', CURRENT_TIMESTAMP, 
-                    '{"checked_at": "' || CURRENT_TIMESTAMP || '", "auto_updated": true}')
+            VALUES (${userId}, ${task.task_id}, 'completed', CURRENT_TIMESTAMP, 
+                    jsonb_build_object('checked_at', CURRENT_TIMESTAMP::text, 'auto_updated', true))
             ON CONFLICT (user_id, task_id) 
             DO UPDATE SET 
               status = 'completed',
               completed_at = CURRENT_TIMESTAMP,
-              progress_data = '{"checked_at": "' || CURRENT_TIMESTAMP || '", "auto_updated": true}',
+              progress_data = jsonb_build_object('checked_at', CURRENT_TIMESTAMP::text, 'auto_updated', true),
               updated_at = CURRENT_TIMESTAMP
-          `);
+          `;
           
           currentStatus = 'completed';
           updatedProgressData = { checked_at: new Date().toISOString(), auto_updated: true };
